@@ -7,8 +7,8 @@
 #SBATCH --time=05:00:00
 #SBATCH --mem=20G
 #SBATCH --job-name=llm_encode_state
-#SBATCH --output=experiments/congraph/main_py_%j.out
-#SBATCH --error=experiments/congraph/main_py_%j.err
+#SBATCH --output=experiments/congraph/encode_state_%j.out
+#SBATCH --error=experiments/congraph/encode_state_%j.err
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=duruoli2024@u.northwestern.edu
 
@@ -31,7 +31,7 @@ echo "============================================"
 # Run your script
 # ============================================
 cd /home/dlf8982/AAA/congraph
-python main.py
+python encode.py
 
 echo "============================================"
 echo "Job completed at: $(date)"

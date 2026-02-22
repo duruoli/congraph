@@ -141,17 +141,15 @@ def build_first_observation(patient: Dict[str, Any]) -> Tuple[str, str]:
 
 def build_radiology_observations(patient: Dict[str, Any]) -> List[Tuple[str, str]]:
     seq: List[Tuple[str, str]] = []
-    radiology = patient.get("radiology", {})
-    for modality_key, reports in radiology.items():
-        if not isinstance(reports, list):
-            continue
-        for r in reports:
-            exam_name = r.get("exam_name", "")
-            region = r.get("region", "")
-            report = r.get("report", "")
-            modality = infer_modality(modality_key, region)
-            obs = f"MODALITY: {exam_name}\nREGION: {region}\nREPORT:\n{report}"
-            seq.append((modality, obs))
+    radiology = patient.get("radiology", [])
+    for r in radiology:
+        exam_name = r.get("exam_name", "")
+        region = r.get("region", "")
+        report = r.get("report", "")
+        modality = r.get("modality", "other")
+        modality_region = infer_modality(modality, region)
+        obs = f"MODALITY: {exam_name}\nREGION: {region}\nREPORT:\n{report}"
+        seq.append((modality_region, obs))
     return seq
 
 
