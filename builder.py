@@ -12,16 +12,16 @@ REGIONS = [
     "Periumbilical", "Pelvic", "Chest", "General_Abdomen", "None", "Other"
 ]
 
-MODALITIES = [
-    "Lab_Panel", "CTU_Abdomen", "CT_Abdomen", "CT_Chest", "CT_Head", "CT_Spine",
-    "Drainage_Abdomen", "ERCP_Abdomen", "Fluoroscopy_Chest", "MRCP_Abdomen",
-    "MRE_Abdomen", "MRI_Abdomen", "MRI_Head", "MRI_Spine", "Radiograph_Abdomen",
-    "Radiograph_Ankle", "Radiograph_Chest", "Radiograph_Knee", "Radiograph_Venous",
-    "Ultrasound_Abdomen", "Ultrasound_Neck", "Ultrasound_Venous", "Upper_GI_Series_Abdomen"
+MODALITIES = ['CTU_Abdomen', 'CT_Abdomen', 'CT_Chest', 'CT_Head', 'CT_Neck', 'CT_Spine', 'Drainage_Abdomen', 'ERCP_Abdomen', 'Fluoroscopy_Chest', 'Fluoroscopy_Hip', 'Lab_Panel', 'MRA_Chest', 'MRCP_Abdomen', 'MRE_Abdomen', 'MRI_Abdomen', 'MRI_Chest', 'MRI_Head', 'MRI_Spine', 'PTC_Abdomen', 'Radiograph_Abdomen', 'Radiograph_Ankle', 'Radiograph_Chest', 'Radiograph_Foot', 'Radiograph_Hip', 'Radiograph_Knee', 'Radiograph_Spine', 'Radiograph_Venous', 'Ultrasound_Abdomen', 'Ultrasound_Chest', 'Ultrasound_Neck', 'Ultrasound_Scrotum', 'Ultrasound_Venous', 'Upper_GI_Series_Abdomen']
+
+# Policy actions: all non-lab modalities + dataset-specific terminal actions
+TERMINAL_ACTIONS = [
+    "DIAGNOSE_CHOLECYSTITIS",
+    "DIAGNOSE_PANCREATITIS",
+    "DIAGNOSE_DIVERTICULITIS",
 ]
 
-# Policy actions: all non-lab modalities + terminal action
-ACTION_MODALITIES = [m for m in MODALITIES if m != "Lab_Panel"] + ["DIAGNOSE"]
+ACTION_MODALITIES = [m for m in MODALITIES if m != "Lab_Panel"] + TERMINAL_ACTIONS
 ACTION2ID = {a: i for i, a in enumerate(ACTION_MODALITIES)}
 ID2ACTION = {i: a for a, i in ACTION2ID.items()}
 
@@ -80,7 +80,12 @@ def extract_next_action(curr_state: Dict, next_state: Dict) -> str:
     return h2[-1]
 
 
-def build_il_dataset(path_json: str, include_terminal_diagnose: bool = True) -> ILDataset:
+def build_il_dataset(
+    path_json: str,
+    include_terminal_diagnose: bool = True,
+    terminal_action: str = "DIAGNOSE_CHOLECYSTITIS",
+    dataset_tag: str = "default",
+) -> ILDataset:
     with open(path_json, "r", encoding="utf-8") as f:
         data = json.load(f)
 
@@ -90,27 +95,51 @@ def build_il_dataset(path_json: str, include_terminal_diagnose: bool = True) -> 
         if not traj:
             continue
 
+        # prefix pid to avoid accidental cross-dataset ID collisions
+        pid_global = f"{dataset_tag}:{pid}"
+
         for t in range(len(traj)):
             s_t = traj[t]
-
             if t < len(traj) - 1:
                 a_name = extract_next_action(s_t, traj[t + 1])
             else:
                 if not include_terminal_diagnose:
                     continue
-                a_name = "DIAGNOSE"
+                a_name = terminal_action
 
             if a_name not in ACTION2ID:
                 continue
 
             X_list.append(state_to_vector(s_t))
             y_list.append(ACTION2ID[a_name])
-            pid_list.append(pid)
+            pid_list.append(pid_global)
 
     X = np.stack(X_list).astype(np.float32)
     y = np.asarray(y_list, dtype=np.int64)
     pids = np.asarray(pid_list)
+    return ILDataset(X=X, y=y, patient_ids=pids, action_names=ACTION_MODALITIES)
 
+def build_il_dataset_mixed(specs, include_terminal_diagnose: bool = True) -> ILDataset:
+    """
+    specs: list of tuples
+      (dataset_tag, path_json, terminal_action)
+    """
+    X_all, y_all, pid_all = [], [], []
+
+    for dataset_tag, path_json, terminal_action in specs:
+        ds = build_il_dataset(
+            path_json=path_json,
+            include_terminal_diagnose=include_terminal_diagnose,
+            terminal_action=terminal_action,
+            dataset_tag=dataset_tag,
+        )
+        X_all.append(ds.X)
+        y_all.append(ds.y)
+        pid_all.append(ds.patient_ids)
+
+    X = np.concatenate(X_all, axis=0)
+    y = np.concatenate(y_all, axis=0)
+    pids = np.concatenate(pid_all, axis=0)
     return ILDataset(X=X, y=y, patient_ids=pids, action_names=ACTION_MODALITIES)
 
 
