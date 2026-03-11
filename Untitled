@@ -1,0 +1,353 @@
+# llm_model.py
+import argparse
+import json
+import time
+from pathlib import Path
+from typing import Any, Dict, List, Tuple
+
+from openai import OpenAI
+
+# -----------------------------------------------------------------------------
+# Helpers
+# -----------------------------------------------------------------------------
+
+DEFAULT_ALLOWED_TESTS = [
+    # Same modality space used by your policy setup (non-lab modalities).
+    "CTU_Abdomen",
+    "CT_Abdomen",
+    "CT_Chest",
+    "CT_Head",
+    "CT_Neck",
+    "CT_Spine",
+    "Drainage_Abdomen",
+    "ERCP_Abdomen",
+    "Fluoroscopy_Chest",
+    "Fluoroscopy_Hip",
+    "MRA_Chest",
+    "MRCP_Abdomen",
+    "MRE_Abdomen",
+    "MRI_Abdomen",
+    "MRI_Chest",
+    "MRI_Head",
+    "MRI_Spine",
+    "PTC_Abdomen",
+    "Radiograph_Abdomen",
+    "Radiograph_Ankle",
+    "Radiograph_Chest",
+    "Radiograph_Foot",
+    "Radiograph_Hip",
+    "Radiograph_Knee",
+    "Radiograph_Spine",
+    "Radiograph_Venous",
+    "Ultrasound_Abdomen",
+    "Ultrasound_Chest",
+    "Ultrasound_Neck",
+    "Ultrasound_Scrotum",
+    "Ultrasound_Venous",
+    "Upper_GI_Series_Abdomen",
+]
+
+# add near defaults
+TERMINAL_ACTION_CHOICES = [
+    "DIAGNOSE_CHOLECYSTITIS",
+    "DIAGNOSE_PANCREATITIS",
+    "DIAGNOSE_DIVERTICULITIS",
+]
+
+SYSTEM_PROMPT = """You are a clinical decision support assistant.
+Given:
+1) HPI text
+2) Lab test results
+3) Prior ground-truth radiology studies and findings
+
+Your task:
+Recommend ONE next radiology test to order from the allowed test list.
+
+Rules:
+- Recommend exactly one item from allowed_tests.
+- Base recommendation on current evidence and likely diagnostic yield.
+- Do NOT reference future information.
+- Output must follow the required JSON schema only.
+""".strip()
+
+
+def norm_token(text: str, default: str = "Other") -> str:
+    text = (text or "").strip()
+    if not text:
+        return default
+    return "_".join(text.split())
+
+
+def radiology_to_label(modality: str, region: str) -> str:
+    return f"{norm_token(modality)}_{norm_token(region)}"
+
+
+def modality_from_label(label: str) -> str:
+    if "_" not in label:
+        return label
+    return label.rsplit("_", 1)[0]
+
+
+def format_labs(labs: Dict[str, Any]) -> str:
+    lines: List[str] = []
+    for k, v in labs.items():
+        if isinstance(v, list):
+            v = "; ".join(str(x) for x in v)
+        lines.append(f"- {k}: {v}")
+    return "\n".join(lines)
+
+
+def build_history_slice(
+    gt_radiology: List[Dict[str, Any]],
+    upto_idx_exclusive: int,
+    report_max_chars: int,
+) -> List[Dict[str, str]]:
+    """
+    Build history using ground truth radiology up to step k-1.
+    For step k suggestion, pass upto_idx_exclusive = k.
+    """
+    out: List[Dict[str, str]] = []
+    for r in gt_radiology[:upto_idx_exclusive]:
+        report = (r.get("report") or "").strip()
+        if len(report) > report_max_chars:
+            report = report[:report_max_chars] + " ...[truncated]"
+        out.append(
+            {
+                "test_label": radiology_to_label(r.get("modality", ""), r.get("region", "")),
+                "exam_name": r.get("exam_name", ""),
+                "region": r.get("region", ""),
+                "report": report,
+            }
+        )
+    return out
+
+
+def make_schema(allowed_tests: List[str]) -> Dict[str, Any]:
+    return {
+        "name": "next_radiology_suggestion",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "next_test": {"type": "string", "enum": allowed_tests},
+                "confidence": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+                "reasoning": {"type": "string"},
+            },
+            "required": ["next_test", "confidence", "reasoning"],
+        },
+    }
+
+
+# -----------------------------------------------------------------------------
+# LLM call
+# -----------------------------------------------------------------------------
+
+def suggest_next_test(
+    client: OpenAI,
+    model: str,
+    allowed_tests: List[str],
+    hpi: str,
+    labs: Dict[str, Any],
+    prior_gt_history: List[Dict[str, str]],
+    temperature: float,
+) -> Dict[str, Any]:
+    schema = make_schema(allowed_tests)
+    payload = {
+        "hpi": hpi,
+        "lab_tests": format_labs(labs),
+        "prior_ground_truth_radiology": prior_gt_history,
+        "allowed_tests": allowed_tests,
+    }
+
+    resp = client.responses.create(
+        model=model,
+        input=[
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": json.dumps(payload, ensure_ascii=False)},
+        ],
+        text={
+            "format": {
+                "type": "json_schema",
+                "name": schema["name"],
+                "strict": schema["strict"],
+                "schema": schema["schema"],
+            }
+        },
+        temperature=temperature,
+    )
+    return json.loads(resp.output_text)
+
+
+# -----------------------------------------------------------------------------
+# Main experiment loop
+# -----------------------------------------------------------------------------
+
+def run(args: argparse.Namespace) -> None:
+    input_path = Path(args.input_path)
+    output_path = Path(args.output_path)
+    allowed_tests = list(DEFAULT_ALLOWED_TESTS)
+
+    with input_path.open("r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    patient_items = list(data.items())
+    if args.max_patients > 0:
+        patient_items = patient_items[: args.max_patients]
+
+    client = OpenAI()
+
+    results: Dict[str, Any] = {
+        "meta": {
+            "model": args.model,
+            "input_path": str(input_path),
+            "num_patients": len(patient_items),
+            "report_max_chars": args.report_max_chars,
+            "temperature": args.temperature,
+        },
+        "patients": {},
+        "metrics": {},
+    }
+
+    total_steps = 0
+    exact_hits = 0
+    modality_hits = 0
+
+    for p_idx, (pid, patient) in enumerate(patient_items, start=1):
+        hpi = patient.get("hpi", "")
+        labs = patient.get("lab_tests", {})
+        gt_rads = patient.get("radiology", [])
+
+        patient_steps: List[Dict[str, Any]] = []
+
+        for step_idx, gt in enumerate(gt_rads):
+            gt_label = radiology_to_label(gt.get("modality", ""), gt.get("region", ""))
+            prior_gt_history = build_history_slice(
+                gt_radiology=gt_rads,
+                upto_idx_exclusive=step_idx,  # key: uses GT previous tests only
+                report_max_chars=args.report_max_chars,
+            )
+
+            try:
+                suggestion = suggest_next_test(
+                    client=client,
+                    model=args.model,
+                    allowed_tests=allowed_tests,
+                    hpi=hpi,
+                    labs=labs,
+                    prior_gt_history=prior_gt_history,
+                    temperature=args.temperature,
+                )
+                pred_label = suggestion["next_test"]
+                pred_modality = modality_from_label(pred_label)
+                gt_modality = modality_from_label(gt_label)
+
+                exact_match = pred_label == gt_label
+                modality_match = pred_modality == gt_modality
+
+                total_steps += 1
+                exact_hits += int(exact_match)
+                modality_hits += int(modality_match)
+
+                patient_steps.append(
+                    {
+                        "step": step_idx + 1,
+                        "ground_truth_next_test": gt_label,
+                        "predicted_next_test": pred_label,
+                        "confidence": suggestion.get("confidence"),
+                        "reasoning": suggestion.get("reasoning"),
+                        "exact_match": exact_match,
+                        "modality_match": modality_match,
+                    }
+                )
+
+                print(
+                    f"[{p_idx}/{len(patient_items)}] patient={pid} step={step_idx+1} "
+                    f"gt={gt_label} pred={pred_label} exact={exact_match}"
+                )
+
+            except Exception as e:
+                patient_steps.append(
+                    {
+                        "step": step_idx + 1,
+                        "ground_truth_next_test": gt_label,
+                        "error": str(e),
+                    }
+                )
+                print(f"[ERR] patient={pid} step={step_idx+1}: {e}")
+
+            if args.sleep_sec > 0:
+                time.sleep(args.sleep_sec)
+
+        results["patients"][pid] = {
+            "num_radiology_steps": len(gt_rads),
+            "steps": patient_steps,
+        }
+
+    results["metrics"] = {
+        "total_steps": total_steps,
+        "exact_match_accuracy": (exact_hits / total_steps) if total_steps else 0.0,
+        "modality_match_accuracy": (modality_hits / total_steps) if total_steps else 0.0,
+        "exact_hits": exact_hits,
+        "modality_hits": modality_hits,
+    }
+
+    with output_path.open("w", encoding="utf-8") as f:
+        json.dump(results, f, ensure_ascii=False, indent=2)
+
+    print(f"\nSaved results to: {output_path}")
+    print(json.dumps(results["metrics"], indent=2))
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="LLM-only next radiology test suggestion rollout using ground-truth history."
+    )
+    parser.add_argument(
+        "--input_path",
+        type=str,
+        default="data_chole/state_text_chole.json",
+        help="Path to patient text JSON.",
+    )
+    parser.add_argument(
+        "--output_path",
+        type=str,
+        default="llm_rollout_results_chole.json",
+        help="Path to save rollout predictions and metrics.",
+    )
+    parser.add_argument(
+        "--model",
+        type=str,
+        default="gpt-4.1-mini",
+        help="OpenAI model name.",
+    )
+    parser.add_argument(
+        "--temperature",
+        type=float,
+        default=0.0,
+        help="Sampling temperature.",
+    )
+    parser.add_argument(
+        "--max_patients",
+        type=int,
+        default=0,
+        help="If >0, run only first N patients (for quick tests).",
+    )
+    parser.add_argument(
+        "--report_max_chars",
+        type=int,
+        default=1800,
+        help="Max chars per prior report included in prompt.",
+    )
+    parser.add_argument(
+        "--sleep_sec",
+        type=float,
+        default=0.0,
+        help="Sleep between API calls to reduce rate-limit pressure.",
+    )
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    run(args)

@@ -239,8 +239,7 @@ def baseline_tabpfn_predict_proba(X_train, y_train, X_test, seed=42):
 
     clf.fit(X_train, y_train_local)
     proba = clf.predict_proba(X_test)
-    classes_present = getattr(clf, "classes_", np.arange(proba.shape[1]))
-    proba = _align_proba(proba, np.asarray(classes_present), n_classes=len(ACTION_MODALITIES))
+    proba = _align_proba(proba, classes_global, n_classes=len(ACTION_MODALITIES))
     return proba
 
 
