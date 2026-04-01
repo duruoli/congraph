@@ -1,13 +1,28 @@
 """algo_extractor.py — Algorithmic feature extraction from structured CSV data.
 
 Extracts all features that can be derived without LLM:
-  - Lab thresholds  (from Laboratory Tests JSON + Reference Range JSONs)
+  - HPI features   (pain location, symptom flags, duration — regex + keyword)
+  - PE signs       (Murphy's, RLQ tenderness, rebound, peritoneal, mental status)
+  - Demographics   (age, sex — from CSV columns, text parsing, or GFR age-group proxy)
+  - Lab thresholds (from Laboratory Tests JSON + Reference Range JSONs)
   - Temperature / HR / RR  (regex on Physical Examination free text)
   - SIRS criteria  (derived from labs + vitals)
   - tests_done     (Lab_Panel always present; Radiology modalities parsed separately)
 
 The Radiology JSON list is also parsed here to produce an ordered list of
 imaging entries for the pipeline to iterate over.
+
+Design principles
+-----------------
+* Pain location uses an **ordered priority list** (specific quadrant → diffuse)
+  so a note mentioning both "RLQ" and "diffuse" returns "RLQ".
+* All sign extraction uses **bi-directional negation** — checks for denial words
+  both BEFORE ("no Murphy's sign") and AFTER ("Murphy's sign: negative") the
+  matched span to avoid false positives.
+* Pain migration is only flagged when explicit **migration language** (migrated,
+  moved, shifted, started X now Y) accompanies RLQ as the destination.
+* Symptom duration performs **numeric + verbal arithmetic** so "4 days", "four
+  days", "one week", "> 72 hours", etc. all correctly evaluate to True.
 """
 
 from __future__ import annotations
@@ -223,6 +238,420 @@ def _modality_to_test(modality: str, exam_name: str, region: str) -> Optional[st
 
 
 # ---------------------------------------------------------------------------
+# Negation-aware sign matching  (HPI + PE free text)
+# ---------------------------------------------------------------------------
+
+# Words that negate a finding when they appear BEFORE the matched span.
+_NEG_PRE = re.compile(
+    r"\bno\b|\bnot\b|\bwithout\b|\bdenies\b|\bdenied\b"
+    r"|\bnegative\b|\babsent\b|\bfails?\s+to\b",
+    re.IGNORECASE,
+)
+# Words that negate a finding when they appear anywhere in the post window.
+# Unanchored so it catches "murphy's sign [is] negative" even when "sign"
+# sits between the match end and the negation word.
+_NEG_POST = re.compile(
+    r"\b(?:negative|absent|not\s+(?:present|appreciated|elicited|found|demonstrated|noted))\b",
+    re.IGNORECASE,
+)
+
+
+def _sign_positive(
+    text: str,
+    pattern: str,
+    pre_win: int = 45,
+    post_win: int = 35,
+) -> bool:
+    """
+    Return True if `pattern` matches in `text` AND the finding is not negated.
+
+    Operates **sentence by sentence** to prevent negation from a previous
+    clause contaminating the next finding.  E.g. in:
+
+        "Murphy's sign: negative.  RLQ tenderness present."
+
+    the "negative" belongs to Murphy's and must not suppress RLQ_tenderness.
+
+    Within each sentence negation is checked in both directions:
+      • PRE_WIN chars before the match  → "no Murphy's sign"
+      • POST_WIN chars after the match  → "Murphy's sign [is] negative"
+    """
+    # Split on sentence boundaries; keep each clause isolated
+    sentences = re.split(r"(?<=[.!?])\s+", text)
+    for sent in sentences:
+        for m in re.finditer(pattern, sent, re.IGNORECASE):
+            pre  = sent[max(0, m.start() - pre_win): m.start()]
+            post = sent[m.end(): min(len(sent), m.end() + post_win)]
+            if not _NEG_PRE.search(pre) and not _NEG_POST.search(post):
+                return True
+    return False
+
+
+# ---------------------------------------------------------------------------
+# Pain location  (ordered: specific quadrant before diffuse)
+# ---------------------------------------------------------------------------
+
+_LOCATION_PATTERNS: list[tuple[str, str]] = [
+    ("RUQ",             r"\bruq\b|right\s+upper\s+quadrant"),
+    ("RLQ",             r"\brlq\b|right\s+lower\s+quadrant|\bmcburney\b"),
+    ("LLQ",             r"\bllq\b|left\s+lower\s+quadrant"),
+    ("LUQ",             r"\bluq\b|left\s+upper\s+quadrant"),
+    ("Epigastric",      r"\bepigastric\b|\bepigastrium\b"),
+    ("Periumbilical",   r"\bperiumbilical\b|peri[-\s]?umbilical\b"
+                        r"|umbilical\s+(?:area|region|pain|discomfort)\b"),
+    ("Pelvic",          r"\bpelvic\b|\bsuprapubic\b"),
+    ("General_Abdomen", r"\bdiffuse\b|generalized\s+abdom|pan[-\s]?abdominal"),
+]
+
+
+def _extract_pain_location(text: str) -> str:
+    """
+    Return the primary pain location using ordered keyword matching.
+    Checks specific quadrants first; falls back to 'Other'.
+    """
+    t = text.lower()
+    for loc, pattern in _LOCATION_PATTERNS:
+        if re.search(pattern, t):
+            return loc
+    return "Other"
+
+
+# ---------------------------------------------------------------------------
+# Symptom duration  (> 72 hours / > 3 days)
+# ---------------------------------------------------------------------------
+
+_WORD_TO_INT = {
+    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5,
+    "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
+    "eleven": 11, "twelve": 12,
+}
+
+
+def _symptom_over_72h(text: str) -> bool:
+    """
+    Return True when the text explicitly states a duration > 72 h / > 3 days.
+
+    Handles:
+      - Numeric days  ("4 days", "5-6 days" → lower-bound check)
+      - Written-out numbers  ("four days", "five days")
+      - Qualifiers  ("over 3 days", "more than 3 days", "> 72 hours")
+      - Weeks / months  (always > 72 h)
+      - "several days" / "multiple days"
+    """
+    t = text.lower()
+
+    # "X days" — take the first (lower-bound) number in a range
+    for m in re.finditer(r"\b(\d+)\s*(?:-\s*\d+\s*)?days?\b", t):
+        if int(m.group(1)) >= 4:
+            return True
+
+    # Written-out cardinal + "days"
+    for word, val in _WORD_TO_INT.items():
+        if val >= 4 and re.search(rf"\b{word}\s+days?\b", t):
+            return True
+
+    # Explicit qualifier: "over / more than / > 3 days"
+    if re.search(r"(?:over|more\s+than|greater\s+than|>)\s*3\s+days?", t):
+        return True
+
+    # "X hours" with X > 72
+    for m in re.finditer(r"\b(\d+)\s*(?:-\s*\d+\s*)?hours?\b", t):
+        if int(m.group(1)) > 72:
+            return True
+
+    # "over / more than / > 72 hours"
+    if re.search(r"(?:over|more\s+than|greater\s+than|>)\s*72\s+hours?", t):
+        return True
+
+    # Weeks or months → always > 72 h
+    if re.search(r"\bweeks?\b|\bmonths?\b", t):
+        return True
+
+    # "several days" / "multiple days"
+    if re.search(r"\bseveral\s+days?\b|\bmultiple\s+days?\b", t):
+        return True
+
+    return False
+
+
+# ---------------------------------------------------------------------------
+# HPI feature extraction
+# ---------------------------------------------------------------------------
+
+def extract_hpi_features(hpi: str) -> dict:
+    """
+    Extract all HPI-derived binary features and pain location from free text.
+
+    Uses ordered keyword matching for pain location and negation-aware regex
+    for all symptom flags.
+
+    Key subtleties
+    --------------
+    pain_migration_to_RLQ
+        Requires **explicit migration language** (migrated, moved, shifted,
+        started X → now Y) with RLQ as the destination.  A note that merely
+        mentions both "epigastric" and "RLQ" does NOT trigger this flag.
+
+    epigastric_radiating_to_back
+        Requires the co-occurrence of (a) epigastric, (b) radiating/radiation,
+        AND (c) back anywhere in the text.
+
+    symptom_duration_over_72h
+        Performs numeric + verbal duration arithmetic; only True when duration
+        is unambiguously > 72 h / > 3 days.
+
+    gallstone_history / prior_diverticular_disease
+        In MIMIC HPI text these are almost exclusively prior diagnoses, so a
+        plain keyword match (with negation guard) is sufficient.
+    """
+    t = hpi.lower()
+    return {
+        "pain_location": _extract_pain_location(hpi),
+
+        # Pain started elsewhere and migrated to RLQ (appendicitis hallmark)
+        "pain_migration_to_RLQ": bool(
+            # "migrated to RLQ / right lower quadrant"
+            re.search(
+                r"migrat\w+\s+(?:to\s+)?(?:rlq\b|right\s+lower\s+quadrant)", t
+            )
+            # "started/began/originated … moved/shifted/now [in] RLQ"
+            or re.search(
+                r"(?:started|began|origin\w+)\b.{0,50}"
+                r"(?:now|moved?|shifted?|progressed?)\b.{0,40}"
+                r"(?:rlq\b|right\s+lower\s+quadrant)",
+                t,
+            )
+            # "periumbilical/epigastric … migrated/moved … RLQ"
+            or re.search(
+                r"(?:periumbilical|epigastric|umbilical)\b.{0,60}"
+                r"(?:migrat\w+|moved?\s+to|shifted?\s+to)\b.{0,40}"
+                r"(?:rlq\b|right\s+lower\s+quadrant)",
+                t,
+            )
+        ),
+
+        # Epigastric pain radiating to the back (classic pancreatitis)
+        # Requires all three elements: epigastric, radiating language, and back
+        "epigastric_radiating_to_back": bool(
+            re.search(r"\bepigastric\b", t)
+            and re.search(r"\bradiating?\b|\bradiation\b|\bradiates?\b", t)
+            and re.search(r"\bback\b|\bdorsum\b|\bdorsal\b|\binterscapular\b", t)
+        ),
+
+        # Bowel habit change (diverticulitis / colonic pathology) — negation-aware
+        # Using _sign_positive to avoid false positives from "no diarrhea",
+        # "denied melena", "no changes in bowel habits", etc.
+        "bowel_habit_change": _sign_positive(
+            t,
+            r"\bdiarrhea\b|\bdiarrhoea\b|\bconstipation\b|\bloose\s+stool[s]?\b"
+            r"|\bbowel\s+habit\w*\s+change\b|\bchange\s+in\s+bowel\w*\b"
+            r"|\bbloody\s+stool[s]?\b|\bmelena\b|\bhematochezia\b"
+            r"|\balter\w+\s+bowel\b|\brectal\s+bleed\w*\b",
+        ),
+
+        "symptom_duration_over_72h": _symptom_over_72h(hpi),
+
+        # Anorexia / loss of appetite — negation-aware
+        "anorexia": _sign_positive(
+            t,
+            r"\banorexia\b|\bloss\s+of\s+appetite\b|\bpoor\s+appetite\b"
+            r"|\bnot\s+(?:eating|tolerating\s+(?:food|oral|po))\b"
+            r"|\bdecreased\s+(?:appetite|oral\s+intake|po\s+intake)\b",
+        ),
+
+        # Nausea and/or vomiting — negation-aware
+        "nausea_vomiting": _sign_positive(
+            t, r"\bnausea\b|\bvomit\w+\b|\bemesis\b|\bn/v\b"
+        ),
+
+        # Significant alcohol use history — negation-aware
+        # "social drinker" intentionally excluded (not "significant")
+        "alcohol_history": _sign_positive(
+            t,
+            r"\balcohol\b|\betoh\b|\bethanol\b|\balcoholic\b"
+            r"|\bheav\w+\s+drink\w*\b|\bbinge\s+drink\w*\b"
+            r"|\bdrinks?\s+(?:heav\w+|daily|regularly)\b",
+        ),
+
+        # Prior known gallstones / cholelithiasis — negation-aware
+        "gallstone_history": _sign_positive(
+            t,
+            r"\bgallstones?\b|\bcholelithiasis\b"
+            r"|\bcholedocholithiasis\b|\bgallbladder\s+stones?\b",
+        ),
+
+        # Prior diverticular disease — negation-aware
+        "prior_diverticular_disease": _sign_positive(
+            t,
+            r"\bdiverticulosis\b|\bdiverticulitis\b|\bdiverticular\s+disease\b",
+        ),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Physical Examination sign extraction
+# ---------------------------------------------------------------------------
+
+def extract_pe_signs(pe_text: str) -> dict:
+    """
+    Extract PE-derived clinical signs using negation-aware regex.
+
+    Vitals (fever, HR, RR) are handled separately by the existing helpers and
+    are NOT duplicated here.
+
+    Key subtleties
+    --------------
+    murphys_sign
+        Checks pre-negation ("no Murphy's") AND post-negation ("Murphy's sign
+        negative" / "Murphy's sign: absent").  The sign is positive only when
+        both checks pass.
+
+    RLQ_tenderness
+        Includes Rovsing's sign, psoas sign, obturator sign, and McBurney's
+        point tenderness as alternative RLQ indicators.
+
+    rebound_tenderness
+        Requires "rebound tenderness" (not bare "rebound" which can appear in
+        other clinical contexts such as "rebound hypertension").
+
+    peritoneal_signs
+        Flags involuntary guarding, rigidity, or explicit peritoneal sign
+        language.  Overlaps intentionally with rebound_tenderness (both may
+        be True for the same patient).
+
+    RUQ_mass
+        Requires BOTH an RUQ locator AND a mass/palpable/fullness keyword;
+        this avoids triggering on "RUQ tenderness" alone.
+    """
+    t = pe_text.lower()
+    return {
+        # Murphy's sign positive on palpation
+        "murphys_sign": _sign_positive(t, r"murphy'?s?\s*(?:sign)?"),
+
+        # RLQ tenderness — also flags Rovsing's, psoas, obturator, McBurney
+        "RLQ_tenderness": (
+            _sign_positive(t, r"\brlq\b|\bright\s+lower\s+quadrant\b")
+            or _sign_positive(
+                t,
+                r"\brovsing'?s?\b|\bpsoas\s+sign\b"
+                r"|\bobturator\s+sign\b|\bmcburney'?s?\b",
+            )
+        ),
+
+        # Rebound tenderness (Blumberg's sign)
+        # Use "rebound tenderness" to avoid false hits on "rebound" alone
+        "rebound_tenderness": _sign_positive(
+            t, r"\brebound\s+tenderness\b|\bblumberg'?s?\b"
+        ),
+
+        # Palpable RUQ mass (Courvoisier, distended GB, hepatic mass)
+        "RUQ_mass": bool(
+            re.search(r"\bruq\b|\bright\s+upper\s+quadrant\b", t)
+            and _sign_positive(
+                t, r"\bmass\b|\bfullness\b|\binduration\b|\bpalpable\b"
+            )
+        ),
+
+        # Peritoneal signs: involuntary guarding, rigidity, or explicit label
+        "peritoneal_signs": (
+            _sign_positive(t, r"\bguarding\b|\brigidity\b")
+            or _sign_positive(t, r"\bperitoneal\s+sign[s]?\b|\bperitonism\b")
+        ),
+
+        # Impaired mental status: confusion, somnolence, GCS < 15
+        "impaired_mental_status": bool(re.search(
+            r"\bconfus(?:ed|ion)\b|\bsomnolent\b|\bsomnolence\b"
+            r"|\baltered\s+(?:mental\s+status|sensorium|mentation|consciousness|loc)\b"
+            r"|\blethargi(?:c|a)\b|\bdisoriented\b|\bobtunded\b|\bunresponsive\b"
+            r"|\bgcs\s*[<≤:=]?\s*(?:1[0-4]|[1-9])\b",
+            t,
+        )),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Demographics extraction
+# ---------------------------------------------------------------------------
+
+def _extract_demographics(row: dict) -> dict:
+    """
+    Attempt to extract age_gt_60 and is_female_reproductive_age.
+
+    Strategy (in priority order):
+      1. Explicit "Age" / "Gender" / "Sex" columns in the CSV row.
+      2. Regex parsing of the Patient History text:
+           - age: "X-year-old" or "X year old" (MIMIC sometimes leaves this)
+           - sex: "female"/"woman"/"she" vs "male"/"man"/"he"
+      3. GFR age-group proxy: MIMIC-IV eGFR lab reports embed an "age group
+         XX-YY" bracket in the value string (e.g. ">=60 [age group 50-60]").
+         The midpoint of that bracket is used as an age estimate.
+         This is the primary recovery path when MIMIC redacts ages as '___'.
+      4. Conservative default (False) when age remains unknown.
+
+    Note: sex can usually be recovered from HPI pronouns even when age is
+    fully redacted.  age_gt_60 will be False whenever no proxy succeeds.
+    """
+    age: Optional[float] = None
+    sex: Optional[str]   = None
+
+    # --- 1. Explicit CSV columns ---
+    for col in ("Age", "age", "AGE"):
+        raw = str(row.get(col, "")).strip()
+        if raw and raw not in ("nan", "None", ""):
+            try:
+                age = float(raw)
+                break
+            except ValueError:
+                pass
+
+    for col in ("Gender", "gender", "Sex", "sex"):
+        raw = str(row.get(col, "")).strip().upper()
+        if raw in ("F", "FEMALE"):
+            sex = "F"
+            break
+        if raw in ("M", "MALE"):
+            sex = "M"
+            break
+
+    # --- 2. Fallback: parse Patient History text ---
+    hpi = str(row.get("Patient History", "") or "")
+
+    if age is None:
+        m = re.search(r"\b(\d{1,3})\s*[-\s]?\s*year[-\s]?old\b", hpi, re.IGNORECASE)
+        if m:
+            candidate = float(m.group(1))
+            if 0 < candidate < 120:
+                age = candidate
+
+    if sex is None:
+        if re.search(r"\bfemale\b|\bwoman\b|\bshe\b|\bher\b", hpi, re.IGNORECASE):
+            sex = "F"
+        elif re.search(r"\bmale\b|\bman\b|\bhe\b|\bhis\b", hpi, re.IGNORECASE):
+            sex = "M"
+
+    # --- 3. GFR age-group proxy (MIMIC-IV primary recovery path) ---
+    # eGFR reports in MIMIC-IV embed brackets like ">=60 [age group 50-60]"
+    # or "age group 40-50" directly in the value string.  Searching the raw
+    # Laboratory Tests JSON text (before parsing) is sufficient to find them.
+    if age is None:
+        lab_raw = str(row.get("Laboratory Tests", "") or "")
+        m = re.search(r"\bage\s+group\s+(\d+)[-–]\s*(\d+)", lab_raw, re.IGNORECASE)
+        if m:
+            lo, hi = int(m.group(1)), int(m.group(2))
+            mid = (lo + hi) / 2.0
+            if 0 < mid < 120:
+                age = mid  # midpoint estimate — sufficient for >60 threshold
+
+    age_gt_60 = age is not None and age > 60
+    is_female_repro = sex == "F" and age is not None and 15.0 <= age <= 50.0
+
+    return {
+        "age_gt_60": age_gt_60,
+        "is_female_reproductive_age": is_female_repro,
+    }
+
+
+# ---------------------------------------------------------------------------
 # Main extraction functions
 # ---------------------------------------------------------------------------
 
@@ -240,8 +669,25 @@ def extract_algo_features(row: dict) -> dict:
     labs      = _parse_lab_json(row.get("Laboratory Tests", ""))
     ref_upper = _parse_ref_json(row.get("Reference Range Upper", ""))
     pe_text   = str(row.get("Physical Examination", "") or "")
+    hpi       = str(row.get("Patient History", "") or "")
 
     features: dict = {}
+
+    # ── HPI features (pain profile + symptom flags) ───────────────────────────
+    features.update(extract_hpi_features(hpi))
+
+    # ── pain_location fallback: if HPI has no specific quadrant, try PE text ──
+    # e.g. "abdominal pain" in HPI but "TTP RUQ" in PE → use "RUQ"
+    if features.get("pain_location") == "Other":
+        pe_loc = _extract_pain_location(pe_text)
+        if pe_loc != "Other":
+            features["pain_location"] = pe_loc
+
+    # ── PE signs (Murphy's, RLQ, rebound, peritoneal, mental status) ──────────
+    features.update(extract_pe_signs(pe_text))
+
+    # ── Demographics (age, sex) ───────────────────────────────────────────────
+    features.update(_extract_demographics(row))
 
     # ── WBC ──────────────────────────────────────────────────────────────────
     wbc = _get_numeric(labs, _WBC_IDS)

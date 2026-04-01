@@ -8,8 +8,17 @@ extract_patient_steps(row, client, *, run_llm=True) → list[ExtractionStep]
     objects.  Each step holds a complete, cumulative feature dict that can be
     fed directly into ClinicalSession or the rubric graph.
 
-    Step 0 : HPI + Physical Exam + Basic Labs
+    Step 0 : HPI + Physical Exam + Basic Labs  ← fully algorithmic (no LLM)
     Step k  : Step k-1 features  +  findings from the k-th radiology report
+              ← radiology reports are processed by LLM (extract_imaging_llm)
+
+    LLM usage
+    ---------
+    The ``run_llm`` flag now controls only **imaging** extraction.
+    Step 0 (HPI + PE + Labs) is extracted entirely by keyword/regex rules in
+    extract_algo_features(), extract_hpi_features(), and extract_pe_signs().
+    This eliminates the largest source of LLM hallucination while keeping LLM
+    where it genuinely adds value (interpreting free-text radiology reports).
 
 Usage
 -----
@@ -46,10 +55,7 @@ from feature_extraction.algo_extractor import (
     extract_algo_features,
     extract_radiology_tests,
 )
-from feature_extraction.llm_extractor import (
-    extract_step0_llm,
-    extract_imaging_llm,
-)
+from feature_extraction.llm_extractor import extract_imaging_llm
 
 
 # ---------------------------------------------------------------------------
@@ -134,18 +140,11 @@ def extract_patient_steps(
     # ── Initialise from schema defaults ──────────────────────────────────────
     features = default_features()
 
-    # ── Algorithmic extraction: labs + vitals + tests_done ───────────────────
+    # ── Step 0: fully algorithmic — HPI + PE signs + Labs + Demographics ────
+    # extract_algo_features now calls extract_hpi_features, extract_pe_signs,
+    # and _extract_demographics internally, so no LLM call is needed here.
     algo_feats = extract_algo_features(row)
     features.update(algo_feats)
-
-    # ── LLM extraction: HPI + Physical Examination ───────────────────────────
-    if run_llm:
-        llm_feats = extract_step0_llm(
-            client,
-            patient_history=str(row.get("Patient History", "") or ""),
-            physical_exam  =str(row.get("Physical Examination", "") or ""),
-        )
-        features.update(llm_feats)
 
     # ── Step 0 snapshot ───────────────────────────────────────────────────────
     steps: list[ExtractionStep] = [
