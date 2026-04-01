@@ -7,8 +7,8 @@
 #SBATCH --time=08:00:00
 #SBATCH --mem=20G
 #SBATCH --job-name=feature_extraction
-#SBATCH --output=experiments/congraph/feature_extraction_%j.out
-#SBATCH --error=experiments/congraph/feature_extraction_%j.err
+#SBATCH --output=experiments/traversal_engine/feature_extraction_%j.out
+#SBATCH --error=experiments/traversal_engine/feature_extraction_%j.err
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=duruoli2024@u.northwestern.edu
 
