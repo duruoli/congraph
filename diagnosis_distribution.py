@@ -29,7 +29,10 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from empirical_scorer import EmpiricalScorer
 
 from traversal_engine import FullTraversalResult, TraversalResult
 
@@ -46,16 +49,42 @@ EXCLUDED_SCORE:  float = -12.0 # Effectively zeros out excluded diseases (exp≈
 
 
 # ---------------------------------------------------------------------------
-# MIMIC stub  (Step 5 hook)
+# Empirical scorer — module-level singleton (set via set_empirical_scorer)
 # ---------------------------------------------------------------------------
 
-def mimic_score(disease: str, features: dict) -> float:
-    """
-    Placeholder for MIMIC-derived feature-frequency likelihood ratio.
+_empirical_scorer: Optional["EmpiricalScorer"] = None
 
-    Returns 0.0 for all inputs so the rubric score is the sole signal.
-    Replace this function with a real MIMIC lookup once Step 5 is built.
+
+def set_empirical_scorer(scorer: "EmpiricalScorer") -> None:
     """
+    Inject a fitted EmpiricalScorer so that empirical_score() returns real
+    KNN-derived log-probabilities instead of 0.0.
+
+    Call this once before running the pipeline (e.g. from real_pipeline.py
+    after training the scorer on the held-out training split).
+    """
+    global _empirical_scorer
+    _empirical_scorer = scorer
+
+
+def clear_empirical_scorer() -> None:
+    """Remove the empirical scorer (revert to uniform stub)."""
+    global _empirical_scorer
+    _empirical_scorer = None
+
+
+def empirical_score(disease: str, features: dict) -> float:
+    """
+    Return the empirical component of the scoring model.
+
+    If an EmpiricalScorer has been injected via set_empirical_scorer(), this
+    delegates to its KNN log-probability estimate:
+        log P(disease | K nearest neighbors in training corpus)
+
+    Otherwise returns 0.0 (uniform — rubric score is the sole signal).
+    """
+    if _empirical_scorer is not None and _empirical_scorer.is_fitted:
+        return _empirical_scorer.score(disease, features)
     return 0.0
 
 
@@ -152,7 +181,7 @@ def compute_distribution(
     for name, result in full_result.diseases.items():
         raw_scores[name] = (
             _rubric_score(result)
-            + mimic_score(name, _features)
+            + empirical_score(name, _features)
             + _LOG_PRIOR
         )
 
