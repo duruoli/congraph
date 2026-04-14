@@ -167,8 +167,15 @@ def _tg18_group_a(f: dict) -> bool:
     """
     TG18 Group A (local inflammation signs): ≥ 1 criterion present.
     TG18 A组局部炎症体征（满足≥1项）
+
+    Extended: RUQ_tenderness added as a proxy for Murphy's sign when the
+    clinician documents "TTP RUQ" / "tender RUQ" rather than naming the sign.
     """
-    return f.get("murphys_sign", False) or f.get("RUQ_mass", False)
+    return (
+        f.get("murphys_sign", False)
+        or f.get("RUQ_tenderness", False)
+        or f.get("RUQ_mass", False)
+    )
 
 
 def _tg18_group_b(f: dict) -> bool:
@@ -341,16 +348,19 @@ def _build_triage_graph() -> RubricGraph:
             ),
         ),
 
-        # → Cholecystitis: RUQ pain + Murphy's sign + WBC or CRP elevated
-        # 胆囊炎分流：RUQ疼痛 + Murphy征 + 炎症指标升高
+        # → Cholecystitis: RUQ pain + (Murphy's sign OR RUQ tenderness) + WBC or CRP elevated
+        # 胆囊炎分流：RUQ疼痛 + （Murphy征或RUQ压痛）+ 炎症指标升高
+        # RUQ_tenderness is accepted as a proxy for Murphy's sign: clinicians
+        # frequently document "TTP RUQ" without explicitly naming the sign.
         RubricEdge(
             "BASIC_LABS", "ROUTE_CHOLECYSTITIS",
-            "RUQ pain + Murphy's sign + WBC/CRP elevated",
+            "RUQ pain + Murphy's sign or RUQ tenderness + WBC/CRP elevated",
             condition=lambda f: (
                 _done(f, "Lab_Panel")
                 and f.get("pain_location") == "RUQ"
-                and f.get("murphys_sign", False)
+                and (f.get("murphys_sign", False) or f.get("RUQ_tenderness", False))
                 and (f.get("WBC_gt_10k", False) or f.get("CRP_elevated", False))
+                and not f.get("lipase_ge_3xULN", False)   # lipase↑ → prefer pancreatitis route
             ),
         ),
 
@@ -370,17 +380,20 @@ def _build_triage_graph() -> RubricGraph:
             ),
         ),
 
-        # → Pancreatitis: epigastric ± radiating to back + lipase ≥3×ULN
-        # 胰腺炎分流：上腹痛（放射至背部）+ Lipase≥3×ULN（高度特异性）
+        # → Pancreatitis: lipase ≥3×ULN + epigastric or RUQ pain
+        # 胰腺炎分流：Lipase≥3×ULN（高度特异性）+ 上腹/右上腹疼痛
+        # RUQ is included because gallstone pancreatitis frequently presents
+        # with RUQ pain (the stone obstructs the common bile duct) rather than
+        # classic epigastric pain.  Lipase ≥3×ULN is the dominant gate.
         RubricEdge(
             "BASIC_LABS", "ROUTE_PANCREATITIS",
-            "Epigastric pain ± radiating to back + Lipase ≥3×ULN",
+            "Lipase ≥3×ULN + epigastric or RUQ pain",
             condition=lambda f: (
                 _done(f, "Lab_Panel")
                 and f.get("lipase_ge_3xULN", False)
                 and (
                     f.get("epigastric_radiating_to_back", False)
-                    or f.get("pain_location") == "Epigastric"
+                    or f.get("pain_location") in ("Epigastric", "RUQ")
                 )
             ),
         ),
@@ -395,6 +408,7 @@ def _build_triage_graph() -> RubricGraph:
                 and f.get("pain_location") not in ("RLQ", "RUQ", "LLQ", "Epigastric")
                 and not f.get("lipase_ge_3xULN", False)
                 and not f.get("murphys_sign", False)
+                and not f.get("RUQ_tenderness", False)
             ),
         ),
     ]

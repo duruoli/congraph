@@ -525,8 +525,23 @@ def extract_pe_signs(pe_text: str) -> dict:
     """
     t = pe_text.lower()
     return {
-        # Murphy's sign positive on palpation
-        "murphys_sign": _sign_positive(t, r"murphy'?s?\s*(?:sign)?"),
+        # Murphy's sign positive on palpation, including descriptive paraphrases:
+        # "inspiratory arrest on RUQ palpation", "catches breath on deep palpation"
+        "murphys_sign": (
+            _sign_positive(t, r"murphy'?s?\s*(?:sign)?")
+            or _sign_positive(
+                t,
+                r"inspiratory\s+arrest\b|\bcatches?\s+(?:her\s+|his\s+|their\s+)?breath",
+            )
+        ),
+
+        # RUQ tenderness — TG18 Group A extension.
+        # In PE text, "RUQ" / "right upper quadrant" mentioned without negation
+        # almost always denotes tenderness ("TTP RUQ", "tender to palpation RUQ").
+        # Analogous structure to RLQ_tenderness.
+        "RUQ_tenderness": _sign_positive(
+            t, r"\bruq\b|\bright\s+upper\s+quadrant\b"
+        ),
 
         # RLQ tenderness — also flags Rovsing's, psoas, obturator, McBurney
         "RLQ_tenderness": (

@@ -72,6 +72,27 @@ DISEASE_COLOR: dict[str, str] = {
 }
 
 
+# ── Text helpers ─────────────────────────────────────────────────────────────
+
+def _en_only(text: str) -> str:
+    """Return the English portion of a mixed English/Chinese string.
+
+    For each line, truncates at the first CJK character and strips trailing
+    separator characters (/ · — etc.).  Empty lines are dropped.
+    """
+    result: list[str] = []
+    for line in text.split("\n"):
+        en = ""
+        for ch in line:
+            if "\u4e00" <= ch <= "\u9fff":
+                break
+            en += ch
+        en = en.rstrip(" /·—").strip()
+        if en:
+            result.append(en)
+    return "\n".join(result).strip()
+
+
 # ── DOT-string builder ────────────────────────────────────────────────────────
 
 def _dot_escape(text: str) -> str:
@@ -113,10 +134,12 @@ def make_dot(graph: RubricGraph, result: TraversalResult) -> str:
         if status == "pending" and ns and ns.missing_tests:
             label += "\\n⏳ " + _dot_escape(", ".join(ns.missing_tests))
 
-        # tooltip = full clinical label + status
-        tooltip = _dot_escape(f"{node.label} [{status}]")
+        # tooltip = English-only clinical label + status
+        tooltip = _dot_escape(f"{_en_only(node.label)} [{status}]")
         if node.description:
-            tooltip += "\\n" + _dot_escape(node.description[:180])
+            desc_en = _en_only(node.description)
+            if desc_en:
+                tooltip += "\\n" + _dot_escape(desc_en[:200])
 
         lines.append(
             f'  {nid} ['
@@ -325,9 +348,39 @@ def main() -> None:
                     f"Advances: {advances_str}"
                 )
         else:
-            st.success(
-                "No further tests needed — all active diagnoses resolved."
+            # Determine why no recommendations exist
+            diseases = state.traversal.diseases
+            all_terminal = all(
+                r.terminal_node is not None for r in diseases.values()
             )
+            if all_terminal:
+                confirmed = [d for d, r in diseases.items() if r.confirmed]
+                excluded  = [d for d, r in diseases.items() if r.excluded]
+                parts = []
+                if confirmed:
+                    parts.append(f"confirmed: {', '.join(confirmed)}")
+                if excluded:
+                    parts.append(f"excluded: {', '.join(excluded)}")
+                st.success(
+                    "All diagnoses have reached a terminal node.  \n"
+                    + "  \n".join(parts)
+                )
+            else:
+                # Some diseases are still in-progress but have no pending nodes
+                # (all frontier nodes are blocked or frontier_leaf, not pending)
+                tests_done = step_meta["features"].get("tests_done", [])
+                if tests_done:
+                    st.info(
+                        "No additional tests indicated.  \n"
+                        "All reachable rubric nodes have been evaluated with "
+                        "the current evidence.  \n"
+                        f"Tests completed: `{'`, `'.join(tests_done)}`"
+                    )
+                else:
+                    st.warning(
+                        "No tests completed yet and no pending nodes found. "
+                        "Check patient features."
+                    )
 
     st.divider()
 
@@ -396,7 +449,7 @@ def main() -> None:
                             "frontier_leaf": "◉",
                         }.get(ns.status, "?")
                         st.markdown(
-                            f"**{icon} `{nid}`** — *{node.label}* &nbsp; "
+                            f"**{icon} `{nid}`** — *{_en_only(node.label)}* &nbsp; "
                             f"`[{ns.status}]`"
                         )
                         if ns.missing_tests:
@@ -405,10 +458,14 @@ def main() -> None:
                                 f"Missing tests: `{'`, `'.join(ns.missing_tests)}`"
                             )
                         if node.description:
-                            st.caption(
-                                "\u00a0\u00a0\u00a0\u00a0"
-                                + node.description[:240].replace("\n", "  \n\u00a0\u00a0\u00a0\u00a0")
-                            )
+                            desc_en = _en_only(node.description)
+                            if desc_en:
+                                st.caption(
+                                    "\u00a0\u00a0\u00a0\u00a0"
+                                    + desc_en[:300].replace(
+                                        "\n", "  \n\u00a0\u00a0\u00a0\u00a0"
+                                    )
+                                )
 
     # ── Footer: raw features ───────────────────────────────────────────────────
     with st.expander("Raw patient features (current step)"):

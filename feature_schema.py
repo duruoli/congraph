@@ -42,6 +42,7 @@ from __future__ import annotations
 
 # ── Group 3: Physical examination  体格检查 ──────────────────────────────────
 # murphys_sign               Murphy征阳性（TG18 A组 / 主分流胆囊炎路由）
+# RUQ_tenderness             右上腹压痛（TG18 A组扩展 / 吸气停顿等paraphrase）
 # RLQ_tenderness             右下腹压痛（Alvarado ④）
 # rebound_tenderness         反跳痛（Alvarado ⑤）
 # RUQ_mass                   右上腹可触及包块（TG18 A组 + Grade II 标准之一）
@@ -136,6 +137,7 @@ def default_features() -> dict:
 
         # ── Physical examination ──
         "murphys_sign": False,
+        "RUQ_tenderness": False,
         "RLQ_tenderness": False,
         "rebound_tenderness": False,
         "RUQ_mass": False,

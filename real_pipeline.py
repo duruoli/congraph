@@ -79,6 +79,29 @@ def run_patient(steps: list[dict]) -> list[tuple[dict, object]]:
     return results
 
 
+def _rec_hits(step_results: list[tuple[dict, object]], steps: list[dict]
+              ) -> tuple[int, int, int]:
+    """
+    Compare recommendations from step i against the actual test at step i+1.
+
+    Returns (top1_correct, hit3_correct, total) where total counts only
+    intermediate steps that have a non-null next test_key.
+    """
+    top1 = hit3 = total = 0
+    for i in range(len(step_results) - 1):
+        actual_next = steps[i + 1].get("test_key")
+        if not actual_next:
+            continue
+        _, state = step_results[i]
+        recs = [r.test for r in state.recommendations]
+        total += 1
+        if recs and recs[0] == actual_next:
+            top1 += 1
+        if actual_next in recs[:3]:
+            hit3 += 1
+    return top1, hit3, total
+
+
 # ---------------------------------------------------------------------------
 # Accuracy sweep
 # ---------------------------------------------------------------------------
@@ -100,6 +123,8 @@ def run_sweep(diseases: list[str]) -> None:
         bucket_correct: dict[str, int] = defaultdict(int)
         bucket_total:   dict[str, int] = defaultdict(int)
 
+        rec_top1 = rec_hit3 = rec_total = 0
+
         for pid, steps in patients.items():
             step_results = run_patient(steps)
             n_steps = len(steps)
@@ -119,11 +144,18 @@ def run_sweep(diseases: list[str]) -> None:
                 bucket_correct[bucket] += 1
             bucket_total[bucket] += 1
 
+            # Recommendation accuracy (intermediate steps only)
+            t1, h3, tot = _rec_hits(step_results, steps)
+            rec_top1  += t1
+            rec_hit3  += h3
+            rec_total += tot
+
         disease_stats[disease] = {
             "first_correct": first_correct, "first_total": first_total,
             "final_correct": final_correct, "final_total": final_total,
             "bucket_correct": dict(bucket_correct),
             "bucket_total":   dict(bucket_total),
+            "rec_top1": rec_top1, "rec_hit3": rec_hit3, "rec_total": rec_total,
         }
         grand_total   += final_total
         grand_correct += final_correct
@@ -133,15 +165,23 @@ def run_sweep(diseases: list[str]) -> None:
     print(f"  REAL PATIENT PIPELINE — ACCURACY SWEEP")
     print(f"{'═'*68}")
 
+    grand_rec_top1 = grand_rec_hit3 = grand_rec_total = 0
+
     for disease, st in disease_stats.items():
         f_acc   = st["first_correct"] / st["first_total"] if st["first_total"] else 0
         fin_acc = st["final_correct"] / st["final_total"] if st["final_total"] else 0
+        rec_t1  = st["rec_top1"] / st["rec_total"] if st["rec_total"] else 0
+        rec_h3  = st["rec_hit3"] / st["rec_total"] if st["rec_total"] else 0
         print(f"\n  {disease.upper()}  ({st['final_total']} patients)")
         print(f"  {'─'*60}")
         print(f"  First-step accuracy (HPI+PE+labs) : "
               f"{st['first_correct']}/{st['first_total']}  ({f_acc:.1%})")
         print(f"  Final-step accuracy (all evidence) : "
               f"{st['final_correct']}/{st['final_total']}  ({fin_acc:.1%})")
+        print(f"  Next-test top-1 accuracy           : "
+              f"{st['rec_top1']}/{st['rec_total']}  ({rec_t1:.1%})")
+        print(f"  Next-test hit@3 accuracy           : "
+              f"{st['rec_hit3']}/{st['rec_total']}  ({rec_h3:.1%})")
 
         # Show breakdown by patient complexity (sorted by step count)
         def _step_sort(k: str) -> int:
@@ -152,9 +192,19 @@ def run_sweep(diseases: list[str]) -> None:
             bacc = bc / bn if bn else 0
             print(f"    [{bucket:12s}]  {bc}/{bn}  ({bacc:.1%})")
 
-    overall_acc = grand_correct / grand_total if grand_total else 0
+        grand_rec_top1  += st["rec_top1"]
+        grand_rec_hit3  += st["rec_hit3"]
+        grand_rec_total += st["rec_total"]
+
+    overall_acc    = grand_correct / grand_total if grand_total else 0
+    overall_rec_t1 = grand_rec_top1 / grand_rec_total if grand_rec_total else 0
+    overall_rec_h3 = grand_rec_hit3 / grand_rec_total if grand_rec_total else 0
     print(f"\n{'─'*68}")
-    print(f"  OVERALL  {grand_correct}/{grand_total}  ({overall_acc:.1%})")
+    print(f"  OVERALL diagnosis  {grand_correct}/{grand_total}  ({overall_acc:.1%})")
+    print(f"  OVERALL next-test top-1  "
+          f"{grand_rec_top1}/{grand_rec_total}  ({overall_rec_t1:.1%})")
+    print(f"  OVERALL next-test hit@3  "
+          f"{grand_rec_hit3}/{grand_rec_total}  ({overall_rec_h3:.1%})")
     print(f"{'═'*68}\n")
 
 
@@ -305,6 +355,7 @@ def run_test_pipeline(
     per_disease_correct: dict[str, int] = defaultdict(int)
     per_disease_total:   dict[str, int] = defaultdict(int)
     grand_correct = 0
+    grand_rec_top1 = grand_rec_hit3 = grand_rec_total = 0
 
     for idx, (pid, disease, steps) in enumerate(test_set, 1):
         # Pick a random step from this patient's sequence
@@ -320,6 +371,13 @@ def run_test_pipeline(
             grand_correct += 1
             per_disease_correct[disease] += 1
         per_disease_total[disease] += 1
+
+        # Recommendation accuracy across all steps of this patient
+        step_results = run_patient(steps)
+        t1, h3, tot = _rec_hits(step_results, steps)
+        grand_rec_top1  += t1
+        grand_rec_hit3  += h3
+        grand_rec_total += tot
 
         if verbose:
             verdict = "✓" if is_correct else "✗"
@@ -361,8 +419,14 @@ def run_test_pipeline(
         cor = per_disease_correct[disease]
         print(f"  {disease:16s}  {cor}/{tot}  ({cor/tot:.1%})")
     overall = grand_correct / n_test if n_test else 0
+    overall_rec_t1 = grand_rec_top1 / grand_rec_total if grand_rec_total else 0
+    overall_rec_h3 = grand_rec_hit3 / grand_rec_total if grand_rec_total else 0
     print(f"{'─'*68}")
-    print(f"  OVERALL         {grand_correct}/{n_test}  ({overall:.1%})")
+    print(f"  OVERALL diagnosis       {grand_correct}/{n_test}  ({overall:.1%})")
+    print(f"  OVERALL next-test top-1 "
+          f"{grand_rec_top1}/{grand_rec_total}  ({overall_rec_t1:.1%})")
+    print(f"  OVERALL next-test hit@3 "
+          f"{grand_rec_hit3}/{grand_rec_total}  ({overall_rec_h3:.1%})")
     print(f"{'═'*68}\n")
 
     # Clean up: remove empirical scorer so other modes are unaffected
