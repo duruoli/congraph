@@ -44,6 +44,20 @@ from diagnosis_distribution import compute_distribution, DiagnosisDistribution
 
 
 # ---------------------------------------------------------------------------
+# Disease labels (canonical order used throughout the system)
+# ---------------------------------------------------------------------------
+
+DISEASES: tuple[str, ...] = (
+    "appendicitis",
+    "cholecystitis",
+    "diverticulitis",
+    "pancreatitis",
+)
+
+_UNIFORM_DIST: dict[str, float] = {d: 1.0 / len(DISEASES) for d in DISEASES}
+
+
+# ---------------------------------------------------------------------------
 # Entropy helper
 # ---------------------------------------------------------------------------
 
@@ -64,10 +78,11 @@ def distribution_entropy(dist: DiagnosisDistribution) -> float:
 @dataclass
 class _TransitionEntry:
     """One consecutive-step transition from the training corpus."""
-    vec_before: np.ndarray   # encoded features_before, shape (dim,)
-    test_key:   str          # test that was done at step i+1
-    delta_H:    float        # H_before − H_after  (positive = test helped)
-    disease:    str          # ground-truth disease label
+    vec_before:      np.ndarray        # encoded features_before, shape (dim,)
+    test_key:        str               # test that was done at step i+1
+    delta_H:         float             # H_before − H_after  (positive = test helped)
+    disease:         str               # ground-truth disease label
+    diag_dist_after: dict[str, float]  # diagnosis distribution AFTER the test
 
 
 # ---------------------------------------------------------------------------
@@ -118,14 +133,15 @@ class EntropyReducer:
                     features_before = steps[i]["features"]
                     features_after  = steps[i + 1]["features"]
 
-                    H_before = self._pipeline_entropy(features_before)
-                    H_after  = self._pipeline_entropy(features_after)
+                    dist_before, H_before = self._pipeline_dist_entropy(features_before)
+                    dist_after,  H_after  = self._pipeline_dist_entropy(features_after)
 
                     entries.append(_TransitionEntry(
-                        vec_before = encode_features(features_before),
-                        test_key   = test_key,
-                        delta_H    = H_before - H_after,
-                        disease    = disease,
+                        vec_before      = encode_features(features_before),
+                        test_key        = test_key,
+                        delta_H         = H_before - H_after,
+                        disease         = disease,
+                        diag_dist_after = dict(dist_after.probabilities),
                     ))
 
         self._corpus = entries
@@ -166,14 +182,23 @@ class EntropyReducer:
         k = min(self.k, len(self._corpus))
         nn_idx = np.argpartition(dists, k - 1)[:k]
         neighbors = [self._corpus[i] for i in nn_idx]
+        # Inverse-distance weights: closer neighbors contribute more.
+        # Add small epsilon to avoid division by zero for exact matches.
+        neighbor_dists = dists[nn_idx]
+        neighbor_weights = 1.0 / (neighbor_dists + 1e-6)
 
         scores: dict[str, float] = {}
         for test in candidate_tests:
-            relevant = [nb for nb in neighbors if nb.test_key == test]
-            if len(relevant) < self.min_count:
+            mask = [nb.test_key == test for nb in neighbors]
+            relevant_dH = [nb.delta_H for nb, m in zip(neighbors, mask) if m]
+            relevant_w  = [w          for w,  m in zip(neighbor_weights, mask) if m]
+            if len(relevant_dH) < self.min_count:
                 scores[test] = 0.0
             else:
-                scores[test] = float(np.mean([nb.delta_H for nb in relevant]))
+                w_sum = sum(relevant_w)
+                scores[test] = float(
+                    sum(w * dH for w, dH in zip(relevant_w, relevant_dH)) / w_sum
+                )
 
         return scores
 
@@ -205,14 +230,80 @@ class EntropyReducer:
             },
         }
 
+    # ── query (extended) ──────────────────────────────────────────────────────
+
+    def test_knn_outcomes(
+        self,
+        query_features: dict,
+        candidate_tests: list[str],
+    ) -> dict[str, dict]:
+        """
+        For each candidate test, return KNN-estimated entropy reduction AND
+        post-test diagnosis distribution.
+
+        Parameters
+        ----------
+        query_features  : current patient feature dict
+        candidate_tests : tests to score
+
+        Returns
+        -------
+        dict[test -> {
+            "delta_H"   : float,              # expected entropy reduction (bits)
+            "diag_dist" : dict[str, float],   # weighted-mixture post-test distribution
+        }]
+        Falls back to delta_H=0.0 and uniform diag_dist when no neighbors
+        performed the given test (consistent with test_entropy_scores).
+        """
+        if self._corpus_matrix is None or len(self._corpus) == 0:
+            return {
+                t: {"delta_H": 0.0, "diag_dist": dict(_UNIFORM_DIST)}
+                for t in candidate_tests
+            }
+
+        q = encode_features(query_features)
+        dists = np.linalg.norm(self._corpus_matrix - q, axis=1)
+
+        k = min(self.k, len(self._corpus))
+        nn_idx = np.argpartition(dists, k - 1)[:k]
+        neighbors = [self._corpus[i] for i in nn_idx]
+        neighbor_dists = dists[nn_idx]
+        neighbor_weights = 1.0 / (neighbor_dists + 1e-6)
+
+        outcomes: dict[str, dict] = {}
+        for test in candidate_tests:
+            mask = [nb.test_key == test for nb in neighbors]
+            rel_nb = [nb for nb, m in zip(neighbors, mask) if m]
+            rel_w  = [w  for w,  m in zip(neighbor_weights, mask) if m]
+
+            if len(rel_nb) < self.min_count:
+                outcomes[test] = {"delta_H": 0.0, "diag_dist": dict(_UNIFORM_DIST)}
+            else:
+                w_sum   = sum(rel_w)
+                delta_H = sum(w * nb.delta_H for w, nb in zip(rel_w, rel_nb)) / w_sum
+                diag_dist = {
+                    d: sum(w * nb.diag_dist_after.get(d, 0.0)
+                           for w, nb in zip(rel_w, rel_nb)) / w_sum
+                    for d in DISEASES
+                }
+                outcomes[test] = {"delta_H": delta_H, "diag_dist": diag_dist}
+
+        return outcomes
+
     # ── internal ─────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _pipeline_dist_entropy(features: dict) -> tuple[DiagnosisDistribution, float]:
+        """Run the traversal + distribution pipeline; return (dist, H_bits)."""
+        traversal = run_full_traversal(features)
+        dist      = compute_distribution(traversal, features)
+        return dist, distribution_entropy(dist)
 
     @staticmethod
     def _pipeline_entropy(features: dict) -> float:
         """Run the traversal + distribution pipeline and return H in bits."""
-        traversal = run_full_traversal(features)
-        dist      = compute_distribution(traversal, features)
-        return distribution_entropy(dist)
+        _, H = EntropyReducer._pipeline_dist_entropy(features)
+        return H
 
 
 # ---------------------------------------------------------------------------

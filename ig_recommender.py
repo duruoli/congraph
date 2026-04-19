@@ -32,6 +32,7 @@ Usage
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 
 from recommender import TestRecommendation
@@ -126,10 +127,12 @@ class IGRecommender:
         bfs_vals = [r.relevance for r in bfs_recs]
         ig_vals  = [ig_raw.get(r.test, 0.0) for r in bfs_recs]
 
-        # Normalise each component to [0, 1] independently
+        # Normalise each component to a probability simplex via softmax.
+        # Unlike min-max, softmax preserves the relative magnitude of gaps:
+        # a larger raw difference produces a larger post-softmax difference.
         if self.normalise:
-            bfs_norm = _normalise(bfs_vals)
-            ig_norm  = _normalise(ig_vals)
+            bfs_norm = _softmax(bfs_vals)
+            ig_norm  = _softmax(ig_vals)
         else:
             bfs_norm = bfs_vals
             ig_norm  = ig_vals
@@ -189,12 +192,24 @@ def format_ig_recommendations(recs: list[IGTestRecommendation]) -> str:
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-def _normalise(values: list[float]) -> list[float]:
-    """Min-max normalise a list to [0, 1]. Returns as-is if all equal."""
-    mn, mx = min(values), max(values)
-    if mx - mn < 1e-12:
-        return [0.5] * len(values)
-    return [(v - mn) / (mx - mn) for v in values]
+def _softmax(values: list[float]) -> list[float]:
+    """
+    Softmax normalisation: maps raw scores to a probability simplex.
+
+    Unlike min-max (which always maps min→0 and max→1 regardless of scale),
+    softmax preserves the relative magnitude of gaps between scores:
+      - Larger raw differences → larger post-softmax differences.
+      - Equal values → uniform 1/N weights.
+
+    A numerically stable implementation subtracts the maximum before
+    exponentiating to avoid overflow.
+    """
+    if not values:
+        return []
+    mx = max(values)
+    exps = [math.exp(v - mx) for v in values]
+    total = sum(exps)
+    return [e / total for e in exps]
 
 
 # ---------------------------------------------------------------------------
