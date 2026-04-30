@@ -34,6 +34,24 @@ from typing import Callable
 
 
 # ---------------------------------------------------------------------------
+# Unconditional-edge sentinel  无条件边哨兵
+# ---------------------------------------------------------------------------
+
+def _always(_: dict) -> bool:
+    """Sentinel for unconditional / always-traversable edges.
+
+    Using a named function (rather than an anonymous lambda) lets the traversal
+    engine detect always-edges via identity check:
+        edge.condition is ALWAYS_EDGE_CONDITION
+    """
+    return True
+
+
+# Public export so traversal_engine and diagnosis_distribution can import it.
+ALWAYS_EDGE_CONDITION: Callable[[dict], bool] = _always
+
+
+# ---------------------------------------------------------------------------
 # Core data structures  核心数据结构
 # ---------------------------------------------------------------------------
 
@@ -44,7 +62,7 @@ class RubricNode:
     id: str
     label: str
     # "start" | "assessment" | "decision" |
-    # "terminal_confirmed" | "terminal_excluded" | "routing"
+    # "terminal_confirmed" | "terminal_excluded" | "terminal_low_risk" | "routing"
     node_type: str
     # 到达/评估此节点需要先完成的检查（未完成时 → 状态标记为 pending）
     required_tests: list[str] = field(default_factory=list)
@@ -57,16 +75,15 @@ class RubricEdge:
 
     condition: callable (feature_dict -> bool)
                Returns True when the transition is clinically valid.
-               默认值为无条件可通过（即"always"边）。
+               Defaults to ALWAYS_EDGE_CONDITION (unconditional / "always" edge).
+               Use `edge.condition is ALWAYS_EDGE_CONDITION` to detect always-edges.
     """
 
     source: str
     target: str
     label: str
-    # 默认：无条件通过（unconditional / "always" edge）
-    condition: Callable[[dict], bool] = field(
-        default_factory=lambda: (lambda _: True)
-    )
+    # Default: unconditional (sentinel function, detectable by identity check)
+    condition: Callable[[dict], bool] = _always
 
 
 @dataclass
@@ -455,9 +472,13 @@ def _build_appendicitis_graph() -> RubricGraph:
         ),
         "EXCLUDED_LOW": RubricNode(
             "EXCLUDED_LOW",
-            "Appendicitis Excluded (Low Risk)",
-            "terminal_excluded",
-            description="Alvarado ≤3 — appendicitis ruled out / 低风险排除阑尾炎",
+            "Appendicitis Low Risk (Outpatient Monitoring)",
+            "terminal_low_risk",
+            description=(
+                "Alvarado ≤3 — low pre-test probability; outpatient monitoring acceptable.\n"
+                "NOT a definitive exclusion: ~10% PPV at this score threshold.\n"
+                "低风险（Alvarado≤3）：门诊随访即可，非影像确认排除"
+            ),
         ),
         "US_ABDOMEN": RubricNode(
             "US_ABDOMEN",
@@ -653,11 +674,24 @@ def _build_cholecystitis_graph() -> RubricGraph:
                 "疑似诊断门控：A组≥1项 AND B组≥1项"
             ),
         ),
-        "NOT_SUSPECTED": RubricNode(
-            "NOT_SUSPECTED",
-            "Cholecystitis Not Suspected",
+        "NOT_SUSPECTED_CLINICAL": RubricNode(
+            "NOT_SUSPECTED_CLINICAL",
+            "Cholecystitis Not Suspected (Clinical Only)",
+            "terminal_low_risk",
+            description=(
+                "TG18 Group A or B not met with lab/PE data only — low clinical suspicion.\n"
+                "NOT imaging-confirmed exclusion; cholecystitis remains recoverable.\n"
+                "仅凭lab/PE未满足A+B：低度怀疑，非影像排除"
+            ),
+        ),
+        "NOT_SUSPECTED_IMAGING": RubricNode(
+            "NOT_SUSPECTED_IMAGING",
+            "Cholecystitis Excluded (Imaging Confirmed)",
             "terminal_excluded",
-            description="Only one group met — diagnosis not supported / 未同时满足A+B，排除疑似",
+            description=(
+                "Additional imaging (HIDA/CT/MRCP) negative — diagnosis excluded.\n"
+                "影像学阴性确认排除胆囊炎"
+            ),
         ),
         "IMAGING_US": RubricNode(
             "IMAGING_US",
@@ -762,11 +796,11 @@ def _build_cholecystitis_graph() -> RubricGraph:
             condition=lambda f: _tg18_suspected(f),
         ),
 
-        # AB_DECISION → Not suspected
-        # 疑似诊断不成立
+        # AB_DECISION → Not suspected (clinical only — no imaging)
+        # 疑似诊断不成立（仅凭lab/PE，低风险而非确认排除）
         RubricEdge(
-            "AB_DECISION", "NOT_SUSPECTED",
-            "A or B criteria not met → Not suspected",
+            "AB_DECISION", "NOT_SUSPECTED_CLINICAL",
+            "A or B criteria not met → Not suspected (clinical only)",
             condition=lambda f: not _tg18_suspected(f),
         ),
 
@@ -806,11 +840,11 @@ def _build_cholecystitis_graph() -> RubricGraph:
             ),
         ),
 
-        # Additional imaging negative → excluded
-        # 追加影像阴性 → 排除
+        # Additional imaging negative → imaging-confirmed exclusion
+        # 追加影像阴性 → 影像确认排除
         RubricEdge(
-            "ADDITIONAL_IMAGING", "NOT_SUSPECTED",
-            "Additional imaging negative — diagnosis excluded",
+            "ADDITIONAL_IMAGING", "NOT_SUSPECTED_IMAGING",
+            "Additional imaging negative — diagnosis excluded by imaging",
             condition=lambda f: (
                 _any_done(f, "HIDA_Scan", "CT_Abdomen", "MRCP_Abdomen")
                 and not f.get("cholecystitis_additional_imaging_positive", False)

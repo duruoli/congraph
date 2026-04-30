@@ -72,7 +72,7 @@ DISEASE_FILES: dict[str, Path] = {
     "pancreatitis":   RESULTS_DIR / "pancreatitis_features.json",
 }
 
-KNN_STRATEGIES = ("actual", "random", "bfs", "ig")
+KNN_STRATEGIES = ("actual", "actual_real", "random", "bfs", "ig")
 
 _UNIFORM_DIST: dict[str, float] = {d: 1.0 / len(DISEASES) for d in DISEASES}
 
@@ -140,7 +140,7 @@ def _ig_top1(
 
 
 # ---------------------------------------------------------------------------
-# Result dataclass
+# Result dataclasses
 # ---------------------------------------------------------------------------
 
 @dataclass
@@ -149,6 +149,19 @@ class PatientStopResult:
     stop_tests:     int    # tests done at the stopping step
     correct:        bool   # estimated primary diagnosis == ground truth
     ever_stopped:   bool   # False if no step met the τ condition (used full traj)
+
+
+@dataclass
+class CalibrationRecord:
+    """One (patient, step k) KNN-estimate vs real-outcome comparison."""
+    disease:       str
+    step_k:        int
+    test_key:      str
+    knn_delta_H:   float             # KNN-estimated entropy reduction
+    real_delta_H:  float             # actual H_k − H_{k+1}
+    knn_top1:      str               # argmax of KNN-estimated post-test dist
+    real_top1:     str               # argmax of real step k+1 dist
+    l1_dist:       float             # L1 distance between KNN and real diag_dist
 
 
 # ---------------------------------------------------------------------------
@@ -226,11 +239,16 @@ def evaluate_patient(
         # Single batched KNN call for all candidate tests
         knn = reducer.test_knn_outcomes(features, list(tests_to_query))
 
-        # actual
+        # actual (KNN-estimated)
         if actual_next and actual_next in VALID_TESTS:
             step_outcomes[(k, "actual")] = knn.get(actual_next)
         else:
             step_outcomes[(k, "actual")] = None
+
+        # actual_real: real observed outcome from step k+1 (no KNN)
+        real_delta_H = step_ctx[k]["H"] - step_ctx[k + 1]["H"]
+        real_diag    = dict(step_ctx[k + 1]["dist"].probabilities)
+        step_outcomes[(k, "actual_real")] = {"delta_H": real_delta_H, "diag_dist": real_diag}
 
         # bfs
         step_outcomes[(k, "bfs")] = knn.get(bfs_next) if bfs_next else None
@@ -238,17 +256,13 @@ def evaluate_patient(
         # ig
         step_outcomes[(k, "ig")] = knn.get(ig_next) if ig_next else None
 
-        # random — average outcomes over seeds
-        seed_outs = [knn[t] for t in rng_nexts if t in knn]
-        if seed_outs:
-            avg_dH   = sum(o["delta_H"] for o in seed_outs) / len(seed_outs)
-            avg_dist = {
-                d: sum(o["diag_dist"].get(d, 0.0) for o in seed_outs) / len(seed_outs)
-                for d in DISEASES
-            }
-            step_outcomes[(k, "random")] = {"delta_H": avg_dH, "diag_dist": avg_dist}
-        else:
-            step_outcomes[(k, "random")] = None
+        # random — store per-seed outcomes independently (NOT averaged).
+        # Averaging at the step level creates an oracle ensemble (the mixed
+        # diag_dist is more stable than any single test result).  Instead we
+        # keep each seed's outcome separate and average PatientStopResult at
+        # the patient level, mirroring speed_accuracy_eval.py's approach.
+        for s, rng_test in enumerate(rng_nexts):
+            step_outcomes[(k, "random", s)] = knn.get(rng_test)
 
     # Fallback distribution: actual final step's computed distribution
     final_dist = dict(step_ctx[-1]["dist"].probabilities)
@@ -258,42 +272,228 @@ def evaluate_patient(
         s: {} for s in KNN_STRATEGIES
     }
 
+    # For actual_real the final fallback uses the real last-step distribution
+    # (same as final_dist already computed below)
+
+    def _one_stop(outcome_key_seq: list, tau: float) -> PatientStopResult:
+        """
+        Simulate one trajectory given a per-step outcome key sequence.
+
+        outcome_key_seq[k] is the key into step_outcomes for step k.
+        """
+        stop_k    = None
+        stop_diag = None
+
+        for k, okey in enumerate(outcome_key_seq):
+            H_current = step_ctx[k]["H"]
+            outcome   = step_outcomes.get(okey)
+            if outcome is None:
+                continue
+            if H_current - outcome["delta_H"] < tau:
+                stop_k    = k
+                stop_diag = outcome["diag_dist"]
+                break
+
+        if stop_k is None:
+            _st = len(step_ctx[-1]["features"].get("tests_done", []))
+            _sd = final_dist
+            _ev = False
+        else:
+            _st = len(step_ctx[stop_k]["features"].get("tests_done", []))
+            _sd = stop_diag
+            _ev = True
+
+        _pred = max(_sd, key=lambda d: _sd[d])  # type: ignore[arg-type]
+        return PatientStopResult(
+            stop_tests   = _st,
+            correct      = _pred == ground_truth,
+            ever_stopped = _ev,
+        )
+
+    # Pre-build per-step key sequences for each strategy
+    det_keys: dict[str, list] = {
+        s: [(k, s) for k in range(n_steps - 1)]
+        for s in ("actual", "actual_real", "bfs", "ig")
+    }
+    rng_keys_per_seed: list[list] = [
+        [(k, "random", s) for k in range(n_steps - 1)]
+        for s in range(random_seeds)
+    ]
+
     for tau in tau_values:
-        for strategy in KNN_STRATEGIES:
-            stop_k       = None
-            stop_diag    = None
+        # Deterministic strategies
+        for strategy in ("actual", "actual_real", "bfs", "ig"):
+            results[strategy][tau] = _one_stop(det_keys[strategy], tau)
 
-            for k in range(n_steps - 1):
-                H_current = step_ctx[k]["H"]
-                outcome   = step_outcomes.get((k, strategy))
-
-                if outcome is None:
-                    continue
-
-                if H_current - outcome["delta_H"] < tau:
-                    stop_k    = k
-                    stop_diag = outcome["diag_dist"]
-                    break
-
-            if stop_k is None:
-                # Never met the threshold; use the full trajectory length
-                stop_tests   = len(step_ctx[-1]["features"].get("tests_done", []))
-                stop_diag    = final_dist
-                ever_stopped = False
-            else:
-                stop_tests   = len(step_ctx[stop_k]["features"].get("tests_done", []))
-                ever_stopped = True
-
-            predicted = max(stop_diag, key=lambda d: stop_diag[d])  # type: ignore[arg-type]
-            correct   = predicted == ground_truth
-
-            results[strategy][tau] = PatientStopResult(
-                stop_tests   = stop_tests,
-                correct      = correct,
-                ever_stopped = ever_stopped,
-            )
+        # Random: each seed runs an independent trajectory; average at patient level
+        seed_psrs = [_one_stop(rng_keys_per_seed[s], tau) for s in range(random_seeds)]
+        results["random"][tau] = PatientStopResult(
+            stop_tests   = int(round(float(np.mean([r.stop_tests   for r in seed_psrs])))),
+            correct      = float(np.mean([r.correct      for r in seed_psrs])) >= 0.5,
+            ever_stopped = float(np.mean([r.ever_stopped for r in seed_psrs])) >= 0.5,
+        )
 
     return results
+
+
+# ---------------------------------------------------------------------------
+# KNN calibration: estimate vs real per (patient, step k)
+# ---------------------------------------------------------------------------
+
+def collect_patient_calibration(
+    disease: str,
+    steps:   list[dict],
+    reducer: EntropyReducer,
+) -> list[CalibrationRecord]:
+    """
+    For each consecutive step pair (k, k+1) in the patient's trajectory,
+    compare the KNN-estimated outcome for the actual test against the real
+    observed outcome.
+
+    Returns a list of CalibrationRecord, one per evaluable (k, actual_next)
+    pair.  Empty if the patient has fewer than 2 steps.
+    """
+    n_steps = len(steps)
+    if n_steps < 2:
+        return []
+
+    # Pre-compute actual pipeline context for every step
+    step_ctx: list[dict] = []
+    for k in range(n_steps):
+        features = steps[k]["features"]
+        dist     = _run_pipeline_dist(features)
+        H        = distribution_entropy(dist)
+        step_ctx.append({"features": features, "H": H, "dist": dist})
+
+    records: list[CalibrationRecord] = []
+
+    for k in range(n_steps - 1):
+        actual_next = steps[k + 1].get("test_key")
+        if not actual_next or actual_next not in VALID_TESTS:
+            continue
+
+        # KNN estimate
+        knn = reducer.test_knn_outcomes(step_ctx[k]["features"], [actual_next])
+        outcome = knn.get(actual_next)
+        if outcome is None:
+            continue
+
+        knn_delta_H  = outcome["delta_H"]
+        knn_diag     = outcome["diag_dist"]
+
+        # Real outcome
+        real_delta_H = step_ctx[k]["H"] - step_ctx[k + 1]["H"]
+        real_diag    = dict(step_ctx[k + 1]["dist"].probabilities)
+
+        knn_top1  = max(knn_diag,  key=lambda d: knn_diag[d])   # type: ignore[arg-type]
+        real_top1 = max(real_diag, key=lambda d: real_diag[d])  # type: ignore[arg-type]
+
+        l1 = sum(abs(knn_diag.get(d, 0.0) - real_diag.get(d, 0.0)) for d in DISEASES)
+
+        records.append(CalibrationRecord(
+            disease      = disease,
+            step_k       = k,
+            test_key     = actual_next,
+            knn_delta_H  = knn_delta_H,
+            real_delta_H = real_delta_H,
+            knn_top1     = knn_top1,
+            real_top1    = real_top1,
+            l1_dist      = l1,
+        ))
+
+    return records
+
+
+def run_knn_calibration(
+    test_patients:  list[tuple[str, str, list[dict]]],
+    reducer:        EntropyReducer,
+    verbose:        bool = True,
+) -> list[CalibrationRecord]:
+    """
+    Collect calibration records for all test patients and return them.
+    Prints a summary report if verbose=True.
+    """
+    all_records: list[CalibrationRecord] = []
+    total = len(test_patients)
+    for idx, (disease, pid, steps) in enumerate(test_patients, 1):
+        if verbose and idx % 50 == 0:
+            print(f"    {idx}/{total} patients…", flush=True)
+        all_records.extend(collect_patient_calibration(disease, steps, reducer))
+
+    if verbose:
+        print_calibration_report(all_records)
+    return all_records
+
+
+def print_calibration_report(records: list[CalibrationRecord]) -> None:
+    """Print a human-readable KNN calibration summary."""
+    if not records:
+        print("  No calibration records.")
+        return
+
+    n = len(records)
+    dH_errors   = [abs(r.knn_delta_H - r.real_delta_H) for r in records]
+    dH_biases   = [r.knn_delta_H - r.real_delta_H       for r in records]
+    l1_dists    = [r.l1_dist                             for r in records]
+    top1_agree  = [r.knn_top1 == r.real_top1             for r in records]
+
+    mae_dH   = float(np.mean(dH_errors))
+    rmse_dH  = float(np.sqrt(np.mean([e ** 2 for e in dH_errors])))
+    bias_dH  = float(np.mean(dH_biases))
+    mean_l1  = float(np.mean(l1_dists))
+    top1_pct = float(np.mean(top1_agree))
+
+    # Pearson r between knn and real delta_H
+    knn_dH_arr  = np.array([r.knn_delta_H  for r in records])
+    real_dH_arr = np.array([r.real_delta_H for r in records])
+    if knn_dH_arr.std() > 1e-9 and real_dH_arr.std() > 1e-9:
+        corr_dH = float(np.corrcoef(knn_dH_arr, real_dH_arr)[0, 1])
+    else:
+        corr_dH = float("nan")
+
+    print(f"\n{'═'*68}")
+    print(f"  KNN CALIBRATION REPORT   ({n} transition records)")
+    print(f"{'═'*68}")
+    print(f"  ΔH  MAE          : {mae_dH:+.4f} bits")
+    print(f"  ΔH  RMSE         : {rmse_dH:.4f} bits")
+    print(f"  ΔH  bias (knn−real): {bias_dH:+.4f} bits  "
+          f"({'over' if bias_dH > 0 else 'under'}-estimates reduction)")
+    print(f"  ΔH  Pearson r    : {corr_dH:.3f}")
+    print(f"  diag_dist L1     : {mean_l1:.4f}  (max=2.0 for 4-class)")
+    print(f"  argmax agreement : {top1_pct:.1%}  ({sum(top1_agree)}/{n})")
+
+    # Per-disease breakdown
+    diseases_seen = sorted({r.disease for r in records})
+    print(f"\n  {'Disease':<16}  {'n':>5}  {'MAE ΔH':>8}  {'bias ΔH':>9}  "
+          f"{'L1':>6}  {'top1 agree':>10}")
+    print(f"  {'─'*64}")
+    for d in diseases_seen:
+        sub = [r for r in records if r.disease == d]
+        s_n    = len(sub)
+        s_mae  = float(np.mean([abs(r.knn_delta_H - r.real_delta_H) for r in sub]))
+        s_bias = float(np.mean([r.knn_delta_H - r.real_delta_H       for r in sub]))
+        s_l1   = float(np.mean([r.l1_dist                             for r in sub]))
+        s_top1 = float(np.mean([r.knn_top1 == r.real_top1            for r in sub]))
+        print(f"  {d:<16}  {s_n:>5}  {s_mae:>8.4f}  {s_bias:>+9.4f}  "
+              f"{s_l1:>6.4f}  {s_top1:>9.1%}")
+
+    # Per-step-index breakdown (k=0,1,2,3+)
+    print(f"\n  {'Step k':<8}  {'n':>5}  {'MAE ΔH':>8}  {'L1':>6}  {'top1 agree':>10}")
+    print(f"  {'─'*44}")
+    for k_label, pred in [("0", lambda r: r.step_k == 0),
+                           ("1", lambda r: r.step_k == 1),
+                           ("2", lambda r: r.step_k == 2),
+                           ("3+", lambda r: r.step_k >= 3)]:
+        sub = [r for r in records if pred(r)]
+        if not sub:
+            continue
+        s_n    = len(sub)
+        s_mae  = float(np.mean([abs(r.knn_delta_H - r.real_delta_H) for r in sub]))
+        s_l1   = float(np.mean([r.l1_dist                            for r in sub]))
+        s_top1 = float(np.mean([r.knn_top1 == r.real_top1           for r in sub]))
+        print(f"  {k_label:<8}  {s_n:>5}  {s_mae:>8.4f}  {s_l1:>6.4f}  {s_top1:>9.1%}")
+
+    print(f"{'═'*68}\n")
 
 
 # ---------------------------------------------------------------------------
@@ -481,7 +681,12 @@ def print_knn_results(results: KNNEvalResults) -> None:
             if not st_list:
                 continue
             st    = st_list[0]
-            label = f"ig(α={alpha:.2f})" if strategy == "ig" else strategy
+            if strategy == "ig":
+                label = f"ig(α={alpha:.2f})"
+            elif strategy == "actual_real":
+                label = "actual(real)"
+            else:
+                label = strategy
             print(
                 f"  {tau:>5.2f}  {label:<14}  "
                 f"{st.accuracy:>8.1%}  "
@@ -522,10 +727,11 @@ def save_knn_csv(results_by_alpha: dict[float, KNNEvalResults], path: str) -> No
 # ---------------------------------------------------------------------------
 
 _STRATEGY_STYLE: dict[str, dict] = {
-    "actual": dict(color="#2196F3", marker="o", label="Actual order",  lw=2.0, zorder=4),
-    "random": dict(color="#9E9E9E", marker="s", label="Random order",  lw=1.5, zorder=2, ls="--"),
-    "bfs":    dict(color="#F44336", marker="^", label="BFS order",     lw=2.0, zorder=3),
-    "ig":     dict(color="#4CAF50", marker="D", label="IG re-ranked",  lw=2.5, zorder=5),
+    "actual":      dict(color="#90CAF9", marker="o", label="Actual order (KNN est.)", lw=1.8, zorder=4, ls="--"),
+    "actual_real": dict(color="#1565C0", marker="o", label="Actual order (real)",     lw=2.2, zorder=6),
+    "random":      dict(color="#9E9E9E", marker="s", label="Random order",            lw=1.5, zorder=2, ls="--"),
+    "bfs":         dict(color="#F44336", marker="^", label="BFS order",               lw=2.0, zorder=3),
+    "ig":          dict(color="#4CAF50", marker="D", label="IG re-ranked",            lw=2.5, zorder=5),
 }
 
 
@@ -613,7 +819,7 @@ def plot_knn_ig_comparison(
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(11, 9), sharex=True)
 
     first = results_by_alpha[sorted_alphas[0]]
-    for strategy in ("actual", "random", "bfs"):
+    for strategy in ("actual", "actual_real", "random", "bfs"):
         style   = dict(_STRATEGY_STYLE[strategy])
         st_list = sorted(first.stats[strategy], key=lambda s: s.tau)
         if not st_list:
@@ -684,6 +890,8 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--csv",          type=str,   default=None)
     p.add_argument("--plot",         action="store_true")
     p.add_argument("--plot-dir",     type=str,   default="results/figs")
+    p.add_argument("--calibration",  action="store_true",
+                   help="Run KNN calibration report (estimate vs real outcome).")
     p.add_argument("--quiet",        action="store_true")
     return p.parse_args()
 
@@ -723,6 +931,21 @@ def main() -> None:
     if verbose:
         print(f"  Train: {len(train_patients)}  |  Test: {n_test}")
 
+    # ── Optional: KNN calibration report ─────────────────────────────────────
+    if args.calibration:
+        if verbose:
+            print("\nFitting EntropyReducer for calibration…")
+        train_dict: dict[str, dict[str, list[dict]]] = {d: {} for d in DISEASE_FILES}
+        for disease, pid, steps in train_patients:
+            train_dict[disease][pid] = steps
+        cal_reducer = EntropyReducer(k=args.k)
+        cal_reducer.fit(train_dict)
+        if verbose:
+            print(f"  → {cal_reducer.n_transitions} transitions")
+            print(f"\nRunning KNN calibration on {len(test_patients)} test patients…")
+        run_knn_calibration(test_patients, cal_reducer, verbose=verbose)
+
+    # ── Main α sweep ──────────────────────────────────────────────────────────
     alpha_values = [float(a.strip()) for a in args.alphas.split(",")]
     tau_values   = list(np.linspace(args.tau_min, args.tau_max, args.tau_steps))
 

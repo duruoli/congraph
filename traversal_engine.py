@@ -38,6 +38,7 @@ from typing import Optional
 
 from rubric_graph import (
     ALL_GRAPHS,
+    ALWAYS_EDGE_CONDITION,
     DISEASE_GRAPHS,
     TRIAGE_GRAPH,
     RubricGraph,
@@ -81,16 +82,21 @@ class TraversalResult:
     frontier: list[str]
 
     # Clinical diagnostic terminal reached (None = still in progress)
-    # node_type must be "terminal_confirmed" or "terminal_excluded"
+    # node_type must be "terminal_confirmed", "terminal_excluded", or "terminal_low_risk"
     terminal_node: Optional[str]
-    terminal_type: Optional[str]   # "terminal_confirmed" | "terminal_excluded" | None
+    terminal_type: Optional[str]   # "terminal_confirmed" | "terminal_excluded" | "terminal_low_risk" | None
 
     # Tests needed at pending frontier nodes (in order of encounter)
     pending_tests: list[str]
 
-    # Proxy for evidence strength: # of nodes we actually processed
-    # (status in {"reached", "pending", "blocked", "frontier_leaf"})
+    # Total nodes touched during traversal (any status except "unvisited").
+    # Kept for debugging / reporting; NOT used for scoring (see conditional_triggers).
     depth: int
+
+    # Number of conditional edges (condition is not ALWAYS_EDGE_CONDITION) whose
+    # condition returned True.  This is the primary evidence-strength metric:
+    # only patient-data-driven decisions contribute, not structural "always" hops.
+    conditional_triggers: int
 
     # Did the main triage graph route to this disease?
     triage_activated: bool = False
@@ -104,6 +110,11 @@ class TraversalResult:
     @property
     def excluded(self) -> bool:
         return self.terminal_type == "terminal_excluded"
+
+    @property
+    def low_risk(self) -> bool:
+        """Current evidence is low-risk but NOT a definitive exclusion (still recoverable)."""
+        return self.terminal_type == "terminal_low_risk"
 
     @property
     def in_progress(self) -> bool:
@@ -157,6 +168,7 @@ def traverse_graph(graph: RubricGraph, features: dict) -> TraversalResult:
     frontier: list[str] = []
     terminal_node: Optional[str] = None
     terminal_type: Optional[str] = None
+    conditional_triggers: int = 0   # conditional edges whose conditions fired
 
     # ── BFS ───────────────────────────────────────────────────────────────
     reachable: set[str] = {graph.root}
@@ -180,7 +192,7 @@ def traverse_graph(graph: RubricGraph, features: dict) -> TraversalResult:
             node_statuses[nid] = NodeStatus(nid, "frontier_leaf")
             frontier.append(nid)
             ntype = node.node_type
-            if ntype in ("terminal_confirmed", "terminal_excluded"):
+            if ntype in ("terminal_confirmed", "terminal_excluded", "terminal_low_risk"):
                 terminal_node = nid
                 terminal_type = ntype
             continue
@@ -194,6 +206,11 @@ def traverse_graph(graph: RubricGraph, features: dict) -> TraversalResult:
                     reachable.add(tgt)
                     queue.append(tgt)
                 any_taken = True
+                # Count this as a conditional trigger only when the edge is NOT
+                # an always-edge — i.e., the patient's data actually drove the
+                # decision rather than a structural "always" hop.
+                if edge.condition is not ALWAYS_EDGE_CONDITION:
+                    conditional_triggers += 1
 
         if any_taken:
             node_statuses[nid] = NodeStatus(nid, "reached")
@@ -228,6 +245,7 @@ def traverse_graph(graph: RubricGraph, features: dict) -> TraversalResult:
         terminal_type=terminal_type,
         pending_tests=pending_tests,
         depth=depth,
+        conditional_triggers=conditional_triggers,
     )
 
 
@@ -244,9 +262,10 @@ def run_full_traversal(features: dict) -> FullTraversalResult:
     even for non-activated diseases.
 
     Ranking:
-      confirmed terminal       +10 points
-      triage-activated disease  +5 points
-      traversal depth            +1 per node (proxy for evidence strength)
+      confirmed terminal             +10 points
+      triage-activated disease        +5 points
+      conditional edges triggered     +1 per edge (patient-driven evidence only;
+                                       structural "always" hops are excluded)
     """
     # 1. Triage
     triage_result = traverse_graph(TRIAGE_GRAPH, features)
@@ -269,12 +288,15 @@ def run_full_traversal(features: dict) -> FullTraversalResult:
         disease_results[name] = result
 
     # 4. Rank by evidence strength
+    #      confirmed terminal              +10 pts
+    #      triage-activated disease         +5 pts
+    #      conditional edges triggered      +1 per edge (patient-driven evidence)
     def _score(name: str) -> int:
         r = disease_results[name]
         return (
             (10 if r.confirmed else 0)
             + (5 if r.triage_activated else 0)
-            + r.depth
+            + r.conditional_triggers
         )
 
     ranked_diseases = sorted(disease_results, key=_score, reverse=True)
@@ -330,9 +352,11 @@ def print_traversal_report(result: FullTraversalResult) -> None:
         r = result.diseases[name]
         tag = ""
         if r.confirmed:
-            tag = f"  ✓ CONFIRMED → {r.terminal_node}"
+            tag = f"  ✓ CONFIRMED  → {r.terminal_node}"
         elif r.excluded:
-            tag = f"  ✗ EXCLUDED  → {r.terminal_node}"
+            tag = f"  ✗ EXCLUDED   → {r.terminal_node}"
+        elif r.low_risk:
+            tag = f"  ↓ LOW_RISK   → {r.terminal_node}"
         elif r.pending_tests:
             tag = f"  ⏳ pending: {r.pending_tests}"
         else:

@@ -193,9 +193,9 @@ def make_ig_ordering(ig_rec: IGRecommender) -> OrderingFn:
 
 @dataclass
 class TrajectoryResult:
-    steps_used:    int
+    steps_used:    float   # float to support seed-averaging in _avg_results
     stopped_early: bool
-    correct:       bool
+    correct:       float   # float [0,1] to allow seed-averaging without majority-vote bias
     final_H:       float
 
 
@@ -216,18 +216,18 @@ def simulate_patient(
 
         if H < tau:
             return TrajectoryResult(
-                steps_used    = i + 1,
+                steps_used    = float(i + 1),
                 stopped_early = True,
-                correct       = dist.primary == ground_truth,
+                correct       = float(dist.primary == ground_truth),
                 final_H       = H,
             )
 
     dist = run_pipeline(features)
     H    = distribution_entropy(dist)
     return TrajectoryResult(
-        steps_used    = len(ordered_tests),
+        steps_used    = float(len(ordered_tests)),
         stopped_early = False,
-        correct       = dist.primary == ground_truth,
+        correct       = float(dist.primary == ground_truth),
         final_H       = H,
     )
 
@@ -387,10 +387,13 @@ def run_eval(
 def _avg_results(results: list[TrajectoryResult]) -> TrajectoryResult:
     if len(results) == 1:
         return results[0]
+    # Average correctness as a float so that multi-seed random baseline is not
+    # inflated by majority-vote; the outer np.mean across patients then gives
+    # the true expected accuracy.
     return TrajectoryResult(
-        steps_used    = int(round(np.mean([r.steps_used for r in results]))),
+        steps_used    = float(np.mean([r.steps_used for r in results])),
         stopped_early = bool(np.mean([r.stopped_early for r in results]) >= 0.5),
-        correct       = bool(np.mean([r.correct for r in results]) >= 0.5),
+        correct       = float(np.mean([r.correct for r in results])),
         final_H       = float(np.mean([r.final_H for r in results])),
     )
 

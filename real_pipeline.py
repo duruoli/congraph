@@ -25,6 +25,13 @@ import sys
 from pathlib import Path
 from collections import defaultdict
 
+DISEASES_LIST = ["appendicitis", "cholecystitis", "diverticulitis", "pancreatitis"]
+
+
+def _entropy(probs: dict[str, float]) -> float:
+    """Shannon entropy (bits) of a probability distribution."""
+    return -sum(p * math.log2(p) for p in probs.values() if p > 0)
+
 # ── locate results/ relative to this file ────────────────────────────────────
 RESULTS_DIR = Path(__file__).parent / "results"
 DISEASE_FILES: dict[str, Path] = {
@@ -125,6 +132,10 @@ def run_sweep(diseases: list[str]) -> None:
 
         rec_top1 = rec_hit3 = rec_total = 0
 
+        # first-step predicted primary for each patient (for bias matrix)
+        first_predicted: list[str] = []
+        first_entropy_sum = 0.0
+
         for pid, steps in patients.items():
             step_results = run_patient(steps)
             n_steps = len(steps)
@@ -135,6 +146,8 @@ def run_sweep(diseases: list[str]) -> None:
             first_total += 1
             if first_state.primary_diagnosis == disease:
                 first_correct += 1
+            first_predicted.append(first_state.primary_diagnosis)
+            first_entropy_sum += _entropy(first_state.distribution.probabilities)
 
             # Final step
             _, final_state = step_results[-1]
@@ -150,12 +163,19 @@ def run_sweep(diseases: list[str]) -> None:
             rec_hit3  += h3
             rec_total += tot
 
+        # first-step predicted distribution (how often each dx was predicted)
+        first_pred_counts: dict[str, int] = defaultdict(int)
+        for p in first_predicted:
+            first_pred_counts[p] += 1
+
         disease_stats[disease] = {
             "first_correct": first_correct, "first_total": first_total,
             "final_correct": final_correct, "final_total": final_total,
             "bucket_correct": dict(bucket_correct),
             "bucket_total":   dict(bucket_total),
             "rec_top1": rec_top1, "rec_hit3": rec_hit3, "rec_total": rec_total,
+            "first_pred_counts": dict(first_pred_counts),
+            "first_entropy_mean": first_entropy_sum / first_total if first_total else 0.0,
         }
         grand_total   += final_total
         grand_correct += final_correct
@@ -175,13 +195,22 @@ def run_sweep(diseases: list[str]) -> None:
         print(f"\n  {disease.upper()}  ({st['final_total']} patients)")
         print(f"  {'─'*60}")
         print(f"  First-step accuracy (HPI+PE+labs) : "
-              f"{st['first_correct']}/{st['first_total']}  ({f_acc:.1%})")
+              f"{st['first_correct']}/{st['first_total']}  ({f_acc:.1%})"
+              f"  entropy={st['first_entropy_mean']:.3f} bits")
         print(f"  Final-step accuracy (all evidence) : "
               f"{st['final_correct']}/{st['final_total']}  ({fin_acc:.1%})")
         print(f"  Next-test top-1 accuracy           : "
               f"{st['rec_top1']}/{st['rec_total']}  ({rec_t1:.1%})")
         print(f"  Next-test hit@3 accuracy           : "
               f"{st['rec_hit3']}/{st['rec_total']}  ({rec_h3:.1%})")
+
+        # First-step predicted distribution (bias check)
+        n = st["first_total"]
+        pred_parts = "  ".join(
+            f"{d[:4]}={st['first_pred_counts'].get(d, 0):3d}({st['first_pred_counts'].get(d, 0)/n:.0%})"
+            for d in DISEASES_LIST
+        )
+        print(f"  First-step predicted (bias check)  : {pred_parts}")
 
         # Show breakdown by patient complexity (sorted by step count)
         def _step_sort(k: str) -> int:

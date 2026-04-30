@@ -3,26 +3,38 @@
 Converts a FullTraversalResult into a probability distribution P(d | features)
 over the four diagnoses: appendicitis · cholecystitis · diverticulitis · pancreatitis.
 
-Scoring model (three additive components, summed then softmax'd):
+Scoring model (three additive components in log-space, summed then softmax'd):
 
-  rubric_score(d)   — derived purely from traversal evidence
-      • confirmed terminal  : +CONFIRMED_BONUS   (strong evidence)
-      • triage activated    : +TRIAGE_BONUS       (routing evidence)
-      • traversal depth     : +depth × DEPTH_SCALE, capped at DEPTH_CAP
-      • excluded terminal   : EXCLUDED_SCORE      (near-zero after softmax)
+  sub_rubric_score(d)  — evidence from traversal of disease sub-rubric
+      • excluded terminal (imaging-confirmed) : EXCLUDED_SCORE    (hard, -12)
+      • low_risk terminal (clinical only)     : LOW_RISK_SCORE    (soft,  -1.5)
+      • conditional edges triggered           : (triggers/E) × DEPTH_CAP
+        — normalised by total conditional edges in graph; "always" hops excluded
+      • confirmed terminal                    : +CONFIRMED_BONUS
 
-  mimic_score(d)    — stub returning 0.0 for all diseases
-      Will be replaced with MIMIC feature-frequency likelihood ratios
-      once the MIMIC retrieval pipeline (Step 5) is connected.
+  empirical_score(d)   — KNN log-probability from EmpiricalScorer
+      Returns 0.0 until an EmpiricalScorer is injected via set_empirical_scorer().
 
-  log_prior(d)      — uniform log-prior (log 0.25) for all diseases;
-      can be swapped for population base-rate priors later.
+  triage_log_prior(d)  — log P(disease | triage routing), replaces uniform prior
+      Triage activated k diseases with odds ratio TRIAGE_PRIOR_RATIO vs rest.
+      Degrades gracefully to uniform log(0.25) when k=0 or k=4.
+      Never reaches 0, keeping all diseases recoverable (preserves flip).
 
-P(d) = softmax( rubric_score + mimic_score + log_prior )
+P(d) = softmax( sub_rubric_score + empirical_score + triage_log_prior )
 
-Design: this module is intentionally decoupled from the traversal engine.
-The traversal produces TraversalResult objects; this module interprets them
-as probabilistic evidence.  They can evolve independently.
+Design rationale
+----------------
+  1. Graduated exclusion: low-risk terminals use LOW_RISK_SCORE=-1.5
+     (≈Alvarado≤3 PPV ~10%); imaging-confirmed exclusions use EXCLUDED_SCORE=-12.
+     All terminal_excluded nodes require imaging, so no soft-exclusion tier needed.
+  2. Conditional-trigger depth: only patient-data-driven edge firings count toward
+     depth, removing the structural advantage of graphs with many "always" hops.
+  2. Depth normalisation: (depth / graph_size) × DEPTH_CAP removes structural
+     bias from graphs of different sizes.
+  3. Triage as log-prior: triage evidence is modelled as a prior probability
+     distribution, keeping it conceptually separate from sub-rubric likelihood.
+     The prior odds ratio TRIAGE_PRIOR_RATIO is conservative (default 2) so
+     strong sub-rubric evidence can always flip the initial hypothesis.
 """
 
 from __future__ import annotations
@@ -35,17 +47,26 @@ if TYPE_CHECKING:
     from empirical_scorer import EmpiricalScorer
 
 from traversal_engine import FullTraversalResult, TraversalResult
+from rubric_graph import ALWAYS_EDGE_CONDITION, DISEASE_GRAPHS
 
 
 # ---------------------------------------------------------------------------
-# Scoring hyper-parameters  (adjust here; values tuned on toy patients)
+# Scoring hyper-parameters  (adjust here)
 # ---------------------------------------------------------------------------
 
-CONFIRMED_BONUS: float = 6.0   # Terminal confirmed reached
-TRIAGE_BONUS:    float = 2.0   # Disease activated by triage routing
-DEPTH_SCALE:     float = 0.5   # Score per rubric node traversed
-DEPTH_CAP:       float = 3.0   # Max depth contribution (prevents depth dominating)
-EXCLUDED_SCORE:  float = -12.0 # Effectively zeros out excluded diseases (exp≈0)
+CONFIRMED_BONUS:     float = 6.0   # terminal_confirmed reached
+DEPTH_CAP:           float = 3.0   # max contribution from normalised conditional triggers
+EXCLUDED_SCORE:      float = -12.0 # hard exclusion (imaging-confirmed; all terminal_excluded require imaging)
+LOW_RISK_SCORE:      float = -1.5  # low-risk terminal: clinical suspicion low but not excluded
+                                   # (Alvarado ≤3 PPV ~10%; TG18 A/B criteria not met at step-0)
+TRIAGE_PRIOR_RATIO:  float = 2.0   # prior odds ratio: activated vs non-activated
+
+# Conditional edge counts per disease graph for trigger normalisation.
+# Only edges whose condition is NOT ALWAYS_EDGE_CONDITION count.
+_GRAPH_COND_EDGE_COUNTS: dict[str, int] = {
+    name: sum(1 for e in graph.edges if e.condition is not ALWAYS_EDGE_CONDITION)
+    for name, graph in DISEASE_GRAPHS.items()
+}
 
 
 # ---------------------------------------------------------------------------
@@ -89,21 +110,63 @@ def empirical_score(disease: str, features: dict) -> float:
 
 
 # ---------------------------------------------------------------------------
-# Rubric scoring
+# Sub-rubric scoring (pure traversal evidence, no triage)
 # ---------------------------------------------------------------------------
 
-def _rubric_score(result: TraversalResult) -> float:
-    """Compute a scalar evidence score from one disease's traversal result."""
+def _sub_rubric_score(result: TraversalResult) -> float:
+    """
+    Compute a scalar evidence score from one disease's sub-rubric traversal.
+
+    Terminal handling:
+      terminal_low_risk  → LOW_RISK_SCORE (-1.5): clinical evidence suggests low
+                           probability but this is NOT a definitive exclusion.
+                           Disease remains in differential; triage can flip it.
+      terminal_excluded  → EXCLUDED_SCORE (-12): always imaging-confirmed
+                           (all terminal_excluded nodes require imaging).
+
+    Evidence depth uses conditional_triggers — the number of conditional edges
+    (condition is not ALWAYS_EDGE_CONDITION) whose conditions evaluated to True.
+    Structural "always" hops are excluded so graphs cannot score higher merely
+    by having more unconditional routing edges (e.g. diverticulitis's
+    "pain != LLQ → uncertain → CT" catch-all path no longer inflates its score).
+    """
+    if result.low_risk:
+        return LOW_RISK_SCORE
+
     if result.excluded:
         return EXCLUDED_SCORE
 
-    score = 0.0
-    if result.triage_activated:
-        score += TRIAGE_BONUS
-    score += min(result.depth * DEPTH_SCALE, DEPTH_CAP)
+    cond_total = _GRAPH_COND_EDGE_COUNTS.get(result.disease, 1)
+    norm_triggers = result.conditional_triggers / cond_total
+    score = norm_triggers * DEPTH_CAP
     if result.confirmed:
         score += CONFIRMED_BONUS
     return score
+
+
+# ---------------------------------------------------------------------------
+# Triage log-prior
+# ---------------------------------------------------------------------------
+
+def _triage_log_prior(disease: str, full_result: FullTraversalResult) -> float:
+    """
+    Return log P(disease | triage routing).
+
+    Triage activating k diseases shifts their prior to p_act = r × p_not,
+    where r = TRIAGE_PRIOR_RATIO and p_act + p_not normalise to 1.
+    Falls back to uniform log(0.25) when k=0 or k=4.
+    """
+    n_activated = sum(1 for r in full_result.diseases.values() if r.triage_activated)
+    if n_activated == 0 or n_activated == 4:
+        return math.log(0.25)
+
+    r = TRIAGE_PRIOR_RATIO
+    # p_not × (k×r + (4-k)) = 1  →  solve for p_not
+    p_not = 1.0 / (n_activated * r + (4 - n_activated))
+    p_act = r * p_not
+
+    activated = full_result.diseases[disease].triage_activated
+    return math.log(p_act if activated else p_not)
 
 
 # ---------------------------------------------------------------------------
@@ -175,14 +238,13 @@ def compute_distribution(
                   can be None until Step 5 is connected)
     """
     _features = features or {}
-    _LOG_PRIOR = math.log(0.25)   # uniform prior over 4 diseases
 
     raw_scores: dict[str, float] = {}
     for name, result in full_result.diseases.items():
         raw_scores[name] = (
-            _rubric_score(result)
+            _sub_rubric_score(result)
             + empirical_score(name, _features)
-            + _LOG_PRIOR
+            + _triage_log_prior(name, full_result)
         )
 
     probs = _softmax(raw_scores)
