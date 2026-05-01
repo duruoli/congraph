@@ -266,7 +266,8 @@ P2_STEPS: dict[str, dict] = {
 
     # US: gallstones confirmed (biliary etiology).
     # Atlanta criteria: ①+②+③ = 3 → CONFIRMED node satisfied.
-    # BISAP = 3 so far (pleural effusion not yet seen) → ATLANTA_HIGH (pending CT).
+    # BISAP = 3 → ATLANTA_HIGH → ORGAN_FAILURE_ASSESS.
+    # No organ-failure flags set yet → routes to MILD_AP (best estimate before CT).
     "step2": _build({
         **_P2_HPI,
         "lipase_ge_3xULN": True,
@@ -448,7 +449,7 @@ SCENARIOS: dict[str, dict[str, dict]] = {
 # Key design decisions recorded here:
 #   C1/C2 reach a terminal at step2 (US confirms TG18 C → severity grading)
 #   P1    reaches MILD_AP at step2 (US satisfies CONFIRMED required_tests)
-#   P2    cannot classify severity until CT at step3 (ATLANTA_HIGH needs CT)
+#   P2    step2 reaches MILD_AP (best estimate before CT; no organ-failure flags yet)
 #   D1/D2 cannot reach a terminal before CT (CT is the gold standard)
 
 EXPECTED_TERMINALS: dict[str, dict[str, str | None]] = {
@@ -473,7 +474,7 @@ EXPECTED_TERMINALS: dict[str, dict[str, str | None]] = {
     "P2_pancreatitis_severe": {
         "step0": None,
         "step1": None,          # CONFIRMED pending US
-        "step2": None,          # ATLANTA_HIGH pending CT (required_tests=["CT_Abdomen"])
+        "step2": "MILD_AP",     # ATLANTA_HIGH → ORGAN_FAILURE_ASSESS → no failure flags yet
         "step3": "SEVERE_AP",   # persistent organ failure → CT_CTSI → SEVERE_AP
     },
     "D1_diverticulitis_uncomplicated": {

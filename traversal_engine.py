@@ -128,15 +128,6 @@ class FullTraversalResult:
     triage: TraversalResult
     diseases: dict[str, TraversalResult]   # disease name → result
 
-    # Diseases ordered by evidence strength (primary hypothesis first)
-    ranked_diseases: list[str]
-
-    # Top-ranked disease (None only if no disease graphs ran)
-    primary_hypothesis: Optional[str]
-
-    # Next tests to order: primary-hypothesis pending tests first, then others
-    recommended_next_tests: list[str]
-
 
 # ---------------------------------------------------------------------------
 # Core single-graph traversal
@@ -261,11 +252,7 @@ def run_full_traversal(features: dict) -> FullTraversalResult:
     all sub-rubrics are traversed regardless so partial evidence is captured
     even for non-activated diseases.
 
-    Ranking:
-      confirmed terminal             +10 points
-      triage-activated disease        +5 points
-      conditional edges triggered     +1 per edge (patient-driven evidence only;
-                                       structural "always" hops are excluded)
+    Ranking and test ordering are left to DiagnosisDistribution / recommender.
     """
     # 1. Triage
     triage_result = traverse_graph(TRIAGE_GRAPH, features)
@@ -287,38 +274,9 @@ def run_full_traversal(features: dict) -> FullTraversalResult:
         result.triage_activated = triage_activated.get(name, False)
         disease_results[name] = result
 
-    # 4. Rank by evidence strength
-    #      confirmed terminal              +10 pts
-    #      triage-activated disease         +5 pts
-    #      conditional edges triggered      +1 per edge (patient-driven evidence)
-    def _score(name: str) -> int:
-        r = disease_results[name]
-        return (
-            (10 if r.confirmed else 0)
-            + (5 if r.triage_activated else 0)
-            + r.conditional_triggers
-        )
-
-    ranked_diseases = sorted(disease_results, key=_score, reverse=True)
-    primary_hypothesis = ranked_diseases[0] if ranked_diseases else None
-
-    # 5. Recommended next tests (primary hypothesis first, then others, deduped)
-    recommended: list[str] = []
-    if primary_hypothesis:
-        for t in disease_results[primary_hypothesis].pending_tests:
-            if t not in recommended:
-                recommended.append(t)
-    for name in ranked_diseases:
-        for t in disease_results[name].pending_tests:
-            if t not in recommended:
-                recommended.append(t)
-
     return FullTraversalResult(
         triage=triage_result,
         diseases=disease_results,
-        ranked_diseases=ranked_diseases,
-        primary_hypothesis=primary_hypothesis,
-        recommended_next_tests=recommended,
     )
 
 
@@ -347,8 +305,11 @@ def print_traversal_report(result: FullTraversalResult) -> None:
     print(f"  TRIAGE   depth={tr.depth}  activated={activated or '(none)'}")
     print(f"{'═'*60}")
 
-    # ── disease sub-rubrics ────────────────────────────────────────────────
-    for name in result.ranked_diseases:
+    # ── disease sub-rubrics (sorted by conditional_triggers desc) ──────────
+    sorted_diseases = sorted(
+        result.diseases, key=lambda n: result.diseases[n].conditional_triggers, reverse=True
+    )
+    for name in sorted_diseases:
         r = result.diseases[name]
         tag = ""
         if r.confirmed:
@@ -362,9 +323,8 @@ def print_traversal_report(result: FullTraversalResult) -> None:
         else:
             tag = "  ✗ blocked"
 
-        primary_mark = " ◀ PRIMARY" if name == result.primary_hypothesis else ""
         activated_mark = " [TRIAGE✓]" if r.triage_activated else ""
-        print(f"\n  {name.upper():16s} depth={r.depth}{activated_mark}{primary_mark}")
+        print(f"\n  {name.upper():16s} depth={r.depth}{activated_mark}")
         print(f"  {'─'*56}")
 
         for nid, ns in r.node_statuses.items():
@@ -377,8 +337,4 @@ def print_traversal_report(result: FullTraversalResult) -> None:
             print(f"    {icon} {nid}{missing_str}")
         print(f"  └─{tag}")
 
-    # ── recommendation ─────────────────────────────────────────────────────
-    print(f"\n{'─'*60}")
-    print(f"  Recommended next tests: {result.recommended_next_tests or '(none — terminal reached)'}")
-    print(f"  Primary hypothesis    : {result.primary_hypothesis}")
     print(f"{'═'*60}\n")

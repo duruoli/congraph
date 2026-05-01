@@ -275,15 +275,66 @@ def _sign_positive(
     Within each sentence negation is checked in both directions:
       • PRE_WIN chars before the match  → "no Murphy's sign"
       • POST_WIN chars after the match  → "Murphy's sign [is] negative"
+
+    Two-tier pre-window negation
+    ----------------------------
+    MIMIC PE notes use comma-separated multi-item clauses, e.g.:
+        "CV: RRR, no m/g/r  Lungs: CTAB, no w/r/r  Abd: soft, tender RUQ"
+
+    We distinguish two negation classes:
+
+    1. List-spanning negations ("denies / denied"):
+       These can govern an enumerated list — "denies nausea, vomiting, fever"
+       — so the check window extends back to the last section boundary
+       (colon / semicolon), but does NOT cross it.
+
+    2. Clause-local negations ("no / not / without / negative / absent"):
+       These negate only the immediately following phrase, so the window is
+       clipped at the nearest comma / semicolon / colon.  This prevents
+       "no w/r/r, tender RUQ" from mis-negating "RUQ" due to "no w/r/r".
     """
-    # Split on sentence boundaries; keep each clause isolated
     sentences = re.split(r"(?<=[.!?])\s+", text)
     for sent in sentences:
         for m in re.finditer(pattern, sent, re.IGNORECASE):
-            pre  = sent[max(0, m.start() - pre_win): m.start()]
-            post = sent[m.end(): min(len(sent), m.end() + post_win)]
-            if not _NEG_PRE.search(pre) and not _NEG_POST.search(post):
-                return True
+            # Full sentence prefix up to the match (used for list-spanning checks)
+            full_pre = sent[: m.start()]
+            raw_pre  = sent[max(0, m.start() - pre_win): m.start()]
+            post     = sent[m.end(): min(len(sent), m.end() + post_win)]
+
+            # ── Tier 1: list-spanning "denies / denied" ──────────────────────
+            # "denies nausea, vomiting, fever" — "denies" can be far before the
+            # matched term so we scan the *full* sentence prefix, but clip at
+            # the last colon/semicolon (section boundary) so negation does not
+            # bleed across PE sections ("Lungs: no w/r/r; Abd: tender RUQ").
+            major_bdry   = max(full_pre.rfind(";"), full_pre.rfind(":"))
+            span_pre     = full_pre[major_bdry + 1:] if major_bdry >= 0 else full_pre
+            if re.search(r"\bdenies\b|\bdenied\b", span_pre, re.IGNORECASE):
+                continue  # negated by list-spanning denial
+
+            # Also catch parenthetical negative notation "(-) fever" common in
+            # MIMIC ROS sections.
+            if re.search(r"\(\s*[-–]\s*\)", raw_pre):
+                continue
+
+            # ── Tier 2: clause-local negations ───────────────────────────────
+            # Clip at the nearest comma/semicolon/colon (within pre_win window)
+            # to avoid bleed from prior list items:
+            #   "no w/r/r, no rebound, tender RUQ" → clip at last comma
+            #   → immediate clause is "tender " → no negation → correct.
+            all_bdry = max(raw_pre.rfind(","), raw_pre.rfind(";"), raw_pre.rfind(":"))
+            clipped  = raw_pre[all_bdry + 1:] if all_bdry >= 0 else raw_pre
+            if re.search(
+                r"\bno\b|\bnot\b|\bwithout\b|\bnegative\b|\babsent\b|\bfails?\s+to\b",
+                clipped,
+                re.IGNORECASE,
+            ):
+                continue  # negated in immediate clause
+
+            # ── Post-window: "murphy's sign [is] negative" ───────────────────
+            if _NEG_POST.search(post):
+                continue
+
+            return True
     return False
 
 
@@ -405,6 +456,27 @@ def extract_hpi_features(hpi: str) -> dict:
         plain keyword match (with negation guard) is sufficient.
     """
     t = hpi.lower()
+
+    # Quantified HPI temperature ≥ 38 °C / 100.4 °F — more specific than bare
+    # "fever" keyword; extracted separately to support downstream feature logic.
+    def _hpi_has_quantified_fever(text: str) -> bool:
+        # "Tmax / Tm / temp 38.5", "fever to 101.2", "temperature of 38"
+        for m in re.finditer(
+            r"(?:tmax|tm|temp(?:erature)?)[:\s]+(?:of\s+)?(\d{2,3}(?:\.\d{1,2})?)",
+            text, re.IGNORECASE,
+        ):
+            t_raw = float(m.group(1))
+            t_c   = (t_raw - 32) * 5 / 9 if t_raw > 50 else t_raw
+            if t_c >= 38.0:
+                return True
+        # "fever to 100.4 / 101 / ..."
+        for m in re.finditer(r"fever\s+(?:to|of)\s+(1\d{2}(?:\.\d)?)", text, re.IGNORECASE):
+            t_raw = float(m.group(1))
+            t_c   = (t_raw - 32) * 5 / 9 if t_raw > 50 else t_raw
+            if t_c >= 38.0:
+                return True
+        return False
+
     return {
         "pain_location": _extract_pain_location(hpi),
 
@@ -484,6 +556,18 @@ def extract_hpi_features(hpi: str) -> dict:
         "prior_diverticular_disease": _sign_positive(
             t,
             r"\bdiverticulosis\b|\bdiverticulitis\b|\bdiverticular\s+disease\b",
+        ),
+
+        # Fever reported in HPI narrative (TG18 Group B supplement).
+        # Many cholecystitis patients arrive already afebrile on admission (PE
+        # temp normal) but describe fever at home or en route.  This flag
+        # captures that history even when the admission vital is < 38 °C.
+        # Two tiers:
+        #   1. Keyword: "fever" / "febrile" present and not negated.
+        #   2. Quantified: Tmax / temp ≥ 38 °C explicitly stated in HPI.
+        "fever_reported_in_hpi": (
+            _sign_positive(t, r"\bfever(?:s|ed|ish)?\b|\bfebrile\b")
+            or _hpi_has_quantified_fever(t)
         ),
     }
 

@@ -39,6 +39,9 @@ from __future__ import annotations
 # alcohol_history            饮酒史（胰腺炎病因）
 # gallstone_history          胆石症既往史（胰腺炎/胆囊炎病因）
 # prior_diverticular_disease 既往憩室病史（憩室炎诊断支持）
+# fever_reported_in_hpi      HPI叙述中报告发热（TG18 B组补充）
+#                            许多胆囊炎患者入院时体温已正常，但HPI描述曾有发热；
+#                            keyword（fever/febrile）+ 量化体温≥38°C均可触发
 
 # ── Group 3: Physical examination  体格检查 ──────────────────────────────────
 # murphys_sign               Murphy征阳性（TG18 A组 / 主分流胆囊炎路由）
@@ -134,6 +137,7 @@ def default_features() -> dict:
         "alcohol_history": False,
         "gallstone_history": False,
         "prior_diverticular_disease": False,
+        "fever_reported_in_hpi": False,
 
         # ── Physical examination ──
         "murphys_sign": False,

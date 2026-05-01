@@ -199,9 +199,16 @@ def _tg18_group_b(f: dict) -> bool:
     """
     TG18 Group B (systemic inflammation signs): ≥ 1 criterion present.
     TG18 B组全身炎症体征（满足≥1项）
+
+    fever_reported_in_hpi is included as a supplement to fever_temp_ge_38.
+    MIMIC-IV admission temperatures are often normal (already defervesced) even
+    when the patient clearly had fever at home.  HPI narrative fever is a
+    clinically valid systemic sign and is commonly recorded when the PE vital
+    is sub-threshold.
     """
     return (
         f.get("fever_temp_ge_38", False)
+        or f.get("fever_reported_in_hpi", False)
         or f.get("CRP_elevated", False)
         or f.get("WBC_gt_10k", False)
     )
@@ -490,11 +497,22 @@ def _build_appendicitis_graph() -> RubricGraph:
                 "中风险4–6分首选超声（儿童/孕妇/年轻女性优先）"
             ),
         ),
+        "US_FINDINGS": RubricNode(
+            "US_FINDINGS",
+            "US Findings — Appendicitis Confirmed by Ultrasound",
+            "decision",
+            required_tests=[],  # US already done; arrived via US positive edge
+            description=(
+                "Appendicitis confirmed on US; assess for complications visible on US\n"
+                "CT not required when US is diagnostic (WSES 2020)\n"
+                "超声确认阑尾炎，评估超声下并发症征象；超声确诊时无需CT（WSES 2020）"
+            ),
+        ),
         "CT_ABD_MID": RubricNode(
             "CT_ABD_MID",
             "CT Abdomen/Pelvis with IV Contrast (after non-diagnostic US)",
             "assessment",
-            required_tests=["CT_Abdomen"],
+            required_tests=[],   # CT_FINDINGS is the sole CT gate; this node is semantic only
             description=(
                 "After non-diagnostic US in intermediate-risk patients\n"
                 "Sensitivity >95% for appendicitis / 超声不确定后进行CT（敏感性>95%）"
@@ -504,7 +522,7 @@ def _build_appendicitis_graph() -> RubricGraph:
             "CT_ABD_HIGH",
             "CT Abdomen/Pelvis or Direct Surgical Consult (High Risk)",
             "assessment",
-            required_tests=["CT_Abdomen"],
+            required_tests=[],   # CT_FINDINGS is the sole CT gate; this node is semantic only
             description=(
                 "High risk (Alvarado 7–10)\n"
                 "Males < 40y may proceed directly to surgical consult without CT\n"
@@ -529,9 +547,9 @@ def _build_appendicitis_graph() -> RubricGraph:
             "Uncomplicated Appendicitis",
             "terminal_confirmed",
             description=(
-                "CT positive; no perforation / abscess / phlegmon\n"
+                "Appendicitis confirmed (US or CT); no perforation / abscess / phlegmon\n"
                 "→ Surgical consult: laparoscopic appendectomy vs antibiotics\n"
-                "非复杂性阑尾炎 — 手术 vs 抗生素治疗"
+                "非复杂性阑尾炎（超声或CT确认，无穿孔/脓肿/蜂窝织炎）— 手术 vs 抗生素治疗"
             ),
         ),
         "COMPLICATED": RubricNode(
@@ -539,9 +557,9 @@ def _build_appendicitis_graph() -> RubricGraph:
             "Complicated Appendicitis",
             "terminal_confirmed",
             description=(
-                "CT positive with perforation / abscess / phlegmon\n"
+                "Appendicitis confirmed (US or CT) with perforation / abscess / phlegmon\n"
                 "→ Surgical consult required\n"
-                "复杂性阑尾炎（穿孔/脓肿/蜂窝织炎）— 外科会诊"
+                "复杂性阑尾炎（超声或CT见穿孔/脓肿/蜂窝织炎）— 外科会诊"
             ),
         ),
     }
@@ -564,13 +582,30 @@ def _build_appendicitis_graph() -> RubricGraph:
             condition=lambda f: _done(f, "Lab_Panel") and 4 <= alvarado_score(f) <= 6,
         ),
 
-        # US positive: appendix visualized and inflamed  超声阳性
+        # US positive: appendix visualized and inflamed → US_FINDINGS (no CT needed)
+        # 超声阳性 → 超声结果判断（WSES 2020：超声确诊时无需CT）
         RubricEdge(
-            "US_ABDOMEN", "CT_FINDINGS",
+            "US_ABDOMEN", "US_FINDINGS",
             "US positive — appendix visualized, inflamed",
             condition=lambda f: (
                 _done(f, "Ultrasound_Abdomen") and f.get("US_appendix_inflamed", False)
             ),
+        ),
+
+        # US_FINDINGS → UNCOMPLICATED: no perforation/abscess visible on US
+        # 超声未见穿孔/脓肿 → 非复杂性阑尾炎，直接手术会诊
+        RubricEdge(
+            "US_FINDINGS", "UNCOMPLICATED",
+            "US positive — no perforation/abscess on US",
+            condition=lambda f: not f.get("US_perforation_abscess", False),
+        ),
+
+        # US_FINDINGS → COMPLICATED: perforation/abscess visible on US
+        # 超声见穿孔/脓肿 → 复杂性阑尾炎
+        RubricEdge(
+            "US_FINDINGS", "COMPLICATED",
+            "US positive — perforation/abscess on US",
+            condition=lambda f: f.get("US_perforation_abscess", False),
         ),
 
         # US negative / non-diagnostic → CT  超声阴性/不确定 → CT
@@ -657,11 +692,13 @@ def _build_cholecystitis_graph() -> RubricGraph:
             "assessment",
             required_tests=["Lab_Panel"],
             description=(
-                "Labs + vitals:\n"
-                "  ① Fever > 38 °C\n"
-                "  ② CRP elevated\n"
-                "  ③ WBC elevated (leukocytosis)\n"
-                "全身炎症体征（体格检查 + CBC + CRP）"
+                "Labs + vitals + HPI narrative:\n"
+                "  ① Fever > 38 °C (admission PE vitals)\n"
+                "  ② Fever reported in HPI (home/pre-admission fever history)\n"
+                "  ③ CRP elevated\n"
+                "  ④ WBC elevated (leukocytosis)\n"
+                "全身炎症体征（体格检查 + CBC + CRP + HPI发热史）\n"
+                "注：MIMIC入院体温常已退热，HPI发热叙述作为补充B组依据"
             ),
         ),
         "AB_DECISION": RubricNode(
@@ -679,9 +716,9 @@ def _build_cholecystitis_graph() -> RubricGraph:
             "Cholecystitis Not Suspected (Clinical Only)",
             "terminal_low_risk",
             description=(
-                "TG18 Group A or B not met with lab/PE data only — low clinical suspicion.\n"
-                "NOT imaging-confirmed exclusion; cholecystitis remains recoverable.\n"
-                "仅凭lab/PE未满足A+B：低度怀疑，非影像排除"
+                "Neither TG18 Group A nor Group B met — no local or systemic signs of cholecystitis.\n"
+                "NOT imaging-confirmed exclusion; very low clinical suspicion.\n"
+                "A组和B组均未满足：无局部或全身炎症体征，极低怀疑度，非影像排除"
             ),
         ),
         "NOT_SUSPECTED_IMAGING": RubricNode(
@@ -788,20 +825,32 @@ def _build_cholecystitis_graph() -> RubricGraph:
             condition=lambda f: _done(f, "Lab_Panel"),
         ),
 
-        # AB_DECISION → Imaging: A ≥1 AND B ≥1 → Suspected diagnosis
-        # 疑似诊断成立 → 进入影像学检查
+        # AB_DECISION → Imaging: A ≥1 AND B ≥1 → Strong suspicion (triggers 2 conditional edges
+        # for A+B patients, giving them higher sub-rubric score vs A-or-B-only patients)
+        # 疑似诊断成立（A+B均满足）→ 触发额外条件边，贡献更高证据强度分数
         RubricEdge(
             "AB_DECISION", "IMAGING_US",
-            "A ≥1 AND B ≥1 → Suspected — proceed to imaging",
+            "A ≥1 AND B ≥1 → Strong suspicion — proceed to imaging",
             condition=lambda f: _tg18_suspected(f),
         ),
 
-        # AB_DECISION → Not suspected (clinical only — no imaging)
-        # 疑似诊断不成立（仅凭lab/PE，低风险而非确认排除）
+        # AB_DECISION → Imaging: A ≥1 OR B ≥1 → Weak suspicion — still proceed to imaging.
+        # Patients satisfying only one group (A-only or B-only) trigger this edge alone (1 trigger).
+        # Patients satisfying both (A+B) also trigger this edge in addition to the A+B edge above
+        # (2 triggers total), naturally producing a higher conditional_triggers count and score.
+        # 满足A或B（任一）即可进入影像学，弱怀疑度；A+B患者同时触发上方边，自然多得1次计数
+        RubricEdge(
+            "AB_DECISION", "IMAGING_US",
+            "A ≥1 OR B ≥1 → Weak suspicion — proceed to imaging",
+            condition=lambda f: _tg18_group_a(f) or _tg18_group_b(f),
+        ),
+
+        # AB_DECISION → Not suspected: neither A nor B met (no local or systemic signs at all)
+        # 既无局部体征也无全身炎症体征 → 极低怀疑度，不进入影像
         RubricEdge(
             "AB_DECISION", "NOT_SUSPECTED_CLINICAL",
-            "A or B criteria not met → Not suspected (clinical only)",
-            condition=lambda f: not _tg18_suspected(f),
+            "Neither A nor B criteria met → Not suspected (clinical only)",
+            condition=lambda f: not _tg18_group_a(f) and not _tg18_group_b(f),
         ),
 
         # Ultrasound positive → confirmed (A + B + C) → severity grading
@@ -1206,12 +1255,13 @@ def _build_pancreatitis_graph() -> RubricGraph:
             "ATLANTA_HIGH",
             "Revised Atlanta Assessment — High Risk (BISAP ≥3)",
             "assessment",
-            required_tests=["CT_Abdomen"],
+            required_tests=[],
             description=(
                 "Predicted mortality > 15%\n"
                 "ICU monitoring\n"
-                "Contrast-enhanced CT at 48–72h for necrosis assessment\n"
-                "高风险（死亡率>15%），ICU监护，48-72h后CT评估坏死"
+                "Contrast-enhanced CT recommended at 48–72h for necrosis assessment\n"
+                "(CT is a management recommendation, not a prerequisite for organ-failure assessment)\n"
+                "高风险（死亡率>15%），ICU监护；CT推荐在48-72h后评估坏死，但不阻断器官衰竭评估"
             ),
         ),
         "ORGAN_FAILURE_ASSESS": RubricNode(
