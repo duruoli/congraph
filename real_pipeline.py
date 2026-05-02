@@ -265,6 +265,90 @@ def run_stats() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Flip analysis — wrong initial dx → correct final dx
+# ---------------------------------------------------------------------------
+
+def run_flips(diseases: list[str]) -> None:
+    """
+    Find all patients whose first-step primary diagnosis was WRONG but whose
+    final-step primary diagnosis is CORRECT (a 'flip').
+
+    For each flip case, print the full step-by-step diagnosis trajectory so we
+    can see how the distribution evolved as more evidence arrived.
+    """
+    DISEASES_SHORT = {d: d[:4].upper() for d in DISEASES_LIST}
+
+    print(f"\n{'═'*68}")
+    print(f"  FLIP ANALYSIS  — initial wrong Dx → final correct Dx")
+    print(f"{'═'*68}")
+
+    total_patients = 0
+    total_flips = 0
+
+    for disease in diseases:
+        patients = load_disease(disease)
+        flip_cases: list[tuple[str, list, list]] = []
+
+        for pid, steps in patients.items():
+            total_patients += 1
+            if len(steps) < 2:
+                continue  # single-step patients cannot flip
+            step_results = run_patient(steps)
+
+            _, first_state = step_results[0]
+            _, final_state = step_results[-1]
+
+            first_wrong   = first_state.primary_diagnosis != disease
+            final_correct = final_state.primary_diagnosis == disease
+
+            if first_wrong and final_correct:
+                flip_cases.append((pid, steps, step_results))
+
+        total_flips += len(flip_cases)
+
+        print(f"\n  {disease.upper()}  — {len(flip_cases)} flip(s) "
+              f"out of {len(patients)} patients")
+        print(f"  {'─'*64}")
+
+        for pid, steps, step_results in flip_cases:
+            print(f"\n  Patient {pid}  ({len(steps)} steps)")
+            header = f"  {'Step':>4}  {'Label':<32}  {'Primary Dx':<16}  Distribution"
+            print(header)
+            print(f"  {'─'*len(header.rstrip())}")
+
+            for i, (step_meta, state) in enumerate(step_results):
+                label = step_meta["step_label"][:30]
+                primary = state.primary_diagnosis
+                is_first = (i == 0)
+                is_last  = (i == len(step_results) - 1)
+
+                # Build a compact probability bar for the four diseases
+                probs = state.distribution.probabilities
+                bar_parts = []
+                for d in DISEASES_LIST:
+                    p = probs.get(d, 0.0)
+                    marker = "▶" if d == disease else " "
+                    bar_parts.append(f"{marker}{DISEASES_SHORT[d]}={p:4.1%}")
+                dist_str = "  ".join(bar_parts)
+
+                flip_tag = ""
+                if is_first and primary != disease:
+                    flip_tag = "  ← WRONG"
+                elif is_last and primary == disease:
+                    flip_tag = "  ← CORRECT ✓"
+                elif primary == disease:
+                    flip_tag = "  ← correct"
+
+                print(f"  {step_meta['step_index']:>4}  {label:<32}  "
+                      f"{primary:<16}  {dist_str}{flip_tag}")
+
+    print(f"\n{'─'*68}")
+    print(f"  Total flip cases : {total_flips} / {total_patients} patients")
+    print(f"  (initial wrong → final correct)")
+    print(f"{'═'*68}\n")
+
+
+# ---------------------------------------------------------------------------
 # Demo / narrative mode
 # ---------------------------------------------------------------------------
 
@@ -471,6 +555,8 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--disease",    default=None,
                    choices=list(DISEASE_FILES), help="Limit sweep to one disease.")
     p.add_argument("--stats",      action="store_true", help="Dataset statistics only.")
+    p.add_argument("--flips",      action="store_true",
+                   help="Show patients whose initial Dx was wrong but final Dx is correct.")
     p.add_argument("--demo",       nargs="?", const="__unset__", metavar="DISEASE",
                    help="Demo mode. Optionally specify disease.")
     p.add_argument("--patient",    default=None, metavar="PATIENT_ID",
@@ -496,6 +582,11 @@ def main() -> None:
 
     if args.stats:
         run_stats()
+        return
+
+    if args.flips:
+        diseases = [args.disease] if args.disease else list(DISEASE_FILES)
+        run_flips(diseases)
         return
 
     if args.demo is not None:

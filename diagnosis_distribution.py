@@ -61,6 +61,15 @@ LOW_RISK_SCORE:      float = -1.5  # low-risk terminal: clinical suspicion low b
                                    # (Alvarado ≤3 PPV ~10%; TG18 A/B criteria not met at step-0)
 TRIAGE_PRIOR_RATIO:  float = 2.0   # prior odds ratio: activated vs non-activated
 
+# Component weights — scale each term before summing.
+# sub_rubric_score spans ~[-12, 9] (range ≈ 21), while empirical_score and
+# triage_log_prior are proper log-probabilities with range ≈ [-4, 0] and
+# ≈ [-2, -0.7] respectively.  W_RUBRIC ≈ 0.2 brings the rubric span in line
+# with the empirical component so no single term dominates the final softmax.
+W_RUBRIC:    float = 0.2   # weight for _sub_rubric_score
+W_EMPIRICAL: float = 1.0   # weight for empirical_score (KNN log-prob)
+W_TRIAGE:    float = 1.0   # weight for triage log-prior
+
 # Conditional edge counts per disease graph for trigger normalisation.
 # Only edges whose condition is NOT ALWAYS_EDGE_CONDITION count.
 _GRAPH_COND_EDGE_COUNTS: dict[str, int] = {
@@ -242,9 +251,9 @@ def compute_distribution(
     raw_scores: dict[str, float] = {}
     for name, result in full_result.diseases.items():
         raw_scores[name] = (
-            _sub_rubric_score(result)
-            + empirical_score(name, _features)
-            + _triage_log_prior(name, full_result)
+            W_RUBRIC    * _sub_rubric_score(result)
+            + W_EMPIRICAL * empirical_score(name, _features)
+            + W_TRIAGE    * _triage_log_prior(name, full_result)
         )
 
     probs = _softmax(raw_scores)
