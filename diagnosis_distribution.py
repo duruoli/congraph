@@ -66,7 +66,7 @@ TRIAGE_PRIOR_RATIO:  float = 2.0   # prior odds ratio: activated vs non-activate
 # triage_log_prior are proper log-probabilities with range ≈ [-4, 0] and
 # ≈ [-2, -0.7] respectively.  W_RUBRIC ≈ 0.2 brings the rubric span in line
 # with the empirical component so no single term dominates the final softmax.
-W_RUBRIC:    float = 0.2   # weight for _sub_rubric_score
+W_RUBRIC:    float = 1.0   # weight for _sub_rubric_score
 W_EMPIRICAL: float = 1.0   # weight for empirical_score (KNN log-prob)
 W_TRIAGE:    float = 1.0   # weight for triage log-prior
 
