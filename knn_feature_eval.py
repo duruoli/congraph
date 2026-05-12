@@ -60,6 +60,12 @@ from entropy_reducer import EntropyReducer, distribution_entropy, DISEASES
 from ig_recommender import IGRecommender
 from feature_simulator import FeatureSimulator
 import diagnosis_distribution as _dd
+from evaluation_metrics import (
+    PatientStopResult,
+    StrategyStats,
+    aggregate_stats,
+    compute_patient_metrics,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -374,14 +380,6 @@ def print_calibration_report(records: list[FeatureCalibrationRecord]) -> None:
 # MODE 2: MULTI-STEP SPEED-ACCURACY EVALUATION
 # ============================================================================
 
-@dataclass
-class PatientStopResult:
-    """Multi-step simulation stopping result for one patient / strategy / τ."""
-    stop_tests:   int    # tests done at the stopping step
-    correct:      bool   # primary dx at stop == ground truth
-    ever_stopped: bool   # False if no step reached H < τ (used full trajectory)
-
-
 def _simulate_multistep(
     initial_features:    dict,
     actual_test_sequence: list[str],   # actual test_keys for the patient (may be empty)
@@ -485,11 +483,11 @@ def _simulate_multistep(
         else:
             ever_stopped = True
 
-        pred = _primary_dx(stop_feat)
-        results[tau] = PatientStopResult(
-            stop_tests   = len(stop_feat.get("tests_done", [])),
-            correct      = pred == ground_truth,
-            ever_stopped = ever_stopped,
+        results[tau] = compute_patient_metrics(
+            stop_features     = stop_feat,
+            predicted_disease = _primary_dx(stop_feat),
+            gt_disease        = ground_truth,
+            ever_stopped      = ever_stopped,
         )
 
     return results
@@ -539,11 +537,11 @@ def evaluate_patient_multistep(
             ever_stopped = False
         else:
             ever_stopped = True
-        pred = _primary_dx(stop_feat)
-        results["actual_real"][tau] = PatientStopResult(
-            stop_tests   = len(stop_feat.get("tests_done", [])),
-            correct      = pred == ground_truth,
-            ever_stopped = ever_stopped,
+        results["actual_real"][tau] = compute_patient_metrics(
+            stop_features     = stop_feat,
+            predicted_disease = _primary_dx(stop_feat),
+            gt_disease        = ground_truth,
+            ever_stopped      = ever_stopped,
         )
 
     # ── Simulated strategies ───────────────────────────────────────────────────
@@ -582,6 +580,8 @@ def evaluate_patient_multistep(
             stop_tests   = int(round(float(np.mean([r.stop_tests   for r in psrs])))),
             correct      = float(np.mean([r.correct      for r in psrs])) >= 0.5,
             ever_stopped = float(np.mean([r.ever_stopped for r in psrs])) >= 0.5,
+            cost         = float(np.mean([r.cost         for r in psrs])),
+            burden       = float(np.mean([r.burden       for r in psrs])),
         )
 
     return results
@@ -590,16 +590,6 @@ def evaluate_patient_multistep(
 # ---------------------------------------------------------------------------
 # Aggregated stats
 # ---------------------------------------------------------------------------
-
-@dataclass
-class StrategyStats:
-    tau:             float
-    strategy:        str
-    n_patients:      int
-    mean_stop_tests: float
-    accuracy:        float
-    pct_early_stop:  float
-
 
 @dataclass
 class MultiStepEvalResults:
@@ -652,14 +642,7 @@ def run_multistep_eval(
                 continue
             if strategy == "actual_real":
                 n_patients = len(r_list)
-            stats[strategy].append(StrategyStats(
-                tau             = tau,
-                strategy        = strategy,
-                n_patients      = len(r_list),
-                mean_stop_tests = float(np.mean([r.stop_tests for r in r_list])),
-                accuracy        = float(np.mean([r.correct    for r in r_list])),
-                pct_early_stop  = float(np.mean([r.ever_stopped for r in r_list])),
-            ))
+            stats[strategy].append(aggregate_stats(r_list, tau=tau, strategy=strategy))
 
     return MultiStepEvalResults(
         tau_values = tau_values,
@@ -785,6 +768,8 @@ def save_multistep_csv(results_by_alpha: dict[float, MultiStepEvalResults], path
                     "n_patients":      st.n_patients,
                     "accuracy":        st.accuracy,
                     "mean_stop_tests": st.mean_stop_tests,
+                    "mean_cost":       st.mean_cost,
+                    "mean_burden":     st.mean_burden,
                     "pct_early_stop":  st.pct_early_stop,
                 })
     if not rows:

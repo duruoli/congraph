@@ -52,6 +52,12 @@ from ig_recommender import IGRecommender
 import diagnosis_distribution as _dd
 from empirical_scorer import EmpiricalScorer
 from test_burden_cost import TEST_COST, TEST_BURDEN
+from evaluation_metrics import (
+    PatientStopResult,
+    StrategyStats,
+    aggregate_stats,
+    compute_patient_metrics,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -138,18 +144,8 @@ def _ig_top1(
 
 
 # ---------------------------------------------------------------------------
-# Result dataclasses — extended with cost and burden
+# Result dataclasses
 # ---------------------------------------------------------------------------
-
-@dataclass
-class PatientStopResult:
-    """KNN-estimated stopping result for one patient / strategy / τ."""
-    stop_tests:     int    # tests done at the stopping step
-    correct:        bool   # estimated primary diagnosis == ground truth
-    ever_stopped:   bool   # False if no step met the τ condition (used full traj)
-    cost:           float  # sum of TEST_COST[t] over tests_done at stopping step
-    burden:         float  # sum of TEST_BURDEN[t] over tests_done at stopping step
-
 
 @dataclass
 class CalibrationRecord:
@@ -163,17 +159,6 @@ class CalibrationRecord:
     knn_top1:              str
     real_top1:             str
     l1_dist:               float
-
-
-# ---------------------------------------------------------------------------
-# Cost / burden accumulation helper
-# ---------------------------------------------------------------------------
-
-def _compute_cost_burden(tests_done: list[str]) -> tuple[float, float]:
-    """Return (cumulative_cost, cumulative_burden) for a list of completed tests."""
-    cost   = sum(TEST_COST.get(t,   0.0) for t in tests_done)
-    burden = sum(TEST_BURDEN.get(t, 0.0) for t in tests_done)
-    return cost, burden
 
 
 # ---------------------------------------------------------------------------
@@ -284,24 +269,20 @@ def evaluate_patient(
                 break
 
         if stop_k is None:
-            _tests_done = step_ctx[-1]["features"].get("tests_done", [])
-            _sd         = final_dist
-            _ev         = False
+            _stop_feat = step_ctx[-1]["features"]
+            _sd        = final_dist
+            _ev        = False
         else:
-            _tests_done = step_ctx[stop_k]["features"].get("tests_done", [])
-            _sd         = stop_diag
-            _ev         = True
+            _stop_feat = step_ctx[stop_k]["features"]
+            _sd        = stop_diag
+            _ev        = True
 
-        _st             = len(_tests_done)
-        _pred           = max(_sd, key=lambda d: _sd[d])  # type: ignore[arg-type]
-        _cost, _burden  = _compute_cost_burden(_tests_done)
-
-        return PatientStopResult(
-            stop_tests   = _st,
-            correct      = _pred == ground_truth,
-            ever_stopped = _ev,
-            cost         = _cost,
-            burden       = _burden,
+        _pred = max(_sd, key=lambda d: _sd[d])  # type: ignore[arg-type]
+        return compute_patient_metrics(
+            stop_features     = _stop_feat,
+            predicted_disease = _pred,
+            gt_disease        = ground_truth,
+            ever_stopped      = _ev,
         )
 
     # Build per-step key sequences for deterministic strategies
@@ -488,26 +469,14 @@ def print_calibration_report(records: list[CalibrationRecord]) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Aggregated statistics — extended with mean_cost and mean_burden
+# Aggregated statistics wrapper
 # ---------------------------------------------------------------------------
-
-@dataclass
-class KNNStrategyStats:
-    tau:             float
-    strategy:        str
-    n_patients:      int
-    mean_stop_tests: float
-    accuracy:        float
-    pct_early_stop:  float
-    mean_cost:       float   # mean cumulative TEST_COST at stopping step
-    mean_burden:     float   # mean cumulative TEST_BURDEN at stopping step
-
 
 @dataclass
 class KNNEvalResults:
     tau_values: list[float]
     alpha:      float
-    stats:      dict[str, list[KNNStrategyStats]]
+    stats:      dict[str, list[StrategyStats]]
     n_patients: int
 
 
@@ -548,7 +517,7 @@ def run_knn_eval(
             for tau, res in tau_dict.items():
                 accum[strategy][tau].append(res)
 
-    stats: dict[str, list[KNNStrategyStats]] = {s: [] for s in KNN_STRATEGIES}
+    stats: dict[str, list[StrategyStats]] = {s: [] for s in KNN_STRATEGIES}
     n_patients = 0
     for strategy in KNN_STRATEGIES:
         for tau in tau_values:
@@ -557,16 +526,7 @@ def run_knn_eval(
                 continue
             if strategy == "actual":
                 n_patients = len(results)
-            stats[strategy].append(KNNStrategyStats(
-                tau             = tau,
-                strategy        = strategy,
-                n_patients      = len(results),
-                mean_stop_tests = float(np.mean([r.stop_tests   for r in results])),
-                accuracy        = float(np.mean([r.correct       for r in results])),
-                pct_early_stop  = float(np.mean([r.ever_stopped  for r in results])),
-                mean_cost       = float(np.mean([r.cost          for r in results])),
-                mean_burden     = float(np.mean([r.burden        for r in results])),
-            ))
+            stats[strategy].append(aggregate_stats(results, tau=tau, strategy=strategy))
 
     return KNNEvalResults(
         tau_values = tau_values,
