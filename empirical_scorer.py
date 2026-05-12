@@ -117,6 +117,68 @@ def encode_features(features: dict) -> np.ndarray:
     return np.array(vec, dtype=np.float32)
 
 
+def decode_features(
+    vec: np.ndarray,
+    base_features: dict | None = None,
+) -> dict:
+    """
+    Decode an encoded feature vector back to a feature dict.
+
+    This is the (lossy) inverse of encode_features, using the same
+    deterministic field order.  Booleans are recovered by thresholding at 0.5;
+    pain_location by argmax of its one-hot segment; CTSI_score by
+    multiplying by 10; tests_done by thresholding each flag.
+
+    Parameters
+    ----------
+    vec           : float32 vector of length _VECTOR_DIM
+    base_features : optional reference state for monotonicity constraints.
+        Any boolean key that is True in base_features is forced True in the
+        output, even if the decoded value is False.  This prevents
+        "un-observing" a finding that was already established.
+        The union of base_features["tests_done"] and decoded tests_done is
+        used so that already-done tests are never erased.
+
+    Returns
+    -------
+    A complete feature dict with all keys from default_features().
+    """
+    features = default_features()
+    base = base_features or {}
+    idx = 0
+
+    # 1. Boolean features — threshold + monotonicity
+    for key in _BOOL_KEYS:
+        decoded = bool(vec[idx] >= 0.5)
+        features[key] = decoded or bool(base.get(key, False))
+        idx += 1
+
+    # 2. pain_location — argmax of one-hot segment
+    pain_scores = vec[idx : idx + len(VALID_PAIN_LOCATIONS)]
+    features["pain_location"] = VALID_PAIN_LOCATIONS[int(np.argmax(pain_scores))]
+    idx += len(VALID_PAIN_LOCATIONS)
+
+    # 3. CTSI_score — clamp then scale back
+    features["CTSI_score"] = float(np.clip(vec[idx], 0.0, 1.0)) * 10.0
+    idx += 1
+
+    # 4. tests_done — union of decoded flags and base tests_done
+    decoded_done: set[str] = {
+        t for t, flag in zip(VALID_TESTS, vec[idx : idx + len(VALID_TESTS)])
+        if flag >= 0.5
+    }
+    base_done: set[str] = set(base.get("tests_done", []))
+    features["tests_done"] = sorted(decoded_done | base_done, key=list(VALID_TESTS).index)
+    idx += len(VALID_TESTS)
+
+    # 5. Other float features
+    for key in _FLOAT_KEYS:
+        features[key] = float(vec[idx])
+        idx += 1
+
+    return features
+
+
 # ---------------------------------------------------------------------------
 # EmpiricalScorer
 # ---------------------------------------------------------------------------

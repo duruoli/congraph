@@ -1,6 +1,12 @@
-"""rubric_graph.py
+"""rubric_graph_original.py
 
 Programmatic representation of 5 clinical diagnosis flowcharts for abdominal pain triage.
+This is the **original / strict-guideline version** — cholecystitis uses TG18 verbatim:
+  - Group A AND Group B both required before proceeding to imaging (strict A AND B gate)
+  - Group B criteria: fever >38°C · elevated CRP · leukocytosis (no HPI-narrative supplement)
+
+Compare with rubric_graph.py, which relaxes the cholecystitis gate to A OR B and adds
+fever_reported_in_hpi to Group B to improve coverage on MIMIC-IV data.
 
 Sources:
   - WSES Jerusalem Guidelines 2020          (Appendicitis)
@@ -198,17 +204,15 @@ def _tg18_group_a(f: dict) -> bool:
 def _tg18_group_b(f: dict) -> bool:
     """
     TG18 Group B (systemic inflammation signs): ≥ 1 criterion present.
-    TG18 B组全身炎症体征（满足≥1项）
+    TG18 B组全身炎症体征（满足≥1项）— strict TG18 criteria, no HPI-narrative supplement.
 
-    fever_reported_in_hpi is included as a supplement to fever_temp_ge_38.
-    MIMIC-IV admission temperatures are often normal (already defervesced) even
-    when the patient clearly had fever at home.  HPI narrative fever is a
-    clinically valid systemic sign and is commonly recorded when the PE vital
-    is sub-threshold.
+    Original TG18 Group B:
+      ① Fever > 38 °C  (admission vitals)
+      ② Elevated CRP
+      ③ Leukocytosis
     """
     return (
         f.get("fever_temp_ge_38", False)
-        or f.get("fever_reported_in_hpi", False)
         or f.get("CRP_elevated", False)
         or f.get("WBC_gt_10k", False)
     )
@@ -707,8 +711,8 @@ def _build_cholecystitis_graph() -> RubricGraph:
             "decision",
             required_tests=["Lab_Panel"],
             description=(
-                "TG18 suspected diagnosis gate\n"
-                "疑似诊断门控：A组≥1项 AND B组≥1项"
+                "TG18 strict suspected-diagnosis gate (original TG18)\n"
+                "疑似诊断门控：A组≥1项 AND B组≥1项（严格TG18原版标准）"
             ),
         ),
         "NOT_SUSPECTED_CLINICAL": RubricNode(
@@ -716,9 +720,10 @@ def _build_cholecystitis_graph() -> RubricGraph:
             "Cholecystitis Not Suspected (Clinical Only)",
             "terminal_low_risk",
             description=(
-                "Neither TG18 Group A nor Group B met — no local or systemic signs of cholecystitis.\n"
-                "NOT imaging-confirmed exclusion; very low clinical suspicion.\n"
-                "A组和B组均未满足：无局部或全身炎症体征，极低怀疑度，非影像排除"
+                "TG18 A AND B not both met — suspected diagnosis not established.\n"
+                "Includes: A-only, B-only, or neither. No imaging indicated per TG18.\n"
+                "NOT imaging-confirmed exclusion; clinical suspicion insufficient.\n"
+                "A+B未同时满足（含仅A、仅B、或均未满足）：TG18原版不进入影像学，非影像排除"
             ),
         ),
         "NOT_SUSPECTED_IMAGING": RubricNode(
@@ -825,32 +830,20 @@ def _build_cholecystitis_graph() -> RubricGraph:
             condition=lambda f: _done(f, "Lab_Panel"),
         ),
 
-        # AB_DECISION → Imaging: A ≥1 AND B ≥1 → Strong suspicion (triggers 2 conditional edges
-        # for A+B patients, giving them higher sub-rubric score vs A-or-B-only patients)
-        # 疑似诊断成立（A+B均满足）→ 触发额外条件边，贡献更高证据强度分数
+        # AB_DECISION → Imaging: A ≥1 AND B ≥1 → TG18 suspected diagnosis (strict original)
+        # 疑似诊断成立（A+B均满足）→ 进入影像学，TG18原版严格标准
         RubricEdge(
             "AB_DECISION", "IMAGING_US",
-            "A ≥1 AND B ≥1 → Strong suspicion — proceed to imaging",
+            "A ≥1 AND B ≥1 → Suspected — proceed to imaging (TG18 strict)",
             condition=lambda f: _tg18_suspected(f),
         ),
 
-        # AB_DECISION → Imaging: A ≥1 OR B ≥1 → Weak suspicion — still proceed to imaging.
-        # Patients satisfying only one group (A-only or B-only) trigger this edge alone (1 trigger).
-        # Patients satisfying both (A+B) also trigger this edge in addition to the A+B edge above
-        # (2 triggers total), naturally producing a higher conditional_triggers count and score.
-        # 满足A或B（任一）即可进入影像学，弱怀疑度；A+B患者同时触发上方边，自然多得1次计数
-        RubricEdge(
-            "AB_DECISION", "IMAGING_US",
-            "A ≥1 OR B ≥1 → Weak suspicion — proceed to imaging",
-            condition=lambda f: _tg18_group_a(f) or _tg18_group_b(f),
-        ),
-
-        # AB_DECISION → Not suspected: neither A nor B met (no local or systemic signs at all)
-        # 既无局部体征也无全身炎症体征 → 极低怀疑度，不进入影像
+        # AB_DECISION → Not suspected: A AND B not both met (A-only, B-only, or neither)
+        # TG18原版：未同时满足A+B → 不进入影像，包含仅A、仅B或均未满足
         RubricEdge(
             "AB_DECISION", "NOT_SUSPECTED_CLINICAL",
-            "Neither A nor B criteria met → Not suspected (clinical only)",
-            condition=lambda f: not _tg18_group_a(f) and not _tg18_group_b(f),
+            "A AND B not both met → Not suspected (TG18 strict)",
+            condition=lambda f: not _tg18_suspected(f),
         ),
 
         # Ultrasound positive → confirmed (A + B + C) → severity grading
@@ -1436,6 +1429,8 @@ DIVERTICULITIS_GRAPH: RubricGraph = _build_diverticulitis_graph()
 PANCREATITIS_GRAPH: RubricGraph = _build_pancreatitis_graph()
 
 # All 5 graphs including triage  全部5张图（含主分流）
+# NOTE: This module is the original/strict-TG18 version.
+#       Import rubric_graph (without _original suffix) for the MIMIC-adapted relaxed version.
 ALL_GRAPHS: dict[str, RubricGraph] = {
     "triage": TRIAGE_GRAPH,
     "appendicitis": APPENDICITIS_GRAPH,

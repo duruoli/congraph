@@ -141,24 +141,50 @@ def run_one_trial(
 # Acceptance check helper (for use after applying a proposed change)
 # ---------------------------------------------------------------------------
 
+def _best_per_disease(history: list[TrialRecord]) -> dict[str, float]:
+    """Return the highest accuracy ever recorded for each disease across all trials."""
+    best: dict[str, float] = {}
+    for trial in history:
+        for disease, acc in trial.metrics.per_disease.items():
+            if disease not in best or acc > best[disease]:
+                best[disease] = acc
+    return best
+
+
 def evaluate_change(
-    prev_trial:    TrialRecord,
-    change:        ChangeRecord,
-    step_selector: str = "first",
-    log_path:      str | None = None,
-    w_acc: float = 1.0,
+    prev_trial:           TrialRecord,
+    change:               ChangeRecord,
+    step_selector:        str = "first",
+    log_path:             str | None = None,
+    w_acc:                float = 1.0,
+    regression_threshold: float = 0.02,
 ) -> TrialRecord:
     """
     Re-evaluate after applying a proposed change and decide accept/reject.
 
-    A change is ACCEPTED when overall_accuracy improves (or is unchanged)
-    relative to the previous trial.  If it degrades, it is REJECTED and you
-    should revert with:  git checkout rubric_graph.py  (or diagnosis_distribution.py)
+    Acceptance requires BOTH conditions to hold:
+      1. Overall accuracy does not degrade relative to the previous trial.
+      2. Per-disease regression guard: every disease's accuracy is at least
+         (historical_best − regression_threshold).  This prevents a change
+         from "helping" one disease by silently tanking another.
+
+    Parameters
+    ----------
+    regression_threshold : maximum tolerated drop below each disease's
+                           all-time best accuracy (default 0.02 = 2 pp).
+
+    If either condition fails the change is REJECTED and you should revert
+    with:  git checkout <change.target_file>
     """
+    # Snapshot history BEFORE this trial is logged so bests are not inflated
+    # by the new result.
+    history_before = load_trials(log_path)
+    best_pd        = _best_per_disease(history_before)
+
     new_trial = run_one_trial(
         step_selector  = step_selector,
         log_path       = log_path,
-        outcome        = "pending",       # will be overwritten below
+        outcome        = "pending",
         outcome_reason = "(computing…)",
         change_applied = change,
     )
@@ -166,22 +192,44 @@ def evaluate_change(
     prev_acc = prev_trial.metrics.overall_accuracy
     new_acc  = new_trial.metrics.overall_accuracy
 
-    if new_acc >= prev_acc:
+    # ── Per-disease regression check ─────────────────────────────────────────
+    regressions: list[str] = []
+    for disease, new_d_acc in new_trial.metrics.per_disease.items():
+        floor = best_pd.get(disease, 0.0) - regression_threshold
+        if new_d_acc < floor:
+            regressions.append(
+                f"{disease}: {new_d_acc:.1%} < best {best_pd[disease]:.1%} "
+                f"− {regression_threshold:.0%} = {floor:.1%}"
+            )
+
+    # ── Accept / reject decision ──────────────────────────────────────────────
+    if new_acc >= prev_acc and not regressions:
         outcome        = "accepted"
         outcome_reason = (
-            f"Accuracy improved from {prev_acc:.1%} → {new_acc:.1%} "
-            f"(+{new_acc - prev_acc:.1%})."
+            f"Overall accuracy {prev_acc:.1%} → {new_acc:.1%} "
+            f"(+{new_acc - prev_acc:.1%}); "
+            f"all diseases within {regression_threshold:.0%} of their best."
+        )
+    elif regressions:
+        outcome        = "rejected"
+        reg_str        = "; ".join(regressions)
+        overall_change = f"{new_acc - prev_acc:+.1%}" if new_acc != prev_acc else "unchanged"
+        outcome_reason = (
+            f"Per-disease regression guard triggered "
+            f"(overall {overall_change}). "
+            f"Offending diseases — {reg_str}. "
+            f"Revert with: git checkout {change.target_file}"
         )
     else:
         outcome        = "rejected"
         outcome_reason = (
-            f"Accuracy degraded from {prev_acc:.1%} → {new_acc:.1%} "
-            f"({new_acc - prev_acc:.1%}). Revert with: "
-            f"git checkout {change.target_file}"
+            f"Overall accuracy degraded from {prev_acc:.1%} → {new_acc:.1%} "
+            f"({new_acc - prev_acc:.1%}). "
+            f"Revert with: git checkout {change.target_file}"
         )
 
     # Update the record in-place and re-log (overwrite is not supported by
-    # JSONL append; we just log a corrected entry with the same trial_id)
+    # JSONL append; we log a corrected entry with the same trial_id).
     new_trial.outcome        = outcome
     new_trial.outcome_reason = outcome_reason
     append_trial(new_trial, log_path)
