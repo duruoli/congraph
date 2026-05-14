@@ -24,8 +24,8 @@ for _p in [str(_ROOT), str(_PKG)]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from clinical_session import ClinicalSession
-from diagnosis_distribution import _GRAPH_COND_EDGE_COUNTS
+from pipeline.clinical_session import ClinicalSession
+from pipeline.diagnosis_distribution import _GRAPH_COND_EDGE_COUNTS
 
 DISEASES = ["appendicitis", "cholecystitis", "diverticulitis", "pancreatitis"]
 
@@ -218,6 +218,21 @@ def main() -> None:
     for d, m in metrics["per_disease"].items():
         print(f"  {d:<16}  {m['correct']:>4}/{m['n']:<4}  ({m['accuracy']:.1%})")
     print(f"{'═'*W}\n")
+
+
+class TrialRunner:
+    """Programmatic entry point for batch rubric trials (see :func:`run_trial`)."""
+
+    @staticmethod
+    def run_trial(
+        diseases: list[str] | None = None,
+        step_selector: str = "first",
+    ) -> list[PatientRecord]:
+        return run_trial(diseases=diseases, step_selector=step_selector)
+
+    @staticmethod
+    def compute_metrics(records: list[PatientRecord]) -> dict:
+        return compute_metrics(records)
 
 
 if __name__ == "__main__":

@@ -28,7 +28,7 @@ Usage
 
     client = OpenAI(api_key="sk-...")
 
-    with open("raw_data/appendicitis_hadm_info_first_diag.csv") as f:
+    with open("data/raw_data/appendicitis_hadm_info_first_diag.csv") as f:
         reader = csv.DictReader(f)
         row = next(reader)
 
@@ -50,7 +50,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from openai import OpenAI
 
-from feature_schema import default_features
+from pipeline.feature_schema import default_features
 from feature_extraction.algo_extractor import (
     extract_algo_features,
     extract_radiology_tests,

@@ -53,7 +53,7 @@ cd /home/dlf8982/AAA/congraph
 # Add --disease <name> to run a single disease.
 # Add --limit <n>     to process only the first n patients (for testing).
 # Add --no-llm        to run algo-only extraction (no API calls).
-python run_feature_extraction.py \
+python scripts/run_feature_extraction.py \
     --disease all \
     --output-dir results/feature_extraction
 

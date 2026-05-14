@@ -54,10 +54,10 @@ from openai import OpenAI
 # ── Import all modules that may be reloaded.
 #    IMPORTANT: use `import module` (not `from module import func`) so that
 #    module-level references stay live after importlib.reload().
-import rubric_graph          # noqa: E402
-import traversal_engine      # noqa: E402
-import diagnosis_distribution  # noqa: E402
-import clinical_session      # noqa: E402
+import pipeline.rubric_graph as rubric_graph          # noqa: E402
+import pipeline.traversal_engine as traversal_engine  # noqa: E402
+import pipeline.diagnosis_distribution as diagnosis_distribution  # noqa: E402
+import pipeline.clinical_session as clinical_session  # noqa: E402
 import trial_runner          # noqa: E402
 import failure_analyzer      # noqa: E402
 import summarizer            # noqa: E402
@@ -88,17 +88,17 @@ DEFAULT_MAX_NO_IMPROVE = 3     # consecutive rejection limit
 #   diagnosis_distribution  ← clinical_session  ← trial_runner
 
 _RELOAD_RUBRIC_ORDER = [
-    "rubric_graph",
-    "traversal_engine",
-    "clinical_session",
+    "pipeline.rubric_graph",
+    "pipeline.traversal_engine",
+    "pipeline.clinical_session",
     "trial_runner",
     "failure_analyzer",
     "summarizer",
 ]
 
 _RELOAD_DISTR_ORDER = [
-    "diagnosis_distribution",
-    "clinical_session",
+    "pipeline.diagnosis_distribution",
+    "pipeline.clinical_session",
     "trial_runner",
     "failure_analyzer",
     "summarizer",

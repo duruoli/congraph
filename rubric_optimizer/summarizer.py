@@ -22,7 +22,7 @@ for _p in [str(_ROOT), str(_PKG)]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-import rubric_graph as _rg
+import pipeline.rubric_graph as _rg
 from trial_runner import DISEASES
 from trial_log import TrialRecord
 from failure_analyzer import FailureAnalysis
@@ -71,7 +71,7 @@ def _rubric_source(disease: str) -> str:
 
 def _scoring_params_snippet() -> str:
     """Return the scoring hyperparameter block from diagnosis_distribution.py."""
-    dd_path = _ROOT / "diagnosis_distribution.py"
+    dd_path = _ROOT / "pipeline" / "diagnosis_distribution.py"
     try:
         text  = dd_path.read_text(encoding="utf-8")
         lines = text.splitlines()

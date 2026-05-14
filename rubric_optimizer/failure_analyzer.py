@@ -30,7 +30,7 @@ for _p in [str(_ROOT), str(_PKG)]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from rubric_graph import DISEASE_GRAPHS, ALWAYS_EDGE_CONDITION
+from pipeline.rubric_graph import DISEASE_GRAPHS, ALWAYS_EDGE_CONDITION
 from trial_runner import PatientRecord, DISEASES
 
 

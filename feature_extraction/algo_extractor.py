@@ -7,7 +7,8 @@ Extracts all features that can be derived without LLM:
   - Lab thresholds (from Laboratory Tests JSON + Reference Range JSONs)
   - Temperature / HR / RR  (regex on Physical Examination free text)
   - SIRS criteria  (derived from labs + vitals)
-  - tests_done     (Lab_Panel always present; Radiology modalities parsed separately)
+  - tests_done     (Lab_Panel when Laboratory Tests JSON non-empty; Radiology modalities parsed separately)
+  - lab_itemids    (MIMIC itemid keys from Laboratory Tests JSON, for lab cost attribution)
 
 The Radiology JSON list is also parsed here to produce an ordered list of
 imaging entries for the pipeline to iterate over.
@@ -888,8 +889,13 @@ def extract_algo_features(row: dict) -> dict:
     rr = _extract_rr(pe_text)
     features["SIRS_criteria_ge_2"] = _compute_sirs(temp_f, hr, rr, wbc, bands)
 
-    # ── tests_done ────────────────────────────────────────────────────────────
+    # ── tests_done + lab provenance (MIMIC itemids) ────────────────────────────
     features["tests_done"] = ["Lab_Panel"] if labs else []
+    # Stable order for reproducibility / diff-friendly JSON dumps
+    try:
+        features["lab_itemids"] = sorted(labs.keys(), key=lambda x: int(str(x)))
+    except (ValueError, TypeError):
+        features["lab_itemids"] = sorted(map(str, labs.keys()))
 
     return features
 

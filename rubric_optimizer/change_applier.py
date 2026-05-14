@@ -87,7 +87,7 @@ def apply_change(change: ChangeRecord) -> tuple[bool, str]:
             f"Must be one of {_ALLOWED_FILES}."
         )
 
-    path = _ROOT / change.target_file
+    path = _ROOT / "pipeline" / change.target_file
     if not path.exists():
         return False, f"File not found: {path}"
 
@@ -147,7 +147,7 @@ def revert_change(change: ChangeRecord) -> tuple[bool, str]:
 
     try:
         result = subprocess.run(
-            ["git", "checkout", change.target_file],
+            ["git", "checkout", f"pipeline/{change.target_file}"],
             cwd         = str(_ROOT),
             capture_output = True,
             text        = True,
