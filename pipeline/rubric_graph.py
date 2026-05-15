@@ -759,6 +759,16 @@ def _build_cholecystitis_graph() -> RubricGraph:
                 "超声不确定时追加：HIDA扫描 / CT / MRCP + LFTs"
             ),
         ),
+        "MRCP_BILIARY_EVAL": RubricNode(
+            "MRCP_BILIARY_EVAL",
+            "MRCP for Suspected Choledocholithiasis",
+            "assessment",
+            required_tests=["MRCP_Abdomen"],
+            description=(
+                "Evaluate for common bile duct stones if biliary etiology suspected\n"
+                "追加MRCP排查胆总管结石"
+            ),
+        ),
         "SEVERITY_GRADING": RubricNode(
             "SEVERITY_GRADING",
             "TG18 Severity Grading",
@@ -853,13 +863,22 @@ def _build_cholecystitis_graph() -> RubricGraph:
             condition=lambda f: not _tg18_group_a(f) and not _tg18_group_b(f),
         ),
 
-        # Ultrasound positive → confirmed (A + B + C) → severity grading
-        # 超声阳性 → 确定诊断 → 严重度分级
+        # Ultrasound positive → confirmed (A + B + C)
+        # 超声阳性 → 确定诊断 → 根据是否怀疑胆总管结石分流
         RubricEdge(
-            "IMAGING_US", "SEVERITY_GRADING",
-            "US positive — definite diagnosis (A + B + C)",
+            "IMAGING_US", "MRCP_BILIARY_EVAL",
+            "US positive + Elevated LFTs/Bilirubin → Check CBD stones",
             condition=lambda f: (
                 _done(f, "Ultrasound_Abdomen") and _tg18_us_positive(f)
+                and (f.get("LFTs_elevated", False) or f.get("bilirubin_elevated", False))
+            ),
+        ),
+        RubricEdge(
+            "IMAGING_US", "SEVERITY_GRADING",
+            "US positive — definite diagnosis (no high risk for CBD stones)",
+            condition=lambda f: (
+                _done(f, "Ultrasound_Abdomen") and _tg18_us_positive(f)
+                and not (f.get("LFTs_elevated", False) or f.get("bilirubin_elevated", False))
             ),
         ),
 
@@ -878,16 +897,34 @@ def _build_cholecystitis_graph() -> RubricGraph:
         # CT_cholecystitis_positive is accepted directly so that CT used as
         # primary or secondary modality reaches SEVERITY_GRADING correctly.
         RubricEdge(
-            "ADDITIONAL_IMAGING", "SEVERITY_GRADING",
-            "Additional imaging positive for cholecystitis",
+            "ADDITIONAL_IMAGING", "MRCP_BILIARY_EVAL",
+            "Additional imaging positive + Elevated LFTs/Bilirubin → Check CBD stones",
             condition=lambda f: (
                 _any_done(f, "HIDA_Scan", "CT_Abdomen", "MRCP_Abdomen")
                 and (
                     f.get("cholecystitis_additional_imaging_positive", False)
                     or f.get("CT_cholecystitis_positive", False)
                 )
+                and (f.get("LFTs_elevated", False) or f.get("bilirubin_elevated", False))
+                and not _done(f, "MRCP_Abdomen")
             ),
         ),
+        RubricEdge(
+            "ADDITIONAL_IMAGING", "SEVERITY_GRADING",
+            "Additional imaging positive (no high risk for CBD stones or MRCP done)",
+            condition=lambda f: (
+                _any_done(f, "HIDA_Scan", "CT_Abdomen", "MRCP_Abdomen")
+                and (
+                    f.get("cholecystitis_additional_imaging_positive", False)
+                    or f.get("CT_cholecystitis_positive", False)
+                )
+                and (
+                    not (f.get("LFTs_elevated", False) or f.get("bilirubin_elevated", False))
+                    or _done(f, "MRCP_Abdomen")
+                )
+            ),
+        ),
+        RubricEdge("MRCP_BILIARY_EVAL", "SEVERITY_GRADING", "always"),
 
         # Additional imaging negative → imaging-confirmed exclusion
         # 追加影像阴性 → 影像确认排除
@@ -1226,6 +1263,16 @@ def _build_pancreatitis_graph() -> RubricGraph:
                 "确诊后住院治疗，腹部超声查胆石症（最常见病因）"
             ),
         ),
+        "MRCP_BILIARY_EVAL": RubricNode(
+            "MRCP_BILIARY_EVAL",
+            "MRCP for Suspected Biliary Pancreatitis",
+            "assessment",
+            required_tests=["MRCP_Abdomen"],
+            description=(
+                "Evaluate for choledocholithiasis if biliary etiology suspected\n"
+                "追加MRCP排查胆总管结石"
+            ),
+        ),
         "BISAP": RubricNode(
             "BISAP",
             "BISAP Score (within 24h of admission)",
@@ -1362,7 +1409,25 @@ def _build_pancreatitis_graph() -> RubricGraph:
             ),
         ),
 
-        RubricEdge("CONFIRMED", "BISAP", "always"),
+        RubricEdge(
+            "CONFIRMED", "MRCP_BILIARY_EVAL",
+            "Biliary etiology suspected (Elevated LFTs/Bilirubin or US gallstones)",
+            condition=lambda f: (
+                f.get("LFTs_elevated", False) 
+                or f.get("bilirubin_elevated", False)
+                or f.get("US_gallstones", False)
+            ),
+        ),
+        RubricEdge(
+            "CONFIRMED", "BISAP",
+            "No biliary signs → Proceed to risk stratification",
+            condition=lambda f: not (
+                f.get("LFTs_elevated", False) 
+                or f.get("bilirubin_elevated", False)
+                or f.get("US_gallstones", False)
+            ),
+        ),
+        RubricEdge("MRCP_BILIARY_EVAL", "BISAP", "always"),
 
         # BISAP stratification
         # BISAP风险分层
