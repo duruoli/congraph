@@ -1,0 +1,37 @@
+# Part 3 — CertaintyScore regression comparison
+
+Setup
+-----
+  Train cohort (for w(c,d)) : 1044 patients (split seed=42)
+  Test cohort               : 300 patients (gap labels)
+  Encoding                  : pain_location → dummies, others 0/1
+  Baseline X                : all schema features (mirrors gap_analysis.py)
+  +CertaintyScore X         : baseline + certainty_score_oracle
+
+Per-(disease, gap) AUC and log-likelihood under 5-fold (or fewer) CV
+L1 logistic regression with Cs=10 search, scoring=roc_auc.
+
+       disease        gap   n  n_pos  auc_baseline  ll_baseline  auc_plus_cs  ll_plus_cs  delta_auc  auc_cs_alone  ll_cs_alone  auc_cs_top_alone     status
+  appendicitis commission  71     32         0.924       -0.633        0.877      -0.884     -0.047         0.748       -0.640             0.729        NaN
+  appendicitis   omission  71     22         0.839       -0.661        0.844      -0.663      0.006         0.476       -0.668             0.479        NaN
+  appendicitis order_swap  71      5           NaN          NaN          NaN         NaN        NaN           NaN          NaN               NaN        NaN
+ cholecystitis commission  93     62         0.582       -2.019        0.622      -0.701      0.040         0.664       -0.615             0.555        NaN
+ cholecystitis   omission  93     29         0.734       -0.565        0.771      -0.545      0.037         0.501       -0.671             0.510        NaN
+ cholecystitis order_swap  93      1           NaN          NaN          NaN         NaN        NaN           NaN          NaN               NaN degenerate
+diverticulitis commission  35     19         0.375       -2.348        0.434      -2.070      0.059         0.530       -0.703             0.569        NaN
+diverticulitis   omission  35      0           NaN          NaN          NaN         NaN        NaN           NaN          NaN               NaN degenerate
+diverticulitis order_swap  35      0           NaN          NaN          NaN         NaN        NaN           NaN          NaN               NaN degenerate
+  pancreatitis commission 101     69         0.766       -1.155        0.783      -0.555      0.017         0.731       -0.579             0.730        NaN
+  pancreatitis   omission 101     37         0.616       -0.723        0.615      -0.732     -0.001         0.710       -0.601             0.709        NaN
+  pancreatitis order_swap 101      3           NaN          NaN          NaN         NaN        NaN           NaN          NaN               NaN        NaN
+
+Interpretation guide
+--------------------
+  delta_auc > 0    : CertaintyScore adds incremental predictive power
+                     beyond the raw features (the certainty story holds).
+  auc_cs_alone     : Univariate predictive power of CertaintyScore.
+                     If close to auc_baseline, a single scalar captures
+                     most of what the many raw features encode.
+  auc_cs_top_alone : Same, but using the perceived-top-diagnosis score.
+                     Robustness check: if much weaker than oracle-score,
+                     it suggests the oracle label is doing heavy lifting.
