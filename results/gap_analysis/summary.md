@@ -89,3 +89,150 @@
 | --- | --- | --- | --- | --- | --- |
 | lipase_ge_3xULN | 0.973 | 0.672 | 17.581 | 0.000 | 0.011 |
 
+
+---
+
+## Multivariate model results and cross-validation
+
+L1 logistic regression (CV) coefficients are in `models/{disease}_{gap}_l1_coef.csv`; Random Forest importances are in `models/{disease}_{gap}_rf_importance.csv`. This section summarises direction and convergence with the univariate findings above.
+
+**Reading guide.** Negative L1 coefficient = feature *reduces* the gap type; positive = feature *promotes* it. A feature that appears with a consistent sign across all three methods (Fisher OR direction, L1 sign, RF importance) is considered robustly supported.
+
+---
+
+### Appendicitis — commission  (L1 AUC 0.924 / RF 0.904 — strongest model in the study)
+
+**Univariate and multivariate convergence** (all three methods agree):
+
+| feature | Fisher OR | L1 coef | RF rank | interpretation |
+| --- | --- | --- | --- | --- |
+| WBC_gt_10k | 0.04 (↓) | −9.9 | 1st | present → fewer commissions |
+| RLQ_tenderness | 0.18 (↓) | −8.8 | 2nd | present → fewer commissions |
+| anorexia | 0.15 (↓) | −9.5 | 3rd | present → fewer commissions |
+
+**Multivariate-only findings** (not univariate-significant at BH q ≤ 0.20, but nonzero in L1 and top-10 RF):
+
+| feature | L1 coef | direction |
+| --- | --- | --- |
+| rebound_tenderness | −5.9 | fewer commissions |
+| pain_migration_to_RLQ | −5.4 | fewer commissions |
+| fever_temp_ge_37_3 | −5.3 | fewer commissions |
+| RUQ_tenderness | +4.7 | more commissions |
+| symptom_duration_over_72h | +3.9 | more commissions |
+
+**Pattern.** The six negative-coefficient features are all classical appendicitis signs (high diagnostic specificity); when present doctors stay close to the rubric. The two positive features (`RUQ_tenderness`, prolonged symptoms) represent atypical or complicated presentations where clinicians add extra tests.
+
+---
+
+### Appendicitis — omission  (L1 AUC 0.839 / RF 0.854)
+
+**Univariate and multivariate convergence:**
+
+| feature | Fisher OR | L1 coef | RF rank | interpretation |
+| --- | --- | --- | --- | --- |
+| WBC_gt_10k | inf (↑) | +13.0 | 1st | present → more omissions |
+
+**Multivariate-only findings:**
+
+| feature | L1 coef | direction |
+| --- | --- | --- |
+| fever_temp_ge_37_3 | +8.2 | more omissions |
+| RLQ_tenderness | +7.3 | more omissions |
+
+**Pattern.** The same high-certainty features that *reduce* commission also *increase* omission — WBC, fever, RLQ tenderness flip sign between the two gap types. This is the clearest evidence of a certainty-driven tradeoff: strong initial evidence leads doctors to skip rubric-prescribed tests.
+
+---
+
+### Cholecystitis — commission  (L1 AUC 0.582 / RF 0.612 — weak)
+
+No features survived BH q ≤ 0.20 in univariate analysis. L1 retains only a small set with modest coefficients:
+
+| feature | L1 coef | RF rank |
+| --- | --- | --- |
+| RLQ_tenderness | +2.4 | — |
+| WBC_gt_18k | +2.1 | 7th |
+| RUQ_tenderness | −1.9 | 1st |
+
+**Pattern.** Canonical cholecystitis sign (`RUQ_tenderness`) negatively associated with commission; atypical location (`RLQ_tenderness`) positively associated. The near-chance AUC indicates cholecystitis commission is largely unpredictable from step-0 features alone.
+
+---
+
+### Cholecystitis — omission  (L1 AUC 0.734 / RF 0.814)
+
+**Univariate and multivariate convergence:**
+
+| feature | Fisher OR | L1 coef | RF rank | interpretation |
+| --- | --- | --- | --- | --- |
+| LFTs_elevated | 18.5 (↑) | +3.0 | 1st | present → more omissions |
+| anorexia | 0.00 (↓) | −3.2 | 3rd | present → fewer omissions |
+
+**Multivariate-only findings:**
+
+| feature | L1 coef | direction |
+| --- | --- | --- |
+| pain_location_Other | −3.6 | fewer omissions |
+
+**Pattern.** Elevated liver enzymes — the biochemical confirmation of cholestasis — strongly predicts that doctors skip rubric-prescribed workup. This parallels the WBC pattern in appendicitis: a definitive lab marker reduces the perceived need to complete the full rubric.
+
+---
+
+### Diverticulitis — commission  (L1 AUC 0.375 / RF 0.549 — near chance)
+
+No univariate-significant features; L1 retains only `pain_location_LLQ` (coef 0.26, single nonzero feature). RF ranks `pain_location_LLQ` first (importance 0.14) but the model is near chance.
+
+**Pattern.** Commission for diverticulitis is structurally driven: the rubric graph blocks at `CLINICAL_ASSESSMENT` for patients with LLQ pain but without fever, leaving Lab_Panel as the entire simulated sequence; doctors then add CT, which registers as commission. This structural artefact cannot be captured by step-0 features, explaining the near-zero AUC.
+
+---
+
+### Pancreatitis — commission  (L1 AUC 0.766 / RF 0.781)
+
+**Univariate and multivariate convergence:**
+
+| feature | Fisher OR | L1 coef | RF rank | interpretation |
+| --- | --- | --- | --- | --- |
+| RUQ_tenderness | 10.9 (↑) | +2.1 | 1st | present → more commissions |
+| pain_location_Other | inf (↑) | +4.0 | 4th | present → more commissions |
+| lipase_ge_3xULN | 0.16 (↓) | not retained | 3rd | present → fewer commissions |
+| fever_temp_ge_37_3 | 0.00 (↓) | −2.1 | — | present → fewer commissions |
+| LFTs_elevated | 0.29 (↓) | not retained | 2nd | present → fewer commissions |
+| pain_location_Epigastric | 0.34 (↓) | not retained | 5th | present → fewer commissions |
+
+**Multivariate-only findings:**
+
+| feature | L1 coef | direction |
+| --- | --- | --- |
+| prior_diverticular_disease | +3.0 | more commissions |
+| anorexia | +2.3 | more commissions |
+
+**Pattern.** Atypical presentations (`RUQ_tenderness`, `pain_location_Other`) prompt extra testing. High-certainty pancreatitis markers (`lipase_ge_3xULN`, `LFTs_elevated`, epigastric location, absent fever) all reduce commission, consistent with Part 3 CertaintyScore findings. `lipase_ge_3xULN` and `LFTs_elevated` do not survive L1 regularisation but remain prominent in RF, suggesting collinearity with retained features. `prior_diverticular_disease` appearing as a commission predictor is likely a confound: patients with known diverticular history may be more extensively worked up regardless of the presenting disease.
+
+---
+
+### Pancreatitis — omission  (L1 AUC 0.616 / RF 0.658)
+
+**Univariate and multivariate convergence:**
+
+| feature | Fisher OR | L1 coef | RF rank | interpretation |
+| --- | --- | --- | --- | --- |
+| lipase_ge_3xULN | 17.6 (↑) | +2.8 | 1st | present → more omissions |
+
+**Multivariate-only findings:**
+
+| feature | L1 coef | direction |
+| --- | --- | --- |
+| fever_temp_ge_37_3 | +6.4 | more omissions |
+| rebound_tenderness | +6.4 | more omissions |
+
+**Pattern.** Mirrors appendicitis: the pancreatitis-specific certainty marker (`lipase_ge_3xULN`) that reduces commission here promotes omission. Fever and rebound tenderness — indicators of severe or systemic disease — also increase omission, consistent with clinicians abbreviating the workup when diagnosis and severity are already apparent.
+
+---
+
+## Cross-disease summary
+
+**Asymmetric certainty effect.** For appendicitis, cholecystitis, and pancreatitis, each disease has a key high-certainty lab marker (WBC_gt_10k / LFTs_elevated / lipase_ge_3xULN) that is negative for commission and positive for omission. The same step-0 signal that suppresses over-testing simultaneously predicts under-testing relative to the rubric.
+
+**Atypical presentation promotes commission.** Features signalling diagnostic uncertainty or atypical location (`RUQ_tenderness` in appendicitis, `pain_location_Other` and `RUQ_tenderness` in pancreatitis, `symptom_duration_over_72h`) consistently carry positive L1 coefficients for commission across diseases.
+
+**Diverticulitis is the exception.** Near-chance AUC (L1 0.375) reflects a structural gap in the rubric rather than feature-driven behaviour; the commission pattern there cannot be explained by step-0 clinical features.
+
+**Univariate and multivariate agree on direction for all jointly significant features.** No feature showed a sign reversal between Fisher OR and L1 coefficient, confirming that the univariate screening is not badly confounded in this dataset.
