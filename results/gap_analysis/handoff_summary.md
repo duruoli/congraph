@@ -89,3 +89,11 @@ following identical to this pass:
   trade off.  Worth checking whether main-triage routing produces any
   omissions for diverticulitis, which would let us see if the pattern
   flips.
+
+---
+
+## Related: LLM next-test experiment handoff
+
+See `results/llm_experiment/handoff_summary_llm.md` for the rerun
+checklist of the GPT-4o next-test recommendation experiment
+(30-patient, descriptive supplementary).
