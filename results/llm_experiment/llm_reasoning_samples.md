@@ -1,274 +1,274 @@
 # LLM reasoning samples
 
-Sampled 30 step-level reasoning snippets from 1472 total.
+Sampled 30 step-level reasoning snippets from 805 total.
 
-## patient 21543797 | appendicitis | cs=low | cond=llm_full | order=rubric_first | step 1
-- tests_done_before: `Lab_Panel, CT_Abdomen`
+## patient 22897837 | appendicitis | cs=high | cond=llm_full_deviation | order=rubric_first | step 1
+- tests_done_before: `Lab_Panel, Ultrasound_Abdomen`
+- rubric_next: `CT_Abdomen`
+- knn_top1_disease: `appendicitis`
+- llm_next_test: **CT_Abdomen**
+- termination_reason: ok
+
+> Alvarado score is at least 5 (anorexia +1, RLQ tenderness +2, WBC >10k +2) placing this patient in intermediate-to-high risk, and the abdominal ultrasound has already been completed without a confirmed diagnosis. Per the clinical guideline, a non-diagnostic ultrasound in an intermediate/high-risk patient warrants CT abdomen/pelvis with IV contrast (sensitivity >95%) to confirm or exclude appendicitis.
+
+## patient 20605733 | appendicitis | cs=high | cond=llm_full_deviation | order=rubric_first | step 0
+- tests_done_before: `Lab_Panel`
 - rubric_next: `Ultrasound_Abdomen`
 - knn_top1_disease: `appendicitis`
-- llm_next_test: **STOP**
-- termination_reason: stop
+- llm_next_test: **Ultrasound_Abdomen**
+- termination_reason: ok
 
-> The CT scan has already confirmed purulent peritonitis, indicating a complicated intra-abdominal infection. Further imaging is unlikely to change management, and surgical consultation is warranted.
+> The patient's Alvarado score is at least 6 (nausea/vomiting +1, RLQ tenderness +2, WBC >10k +2, plus possible additional points), placing them in intermediate-to-high risk range; per the clinical guideline, abdominal ultrasound is the recommended next step as first-line imaging, consistent with the rubric recommendation, before escalating to CT if non-diagnostic.
 
-## patient 20180280 | diverticulitis | cs=mid | cond=llm_full | order=rubric_first | step 0
-- tests_done_before: `Lab_Panel`
+## patient 29962257 | appendicitis | cs=low | cond=llm_full_deviation | order=rubric_first | step 1
+- tests_done_before: `Lab_Panel, Ultrasound_Abdomen`
 - rubric_next: `CT_Abdomen`
 - knn_top1_disease: `cholecystitis`
 - llm_next_test: **CT_Abdomen**
 - termination_reason: ok
 
-> The patient presents with generalized abdominal pain, elevated WBC, and signs of systemic inflammation, which raises suspicion for diverticulitis or other abdominal pathology. A CT Abdomen is recommended as it is the gold standard for diagnosing diverticulitis and can help identify any complications.
+> The patient has RUQ and RLQ tenderness with elevated LFTs and WBC, suggesting possible appendicitis (Alvarado score ≥7, high risk) or biliary pathology; ultrasound has already been performed and the non-diagnostic or inconclusive result warrants CT abdomen/pelvis with IV contrast to evaluate both the appendix and biliary tree with high sensitivity (>95%).
 
-## patient 20129996 | appendicitis | cs=low | cond=llm_full | order=rubric_first | step 0
+## patient 29775414 | appendicitis | cs=low | cond=llm_full_deviation | order=rubric_first | step 0
 - tests_done_before: `Lab_Panel`
 - rubric_next: `nan`
 - knn_top1_disease: `appendicitis`
-- llm_next_test: **CT_Abdomen**
+- llm_next_test: **Ultrasound_Abdomen**
 - termination_reason: ok
 
-> The patient has a high WBC count and symptoms consistent with appendicitis, suggesting a high risk. According to the rubric, a CT Abdomen is recommended for high-risk patients to confirm appendicitis and assess for complications.
+> Alvarado score is at least 5 (intermediate risk), and per guidelines ultrasound is the preferred first-line imaging for young females of reproductive age to evaluate both appendicitis and gynecologic causes of RLQ pain while avoiding radiation exposure.
 
-## patient 21775506 | pancreatitis | cs=high | cond=llm_full | order=rubric_first | step 2
+## patient 20123918 | appendicitis | cs=mid | cond=llm_full_deviation | order=rubric_first | step 0
+- tests_done_before: `Lab_Panel`
+- rubric_next: `Ultrasound_Abdomen`
+- knn_top1_disease: `appendicitis`
+- llm_next_test: **Ultrasound_Abdomen**
+- termination_reason: ok
+
+> This young female of reproductive age with intermediate-to-high risk features (RLQ tenderness, nausea/vomiting, leukocytosis with left shift, RUQ tenderness suggesting possible gynecologic pathology) should have ultrasound as the next step per guidelines, as it evaluates both appendicitis and gynecologic causes (ovarian pathology, ectopic pregnancy) while avoiding radiation. The rubric directs intermediate-risk young females to ultrasound first before considering CT.
+
+## patient 20276429 | appendicitis | cs=mid | cond=llm_full_deviation | order=rubric_first | step 2
+- tests_done_before: `Lab_Panel, Ultrasound_Abdomen, CT_Abdomen`
+- rubric_next: `nan`
+- knn_top1_disease: `appendicitis`
+- llm_next_test: **STOP**
+- termination_reason: stop
+
+> CT Abdomen is positive for appendicitis, which is a terminal decision point in the rubric (CT_FINDINGS → UNCOMPLICATED or COMPLICATED). All necessary tests (Lab_Panel, Ultrasound_Abdomen, CT_Abdomen) have been completed and the CT confirms appendicitis, so no further diagnostic testing is warranted — surgical consult should be initiated.
+
+## patient 24270186 | cholecystitis | cs=high | cond=llm_full_deviation | order=rubric_first | step 2
 - tests_done_before: `Lab_Panel, Ultrasound_Abdomen, MRCP_Abdomen`
 - rubric_next: `nan`
+- knn_top1_disease: `cholecystitis`
+- llm_next_test: **STOP**
+- termination_reason: stop
+
+> All required diagnostic workup is complete: Lab_Panel, Ultrasound_Abdomen, and MRCP_Abdomen have been performed. The findings confirm acute cholecystitis (positive US with wall thickening, pericholecystic fluid, gallstones, elevated LFTs/bilirubin evaluated via MRCP) with organ dysfunction present, meeting TG18 Grade III (Severe) criteria — no further testing is warranted.
+
+## patient 20639685 | cholecystitis | cs=high | cond=llm_full_deviation | order=rubric_first | step 0
+- tests_done_before: `Lab_Panel`
+- rubric_next: `Ultrasound_Abdomen`
 - knn_top1_disease: `pancreatitis`
-- llm_next_test: **STOP**
-- termination_reason: stop
-
-> The patient meets the criteria for acute pancreatitis with RUQ pain radiating to the back, elevated lipase, and imaging findings. MRCP has already been performed to evaluate for biliary etiology, confirming the diagnosis. No further testing is needed at this point.
-
-## patient 22897837 | appendicitis | cs=high | cond=llm_full | order=rubric_first | step 1
-- tests_done_before: `Lab_Panel, Ultrasound_Abdomen`
-- rubric_next: `CT_Abdomen`
-- knn_top1_disease: `appendicitis`
-- llm_next_test: **CT_Abdomen**
+- llm_next_test: **Ultrasound_Abdomen**
 - termination_reason: ok
 
-> The patient has a high Alvarado score (7-10) indicating high risk for appendicitis, and the ultrasound was non-diagnostic. A CT Abdomen is recommended for confirmation and to assess for complications.
+> With gallstone history, elevated WBC, fever, and elevated LFTs, there is strong suspicion for cholecystitis (and possibly choledocholithiasis or gallstone pancreatitis given lipase ≥3×ULN). Abdominal ultrasound is the first-line imaging per TG18 guidelines to evaluate for gallbladder wall thickening, pericholecystic fluid, sonographic Murphy's sign, and biliary ductal dilation.
 
-## patient 26483312 | diverticulitis | cs=high | cond=llm_full | order=rubric_first | step 0
+## patient 20972818 | cholecystitis | cs=low | cond=llm_full_deviation | order=rubric_first | step 0
 - tests_done_before: `Lab_Panel`
 - rubric_next: `nan`
 - knn_top1_disease: `diverticulitis`
-- llm_next_test: **CT_Abdomen**
-- termination_reason: ok
-
-> The patient has a history of diverticular disease and presents with LLQ pain, bowel habit changes, and nausea/vomiting. A CT Abdomen is the gold standard for diagnosing diverticulitis and assessing for complications, which is crucial given the patient's age and symptom duration.
-
-## patient 25396724 | diverticulitis | cs=high | cond=llm_features_only | order=nan | step 0
-- tests_done_before: `Lab_Panel`
-- rubric_next: `nan`
-- knn_top1_disease: `nan`
-- llm_next_test: **CT_Abdomen**
-- termination_reason: ok
-
-> The patient's symptoms and location of pain suggest possible diverticulitis or another lower abdominal pathology. A CT scan of the abdomen is the most appropriate next step to evaluate for diverticulitis, abscess, or other complications.
-
-## patient 24463669 | pancreatitis | cs=high | cond=llm_features_only | order=nan | step 2
-- tests_done_before: `Lab_Panel, CT_Abdomen, MRCP_Abdomen`
-- rubric_next: `Ultrasound_Abdomen`
-- knn_top1_disease: `nan`
-- llm_next_test: **STOP**
-- termination_reason: stop
-
-> The patient has acute pancreatitis with local complications, confirmed by elevated lipase and CT findings. Further testing is not needed for diagnosis.
-
-## patient 20123918 | appendicitis | cs=mid | cond=llm_features_only | order=nan | step 0
-- tests_done_before: `Lab_Panel`
-- rubric_next: `Ultrasound_Abdomen`
-- knn_top1_disease: `nan`
 - llm_next_test: **Ultrasound_Abdomen**
 - termination_reason: ok
 
-> The patient is of female reproductive age with RLQ pain and tenderness, and an ultrasound can help evaluate for appendicitis or gynecological issues such as ovarian cysts or ectopic pregnancy.
+> Lab_Panel is already completed; the next step per TG18 guidelines is abdominal ultrasound as first-line imaging to evaluate for gallbladder wall thickening, pericholecystic fluid, sonographic Murphy's sign, and gallstones. This is consistent with the cholecystitis sub-rubric pathway and supported by similar prior patient sequences.
 
-## patient 20605733 | appendicitis | cs=high | cond=llm_full | order=rubric_first | step 0
-- tests_done_before: `Lab_Panel`
-- rubric_next: `Ultrasound_Abdomen`
-- knn_top1_disease: `appendicitis`
-- llm_next_test: **Ultrasound_Abdomen**
-- termination_reason: ok
-
-> The patient presents with RLQ pain, nausea/vomiting, RLQ tenderness, and elevated WBC, suggesting possible appendicitis. An abdominal ultrasound is recommended as the first-line imaging test, especially in young females, to confirm the diagnosis and assess for complications.
-
-## patient 20621538 | cholecystitis | cs=low | cond=llm_features_only | order=nan | step 2
-- tests_done_before: `Lab_Panel, Ultrasound_Abdomen, CT_Abdomen`
-- rubric_next: `nan`
-- knn_top1_disease: `nan`
-- llm_next_test: **HIDA_Scan**
-- termination_reason: sim_failed
-
-> The presence of gallstones, RUQ tenderness, and elevated WBC suggests possible acute cholecystitis. A HIDA scan can help confirm this diagnosis by assessing gallbladder function.
-
-## patient 21543797 | appendicitis | cs=low | cond=llm_features_only | order=nan | step 1
-- tests_done_before: `Lab_Panel, CT_Abdomen`
-- rubric_next: `Ultrasound_Abdomen`
-- knn_top1_disease: `nan`
-- llm_next_test: **STOP**
-- termination_reason: stop
-
-> The CT scan shows purulent peritonitis, and the lab results indicate a severe infection with leukocytosis and left shift. These findings are sufficient to diagnose a likely intra-abdominal infection or abscess requiring surgical intervention.
-
-## patient 20660601 | cholecystitis | cs=high | cond=llm_features_only | order=nan | step 1
-- tests_done_before: `Lab_Panel, CT_Abdomen`
-- rubric_next: `Ultrasound_Abdomen`
-- knn_top1_disease: `nan`
-- llm_next_test: **Ultrasound_Abdomen**
-- termination_reason: ok
-
-> Given the elevated WBC, fever, and elevated creatinine, an ultrasound can help evaluate for potential biliary or renal causes of infection or obstruction that may not be fully elucidated by CT.
-
-## patient 29458039 | diverticulitis | cs=low | cond=llm_full | order=rubric_first | step 1
-- tests_done_before: `Lab_Panel, CT_Abdomen`
-- rubric_next: `nan`
-- knn_top1_disease: `diverticulitis`
-- llm_next_test: **STOP**
-- termination_reason: stop
-
-> The CT Abdomen has already been performed, which is the gold standard for diagnosing diverticulitis. The rubric simulator did not recommend further testing, indicating that the CT findings are sufficient for diagnosis.
-
-## patient 20334898 | cholecystitis | cs=low | cond=llm_full | order=rubric_first | step 0
+## patient 25366350 | cholecystitis | cs=low | cond=llm_full_deviation | order=rubric_first | step 0
 - tests_done_before: `Lab_Panel`
 - rubric_next: `Ultrasound_Abdomen`
 - knn_top1_disease: `cholecystitis`
 - llm_next_test: **Ultrasound_Abdomen**
 - termination_reason: ok
 
-> The patient presents with symptoms and lab findings suggestive of cholecystitis, including RUQ pain, nausea, vomiting, and leukocytosis. An abdominal ultrasound is the first-line imaging test to confirm the diagnosis by evaluating for gallstones, gallbladder wall thickening, and pericholecystic fluid.
+> The patient has systemic inflammation signs (elevated WBC) meeting TG18 Group B criteria, and the clinical guideline mandates abdominal ultrasound as the first-line imaging step to evaluate for cholecystitis (GB wall thickening, pericholecystic fluid, sonographic Murphy's sign, gallstones). This aligns with both the rubric recommendation and the majority of similar prior cholecystitis cases.
 
-## patient 26371704 | diverticulitis | cs=high | cond=llm_features_only | order=nan | step 1
-- tests_done_before: `Lab_Panel, CT_Abdomen`
-- rubric_next: `nan`
-- knn_top1_disease: `nan`
-- llm_next_test: **STOP**
-- termination_reason: stop
-
-> The CT scan is positive for appendicitis, which aligns with the clinical presentation of LLQ pain, anorexia, nausea, elevated WBC, and CRP. No further testing is needed to confirm the diagnosis.
-
-## patient 29581868 | diverticulitis | cs=mid | cond=llm_features_only | order=nan | step 0
-- tests_done_before: `Lab_Panel`
-- rubric_next: `CT_Abdomen`
-- knn_top1_disease: `nan`
-- llm_next_test: **CT_Abdomen**
-- termination_reason: ok
-
-> The combination of prolonged symptoms, elevated WBC, and SIRS criteria suggests a possible intra-abdominal infection or inflammation, such as diverticulitis or an abscess, which can be effectively evaluated with a CT scan.
-
-## patient 26860125 | pancreatitis | cs=low | cond=llm_full | order=rubric_first | step 0
-- tests_done_before: `Lab_Panel`
-- rubric_next: `CT_Abdomen`
-- knn_top1_disease: `pancreatitis`
-- llm_next_test: **STOP**
-- termination_reason: stop
-
-> The patient meets two of the Revised Atlanta Diagnostic Criteria for acute pancreatitis: elevated lipase ≥ 3× ULN and organ dysfunction. Therefore, acute pancreatitis is confirmed, and no further diagnostic testing is needed at this point.
-
-## patient 29458039 | diverticulitis | cs=low | cond=llm_features_only | order=nan | step 1
-- tests_done_before: `Lab_Panel, Ultrasound_Abdomen`
-- rubric_next: `CT_Abdomen`
-- knn_top1_disease: `nan`
-- llm_next_test: **HIDA_Scan**
-- termination_reason: sim_failed
-
-> The presence of gallstones and elevated LFTs suggests possible biliary obstruction or cholecystitis. A HIDA scan can assess gallbladder function and confirm cholecystitis.
-
-## patient 28201703 | cholecystitis | cs=low | cond=llm_features_only | order=nan | step 0
+## patient 25272447 | cholecystitis | cs=mid | cond=llm_full_deviation | order=rubric_first | step 0
 - tests_done_before: `Lab_Panel`
 - rubric_next: `Ultrasound_Abdomen`
-- knn_top1_disease: `nan`
+- knn_top1_disease: `appendicitis`
+- llm_next_test: **Ultrasound_Abdomen**
+- termination_reason: ok
+
+> This patient meets TG18 Group A (RUQ tenderness) and Group B (leukocytosis, SIRS ≥2) criteria for suspected cholecystitis, making abdominal ultrasound the indicated next step per TG18 guidelines as first-line imaging to evaluate for gallstones, GB wall thickening, pericholecystic fluid, and sonographic Murphy's sign. The rubric clearly directs to IMAGING_US at this decision point, and ultrasound should be performed before considering CT.
+
+## patient 20427750 | cholecystitis | cs=mid | cond=llm_full_deviation | order=rubric_first | step 0
+- tests_done_before: `Lab_Panel`
+- rubric_next: `Ultrasound_Abdomen`
+- knn_top1_disease: `cholecystitis`
+- llm_next_test: **Ultrasound_Abdomen**
+- termination_reason: ok
+
+> This patient has RUQ tenderness (Group A) and leukocytosis with nausea/vomiting (Group B), meeting TG18 criteria for suspected cholecystitis with gallstone history. Abdominal ultrasound is the mandatory first-line imaging per TG18 guidelines to evaluate for gallbladder wall thickening, pericholecystic fluid, sonographic Murphy's sign, and gallstones before any further workup.
+
+## patient 25396724 | diverticulitis | cs=high | cond=llm_full_deviation | order=rubric_first | step 0
+- tests_done_before: `Lab_Panel`
+- rubric_next: `nan`
+- knn_top1_disease: `diverticulitis`
 - llm_next_test: **CT_Abdomen**
 - termination_reason: ok
 
-> The patient presents with RUQ pain, elevated LFTs, and peritoneal signs, suggesting a possible acute abdominal condition such as cholecystitis or cholangitis. A CT Abdomen can provide detailed imaging to assess for complications like perforation or abscess.
+> This patient has classic features of diverticulitis (LLQ pain, fever ≥38°C, bowel habit change, duration >72h, SIRS criteria ≥2) with labs already completed. CT abdomen/pelvis with IV contrast is the gold standard (sensitivity 94%, specificity 99%) and is indicated to confirm the diagnosis, exclude complications, and guide Hinchey classification for appropriate management.
 
-## patient 21292285 | diverticulitis | cs=mid | cond=llm_features_only | order=nan | step 3
-- tests_done_before: `Lab_Panel, CT_Abdomen, Radiograph_Chest, Ultrasound_Abdomen`
+## patient 26483312 | diverticulitis | cs=high | cond=llm_full_deviation | order=rubric_first | step 0
+- tests_done_before: `Lab_Panel`
 - rubric_next: `nan`
-- knn_top1_disease: `nan`
-- llm_next_test: **STOP**
-- termination_reason: stop
+- knn_top1_disease: `diverticulitis`
+- llm_next_test: **CT_Abdomen**
+- termination_reason: ok
 
-> The patient has peritoneal signs, impaired mental status, and organ dysfunction, suggesting a severe intra-abdominal process. With CT and ultrasound already performed, further imaging is unlikely to change management, and surgical consultation is warranted.
+> This patient has LLQ pain, prior diverticular disease, age >60, symptom duration >72h, and nausea/vomiting — all pointing strongly toward diverticulitis with possible complications. CT abdomen/pelvis with IV contrast is the gold standard (sensitivity 94%, specificity 99%) and is indicated here given high-risk features (age >60, prolonged symptoms) to confirm diagnosis and assess for complications requiring Hinchey grading.
 
-## patient 29310170 | appendicitis | cs=mid | cond=llm_full | order=rubric_first | step 2
-- tests_done_before: `Lab_Panel, Ultrasound_Abdomen, CT_Abdomen`
+## patient 21793374 | diverticulitis | cs=low | cond=llm_full_deviation | order=rubric_first | step 1
+- tests_done_before: `Lab_Panel, CT_Abdomen`
 - rubric_next: `nan`
 - knn_top1_disease: `appendicitis`
 - llm_next_test: **STOP**
 - termination_reason: stop
 
-> The CT scan has confirmed appendicitis, and no further diagnostic tests are needed. Proceed with treatment planning.
+> CT Abdomen is positive for appendicitis with RLQ pain, RLQ tenderness, and markedly elevated WBC — the diagnosis of appendicitis is confirmed and no further diagnostic testing is warranted before surgical consultation.
 
-## patient 25217286 | cholecystitis | cs=low | cond=llm_full | order=rubric_first | step 0
+## patient 24918382 | diverticulitis | cs=low | cond=llm_full_deviation | order=rubric_first | step 1
+- tests_done_before: `Lab_Panel, CT_Abdomen`
+- rubric_next: `nan`
+- knn_top1_disease: `appendicitis`
+- llm_next_test: **STOP**
+- termination_reason: stop
+
+> CT abdomen is positive for appendicitis with peritoneal signs, markedly elevated WBC with left shift, RLQ tenderness, nausea/vomiting — the diagnosis of appendicitis is confirmed and no further diagnostic testing is warranted; surgical consultation should proceed immediately.
+
+## patient 20180280 | diverticulitis | cs=mid | cond=llm_full_deviation | order=rubric_first | step 0
 - tests_done_before: `Lab_Panel`
-- rubric_next: `Ultrasound_Abdomen`
-- knn_top1_disease: `diverticulitis`
-- llm_next_test: **Ultrasound_Abdomen**
+- rubric_next: `CT_Abdomen`
+- knn_top1_disease: `cholecystitis`
+- llm_next_test: **CT_Abdomen**
 - termination_reason: ok
 
-> The patient has elevated WBC and LFTs, suggesting systemic inflammation and possible biliary involvement. An abdominal ultrasound is the first-line imaging test to evaluate for cholecystitis and gallstones.
+> The patient has completed labs showing leukocytosis, elevated BUN/creatinine, and meets SIRS criteria with >72h symptoms, indicating possible complicated diverticulitis requiring CT abdomen/pelvis with IV contrast as the gold standard (sensitivity 94%, specificity 99%) to confirm diagnosis and classify any complications via Hinchey grading. This is the rubric-recommended next step given uncertain/high-risk features.
 
-## patient 20009550 | pancreatitis | cs=mid | cond=llm_full | order=rubric_first | step 2
+## patient 27065737 | diverticulitis | cs=mid | cond=llm_full_deviation | order=rubric_first | step 1
+- tests_done_before: `Lab_Panel, CT_Abdomen`
+- rubric_next: `nan`
+- knn_top1_disease: `appendicitis`
+- llm_next_test: **STOP**
+- termination_reason: stop
+
+> Lab Panel and CT Abdomen have already been completed, satisfying the full diagnostic workup per the diverticulitis rubric. With peritoneal signs, markedly elevated WBC (>18k), and CT findings available, Hinchey grading can be determined from the existing CT results — no further testing is warranted.
+
+## patient 22622478 | pancreatitis | cs=high | cond=llm_full_deviation | order=rubric_first | step 2
+- tests_done_before: `Lab_Panel, CT_Abdomen, Ultrasound_Abdomen`
+- rubric_next: `nan`
+- knn_top1_disease: `pancreatitis`
+- llm_next_test: **MRCP_Abdomen**
+- termination_reason: ok
+
+> Acute pancreatitis is confirmed (lipase ≥3×ULN + characteristic imaging on CT/US = ≥2 Atlanta criteria), and biliary etiology is suspected given elevated LFTs and bilirubin. Per the rubric, MRCP is indicated next to evaluate for choledocholithiasis before proceeding to BISAP risk stratification.
+
+## patient 25936586 | pancreatitis | cs=high | cond=llm_full_deviation | order=rubric_first | step 1
+- tests_done_before: `Lab_Panel, Ultrasound_Abdomen`
+- rubric_next: `MRCP_Abdomen`
+- knn_top1_disease: `pancreatitis`
+- llm_next_test: **MRCP_Abdomen**
+- termination_reason: ok
+
+> Acute pancreatitis is confirmed (≥2 Atlanta criteria met: epigastric pain, lipase ≥3×ULN, and US gallstones), and biliary etiology is strongly suspected given elevated LFTs, elevated bilirubin, gallstone history, and US-confirmed gallstones — MRCP is indicated to evaluate for choledocholithiasis before proceeding to risk stratification.
+
+## patient 28361244 | pancreatitis | cs=low | cond=llm_full_deviation | order=rubric_first | step 0
+- tests_done_before: `Lab_Panel`
+- rubric_next: `CT_Abdomen`
+- knn_top1_disease: `pancreatitis`
+- llm_next_test: **CT_Abdomen**
+- termination_reason: ok
+
+> This patient meets ≥2 Revised Atlanta criteria (lipase ≥3×ULN + upper abdominal pain/RUQ tenderness), confirming acute pancreatitis, but CT abdomen is warranted given elevated WBC >18k, age >60, and elevated bilirubin suggesting possible biliary pancreatitis with concern for severity assessment and complications. The rubric recommends CT_Abdomen at this juncture to evaluate for necrosis and extrapancreatic complications before proceeding to BISAP/CTSI scoring.
+
+## patient 25559876 | pancreatitis | cs=low | cond=llm_full_deviation | order=rubric_first | step 2
+- tests_done_before: `Lab_Panel, Ultrasound_Abdomen, CT_Abdomen`
+- rubric_next: `nan`
+- knn_top1_disease: `cholecystitis`
+- llm_next_test: **STOP**
+- termination_reason: stop
+
+> CT abdomen is positive for appendicitis with organ dysfunction, SIRS ≥2, elevated LFTs/bilirubin, and gallstones on US — sufficient information is available to commit to a diagnosis (acute appendicitis with possible concurrent biliary pathology) and initiate management. The rubric has no further diagnostic test recommendations at this point.
+
+## patient 26472405 | pancreatitis | cs=mid | cond=llm_full_deviation | order=rubric_first | step 2
 - tests_done_before: `Lab_Panel, CT_Abdomen, Ultrasound_Abdomen`
 - rubric_next: `MRCP_Abdomen`
 - knn_top1_disease: `pancreatitis`
 - llm_next_test: **MRCP_Abdomen**
 - termination_reason: ok
 
-> The patient has gallstones and elevated LFTs, suggesting a biliary etiology for pancreatitis. MRCP is recommended to evaluate for choledocholithiasis.
+> The patient has confirmed acute pancreatitis with biliary etiology strongly suspected (elevated LFTs, elevated bilirubin, and US-confirmed gallstones), making MRCP the indicated next step per guidelines to evaluate for choledocholithiasis. This aligns with the rubric's MRCP_BILIARY_EVAL node and is supported by 3 of 5 similar prior patients.
 
-## patient 25645259 | appendicitis | cs=high | cond=llm_features_only | order=nan | step 0
-- tests_done_before: `Lab_Panel`
-- rubric_next: `Ultrasound_Abdomen`
-- knn_top1_disease: `nan`
+## patient 25072682 | pancreatitis | cs=mid | cond=llm_full_deviation | order=rubric_first | step 3
+- tests_done_before: `Lab_Panel, CT_Abdomen, Ultrasound_Abdomen, MRCP_Abdomen`
+- rubric_next: `nan`
+- knn_top1_disease: `pancreatitis`
+- llm_next_test: **STOP**
+- termination_reason: stop
+
+> All required tests per the rubric have been completed (Lab_Panel, CT_Abdomen, Ultrasound_Abdomen, MRCP_Abdomen). The clinical picture confirms acute pancreatitis with biliary etiology suspected (elevated LFTs/bilirubin), high-risk features (WBC >18k, organ dysfunction), and the pathway leads to Severe Acute Pancreatitis classification based on persistent organ failure — no further diagnostic testing is warranted at this point.
+
+## patient 24449784 | pancreatitis | cs=low | cond=llm_full_deviation | order=rubric_first | step 1
+- tests_done_before: `Lab_Panel, Ultrasound_Abdomen`
+- rubric_next: `CT_Abdomen`
+- knn_top1_disease: `cholecystitis`
 - llm_next_test: **CT_Abdomen**
 - termination_reason: ok
 
-> The patient presents with right lower quadrant pain, rebound tenderness, peritoneal signs, and leukocytosis, which are highly suggestive of appendicitis. A CT scan of the abdomen is the most appropriate next step to confirm the diagnosis and assess for complications.
+> The patient has RUQ pain >72h with elevated LFTs, gallstones on US, organ dysfunction, and elevated BUN/creatinine — meeting criteria for confirmed pancreatitis with high BISAP score (BUN>25, age>60, organ dysfunction = ≥3 points). Per the rubric, contrast-enhanced CT at 48–72h is indicated for CTSI scoring to assess necrosis extent and guide ICU management in this high-risk presentation.
 
-## patient 20639685 | cholecystitis | cs=high | cond=llm_full | order=rubric_first | step 0
+## patient 24091316 | pancreatitis | cs=high | cond=llm_full_deviation | order=rubric_first | step 0
 - tests_done_before: `Lab_Panel`
 - rubric_next: `Ultrasound_Abdomen`
 - knn_top1_disease: `pancreatitis`
 - llm_next_test: **Ultrasound_Abdomen**
 - termination_reason: ok
 
-> The patient presents with symptoms and lab findings suggestive of cholecystitis, including elevated WBC, lipase, and LFTs, along with a history of gallstones. An abdominal ultrasound is the first-line imaging test to evaluate for cholecystitis and gallstones.
+> The patient meets ≥2 Atlanta criteria (epigastric pain radiating to back + lipase ≥3×ULN), confirming acute pancreatitis. Elevated LFTs suggest a biliary etiology, so abdominal ultrasound is the next step to evaluate for gallstones/biliary pathology as the precipitating cause.
 
-## patient 28721835 | cholecystitis | cs=high | cond=llm_full | order=rubric_first | step 1
+## patient 21849575 | pancreatitis | cs=mid | cond=llm_full_deviation | order=rubric_first | step 2
+- tests_done_before: `Lab_Panel, Ultrasound_Abdomen, MRCP_Abdomen`
+- rubric_next: `nan`
+- knn_top1_disease: `pancreatitis`
+- llm_next_test: **STOP**
+- termination_reason: stop
+
+> All required diagnostic steps have been completed: Lab_Panel confirmed lipase ≥3×ULN, Ultrasound_Abdomen identified gallstones supporting biliary etiology, and MRCP_Abdomen evaluated for choledocholithiasis. The rubric pathway through CONFIRMED → MRCP_BILIARY_EVAL is complete; next steps (BISAP scoring, organ failure assessment) are clinical management decisions using already-available data, not additional diagnostic tests.
+
+## patient 25559876 | pancreatitis | cs=low | cond=llm_full_deviation | order=rubric_first | step 1
 - tests_done_before: `Lab_Panel, Ultrasound_Abdomen`
+- rubric_next: `CT_Abdomen`
+- knn_top1_disease: `cholecystitis`
+- llm_next_test: **CT_Abdomen**
+- termination_reason: ok
+
+> This patient has RUQ pain, elevated LFTs/bilirubin, gallstones on US, leukocytosis, SIRS ≥2, and organ dysfunction — raising concern for complicated biliary disease including cholangitis or pancreatitis with severity markers. CT abdomen is the recommended next step per the rubric to assess for local complications, necrosis, biliary ductal dilation, and to guide severity stratification (CTSI) given the presence of organ dysfunction.
+
+## patient 20418179 | pancreatitis | cs=low | cond=llm_full_deviation | order=rubric_first | step 1
+- tests_done_before: `Lab_Panel, CT_Abdomen`
+- rubric_next: `nan`
+- knn_top1_disease: `appendicitis`
+- llm_next_test: **STOP**
+- termination_reason: stop
+
+> CT_cholecystitis_positive and cholecystitis_additional_imaging_positive confirm the diagnosis. Lab_Panel and CT_Abdomen have already been completed, and the rubric indicates no further testing is warranted at this point.
+
+## patient 22361306 | cholecystitis | cs=high | cond=llm_full_deviation | order=rubric_first | step 2
+- tests_done_before: `Lab_Panel, Ultrasound_Abdomen, MRCP_Abdomen`
 - rubric_next: `nan`
 - knn_top1_disease: `cholecystitis`
 - llm_next_test: **STOP**
 - termination_reason: stop
 
-> The patient meets criteria for cholecystitis with positive ultrasound findings and systemic inflammation. Further testing is not necessary for diagnosis.
-
-## patient 20276429 | appendicitis | cs=mid | cond=llm_features_only | order=nan | step 2
-- tests_done_before: `Lab_Panel, Ultrasound_Abdomen, CT_Abdomen`
-- rubric_next: `nan`
-- knn_top1_disease: `nan`
-- llm_next_test: **STOP**
-- termination_reason: stop
-
-> The CT scan is positive for appendicitis, which correlates with the patient's symptoms and location of pain, confirming the diagnosis. No further testing is needed.
-
-## patient 28812564 | cholecystitis | cs=mid | cond=llm_features_only | order=nan | step 1
-- tests_done_before: `Lab_Panel, Ultrasound_Abdomen`
-- rubric_next: `MRCP_Abdomen`
-- knn_top1_disease: `nan`
-- llm_next_test: **MRCP_Abdomen**
-- termination_reason: ok
-
-> The patient has RUQ pain, elevated LFTs, and gallstones, suggesting possible choledocholithiasis or pancreatitis. MRCP can non-invasively evaluate the biliary tree for stones or other obstructions.
-
-## patient 21458819 | cholecystitis | cs=mid | cond=llm_full | order=rubric_first | step 0
-- tests_done_before: `Lab_Panel`
-- rubric_next: `Ultrasound_Abdomen`
-- knn_top1_disease: `cholecystitis`
-- llm_next_test: **Ultrasound_Abdomen**
-- termination_reason: ok
-
-> The patient presents with RUQ pain, tenderness, and systemic inflammation signs, suggesting cholecystitis. An abdominal ultrasound is the first-line imaging test to confirm the diagnosis.
+> All required diagnostic workup is complete: Lab_Panel, Ultrasound_Abdomen, and MRCP_Abdomen have been performed. The findings confirm cholecystitis with organ dysfunction (elevated creatinine, pleural effusion, has_organ_dysfunction=True), meeting TG18 Grade III (Severe) criteria. No further testing is warranted to establish diagnosis and severity grade.
 

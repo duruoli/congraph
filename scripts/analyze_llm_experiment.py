@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
-"""Compute gap_comparison_table.csv, certainty_stratified.csv, and
-write a reasoning sample markdown file + findings.md stub.
+"""Compute gap_comparison_table.csv and certainty_stratified.csv.
+
+Convention (rubric-relative, same as scripts/gap_analysis.py):
+  commission = agent ordered extra tests not recommended by rubric
+  omission   = agent skipped rubric-recommended tests
+
+Conditions compared: llm_features_only, llm_full, doctor.
 """
 from __future__ import annotations
 
@@ -45,9 +50,15 @@ def _sample_reasoning_md(steps_csv: Path, out: Path, n_samples: int = 30) -> Non
         )
         lines.append(f"- tests_done_before: `{r['tests_done_before']}`\n")
         lines.append(f"- rubric_next: `{r['rubric_next_test']}`\n")
-        lines.append(f"- knn_top1_disease: `{r['knn_top1_disease']}`\n")
+        lines.append(f"- knn_top1_disease: `{r.get('knn_top1_disease', '')}`\n")
         lines.append(f"- llm_next_test: **{r['llm_next_test']}**\n")
         lines.append(f"- termination_reason: {r['termination_reason']}\n")
+        if r.get("condition") == "llm_rubric":
+            follows = r.get("follows_rubric", "")
+            dev = r.get("deviation_reason", "")
+            lines.append(f"- follows_rubric: {follows}\n")
+            if dev:
+                lines.append(f"- deviation_reason: {dev}\n")
         lines.append(f"\n> {r['llm_reasoning']}\n\n")
     out.write_text("".join(lines))
 

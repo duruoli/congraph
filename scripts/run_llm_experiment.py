@@ -25,7 +25,7 @@ if str(ROOT) not in sys.path:
 
 from knn.feature_simulator import FeatureSimulator
 
-from experiments.llm_experiment.env_loader import load_openai_key
+from experiments.llm_experiment.env_loader import load_openrouter_key
 from experiments.llm_experiment.knn_neighbors import PatientKNN
 from experiments.llm_experiment.runner import (
     CohortRunConfig,
@@ -68,7 +68,7 @@ def _save(traj_list, out_dir: Path, prefix: str):
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--mode", choices=["order", "main"], required=True)
-    p.add_argument("--model", default="gpt-4o")
+    p.add_argument("--model", default="anthropic/claude-sonnet-4-6")
     p.add_argument("--max-steps", type=int, default=7)
     p.add_argument("--out-dir", default=str(ROOT / "results" / "llm_experiment"))
     p.add_argument("--seed", type=int, default=42)
@@ -78,9 +78,14 @@ def main() -> None:
                    help="In main mode, use all 300 test patients instead of the 30-patient sample")
     p.add_argument("--workers", type=int, default=1,
                    help="ThreadPoolExecutor workers; 1 = sequential")
+    p.add_argument("--out-prefix", default="llm_recommendations",
+                   help="Output CSV filename prefix (without .csv)")
+    p.add_argument("--conditions", nargs="+",
+                   default=["llm_features_only", "llm_full", "llm_rubric"],
+                   help="Conditions to run in main mode (space-separated)")
     args = p.parse_args()
 
-    load_openai_key()
+    load_openrouter_key()
 
     train, test = build_train_test_split(seed=args.seed)
     print(f"train patients: {sum(len(v) for v in train.values())}  "
@@ -112,7 +117,7 @@ def main() -> None:
     info_orders = ["rubric_first", "knn_first"] if args.average_orders else ["rubric_first"]
     cfg = CohortRunConfig(
         sample_df=sample_df,
-        conditions=["llm_features_only", "llm_full"],
+        conditions=args.conditions,
         info_orders=info_orders,
         max_steps=args.max_steps,
         model=args.model,
@@ -120,7 +125,7 @@ def main() -> None:
     )
     trajs = run_cohort(cfg=cfg, train_dict=train, test_dict=test,
                        simulator=simulator, knn=knn)
-    _save(trajs, Path(args.out_dir), "llm_recommendations")
+    _save(trajs, Path(args.out_dir), args.out_prefix)
 
 
 if __name__ == "__main__":

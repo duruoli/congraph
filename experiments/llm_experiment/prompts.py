@@ -1,9 +1,12 @@
 """Prompt builders for the LLM next-test recommendation experiment.
 
-Two conditions:
+Three conditions:
   - llm_features_only : only patient features
   - llm_full          : patient features + rubric recommendation + sub-rubric
                         graph + top-5 similar-patient sequences
+  - llm_rubric        : patient features + rubric recommendation + sub-rubric
+                        graph; LLM explicitly decides to follow or deviate,
+                        outputting follows_rubric + deviation_reason
 
 Order-sensitivity check toggles the ordering of (sub-rubric + rubric rec)
 vs (KNN block) within llm_full.
@@ -30,6 +33,21 @@ OUTPUT_INSTRUCTIONS = (
     '{"next_test": "<test_key>", "reasoning": "1-2 sentence rationale"}\n'
     f'where <test_key> is one of: {list(VALID_TESTS)} OR the string "STOP".\n'
     "Do NOT recommend a test that has already been completed."
+)
+
+RUBRIC_OUTPUT_INSTRUCTIONS = (
+    "Based on this patient's specific presentation and your medical knowledge, "
+    "decide whether the rubric recommendation is appropriate for this patient, "
+    "or whether their situation warrants a different approach.\n"
+    "Respond with a single JSON object exactly of the form:\n"
+    '{"next_test": "<test_key>", "follows_rubric": <bool>, '
+    '"deviation_reason": "<if follows_rubric is false: why this patient warrants deviation>", '
+    '"reasoning": "1-2 sentence rationale"}\n'
+    f'where <test_key> is one of: {list(VALID_TESTS)} OR the string "STOP".\n'
+    "Do NOT recommend a test that has already been completed.\n"
+    '"follows_rubric" must be true if next_test matches the rubric recommendation, '
+    "false otherwise. "
+    '"deviation_reason" is required when follows_rubric is false, empty string otherwise.'
 )
 
 
@@ -84,6 +102,118 @@ def _present_knn(neighbors: list[tuple[TrainPatient, float]]) -> str:
     return "\n".join(lines)
 
 
+def _present_knn_deviation(
+    neighbors: list[tuple[TrainPatient, float]],
+    rubric_pending: list[str],
+    tests_done: list[str],
+) -> str:
+    """KNN block annotated with per-neighbor deviation from rubric.
+
+    For each similar prior patient, shows which rubric-recommended tests they
+    performed vs skipped, and which extra tests they ordered beyond the rubric.
+    This surfaces the local-shortcut and local-addition signals that are hidden
+    in raw sequences.
+    """
+    if not neighbors:
+        return "## Similar prior patients\n(none available)"
+
+    # Tests rubric still wants (excluding Lab_Panel and already-done tests)
+    done_set = set(tests_done) | {"Lab_Panel"}
+    rubric_set = set(rubric_pending) - done_set
+
+    header_lines = [
+        "## Top-5 similar prior patients (deviation-annotated)",
+        "Shows how each similar patient's test choices compared to what the rubric "
+        "currently recommends for this patient.",
+    ]
+    if rubric_set:
+        header_lines.append(
+            "Rubric currently recommends: " + ", ".join(sorted(rubric_set))
+        )
+    else:
+        header_lines.append("Rubric has no further recommendations at this point.")
+
+    lines = header_lines + [""]
+    for i, (tp, dist) in enumerate(neighbors, 1):
+        neighbor_set = set(tp.test_sequence)
+
+        if rubric_set:
+            covered = sorted(rubric_set & neighbor_set)
+            skipped = sorted(rubric_set - neighbor_set)
+            extra   = sorted((neighbor_set - rubric_set) - done_set)
+            parts = []
+            parts.append("covered: " + (", ".join(covered) if covered else "(none)"))
+            parts.append("skipped: " + (", ".join(skipped) if skipped else "(none)"))
+            parts.append("added:   " + (", ".join(extra)   if extra   else "(none)"))
+            detail = " | ".join(parts)
+        else:
+            # Rubric is silent — fall back to showing raw sequence
+            seq = " -> ".join(tp.test_sequence) if tp.test_sequence else "(no tests)"
+            detail = f"seq: {seq}"
+
+        lines.append(f"  {i}. disease={tp.disease}  d={dist:.3f}")
+        lines.append(f"     {detail}")
+
+    return "\n".join(lines)
+
+
+def _deviation_summary(
+    neighbors: list[tuple[TrainPatient, float]],
+    rubric_pending: list[str],
+    tests_done: list[str],
+    min_fraction: float = 0.6,
+) -> str:
+    """One-sentence summary of the strongest deviation signal across neighbors.
+
+    Placed just before OUTPUT_INSTRUCTIONS so the LLM sees it at the decision
+    point.  Only emits a sentence when >= min_fraction of neighbors show a
+    consistent skip or add signal.  Returns empty string if no strong signal.
+    """
+    if not neighbors:
+        return ""
+
+    done_set = set(tests_done) | {"Lab_Panel"}
+    rubric_set = set(rubric_pending) - done_set
+    n = len(neighbors)
+
+    if not rubric_set:
+        return ""
+
+    # Count per-test skip and add across all neighbors
+    skip_counts: dict[str, int] = {}
+    add_counts:  dict[str, int] = {}
+    tests_done_label = ", ".join(sorted(done_set - {"Lab_Panel"})) or "Lab_Panel"
+
+    for tp, _ in neighbors:
+        neighbor_set = set(tp.test_sequence)
+        for t in rubric_set - neighbor_set:
+            skip_counts[t] = skip_counts.get(t, 0) + 1
+        for t in (neighbor_set - rubric_set) - done_set:
+            add_counts[t] = add_counts.get(t, 0) + 1
+
+    sentences = []
+
+    # Skip signal
+    for test, cnt in sorted(skip_counts.items(), key=lambda x: -x[1]):
+        if cnt / n >= min_fraction:
+            done_str = (f" after {tests_done_label}" if tests_done_label else "")
+            sentences.append(
+                f"Clinical precedent: {cnt} of {n} similar patients chose to skip "
+                f"{test}{done_str}."
+            )
+
+    # Add signal (only if no strong skip sentence already)
+    if not sentences:
+        for test, cnt in sorted(add_counts.items(), key=lambda x: -x[1]):
+            if cnt / n >= min_fraction:
+                sentences.append(
+                    f"Clinical precedent: {cnt} of {n} similar patients added "
+                    f"{test} beyond the rubric recommendation."
+                )
+
+    return "\n".join(sentences)
+
+
 # ---------------------------------------------------------------------------
 # Rubric block
 # ---------------------------------------------------------------------------
@@ -106,11 +236,12 @@ def _present_subrubric_graph(disease: str) -> str:
 def build_user_prompt(
     *,
     features: dict,
-    condition: str,                              # "llm_features_only" | "llm_full"
-    disease: str,                                 # oracle disease
+    condition: str,           # "llm_features_only" | "llm_full" | "llm_full_deviation" | "llm_rubric"
+    disease: str,             # oracle disease
     rubric_next_test: str | None = None,
+    rubric_pending_tests: list[str] | None = None,   # all rubric-pending tests (deviation only)
     neighbors: list[tuple[TrainPatient, float]] | None = None,
-    info_order: str = "rubric_first",             # "rubric_first" | "knn_first"
+    info_order: str = "rubric_first",
 ) -> str:
     parts: list[str] = []
     parts.append(_present_features(features))
@@ -119,14 +250,35 @@ def build_user_prompt(
         parts.append(OUTPUT_INSTRUCTIONS)
         return "\n\n".join(parts)
 
-    if condition != "llm_full":
+    if condition == "llm_rubric":
+        parts.append(_present_rubric_recommendation(rubric_next_test, disease))
+        parts.append(_present_subrubric_graph(disease))
+        parts.append(RUBRIC_OUTPUT_INSTRUCTIONS)
+        return "\n\n".join(parts)
+
+    if condition not in ("llm_full", "llm_full_deviation"):
         raise ValueError(f"Unknown condition: {condition}")
 
     rubric_blocks = [
         _present_rubric_recommendation(rubric_next_test, disease),
         _present_subrubric_graph(disease),
     ]
-    knn_block = _present_knn(neighbors or [])
+
+    if condition == "llm_full_deviation":
+        tests_done = list(features.get("tests_done", []))
+        knn_block = _present_knn_deviation(
+            neighbors or [],
+            rubric_pending=rubric_pending_tests or [],
+            tests_done=tests_done,
+        )
+        summary = _deviation_summary(
+            neighbors or [],
+            rubric_pending=rubric_pending_tests or [],
+            tests_done=tests_done,
+        )
+    else:
+        knn_block = _present_knn(neighbors or [])
+        summary = ""
 
     if info_order == "rubric_first":
         parts.extend(rubric_blocks)
@@ -137,5 +289,7 @@ def build_user_prompt(
     else:
         raise ValueError(f"Unknown info_order: {info_order}")
 
+    if summary:
+        parts.append(summary)
     parts.append(OUTPUT_INSTRUCTIONS)
     return "\n\n".join(parts)

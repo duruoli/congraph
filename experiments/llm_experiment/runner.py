@@ -97,6 +97,8 @@ class StepRecord:
     prompt_tokens: int = 0
     completion_tokens: int = 0
     elapsed_s: float = 0.0
+    follows_rubric: Optional[bool] = None   # set only for llm_rubric condition
+    deviation_reason: str = ""
 
 
 @dataclass
@@ -124,6 +126,14 @@ def _rubric_next_test(features: dict, disease: str) -> Optional[str]:
     return res.pending_tests[0] if res.pending_tests else None
 
 
+def _rubric_all_pending(features: dict, disease: str) -> list[str]:
+    """Return all tests the rubric still recommends from the current state."""
+    res = traverse_graph(DISEASE_GRAPHS[disease], features)
+    if res.terminal_node is not None:
+        return []
+    return list(res.pending_tests)
+
+
 def run_one_trajectory(
     *,
     patient_id: str,
@@ -135,7 +145,7 @@ def run_one_trajectory(
     knn: PatientKNN,
     info_order: str = "rubric_first",
     max_steps: int = 7,
-    model: str = "gpt-4o",
+    model: str = "anthropic/claude-sonnet-4-6",
     verbose: bool = False,
 ) -> TrajectoryRecord:
     current = initial_features
@@ -146,14 +156,20 @@ def run_one_trajectory(
     for step_index in range(max_steps):
         tests_done_before = list(current.get("tests_done", []))
         rubric_next = _rubric_next_test(current, disease)
-        neighbors = knn.top_n(current, n=5) if condition == "llm_full" else []
+        use_knn = condition in ("llm_full", "llm_full_deviation")
+        neighbors = knn.top_n(current, n=5) if use_knn else []
         knn_top1_disease = neighbors[0][0].disease if neighbors else None
+        rubric_pending = (
+            _rubric_all_pending(current, disease)
+            if condition == "llm_full_deviation" else None
+        )
 
         prompt = build_user_prompt(
             features=current,
             condition=condition,
             disease=disease,
             rubric_next_test=rubric_next,
+            rubric_pending_tests=rubric_pending,
             neighbors=neighbors,
             info_order=info_order,
         )
@@ -176,6 +192,8 @@ def run_one_trajectory(
             terminated=False, termination_reason="ok",
             prompt_tokens=res.prompt_tokens, completion_tokens=res.completion_tokens,
             elapsed_s=elapsed,
+            follows_rubric=res.follows_rubric,
+            deviation_reason=res.deviation_reason,
         )
 
         if nt == "STOP":
@@ -230,7 +248,7 @@ class CohortRunConfig:
     conditions: list[str]
     info_orders: list[str]                    # applied per condition that uses full info
     max_steps: int = 7
-    model: str = "gpt-4o"
+    model: str = "anthropic/claude-sonnet-4-6"
     verbose: bool = True
     parallel_workers: int = 1                 # >1 enables ThreadPoolExecutor
 
@@ -250,7 +268,7 @@ def _build_jobs(
             continue
         initial = steps[0]["features"]
         for condition in cfg.conditions:
-            orders = cfg.info_orders if condition == "llm_full" else ["n/a"]
+            orders = cfg.info_orders if condition in ("llm_full", "llm_full_deviation") else ["n/a"]
             for info_order in orders:
                 jobs.append({
                     "patient_id": pid, "disease": disease, "cs_tercile": cs_tercile,
@@ -346,6 +364,8 @@ def trajectories_to_step_df(trajs: Iterable[TrajectoryRecord]) -> pd.DataFrame:
                 "prompt_tokens": s.prompt_tokens,
                 "completion_tokens": s.completion_tokens,
                 "elapsed_s": round(s.elapsed_s, 3),
+                "follows_rubric": s.follows_rubric,
+                "deviation_reason": s.deviation_reason,
             })
     return pd.DataFrame(rows)
 
