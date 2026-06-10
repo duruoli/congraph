@@ -13,10 +13,17 @@ the other — see HANDOFF §1.5):
                 This is what the certainty-trigger AGENT must learn: at inference
                 it only knows its current belief, so "deviate from rubric" can only
                 mean "deviate from the rubric of what I currently think it is".
+                Computed STEP-BY-STEP via rubric traversal (belief_step_deviation):
+                feed the step's real causally-masked pre-decision features into the
+                belief graph -> the imaging the rubric wants HERE -> compare to the
+                doctor's action -> {follow, deviate, off_rubric}. Single-step has only
+                same/not-same; commission / omission / order-swap are SEQUENCE-level
+                and belong to god-view, NOT here.
 
 R[D] (recommended imaging per disease sub-rubric) is extracted *programmatically*
 from pipeline.rubric_graph.DISEASE_GRAPHS (union of node.required_tests, filtered
-to imaging modalities) so it stays in sync with the rubric and is never hand-copied.
+to imaging modalities). It is now used only for the synthetic 'biliary' branch (no
+graph node) and episode-level omission; the step-level judgment uses live traversal.
 """
 from __future__ import annotations
 
@@ -24,6 +31,7 @@ import re
 from functools import lru_cache
 
 from pipeline.rubric_graph import DISEASE_GRAPHS
+from pipeline.traversal_engine import traverse_graph
 
 # imaging test keys the rubric can recommend (Radiograph_Chest is excluded from
 # commission upstream and is never a DECISION step, so it is not listed here)
@@ -46,11 +54,38 @@ EXTRA_BRANCH_IMAGING = {
 # Bile-duct / obstructive-biliary terms in an off_rubric step's other_hypothesis text.
 # Validated on the 30-case batch: tags the 6 ductal off_rubric steps, zero false hits on
 # the appendicitis/diverticulitis broad-net steps.
+#
+# 'biliary colic' is deliberately NOT a token: colic is GALLBLADDER/cystic-duct pain
+# (gallbladder-WALL axis), conceptually not the bile-DUCT axis this branch represents. At
+# full-300 scale it tagged 6 steps (4 of them buried behind a gyn/SBO lead) — pure noise for
+# the ductal entity. (full-300 audit, annotation_agent_design memory.)
 BILIARY_OTHER_HYP = re.compile(
-    r"choledocho|cholangit|common bile duct|\bCBD\b|biliary (?:obstruct|dilat|tree|duct|colic)"
+    r"choledocho|cholangit|common bile duct|\bCBD\b|biliary (?:obstruct|dilat|tree|duct)"
     r"|bile leak|bilom|ductal dilat|post-ERCP|ampull|sphincterotom",
     re.I,
 )
+
+
+def _leading_clause(text: str) -> str:
+    """First top-level hypothesis of an other_hypothesis differential.
+
+    Splits on the first DEPTH-0 ',' or ';' so a parenthetical list stays with its clause and
+    intra-hypothesis '/' alternation ("choledocholithiasis / biliary obstruction") is NOT a
+    break. Used to gate the biliary relabel to a LEADING ductal belief: at full-300 scale ~22%
+    of regex hits had biliary buried 3rd-4th behind an SBO / post-op / mesenteric-ischemia / gyn
+    lead (e.g. chole 20972818 "SBO primary concern…", panc 29581468 "mesenteric ischemia…biloma",
+    chole 22521761 "post-bypass complication…biliary") — those are broad-net steps that should
+    stay off_rubric, not biliary deviate_commission. (annotation_agent_design memory.)
+    """
+    depth = 0
+    for i, ch in enumerate(text):
+        if ch == "(":
+            depth += 1
+        elif ch == ")":
+            depth = max(0, depth - 1)
+        elif ch in ",;" and depth == 0:
+            return text[:i]
+    return text
 
 
 @lru_cache(maxsize=1)
@@ -76,41 +111,91 @@ def modality_of(ordered: str) -> str:
     return "_".join(head.split()[:2])
 
 
-def belief_deviation(top_branch: str, ordered: str) -> str:
-    """Step-level belief-conditioned status.
+def rubric_recommended_imaging(belief: str, pre_features: dict) -> list[str]:
+    """Imaging the belief's sub-rubric wants NEXT, given the pre-decision feature state.
 
-      off_rubric         : belief sits on 'other' (or an unknown branch) -> no
-                           sub-rubric to deviate from; do NOT judge follow/deviate
-                           (and do NOT call it 'wrong' a priori — vindication judges
-                           quality; off-rubric steps are the outlier-patch signal).
-      follow             : ordered imaging IS in R[top_branch].
-      deviate_commission : believes top_branch yet orders imaging outside R[top_branch]
-                           (e.g. believes cholecystitis but orders CT).
+    This is the STEP-LOCAL rubric recommendation: traverse the belief disease graph
+    against the causally-masked features available *before* the doctor's action
+    (features_extraction idx_{k-1}; idx_k already contains test-k's result), and read
+    the pending imaging at the rubric frontier. Empty = the rubric is at a terminal,
+    is blocked (its gate conditions don't fire on the recorded features), or only wants
+    a non-imaging test here — in every such case the rubric is NOT asking for this image.
+
+    'biliary' has no DISEASE_GRAPHS node (post-hoc synthetic branch) -> fall back to its
+    static duct-modality set R[biliary]={US,MRCP}.
     """
-    R = recommended_imaging()
-    if top_branch not in R:          # 'other' or anything without a sub-rubric
+    if belief == "biliary":
+        return sorted(EXTRA_BRANCH_IMAGING["biliary"])
+    if belief not in DISEASE_GRAPHS:
+        return []
+    r = traverse_graph(DISEASE_GRAPHS[belief], pre_features)
+    return sorted(set(r.pending_tests) & IMAGING_KEYS)
+
+
+def rubric_state(belief: str, pre_features: dict) -> str:
+    """WHY the rubric does/doesn't want imaging here — splits the 'deviate' bucket so
+    over-testing/staging (rubric already at a diagnosis) is told apart from rubric
+    INCOMPLETENESS (gate conditions don't fire on the recorded features).
+
+      terminal_confirmed / terminal_excluded / terminal_low_risk
+                       : sub-rubric reached a diagnostic leaf -> any further imaging is
+                         over-testing / staging / complication-search, NOT a missed path.
+      recommends_imaging : rubric wants a specific image next (follow if it matches).
+      wants_nonimaging   : rubric wants a non-imaging test (e.g. Lab) before any image.
+      blocked            : reachable, required tests done, but all gate edges are False
+                         -> the rubric has NO path for this patient = incompleteness gap.
+      biliary / off_rubric : synthetic branch / belief='other'.
+    """
+    if belief == "biliary":
+        return "biliary"
+    if belief not in DISEASE_GRAPHS:
         return "off_rubric"
-    return "follow" if modality_of(ordered) in R[top_branch] else "deviate_commission"
+    r = traverse_graph(DISEASE_GRAPHS[belief], pre_features)
+    if r.terminal_type:
+        return r.terminal_type
+    if set(r.pending_tests) & IMAGING_KEYS:
+        return "recommends_imaging"
+    if r.pending_tests:
+        return "wants_nonimaging"
+    return "blocked"
 
 
-def derived_belief(top_branch: str, ordered: str,
-                   other_hypothesis: str | None) -> tuple[str, str]:
-    """Post-hoc biliary recovery, then belief-conditioned status.
+def belief_step_deviation(top_branch: str, pre_features: dict, ordered: str,
+                          other_hypothesis: str | None = None
+                          ) -> tuple[str, str, list[str]]:
+    """Step-by-step belief-conditioned status via rubric TRAVERSAL (replaces the old
+    set-membership `belief_deviation`).
 
-    Only off_rubric steps (top_branch is 'other', i.e. NOT one of the four reconstructed
-    disease graphs) are eligible: if their other_hypothesis names a bile-duct/obstructive
-    process, relabel the effective belief 'biliary' and judge it against R[biliary]={US,MRCP}.
-    A reconstructed disease belief is NEVER reclassified (this is what prevents the over-
-    attribution of established pancreatitis seen when biliary competed in the softmax).
+    At a single step the only well-posed question is: does the rubric of the disease the
+    doctor *currently believes* recommend, in THIS feature state, the image the doctor
+    actually ordered? -> two outcomes (commission/omission/order-swap are SEQUENCE-level
+    notions, judged by god-view, not here):
 
-    Returns (effective_branch, dev_status) where dev_status ∈ {follow, deviate_commission,
-    off_rubric}. 'biliary' + US/MRCP -> follow; 'biliary' + CT -> deviate_commission.
+      off_rubric : belief sits on 'other' with no biliary rescue -> no sub-rubric to judge
+                   against (do NOT call it 'wrong'; vindication judges quality — these are
+                   the outlier-patch signal).
+      follow     : the ordered imaging IS in the rubric's step-local recommendation.
+      deviate    : the ordered imaging is NOT what the rubric wants here — because the
+                   rubric wanted a different image, a non-imaging test, or nothing at all
+                   (terminal / blocked gate). Per design, all of these are `deviate`.
+
+    Post-hoc biliary rescue is preserved: an off_rubric step whose other_hypothesis names a
+    bile-duct process (leading clause) is relabeled effective belief 'biliary' and judged
+    vs R[biliary]={US,MRCP}. A reconstructed disease belief is NEVER reclassified.
+
+    Returns (effective_branch, dev_status, rubric_recommended_imaging).
     """
     eff = top_branch
     if top_branch not in DISEASE_GRAPHS and other_hypothesis \
-            and BILIARY_OTHER_HYP.search(other_hypothesis):
+            and BILIARY_OTHER_HYP.search(_leading_clause(other_hypothesis)):
         eff = "biliary"
-    return eff, belief_deviation(eff, ordered)
+
+    if eff not in DISEASE_GRAPHS and eff != "biliary":   # genuine 'other'
+        return eff, "off_rubric", []
+
+    rec = rubric_recommended_imaging(eff, pre_features)
+    status = "follow" if modality_of(ordered) in rec else "deviate"
+    return eff, status, rec
 
 
 def episode_omissions(top_branch_final: str, ordered_modalities: set[str]) -> set[str]:
