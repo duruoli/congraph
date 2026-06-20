@@ -37,13 +37,14 @@ def _entropy(probs: dict[str, float]) -> float:
     """Shannon entropy (bits) of a probability distribution."""
     return -sum(p * math.log2(p) for p in probs.values() if p > 0)
 
-# ── locate results/ relative to repo root ────────────────────────────────────
+# ── locate results/ + rubric features relative to repo root ──────────────────
 RESULTS_DIR = _REPO_ROOT / "results"
+FEATURES_DIR = _REPO_ROOT / "data" / "rubric_features"
 DISEASE_FILES: dict[str, Path] = {
-    "appendicitis":  RESULTS_DIR / "appendicitis_features.json",
-    "cholecystitis": RESULTS_DIR / "cholecystitis_features.json",
-    "diverticulitis": RESULTS_DIR / "diverticulitis_features.json",
-    "pancreatitis":  RESULTS_DIR / "pancreatitis_features.json",
+    "appendicitis":  FEATURES_DIR / "appendicitis_features.json",
+    "cholecystitis": FEATURES_DIR / "cholecystitis_features.json",
+    "diverticulitis": FEATURES_DIR / "diverticulitis_features.json",
+    "pancreatitis":  FEATURES_DIR / "pancreatitis_features.json",
 }
 
 # ── pipeline imports ──────────────────────────────────────────────────────────

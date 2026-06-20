@@ -10,11 +10,11 @@ Replaces the set-membership labelling in analyze_off_rubric.py. Per decision ste
                 (tsc simulated_sequence) — SEQUENCE-level, unchanged.
   vindication : confirmed / disconfirmed / uninformative (ex-post, from annotation).
 
-Pre-decision features come from results/features_extraction/{disease}_features.json,
+Pre-decision features come from data/rubric_features/{disease}_features.json,
 which is ACCUMULATIVE (idx_k features already include test-k's result), so the state
 before the doctor ordered the step-k imaging = idx_{k-1}.
 
-RR-N caveat (features_extraction_rrn_order_bug memory): features_extraction steps are
+RR-N caveat (features_extraction_rrn_order_bug memory): rubric_features steps are
 in RAW MIMIC record order, the annotation decision steps are in RR-N order. When the two
 imaging orders disagree there is no clean accumulative pre-state to feed, so those
 patients are marked rrn_aligned=False and their steps are SKIPPED (dev_belief blank).
@@ -49,7 +49,7 @@ def _imaging_seq(seq: str) -> list[str]:
 def _load_features() -> dict[str, dict]:
     out = {}
     for d in DISEASES:
-        out[d] = json.load(open(ROOT / "results" / "features_extraction" /
+        out[d] = json.load(open(ROOT / "data" / "rubric_features" /
                                 f"{d}_features.json"))["results"]
     return out
 
@@ -79,7 +79,7 @@ def main() -> None:
         rubric_img = _imaging_seq(tsc.loc[hadm, "simulated_sequence"]) if hadm in tsc.index else []
         gv_flags, _ = godview_step_flags(rubric_img, ordered_seq)
 
-        # align annotation decision imaging (RR-N order) to features_extraction (raw order)
+        # align annotation decision imaging (RR-N order) to rubric_features (raw order)
         fe_steps = _fe_for(FE[disease], hadm)
         fe_img_idx = [i for i, s in enumerate(fe_steps or []) if s["test_key"] in IMAGING_KEYS]
         fe_img_seq = [fe_steps[i]["test_key"] for i in fe_img_idx] if fe_steps else []

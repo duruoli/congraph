@@ -3,6 +3,7 @@ import csv
 import os
 
 base_dir = '/Users/duruoli/A/A李杜若/1-科研/PhD/0/1-code/congraph/results'
+features_dir = '/Users/duruoli/A/A李杜若/1-科研/PhD/0/1-code/congraph/data/rubric_features'
 oracle_file = os.path.join(base_dir, 'test_seq_comparison', 'rubric_sim_oracle.json')
 
 diseases = ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']
@@ -14,7 +15,7 @@ with open(oracle_file, 'r') as f:
     oracle_data = json.load(f)
 
 for disease in diseases:
-    feature_file = os.path.join(base_dir, f'{disease}_features.json')
+    feature_file = os.path.join(features_dir, f'{disease}_features.json')
     if not os.path.exists(feature_file):
         print(f"Warning: {feature_file} not found.")
         continue

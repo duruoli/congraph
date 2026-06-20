@@ -19,6 +19,7 @@ from feature_extraction.algo_extractor import _parse_lab_json
 # ── constants ─────────────────────────────────────────────────────────────────
 REPO_ROOT   = Path(__file__).resolve().parents[1]
 RESULTS_DIR = REPO_ROOT / "results"
+FEATURES_DIR = REPO_ROOT / "data" / "rubric_features"
 RAW_DIR     = REPO_ROOT / "data" / "raw_data"
 
 DISEASES = ["appendicitis", "cholecystitis", "diverticulitis", "pancreatitis"]
@@ -39,7 +40,7 @@ def _load_csv_rows(disease: str) -> dict[str, dict]:
 
 
 def patch_disease(disease: str, dry_run: bool = False) -> None:
-    json_path = RESULTS_DIR / f"{disease}_features.json"
+    json_path = FEATURES_DIR / f"{disease}_features.json"
     if not json_path.exists():
         print(f"  [SKIP] {json_path} not found")
         return

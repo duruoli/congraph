@@ -116,7 +116,7 @@ def rubric_recommended_imaging(belief: str, pre_features: dict) -> list[str]:
 
     This is the STEP-LOCAL rubric recommendation: traverse the belief disease graph
     against the causally-masked features available *before* the doctor's action
-    (features_extraction idx_{k-1}; idx_k already contains test-k's result), and read
+    (rubric_features idx_{k-1}; idx_k already contains test-k's result), and read
     the pending imaging at the rubric frontier. Empty = the rubric is at a terminal,
     is blocked (its gate conditions don't fire on the recorded features), or only wants
     a non-imaging test here — in every such case the rubric is NOT asking for this image.

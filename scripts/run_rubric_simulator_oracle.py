@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Run pipeline.rubric_simulator.simulate_cohort_rubric with oracle_routing=True.
 
-Loads cohort JSONs from results/*_features.json (same layout as knn_feature_eval),
+Loads cohort JSONs from data/rubric_features/*_features.json (same layout as knn_feature_eval),
 fits FeatureSimulator on the training split, then:
 
     results = simulate_cohort_rubric(patients, simulator, oracle_routing=True)

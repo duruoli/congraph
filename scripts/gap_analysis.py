@@ -29,6 +29,7 @@ warnings.filterwarnings("ignore")
 
 ROOT     = Path("/Users/duruoli/A/A李杜若/1-科研/PhD/0/1-code/congraph")
 RESULTS  = ROOT / "results"
+FEATURES = ROOT / "data" / "rubric_features"
 OUT_DIR  = RESULTS / "gap_analysis"
 OUT_DIR.mkdir(exist_ok=True, parents=True)
 (OUT_DIR / "univariate").mkdir(exist_ok=True)
@@ -52,7 +53,7 @@ comp["actual_list"] = comp["actual_sequence"].fillna("").apply(
 
 feat_rows: list[dict] = []
 for disease in DISEASES:
-    data = json.load(open(RESULTS / f"{disease}_features.json"))["results"]
+    data = json.load(open(FEATURES / f"{disease}_features.json"))["results"]
     for pid, steps in data.items():
         if not steps:
             continue

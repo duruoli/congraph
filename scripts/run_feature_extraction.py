@@ -12,7 +12,7 @@ Options
     --disease   {appendicitis,cholecystitis,diverticulitis,pancreatitis,all}
                 Which disease to process. Default: all
     --output-dir PATH
-                Directory to write result JSON files. Default: results/feature_extraction
+                Directory to write result JSON files. Default: data/rubric_features
     --limit INT
                 Max patients per disease (omit for all). Useful for testing.
     --no-llm    Skip LLM calls; run algo-only extraction.
@@ -143,8 +143,8 @@ def parse_args() -> argparse.Namespace:
     )
     p.add_argument(
         "--output-dir",
-        default="results/feature_extraction",
-        help="Output directory for JSON result files (default: results/feature_extraction)",
+        default="data/rubric_features",
+        help="Output directory for JSON result files (default: data/rubric_features)",
     )
     p.add_argument(
         "--limit",

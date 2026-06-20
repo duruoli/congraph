@@ -79,11 +79,12 @@ def _entropy_from_dict(dist: dict[str, float]) -> float:
 
 
 RESULTS_DIR = Path(__file__).resolve().parents[1] / "results"
+FEATURES_DIR = Path(__file__).resolve().parents[1] / "data" / "rubric_features"
 DISEASE_FILES: dict[str, Path] = {
-    "appendicitis":   RESULTS_DIR / "appendicitis_features.json",
-    "cholecystitis":  RESULTS_DIR / "cholecystitis_features.json",
-    "diverticulitis": RESULTS_DIR / "diverticulitis_features.json",
-    "pancreatitis":   RESULTS_DIR / "pancreatitis_features.json",
+    "appendicitis":   FEATURES_DIR / "appendicitis_features.json",
+    "cholecystitis":  FEATURES_DIR / "cholecystitis_features.json",
+    "diverticulitis": FEATURES_DIR / "diverticulitis_features.json",
+    "pancreatitis":   FEATURES_DIR / "pancreatitis_features.json",
 }
 
 KNN_STRATEGIES = ("actual", "actual_real", "random", "bfs", "ig")

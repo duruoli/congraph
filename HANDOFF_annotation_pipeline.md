@@ -66,14 +66,16 @@
 - 按病：pancreatitis 92+44、cholecystitis 70+37、appendicitis 49+22、diverticulitis 24+0。
 - 对 LLM 标注完全可行（成本约 $10–30）；fine-tune 偏少，够 few-shot / LoRA。
 
-**三层数据：**
+**三层数据（2026-06 已重整目录，见下）：**
 | 层 | 路径 | 内容 | 用途 |
 |---|---|---|---|
 | ① Raw 报告 | `data/raw_data/{disease}_hadm_info_first_diag.csv`(及 .pkl) | 自由文本 HPI / Physical Exam / Lab(itemid字典) / **Radiology(每份报告全文)** / + Discharge Dx·ICD·Procedures(=泄漏字段,禁用) | **还原医生(用这层)** |
-| ② Rubric-specific feature | `data/data_{d}/patient_features_{d}.csv` | 26 列只为 rubric 提取的二值特征 | 跑 rubric/gap analysis（**还原医生不要用,循环/泄漏**） |
-| ③ State trajectory | `data/data_{d}/state_trajectories_denoised_{d}.json` | 逐 step 抽象状态,按 Modality_History 对齐 | step 序列对齐参考 |
+| ② Rubric-specific feature | `data/rubric_features/{disease}_features.json`（4 个 json，原 `results/features_extraction/`） | 逐 step **accumulative** 的 rubric 二值特征（idx_k 已含 test-k 结果）；由 `scripts/run_feature_extraction.py` 生成 | 跑 rubric / gap analysis / belief-deviation traversal（**还原医生不要用,循环/泄漏**） |
+| ③ State trajectory | ~~`data/data_{d}/state_trajectories_denoised_{d}.json`~~ → 已 **archive** 到 `_archive/old_data/` | 旧实验的逐 step 抽象状态；**无任何 live 代码引用，已弃用** | 不再使用（层②的 `{disease}_features.json` 取代了它做 step 对齐） |
 
 `joined_data.csv` = 层② + deviation 标签（gap_analysis.py 采样 300 建的）。
+
+**目录重整记录（2026-06）：** 之前 §2 把层② 误标为 `data/data_{d}/patient_features_{d}.csv`，实际 live 的 rubric 特征是上表的 4 个 `{disease}_features.json`（已从 `results/features_extraction/` 移入 `data/rubric_features/`，并修正所有代码引用）。`data/data_chole/`、`data/data_diver/`、`data/data_pan/`（含 patient_features_、state_text_、state_trajectories_、extracted_sequences_、conformance_results_ 等）均为旧实验产物、无 live 引用，已整体移到 `_archive/old_data/`。`data/` 现仅含三个 live 目录：`raw_data/`（层①）、`rubric_features/`（层②）、`masked_views/`（标注阶段的因果遮蔽视图）。
 
 **关键已核实事实：**
 - ID 对齐：`joined_data.patient_id` == raw `hadm_id`，chole 93/93 完全对上。

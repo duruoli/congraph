@@ -30,8 +30,9 @@ from pipeline.diagnosis_distribution import _GRAPH_COND_EDGE_COUNTS
 DISEASES = ["appendicitis", "cholecystitis", "diverticulitis", "pancreatitis"]
 
 RESULTS_DIR: Path = _ROOT / "results"
+FEATURES_DIR: Path = _ROOT / "data" / "rubric_features"
 DISEASE_FILES: dict[str, Path] = {
-    d: RESULTS_DIR / f"{d}_features.json" for d in DISEASES
+    d: FEATURES_DIR / f"{d}_features.json" for d in DISEASES
 }
 
 

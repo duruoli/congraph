@@ -80,11 +80,12 @@ from evaluation.evaluation_metrics import (
 # ---------------------------------------------------------------------------
 
 RESULTS_DIR = Path(__file__).resolve().parents[1] / "results"
+FEATURES_DIR = Path(__file__).resolve().parents[1] / "data" / "rubric_features"
 DISEASE_FILES: dict[str, Path] = {
-    "appendicitis":   RESULTS_DIR / "appendicitis_features.json",
-    "cholecystitis":  RESULTS_DIR / "cholecystitis_features.json",
-    "diverticulitis": RESULTS_DIR / "diverticulitis_features.json",
-    "pancreatitis":   RESULTS_DIR / "pancreatitis_features.json",
+    "appendicitis":   FEATURES_DIR / "appendicitis_features.json",
+    "cholecystitis":  FEATURES_DIR / "cholecystitis_features.json",
+    "diverticulitis": FEATURES_DIR / "diverticulitis_features.json",
+    "pancreatitis":   FEATURES_DIR / "pancreatitis_features.json",
 }
 
 # Strategy names used throughout (real-test strategies first for display order)
