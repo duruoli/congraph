@@ -80,3 +80,34 @@ Pearl: a "disconfirmed" deviation must NOT be auto-penalized — the broad CT ne
 - **Keep despite disconfirm** (DD-3): broad net that catches the truth → do not penalize; this is the patch.
 
 **Pairing with the deviate+confirmed insights:** those said "the rubric stops reasoning too early" → the agent needs *loosening*. The disconfirm groups add the symmetric **brake**: "the doctor sometimes reasons too long / on a dead premise" (FD-2, DD-1) and "a negative is not a failure" (FD-1, DD-2). A good agent needs BOTH — the evidence-based loosening AND these brakes — otherwise loosening just becomes over-testing.
+
+---
+
+# Caveats from the raw-text re-audit (2026-06) — two corrections before this taxonomy is used as training labels
+
+> Triggered by re-reading the cited cases against raw radiology reports + Discharge Dx + Procedures.
+
+## Caveat 1 — DD-3 "caught the truth" is the WRONG reward justification; split systematic vs incidental
+Re-reading the 3 DD-3 cases shows they are not homogeneous:
+- **panc 25444703** (CT→50 mm cystic pancreatic-head mass): the CT imaged the *right organ* (lipase→pancreas) and found the real pathology there; disconfirm (mass≠edema) correctly drove CTA→EUS-FNA. **Systematic — keep.**
+- **chole 28238173** (broad CT under failed localization→cholecystitis): localization was impossible (obese, unreliable exam) so a whole-abdomen CT was ordered by design; the net caught the real source. **Policy-validated — keep.**
+- **appe 28672604** (CT chasing post-chole liver/biliary disease): the dominant finding was advanced liver disease; the *discharge-dx* appendicitis appeared only as a report footnote ("incidental thickened appendix"). **Genuinely incidental — the truth-catch was luck, not reasoning.**
+
+⇒ Do **not** reward DD-3 because it "caught the truth" (that is a global-outcome hit, which the project's local-validation rule forbids — correct outcomes can come from luck). Reward it iff the deviation was *locally appropriate* (addressed the stated gap) and **aimed at** the region/question where the truth was found. 28672604 should be judged on its actual aim (rule out post-op complication / characterize liver), not on the incidental appendix. **Action: add a DD-3 sub-split `aimed-at-truth` vs `incidental-catch`; only the former is the outlier-patch signal.**
+
+## Caveat 2 — DD-1 / FD-2 / FD-3 are partly an ARTIFACT of post-intervention scans in the step sequence
+The derived `*_hadm_info_first_diag` dropped every `charttime`; decision steps are ordered only by `RR-N`, with **no gate at the first therapeutic intervention**. So monitoring scans taken *after* a procedure get swept into the diagnostic "decision sequence" and mislabeled as defensive re-scans / stale-anatomy. Confirmed post-intervention decision-steps among the flagged cells: appe **27993727 s2** (post-appendectomy, "surgical staples"), panc **21849575** (post-cholecystostomy/cholecystectomy), panc **28684468 s3** (post-ERCP, "interval decrease"), chole **24636219** (biliary stent), chole **22502935** (post-sphincterotomy); plus OLD-surgery stale-anatomy panc **21061497 / 27645140** (status-post-cholecystectomy → gallbladder already gone).
+
+**Magnitude (full 542 steps):** naïve keyword scan = 16% but *over-counts* (`status post`/`surgical clip`/`postoperative` catch unrelated OLD surgeries — gastric bypass, mastopexy, nephrectomy). Tight, hand-validated floor = **7% (39 steps)**; but the contamination concentrates in the **deviate+disconfirmed (DD-1) cell: ~9% tight / ~28% loose**, i.e. exactly where the "suppress this" conclusion is drawn. Training an agent to suppress these would teach it to suppress legitimate post-op monitoring — the wrong lesson.
+
+### Timing pipeline (built; gates the step set by intervention time)
+Two mechanisms, split cleanly:
+- **this-admission therapeutic intervention** (appendectomy / cholecystectomy / cholecystostomy / therapeutic-ERCP / percutaneous-drainage / bowel-resection) → scans after its date = `post_intervention` (monitoring) → **exclude**.
+- **old surgery → stale anatomy** (organ already removed, not in this stay's procedures) → caught by report-text, a *different* exclusion reason (dead premise).
+
+Code:
+- `experiments/annotation/timing.py` — intervention classifier (procedure titles + ICD9 codes), `SourceTables` loader (schema per `mimic_supp_data.md`), `timing_role()`.
+- `scripts/build_timing_table.py` — `--self-test` (validates classifier on existing data, 4/4), degraded (text-hint provisional, runs today), `--source-dir` (real charttime join). **Join key = full `note_id` "<subject_id>-RR-<n>"** reconstructed from the derived Radiology blob → matches MIMIC-IV-Note `radiology.csv` directly. Output `results/annotation_experiment/full/timing_roles.csv`.
+- `scripts/filter_deviation_by_timing.py` → `belief_deviation_filtered.csv` (drops `timing_role==post_intervention`; auto-uses real role once source present, else provisional text-hint).
+
+**When DUA clears:** download `hosp/admissions.csv.gz`, mimic-iv-note `radiology.csv`, `hosp/procedures_icd.csv.gz` (+ optional `d_icd_procedures`) → `build_timing_table.py --source-dir <dir>` → `filter_deviation_by_timing.py` → re-derive every DD/FD number on the cleaned step set. Until then the analysis above stands but its DD-1/FD-2/FD-3 counts carry a 7–16% post-intervention inflation.

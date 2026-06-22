@@ -1,0 +1,740 @@
+{
+  "appendicitis": {
+    "disease": "appendicitis",
+    "kind": "disease_subrubric",
+    "root": "SUSPECTED",
+    "nodes": [
+      {
+        "id": "SUSPECTED",
+        "label": "Suspected Appendicitis",
+        "type": "start",
+        "required_tests": [],
+        "description": "Routed from main triage / 来自主分流"
+      },
+      {
+        "id": "ALVARADO",
+        "label": "Alvarado Score Calculation",
+        "type": "assessment",
+        "required_tests": [
+          "Lab_Panel"
+        ],
+        "description": "Requires: CBC with differential + physical examination\nScore 0–10:\n  ① Migration of pain to RLQ  +1\n  ② Anorexia                  +1\n  ③ Nausea / Vomiting         +1\n  ④ RLQ Tenderness            +2\n  ⑤ Rebound Tenderness        +1\n  ⑥ Temp ≥ 37.3 °C           +1\n  ⑦ WBC > 10,000              +2\n  ⑧ Left Shift (bands)        +1"
+      },
+      {
+        "id": "OBSERVE",
+        "label": "Observe / Discharge with Follow-up",
+        "type": "assessment",
+        "required_tests": [],
+        "description": "Low risk (Alvarado ≤3): outpatient monitoring acceptable / 低风险，观察或出院随访"
+      },
+      {
+        "id": "EXCLUDED_LOW",
+        "label": "Appendicitis Low Risk (Outpatient Monitoring)",
+        "type": "terminal_low_risk",
+        "required_tests": [],
+        "description": "Alvarado ≤3 — low pre-test probability; outpatient monitoring acceptable.\nNOT a definitive exclusion: ~10% PPV at this score threshold.\n低风险（Alvarado≤3）：门诊随访即可，非影像确认排除"
+      },
+      {
+        "id": "US_ABDOMEN",
+        "label": "Abdominal Ultrasound",
+        "type": "assessment",
+        "required_tests": [
+          "Ultrasound_Abdomen"
+        ],
+        "description": "Preferred first-line for: children, pregnant women, young females\n中风险4–6分首选超声（儿童/孕妇/年轻女性优先）"
+      },
+      {
+        "id": "US_FINDINGS",
+        "label": "US Findings — Appendicitis Confirmed by Ultrasound",
+        "type": "decision",
+        "required_tests": [],
+        "description": "Appendicitis confirmed on US; assess for complications visible on US\nCT not required when US is diagnostic (WSES 2020)\n超声确认阑尾炎，评估超声下并发症征象；超声确诊时无需CT（WSES 2020）"
+      },
+      {
+        "id": "CT_ABD_MID",
+        "label": "CT Abdomen/Pelvis with IV Contrast (after non-diagnostic US)",
+        "type": "assessment",
+        "required_tests": [],
+        "description": "After non-diagnostic US in intermediate-risk patients\nSensitivity >95% for appendicitis / 超声不确定后进行CT（敏感性>95%）"
+      },
+      {
+        "id": "CT_ABD_HIGH",
+        "label": "CT Abdomen/Pelvis or Direct Surgical Consult (High Risk)",
+        "type": "assessment",
+        "required_tests": [],
+        "description": "High risk (Alvarado 7–10)\nMales < 40y may proceed directly to surgical consult without CT\n高风险直接CT或手术会诊（<40岁男性可直接手术会诊）"
+      },
+      {
+        "id": "CT_FINDINGS",
+        "label": "CT Findings Evaluation",
+        "type": "decision",
+        "required_tests": [
+          "CT_Abdomen"
+        ],
+        "description": "Interpret CT for appendicitis confirmation / CT结果判断"
+      },
+      {
+        "id": "EXCLUDED_CT",
+        "label": "Appendicitis Excluded / Alternative Diagnosis",
+        "type": "terminal_excluded",
+        "required_tests": [],
+        "description": "CT negative for appendicitis / CT阴性，排除阑尾炎"
+      },
+      {
+        "id": "UNCOMPLICATED",
+        "label": "Uncomplicated Appendicitis",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "Appendicitis confirmed (US or CT); no perforation / abscess / phlegmon\n→ Surgical consult: laparoscopic appendectomy vs antibiotics\n非复杂性阑尾炎（超声或CT确认，无穿孔/脓肿/蜂窝织炎）— 手术 vs 抗生素治疗"
+      },
+      {
+        "id": "COMPLICATED",
+        "label": "Complicated Appendicitis",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "Appendicitis confirmed (US or CT) with perforation / abscess / phlegmon\n→ Surgical consult required\n复杂性阑尾炎（超声或CT见穿孔/脓肿/蜂窝织炎）— 外科会诊"
+      }
+    ],
+    "edges": [
+      {
+        "from": "SUSPECTED",
+        "to": "ALVARADO",
+        "when": "always"
+      },
+      {
+        "from": "ALVARADO",
+        "to": "OBSERVE",
+        "when": "Score ≤3 — Low Risk"
+      },
+      {
+        "from": "OBSERVE",
+        "to": "EXCLUDED_LOW",
+        "when": "always"
+      },
+      {
+        "from": "ALVARADO",
+        "to": "US_ABDOMEN",
+        "when": "Score 4–6 — Intermediate Risk → Ultrasound"
+      },
+      {
+        "from": "US_ABDOMEN",
+        "to": "US_FINDINGS",
+        "when": "US positive — appendix visualized, inflamed"
+      },
+      {
+        "from": "US_FINDINGS",
+        "to": "UNCOMPLICATED",
+        "when": "US positive — no perforation/abscess on US"
+      },
+      {
+        "from": "US_FINDINGS",
+        "to": "COMPLICATED",
+        "when": "US positive — perforation/abscess on US"
+      },
+      {
+        "from": "US_ABDOMEN",
+        "to": "CT_ABD_MID",
+        "when": "US negative or non-diagnostic"
+      },
+      {
+        "from": "CT_ABD_MID",
+        "to": "CT_FINDINGS",
+        "when": "always"
+      },
+      {
+        "from": "ALVARADO",
+        "to": "CT_ABD_HIGH",
+        "when": "Score 7–10 — High Risk → CT or Surgical Consult"
+      },
+      {
+        "from": "CT_ABD_HIGH",
+        "to": "CT_FINDINGS",
+        "when": "always"
+      },
+      {
+        "from": "CT_FINDINGS",
+        "to": "EXCLUDED_CT",
+        "when": "CT negative"
+      },
+      {
+        "from": "CT_FINDINGS",
+        "to": "UNCOMPLICATED",
+        "when": "CT positive — no perforation / abscess"
+      },
+      {
+        "from": "CT_FINDINGS",
+        "to": "COMPLICATED",
+        "when": "CT positive — perforation / abscess / phlegmon"
+      }
+    ]
+  },
+  "cholecystitis": {
+    "disease": "cholecystitis",
+    "kind": "disease_subrubric",
+    "root": "SUSPECTED",
+    "nodes": [
+      {
+        "id": "SUSPECTED",
+        "label": "Suspected Cholecystitis",
+        "type": "start",
+        "required_tests": [],
+        "description": "Routed from main triage / 来自主分流"
+      },
+      {
+        "id": "GROUP_A",
+        "label": "TG18 Group A — Local Inflammation Signs",
+        "type": "assessment",
+        "required_tests": [],
+        "description": "Physical examination:\n  ① Murphy's sign positive\n  ② RUQ pain / tenderness / palpable mass\n局部炎症体征（体格检查）"
+      },
+      {
+        "id": "GROUP_B",
+        "label": "TG18 Group B — Systemic Inflammation Signs",
+        "type": "assessment",
+        "required_tests": [
+          "Lab_Panel"
+        ],
+        "description": "Labs + vitals + HPI narrative:\n  ① Fever > 38 °C (admission PE vitals)\n  ② Fever reported in HPI (home/pre-admission fever history)\n  ③ CRP elevated\n  ④ WBC elevated (leukocytosis)\n全身炎症体征（体格检查 + CBC + CRP + HPI发热史）\n注：MIMIC入院体温常已退热，HPI发热叙述作为补充B组依据"
+      },
+      {
+        "id": "AB_DECISION",
+        "label": "Both Group A AND Group B Met?",
+        "type": "decision",
+        "required_tests": [
+          "Lab_Panel"
+        ],
+        "description": "TG18 suspected diagnosis gate\n疑似诊断门控：A组≥1项 AND B组≥1项"
+      },
+      {
+        "id": "NOT_SUSPECTED_CLINICAL",
+        "label": "Cholecystitis Not Suspected (Clinical Only)",
+        "type": "terminal_low_risk",
+        "required_tests": [],
+        "description": "Neither TG18 Group A nor Group B met — no local or systemic signs of cholecystitis.\nNOT imaging-confirmed exclusion; very low clinical suspicion.\nA组和B组均未满足：无局部或全身炎症体征，极低怀疑度，非影像排除"
+      },
+      {
+        "id": "NOT_SUSPECTED_IMAGING",
+        "label": "Cholecystitis Excluded (Imaging Confirmed)",
+        "type": "terminal_excluded",
+        "required_tests": [],
+        "description": "Additional imaging (HIDA/CT/MRCP) negative — diagnosis excluded.\n影像学阴性确认排除胆囊炎"
+      },
+      {
+        "id": "IMAGING_US",
+        "label": "Abdominal Ultrasound (TG18 Group C)",
+        "type": "assessment",
+        "required_tests": [
+          "Ultrasound_Abdomen"
+        ],
+        "description": "First-line imaging:\n  - GB wall thickening > 4mm\n  - Pericholecystic fluid\n  - Sonographic Murphy's sign\n  - Gallstones\n腹部超声首选（胆囊壁增厚/胆囊周围积液/超声Murphy征/胆结石）"
+      },
+      {
+        "id": "ADDITIONAL_IMAGING",
+        "label": "Additional Imaging (US inconclusive)",
+        "type": "assessment",
+        "required_tests": [],
+        "description": "HIDA scan (functional; preferred for acalculous)\nOR CT Abdomen (anatomical detail)\nOR MRCP (if biliary stones suspected)\nAlso check: LFTs · Bilirubin · GGT\n超声不确定时追加：HIDA扫描 / CT / MRCP + LFTs"
+      },
+      {
+        "id": "MRCP_BILIARY_EVAL",
+        "label": "MRCP for Suspected Choledocholithiasis",
+        "type": "assessment",
+        "required_tests": [
+          "MRCP_Abdomen"
+        ],
+        "description": "Evaluate for common bile duct stones if biliary etiology suspected\n追加MRCP排查胆总管结石"
+      },
+      {
+        "id": "SEVERITY_GRADING",
+        "label": "TG18 Severity Grading",
+        "type": "decision",
+        "required_tests": [],
+        "description": "Requires confirmed diagnosis (A+B+C)\nAssess organ dysfunction and local complications\n确定诊断后进行TG18严重度分级"
+      },
+      {
+        "id": "GRADE_I",
+        "label": "Grade I — Mild Cholecystitis",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "No organ dysfunction · mild GB disease\n轻度：无器官功能障碍，轻度胆囊炎症"
+      },
+      {
+        "id": "GRADE_II",
+        "label": "Grade II — Moderate Cholecystitis",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "No organ dysfunction + ≥1 local complication criterion:\n  - WBC > 18,000\n  - Palpable tender RUQ mass\n  - Symptom duration > 72h\n  - Gangrenous / emphysematous GB on imaging\n中度：无器官功能障碍但存在局部并发症"
+      },
+      {
+        "id": "GRADE_III",
+        "label": "Grade III — Severe Cholecystitis",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "≥1 organ system dysfunction:\n  cardiovascular · neurological · respiratory\n  renal · hepatic · hematologic\n重度：≥1项器官系统功能障碍"
+      }
+    ],
+    "edges": [
+      {
+        "from": "SUSPECTED",
+        "to": "GROUP_A",
+        "when": "always"
+      },
+      {
+        "from": "SUSPECTED",
+        "to": "GROUP_B",
+        "when": "always"
+      },
+      {
+        "from": "GROUP_A",
+        "to": "AB_DECISION",
+        "when": "Group A assessment complete"
+      },
+      {
+        "from": "GROUP_B",
+        "to": "AB_DECISION",
+        "when": "Group B assessment complete (Lab_Panel done)"
+      },
+      {
+        "from": "AB_DECISION",
+        "to": "IMAGING_US",
+        "when": "A ≥1 AND B ≥1 → Strong suspicion — proceed to imaging"
+      },
+      {
+        "from": "AB_DECISION",
+        "to": "IMAGING_US",
+        "when": "A ≥1 OR B ≥1 → Weak suspicion — proceed to imaging"
+      },
+      {
+        "from": "AB_DECISION",
+        "to": "NOT_SUSPECTED_CLINICAL",
+        "when": "Neither A nor B criteria met → Not suspected (clinical only)"
+      },
+      {
+        "from": "IMAGING_US",
+        "to": "MRCP_BILIARY_EVAL",
+        "when": "US positive + Elevated LFTs/Bilirubin → Check CBD stones"
+      },
+      {
+        "from": "IMAGING_US",
+        "to": "SEVERITY_GRADING",
+        "when": "US positive — definite diagnosis (no high risk for CBD stones)"
+      },
+      {
+        "from": "IMAGING_US",
+        "to": "ADDITIONAL_IMAGING",
+        "when": "US inconclusive or negative"
+      },
+      {
+        "from": "ADDITIONAL_IMAGING",
+        "to": "MRCP_BILIARY_EVAL",
+        "when": "Additional imaging positive + Elevated LFTs/Bilirubin → Check CBD stones"
+      },
+      {
+        "from": "ADDITIONAL_IMAGING",
+        "to": "SEVERITY_GRADING",
+        "when": "Additional imaging positive (no high risk for CBD stones or MRCP done)"
+      },
+      {
+        "from": "MRCP_BILIARY_EVAL",
+        "to": "SEVERITY_GRADING",
+        "when": "always"
+      },
+      {
+        "from": "ADDITIONAL_IMAGING",
+        "to": "NOT_SUSPECTED_IMAGING",
+        "when": "Additional imaging negative — diagnosis excluded by imaging"
+      },
+      {
+        "from": "SEVERITY_GRADING",
+        "to": "GRADE_III",
+        "when": "≥1 organ system dysfunction"
+      },
+      {
+        "from": "SEVERITY_GRADING",
+        "to": "GRADE_II",
+        "when": "No organ dysfunction + local complication criteria"
+      },
+      {
+        "from": "SEVERITY_GRADING",
+        "to": "GRADE_I",
+        "when": "No organ dysfunction, no local complications"
+      }
+    ]
+  },
+  "diverticulitis": {
+    "disease": "diverticulitis",
+    "kind": "disease_subrubric",
+    "root": "SUSPECTED",
+    "nodes": [
+      {
+        "id": "SUSPECTED",
+        "label": "Suspected Diverticulitis",
+        "type": "start",
+        "required_tests": [],
+        "description": "Routed from main triage / 来自主分流"
+      },
+      {
+        "id": "LABS",
+        "label": "Laboratory Workup",
+        "type": "assessment",
+        "required_tests": [
+          "Lab_Panel"
+        ],
+        "description": "CBC (WBC) · BMP · CRP · UA · β-hCG (females)\nNote: WBC normal in ~45% of patients\nCRP > 200 mg/L suggests possible perforation\n实验室检查（WBC在45%患者中可正常；CRP>200提示可能穿孔）"
+      },
+      {
+        "id": "CLINICAL_ASSESSMENT",
+        "label": "Clinical Assessment",
+        "type": "decision",
+        "required_tests": [],
+        "description": "Assess suspicion level and risk factors\n临床评估：怀疑程度 + 危险因素"
+      },
+      {
+        "id": "CLINICAL_DIAGNOSIS",
+        "label": "Clinical Diagnosis (tentative)",
+        "type": "assessment",
+        "required_tests": [],
+        "description": "High suspicion: LLQ + fever + CRP↑ + WBC↑, no high-risk features\nAccuracy only 40–65%; imaging confirmation strongly recommended\n高度怀疑可临床诊断，但准确率仅40-65%，建议影像确认"
+      },
+      {
+        "id": "CT_ABD_PELVIS",
+        "label": "CT Abdomen/Pelvis with IV Contrast",
+        "type": "assessment",
+        "required_tests": [
+          "CT_Abdomen"
+        ],
+        "description": "Gold standard: sensitivity 94%, specificity 99%\n诊断金标准（敏感性94%，特异性99%）"
+      },
+      {
+        "id": "CT_NEGATIVE",
+        "label": "Diverticulitis Excluded / Alternative Diagnosis",
+        "type": "terminal_excluded",
+        "required_tests": [],
+        "description": "CT negative for diverticulitis / CT阴性，排除憩室炎"
+      },
+      {
+        "id": "UNCOMPLICATED",
+        "label": "Uncomplicated Diverticulitis",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "Wall thickening + pericolic fat stranding\nNo abscess / perforation / fistula / obstruction\n非复杂性憩室炎 — 肠壁增厚+结肠周围脂肪浸润，无并发症"
+      },
+      {
+        "id": "HINCHEY_GRADING",
+        "label": "Hinchey Classification",
+        "type": "decision",
+        "required_tests": [
+          "CT_Abdomen"
+        ],
+        "description": "Classify complications by CT findings\n基于CT表现进行Hinchey并发症分级"
+      },
+      {
+        "id": "HINCHEY_IA",
+        "label": "Hinchey Ia — Phlegmon / Pericolic Inflammation",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "Treatment: antibiotics / 治疗：抗生素"
+      },
+      {
+        "id": "HINCHEY_IB",
+        "label": "Hinchey Ib — Localized Abscess < 3cm",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "Treatment: antibiotics ± percutaneous drainage / 治疗：抗生素 ± 穿刺引流"
+      },
+      {
+        "id": "HINCHEY_II",
+        "label": "Hinchey II — Distant / Pelvic Abscess ≥ 3cm",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "Treatment: interventional drainage + antibiotics / 治疗：介入穿刺引流 + 抗生素"
+      },
+      {
+        "id": "HINCHEY_III",
+        "label": "Hinchey III — Purulent Peritonitis",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "Treatment: emergency surgery / 治疗：急诊手术"
+      },
+      {
+        "id": "HINCHEY_IV",
+        "label": "Hinchey IV — Fecal Peritonitis",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "Treatment: emergency surgery / 治疗：急诊手术"
+      }
+    ],
+    "edges": [
+      {
+        "from": "SUSPECTED",
+        "to": "LABS",
+        "when": "always"
+      },
+      {
+        "from": "LABS",
+        "to": "CLINICAL_ASSESSMENT",
+        "when": "always"
+      },
+      {
+        "from": "CLINICAL_ASSESSMENT",
+        "to": "CLINICAL_DIAGNOSIS",
+        "when": "High suspicion: LLQ + fever + CRP↑/WBC↑, no high-risk features"
+      },
+      {
+        "from": "CLINICAL_ASSESSMENT",
+        "to": "CT_ABD_PELVIS",
+        "when": "Uncertain OR suspected complications OR high-risk features"
+      },
+      {
+        "from": "CLINICAL_DIAGNOSIS",
+        "to": "CT_ABD_PELVIS",
+        "when": "always"
+      },
+      {
+        "from": "CT_ABD_PELVIS",
+        "to": "CT_NEGATIVE",
+        "when": "CT negative — alternative diagnosis"
+      },
+      {
+        "from": "CT_ABD_PELVIS",
+        "to": "UNCOMPLICATED",
+        "when": "Wall thickening + fat stranding; no complications"
+      },
+      {
+        "from": "CT_ABD_PELVIS",
+        "to": "HINCHEY_GRADING",
+        "when": "Complications present on CT"
+      },
+      {
+        "from": "HINCHEY_GRADING",
+        "to": "HINCHEY_IV",
+        "when": "Fecal peritonitis"
+      },
+      {
+        "from": "HINCHEY_GRADING",
+        "to": "HINCHEY_III",
+        "when": "Purulent peritonitis (no fecal)"
+      },
+      {
+        "from": "HINCHEY_GRADING",
+        "to": "HINCHEY_II",
+        "when": "Distant / pelvic abscess ≥ 3cm"
+      },
+      {
+        "from": "HINCHEY_GRADING",
+        "to": "HINCHEY_IB",
+        "when": "Localized abscess < 3cm"
+      },
+      {
+        "from": "HINCHEY_GRADING",
+        "to": "HINCHEY_IA",
+        "when": "Phlegmon / pericolic inflammation only"
+      }
+    ]
+  },
+  "pancreatitis": {
+    "disease": "pancreatitis",
+    "kind": "disease_subrubric",
+    "root": "SUSPECTED",
+    "nodes": [
+      {
+        "id": "SUSPECTED",
+        "label": "Suspected Pancreatitis",
+        "type": "start",
+        "required_tests": [],
+        "description": "Routed from main triage / 来自主分流"
+      },
+      {
+        "id": "DIAGNOSTIC_CRITERIA",
+        "label": "Revised Atlanta Diagnostic Criteria",
+        "type": "decision",
+        "required_tests": [
+          "Lab_Panel"
+        ],
+        "description": "≥2 of 3 criteria required for diagnosis:\n  ① Upper abdominal pain (epigastric, may radiate to back)\n  ② Lipase or Amylase ≥ 3× ULN\n  ③ Characteristic imaging findings (CT / MRI / US)\n满足≥2条即可确诊（满足1条时需影像学确认）"
+      },
+      {
+        "id": "CT_MRI_DIAGNOSTIC",
+        "label": "CT or MRI Abdomen (for diagnostic uncertainty)",
+        "type": "assessment",
+        "required_tests": [
+          "CT_Abdomen"
+        ],
+        "description": "Ordered when only 1 criterion is met\nPurpose: confirm pancreatitis and exclude other diagnoses\n仅满足1条标准时行CT/MRI排除其他病因"
+      },
+      {
+        "id": "EXCLUDED",
+        "label": "Pancreatitis Excluded — Alternative Diagnosis",
+        "type": "terminal_excluded",
+        "required_tests": [],
+        "description": "Imaging does not support pancreatitis / 影像学不支持胰腺炎"
+      },
+      {
+        "id": "CONFIRMED",
+        "label": "Acute Pancreatitis Confirmed",
+        "type": "assessment",
+        "required_tests": [
+          "Ultrasound_Abdomen"
+        ],
+        "description": "Admit + IV fluids + pain management\nAbdominal US: assess for gallstones (biliary etiology is most common)\nEvaluate etiology: biliary / alcohol / hypertriglyceridemia / other\n确诊后住院治疗，腹部超声查胆石症（最常见病因）"
+      },
+      {
+        "id": "MRCP_BILIARY_EVAL",
+        "label": "MRCP for Suspected Biliary Pancreatitis",
+        "type": "assessment",
+        "required_tests": [
+          "MRCP_Abdomen"
+        ],
+        "description": "Evaluate for choledocholithiasis if biliary etiology suspected\n追加MRCP排查胆总管结石"
+      },
+      {
+        "id": "BISAP",
+        "label": "BISAP Score (within 24h of admission)",
+        "type": "assessment",
+        "required_tests": [
+          "Lab_Panel"
+        ],
+        "description": "BISAP Score 0–5 (each item = 1 point):\n  ① BUN > 25 mg/dL\n  ② Impaired mental status (Glasgow < 15)\n  ③ SIRS ≥ 2 criteria (temp/HR/RR/WBC)\n  ④ Age > 60 years\n  ⑤ Pleural effusion on imaging\n入院24h内计算BISAP评分"
+      },
+      {
+        "id": "ATLANTA_LOW",
+        "label": "Revised Atlanta Assessment — Low Risk (BISAP 0–2)",
+        "type": "assessment",
+        "required_tests": [],
+        "description": "Predicted mortality < 2%\nAssess organ failure using Modified Marshall Score\n低风险（死亡率<2%），评估器官功能障碍"
+      },
+      {
+        "id": "ATLANTA_HIGH",
+        "label": "Revised Atlanta Assessment — High Risk (BISAP ≥3)",
+        "type": "assessment",
+        "required_tests": [],
+        "description": "Predicted mortality > 15%\nICU monitoring\nContrast-enhanced CT recommended at 48–72h for necrosis assessment\n(CT is a management recommendation, not a prerequisite for organ-failure assessment)\n高风险（死亡率>15%），ICU监护；CT推荐在48-72h后评估坏死，但不阻断器官衰竭评估"
+      },
+      {
+        "id": "ORGAN_FAILURE_ASSESS",
+        "label": "Organ Failure Assessment (Modified Marshall Score)",
+        "type": "decision",
+        "required_tests": [],
+        "description": "Evaluate: cardiovascular, respiratory, renal organ systems\nClassify as: no failure / transient (<48h) / persistent (>48h)\n评估器官衰竭：无/短暂性(<48h)/持续性(>48h)"
+      },
+      {
+        "id": "MILD_AP",
+        "label": "Mild Acute Pancreatitis",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "No organ failure · no local complications · no systemic complications\nTypically resolves within 72h\n轻度：无器官衰竭，无局部/全身并发症，通常72h内自行恢复"
+      },
+      {
+        "id": "MODERATELY_SEVERE_AP",
+        "label": "Moderately Severe Acute Pancreatitis",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "Transient organ failure < 48h (self-resolving)\nAND/OR local complications (peripancreatic fluid / necrosis)\n中重度：短暂性器官衰竭<48h 和/或 局部并发症（积液/坏死）"
+      },
+      {
+        "id": "CT_CTSI",
+        "label": "Contrast-Enhanced CT Abdomen/Pelvis — CTSI Scoring (at 48–72h)",
+        "type": "assessment",
+        "required_tests": [
+          "CT_Abdomen"
+        ],
+        "description": "Modified CT Severity Index (CTSI) 0–10:\n  Pancreatic inflammation + necrosis + extrapancreatic complications\nCT严重度指数（CTSI）0-10分：评估炎症范围+坏死程度+胰外并发症"
+      },
+      {
+        "id": "SEVERE_AP",
+        "label": "Severe Acute Pancreatitis",
+        "type": "terminal_confirmed",
+        "required_tests": [],
+        "description": "Persistent organ failure > 48h\nICU management · infected necrosis debridement / drainage\n重度：持续性器官衰竭>48h，ICU管理，处理感染性坏死"
+      }
+    ],
+    "edges": [
+      {
+        "from": "SUSPECTED",
+        "to": "DIAGNOSTIC_CRITERIA",
+        "when": "always"
+      },
+      {
+        "from": "DIAGNOSTIC_CRITERIA",
+        "to": "CT_MRI_DIAGNOSTIC",
+        "when": "Only 1 criterion met — imaging required for confirmation"
+      },
+      {
+        "from": "DIAGNOSTIC_CRITERIA",
+        "to": "CONFIRMED",
+        "when": "≥2 criteria met — Acute Pancreatitis confirmed"
+      },
+      {
+        "from": "CT_MRI_DIAGNOSTIC",
+        "to": "CONFIRMED",
+        "when": "Imaging confirms pancreatitis"
+      },
+      {
+        "from": "CT_MRI_DIAGNOSTIC",
+        "to": "EXCLUDED",
+        "when": "Imaging does not support pancreatitis"
+      },
+      {
+        "from": "CONFIRMED",
+        "to": "MRCP_BILIARY_EVAL",
+        "when": "Biliary etiology suspected (Elevated LFTs/Bilirubin or US gallstones)"
+      },
+      {
+        "from": "CONFIRMED",
+        "to": "BISAP",
+        "when": "No biliary signs → Proceed to risk stratification"
+      },
+      {
+        "from": "MRCP_BILIARY_EVAL",
+        "to": "BISAP",
+        "when": "always"
+      },
+      {
+        "from": "BISAP",
+        "to": "ATLANTA_LOW",
+        "when": "BISAP 0–2 — Low Risk (mortality <2%)"
+      },
+      {
+        "from": "BISAP",
+        "to": "ATLANTA_HIGH",
+        "when": "BISAP ≥3 — High Risk (mortality >15%)"
+      },
+      {
+        "from": "ATLANTA_LOW",
+        "to": "ORGAN_FAILURE_ASSESS",
+        "when": "always"
+      },
+      {
+        "from": "ATLANTA_HIGH",
+        "to": "ORGAN_FAILURE_ASSESS",
+        "when": "always"
+      },
+      {
+        "from": "ORGAN_FAILURE_ASSESS",
+        "to": "MILD_AP",
+        "when": "No organ failure, no local/systemic complications"
+      },
+      {
+        "from": "ORGAN_FAILURE_ASSESS",
+        "to": "MODERATELY_SEVERE_AP",
+        "when": "Transient organ failure <48h AND/OR local complications"
+      },
+      {
+        "from": "ORGAN_FAILURE_ASSESS",
+        "to": "CT_CTSI",
+        "when": "Persistent organ failure >48h → CT for CTSI scoring"
+      },
+      {
+        "from": "CT_CTSI",
+        "to": "SEVERE_AP",
+        "when": "always"
+      }
+    ]
+  },
+  "other": {
+    "disease": "other",
+    "kind": "open_differential",
+    "note": "No sub-rubric. Open acute-abdomen differential (gynecologic, urologic, bowel obstruction, mesenteric ischemia, bile-duct/biliary obstruction, …). Choosing 'other' = leaving the rubric; judged by outcome, not a priori wrong.",
+    "biliary_axis": "If the 'other' belief is a bile-DUCT process (choledocholithiasis / cholangitis / CBD obstruction / post-ERCP), the duct-evaluating modalities are Ultrasound_Abdomen and MRCP_Abdomen."
+  }
+}
