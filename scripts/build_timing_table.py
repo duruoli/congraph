@@ -13,7 +13,7 @@ arrives. Runs in three modes:
 
 Output: results/annotation_experiment/full/timing_roles.csv
   disease, hadm, step, rrn, note_id, modality,
-  dev_belief, vindication,                      (joined from belief_deviation_analysis.csv)
+  dev_belief, verification,                      (joined from belief_deviation_analysis.csv)
   interventions, first_intervention_type,       (from procedure titles / codes)
   charttime, admittime, first_intervention_date,
   timing_role, text_post_intervention_hint, exclude_from_deviation
@@ -134,7 +134,7 @@ def build(source_dir: str | None) -> None:
     dev_idx = {}
     if dev is not None:
         for _, r in dev.iterrows():
-            dev_idx[(r.disease, int(r.hadm), int(r.step))] = (r.dev_belief, r.vindication)
+            dev_idx[(r.disease, int(r.hadm), int(r.step))] = (r.dev_belief, r.verification)
 
     rows = []
     for jf in sorted(ANN_DIR.glob("*.json")):
@@ -167,7 +167,7 @@ def build(source_dir: str | None) -> None:
             rows.append({
                 "disease": disease, "hadm": hadm, "step": i, "rrn": rrn, "note_id": note_id,
                 "modality": step["ordered"].split(" (")[0],
-                "dev_belief": devb, "vindication": vind,
+                "dev_belief": devb, "verification": vind,
                 "interventions": "|".join(sorted(ivs)),
                 "first_intervention_type": ftype or "",
                 "charttime": ct, "admittime": admit, "first_intervention_date": fdate,
@@ -185,10 +185,10 @@ def build(source_dir: str | None) -> None:
         print(out.timing_role.value_counts().to_string())
         print(f"\nexcluded as monitoring: {out.exclude_from_deviation.sum()} "
               f"({out.exclude_from_deviation.mean()*100:.0f}%)")
-        print("\nexcluded steps by dev_belief x vindication:")
+        print("\nexcluded steps by dev_belief x verification:")
         ex = out[out.exclude_from_deviation]
         if len(ex):
-            print(pd.crosstab(ex.dev_belief, ex.vindication, margins=True).to_string())
+            print(pd.crosstab(ex.dev_belief, ex.verification, margins=True).to_string())
     else:
         print(f"\ntext-hint flagged (provisional exclude): {out.exclude_from_deviation.sum()} "
               f"({out.exclude_from_deviation.mean()*100:.0f}%)  "

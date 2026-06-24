@@ -74,14 +74,14 @@ def main() -> None:
             mod = ordered_seq[i]
             dev_b = belief_deviation(top, st["ordered"])
             dev_g = gv_flags[i]
-            vind = (st.get("vindication") or {}).get("vindication", "")
+            vind = (st.get("verification") or {}).get("verification", "")
             diverge = (dev_b == "deviate_commission") != dev_g and dev_b != "off_rubric"
             flag = "  <-- DIVERGE" if diverge else ""
             rows.append({
                 "disease": disease, "hadm": hadm, "case_label": label,
                 "step": st["step"], "modality": mod, "top_branch": top,
                 "mean_other": round(m["mean_differential"].get("other", 0.0), 3),
-                "dev_belief": dev_b, "dev_godview": dev_g, "vindication": vind,
+                "dev_belief": dev_b, "dev_godview": dev_g, "verification": vind,
             })
             print(f"   step{st['step']} {mod:18} belief_top={top:14} "
                   f"dev_belief={dev_b:18} dev_godview={dev_g!s:5} vind={vind}{flag}")
@@ -103,11 +103,11 @@ def main() -> None:
         if sub:
             gv = sum(r["dev_godview"] for r in sub)
             print(f"  {b:18} n={len(sub):2}  godview-commission={gv:2}  godview-follow={len(sub)-gv}")
-    # vindication split for the two deviation-ish belief classes (point 1: vindication judges quality)
+    # verification split for the two deviation-ish belief classes (point 1: verification judges quality)
     for b in ["off_rubric", "deviate_commission"]:
         sub = [r for r in rows if r["dev_belief"] == b]
         if sub:
-            print(f"\n{b} vindication: {dict(Counter(r['vindication'] for r in sub))}")
+            print(f"\n{b} verification: {dict(Counter(r['verification'] for r in sub))}")
     print(f"\nwrote {OUT_CSV.relative_to(ROOT)}")
 
 

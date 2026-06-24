@@ -23,13 +23,13 @@
 - **思路2 / policy reconstruction（ex-ante，不给 test 结果）** → 产出 agent 要模仿的 reasoning trace（when/how/why、belief 轨迹）。
   - **必须用 Mode A =「解释已发生的医生动作」**，绝不让 LLM 自己选下一步 —— 锚定真实动作能压制 LLM 的教科书/rubric attachment。
   - （对比 Mode B = LLM 自己决定下一步 = 那是 agent 本身，attachment 是敌人。标注阶段绝不用 Mode B。）
-- **思路1 / vindication（ex-post，给结果）** → 只当 reward/质量标签，**绝不回灌进 agent 输入**。
+- **思路1 / verification（ex-post，给结果）** → 只当 reward/质量标签，**绝不回灌进 agent 输入**。
 
 ### 1.2 验证是 LOCAL 不是 GLOBAL
 判断「医生这步合不合理」要看**是否验证了他自己上一步的预想**，不是看最终诊断对不对
 （最终对可能只是靠维持先验蒙对，这一步的 test 仍可能是多余/错的）。拆成：
 - **(a) appropriateness**（事前）：这个 test 是否针对医生自己声明的某个真实信息 gap。→ 可进 agent 训练。
-- **(b) vindication**（事后）：结果 confirmed / disconfirmed / uninformative（相对医生预想的 finding）。→ 只当 reward。
+- **(b) verification**（事后）：结果 confirmed / disconfirmed / uninformative（相对医生预想的 finding）。→ 只当 reward。
 - **关键连接：(b) 的 local prediction error = certainty score 每一步的更新增量**。
   disconfirmed → certainty 下跌 → 触发下一次偏离。这把「积累一个量」具体化成可计算的东西。
 
@@ -47,7 +47,7 @@
 
 ### 1.6 标注质量保障措施
 - **因果遮蔽（causal masking）**：每步只暴露决策前可见信息（见 §3 序列定义）。
-- **~~ensemble disagreement 当 certainty proxy~~ — ⚠️ 已被 pilot 证伪，见 §7 Q4**。强 action-anchoring（§1.1 Mode A 必须做）会让多次采样高度一致，分歧度塌缩（偏离步 0.018 vs 非偏离 0.013，无区分度）。**certainty 信号改从 vindication / local prediction-error 读（§1.2 (b)），不从采样方差读。** 采样多次仍可保留，但仅用于 grounding 稳健性/捞 parse 失败，不当不确定度。
+- **~~ensemble disagreement 当 certainty proxy~~ — ⚠️ 已被 pilot 证伪，见 §7 Q4**。强 action-anchoring（§1.1 Mode A 必须做）会让多次采样高度一致，分歧度塌缩（偏离步 0.018 vs 非偏离 0.013，无区分度）。**certainty 信号改从 verification / local prediction-error 读（§1.2 (b)），不从采样方差读。** 采样多次仍可保留，但仅用于 grounding 稳健性/捞 parse 失败，不当不确定度。
 - **extractive grounding**：每个 claim 必须引用具体特征字段，不能引用就不许断言。（pilot 验证：质量很高，单步可引 9 个具体字段。）
 - **整条序列联合标注**：保证 belief 轨迹连贯（医生 belief 应随信息单调演化）。（pilot Q1 通过。）
 - **交叉验证锚点**：用已有特征算 Alvarado/BISAP，与 LLM 还原的不确定度比对，不一致的 flag 人工复核。
@@ -136,7 +136,7 @@
 实验前要做的工程：
 - ~~在 `build_masked_view.py` 基础上补 RR-N 排序 + 过滤~~ **已完成 ✅**（含 chest→CONTEXT 降级，见 §3）。
 - 写思路2 的 Mode A prompt（rubric-free、输出 5+open differential、extractive grounding、action_role）。
-- 写思路1 的 vindication 判定（用被遮蔽的那份报告结果，对比上一步预想 → confirmed/disconfirmed/uninformative）。
+- 写思路1 的 verification 判定（用被遮蔽的那份报告结果，对比上一步预想 → confirmed/disconfirmed/uninformative）。
 - LLM client：参考既有 `experiments/llm_experiment/llm_client.py`；key 在 `.openrouter_env` / `.openai_env`。
 
 ---
@@ -157,22 +157,22 @@ RL 非必须，fine-tune + 好 prompting 框架已是 solid 贡献。
 
 ## 7. Pilot 结果（8 case × 4 病 × dev/non-dev，30 决策步，已完成 ✅）
 
-**代码**：思路2 Mode A + 思路1 vindication 在 `experiments/annotation/{prompts,annotate}.py`；
+**代码**：思路2 Mode A + 思路1 verification 在 `experiments/annotation/{prompts,annotate}.py`；
 runner `scripts/run_annotation_experiment.py`（含 8-case 列表 + 4 问聚合）；
 模型 `anthropic/claude-sonnet-4-6` via OpenRouter；成本 ~$1.5。
-输出 `results/annotation_experiment/{disease}_{hadm}.json`（完整 ensemble+grounding+vindication）+ `summary_steps.csv`。
+输出 `results/annotation_experiment/{disease}_{hadm}.json`（完整 ensemble+grounding+verification）+ `summary_steps.csv`。
 （查 OpenRouter 花费：`scripts/check_openrouter_usage.py`。）
 
 **四个问题结论：**
 - **Q1 belief 轨迹连贯性 ✅**：differential 演化干净、无矛盾。如 diverticulitis 26371704 dive `0.50→0.74→0.74→0.89` 单调；appendicitis 23202997 起手 chole 最高→CT 后 appe `0.20→0.30→0.72` 正确翻盘。
-- **Q2 ex-ante vs ex-post 一致性 ✅ 有区分度**：vindication 18 confirmed / 9 disconfirmed / 3 uninformative（~30% 被推翻，非退化）。**pancreatitis 21282967 是关键示例**：s1↓s3↓s4↓s6↓ 反复 disconfirmed → 医生反复加做影像(7 步) = 真实数据里「local prediction-error 驱动持续偏离」的直接证据，坐实 §1.2。
+- **Q2 ex-ante vs ex-post 一致性 ✅ 有区分度**：verification 18 confirmed / 9 disconfirmed / 3 uninformative（~30% 被推翻，非退化）。**pancreatitis 21282967 是关键示例**：s1↓s3↓s4↓s6↓ 反复 disconfirmed → 医生反复加做影像(7 步) = 真实数据里「local prediction-error 驱动持续偏离」的直接证据，坐实 §1.2。
 - **Q3 triage-artifact ⚠️ 部分**：8/13 偏离步 `other`>0.25，但 `other` 均值偏离(0.42) vs 非偏离(0.43) 几乎相同 → `other` 反映**病人复杂度**(post-ERCP/妇科/泌尿)，不是 step 级「偏离 vs 不偏离」的干净判据。
 - **Q4 ensemble disagreement ❌ 证伪**：偏离 0.018 vs 非偏离 0.013，都极小。强 action-anchoring 让采样高度一致，分歧度塌缩。**淘汰 §1.6 的 disagreement-as-certainty 分支。**
 
-**方法论收获（最重要）**：certainty 信号来自 **vindication / local prediction-error（Q2 有效）**，不是 ensemble disagreement（Q4 失效）。不确定度从 `confirmed/disconfirmed` 序列 + differential 形状(entropy/`other`)读。Mode A 质量本身很高（extractive grounding 严格，vindication 是真正 LOCAL）。
+**方法论收获（最重要）**：certainty 信号来自 **verification / local prediction-error（Q2 有效）**，不是 ensemble disagreement（Q4 失效）。不确定度从 `confirmed/disconfirmed` 序列 + differential 形状(entropy/`other`)读。Mode A 质量本身很高（extractive grounding 严格，verification 是真正 LOCAL）。
 
 **待办（下一步）：**
 1. **deviation 标签按 event 对齐**（当前 runner 按 modality 匹配 commission 会过标：一个 case 多次 CT 全被标 dev）。
-2. 把 certainty score 形式化：用 vindication 的 confirmed(+)/disconfirmed(−)/uninformative(0) 当每步增量，跑出一条 certainty 轨迹，对照「医生何时停 / 何时继续加做」。
+2. 把 certainty score 形式化：用 verification 的 confirmed(+)/disconfirmed(−)/uninformative(0) 当每步增量，跑出一条 certainty 轨迹，对照「医生何时停 / 何时继续加做」。
 3. 扩样到几十例做 fine-tune 前的标注集；differential entropy + `other` 作为辅助不确定度特征。
 4. （Rigor）回 MIMIC 源补 `charttime` 替换 RR-N（§3 挂着）。

@@ -8,7 +8,7 @@ Replaces the set-membership labelling in analyze_off_rubric.py. Per decision ste
                 compare to the doctor's action. (commission/omission/swap are NOT here.)
   dev_godview : event-aligned commission vs the patient's true-disease rubric path
                 (tsc simulated_sequence) — SEQUENCE-level, unchanged.
-  vindication : confirmed / disconfirmed / uninformative (ex-post, from annotation).
+  verification : confirmed / disconfirmed / uninformative (ex-post, from annotation).
 
 Pre-decision features come from data/rubric_features/{disease}_features.json,
 which is ACCUMULATIVE (idx_k features already include test-k's result), so the state
@@ -91,14 +91,14 @@ def main() -> None:
             m = st["metrics"]
             top = m["overall_top_branch"]
             oh = (st.get("representative_ex_ante") or {}).get("other_hypothesis", "")
-            vind = (st.get("vindication") or {}).get("vindication", "")
+            vind = (st.get("verification") or {}).get("verification", "")
             row = {
                 "disease": disease, "hadm": hadm, "step": st["step"],
                 "modality": ordered_seq[i], "top_branch": top,
                 "mean_other": round(m["mean_differential"].get("other", 0.0), 3),
                 "rrn_aligned": aligned,
                 "dev_godview": gv_flags[i],
-                "vindication": vind,
+                "verification": vind,
             }
             if aligned:
                 pre = fe_steps[fe_img_idx[i] - 1]["features"]
@@ -112,7 +112,7 @@ def main() -> None:
 
     cols = ["disease", "hadm", "step", "modality", "top_branch", "eff_branch",
             "mean_other", "rubric_rec", "rubric_state", "dev_belief", "dev_godview",
-            "vindication", "rrn_aligned"]
+            "verification", "rrn_aligned"]
     out_csv = ann_dir / "belief_deviation_analysis.csv"
     with out_csv.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=cols)
@@ -138,12 +138,12 @@ def main() -> None:
     overall = Counter(r["dev_belief"] for r in judged)
     print(f"\nOVERALL dev_belief (judged): {dict(overall)}")
 
-    # vindication x dev_belief crosstab — the analysis targets (Part B)
-    print("\ndev_belief x vindication:")
+    # verification x dev_belief crosstab — the analysis targets (Part B)
+    print("\ndev_belief x verification:")
     print(f"{'':18}{'confirmed':>10}{'disconfirmed':>13}{'uninform':>10}")
     for dev in ["follow", "deviate", "off_rubric"]:
         sub = [r for r in judged if r["dev_belief"] == dev]
-        vc = Counter(r["vindication"] for r in sub)
+        vc = Counter(r["verification"] for r in sub)
         print(f"{dev:18}{vc.get('confirmed',0):10}{vc.get('disconfirmed',0):13}"
               f"{vc.get('uninformative',0):10}")
 

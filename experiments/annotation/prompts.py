@@ -1,4 +1,4 @@
-"""Prompts for 思路2 Mode-A doctor-reasoning reconstruction and 思路1 vindication.
+"""Prompts for 思路2 Mode-A doctor-reasoning reconstruction and 思路1 verification.
 
 Design (HANDOFF §1, annotation_agent_design memory):
   - Mode A = explain the GIVEN doctor action (the ordered test is provided), NEVER
@@ -8,7 +8,7 @@ Design (HANDOFF §1, annotation_agent_design memory):
     plays an experienced acute-care physician using general clinical knowledge.
   - Differential = 5 triage branches + an open "other" slot (Figure 0).
   - Extractive grounding: every claim must cite a concrete field from the visible context.
-  - Vindication (思路1) is a SEPARATE ex-post call that DOES see the masked result,
+  - Verification (思路1) is a SEPARATE ex-post call that DOES see the masked result,
     used as a reward/quality label only — never fed back into Mode A.
 """
 from __future__ import annotations
@@ -88,7 +88,7 @@ At this point the treating physician ordered: **{step['ordered']}**
 VINDICATION_SYSTEM = """You are auditing, after the fact, whether one imaging test confirmed the treating physician's prior expectation. You are given: the physician's ex-ante expected finding for the test, and the ACTUAL report text of that test. Judge LOCALLY — only whether the result matched what the physician was looking for at that step, NOT whether the final diagnosis was right. Output STRICT JSON only."""
 
 
-def build_vindication_user(expected_finding: str, information_gap: str, actual_report: str) -> str:
+def build_verification_user(expected_finding: str, information_gap: str, actual_report: str) -> str:
     return f"""## Physician's ex-ante expectation for this test
 information_gap: {information_gap}
 expected_finding: {expected_finding}
@@ -98,7 +98,7 @@ expected_finding: {expected_finding}
 
 Return a JSON object with exactly these keys:
 {{
-  "vindication": "<confirmed | disconfirmed | uninformative>",
+  "verification": "<confirmed | disconfirmed | uninformative>",
       // confirmed = result matched the expected_finding / resolved the gap as hoped
       // disconfirmed = result contradicted the expected_finding
       // uninformative = result did not address the gap either way

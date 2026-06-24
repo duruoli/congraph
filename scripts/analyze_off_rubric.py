@@ -3,7 +3,7 @@
 Scans <dir>/<disease>_<hadm>.json (no API), and per decision step computes:
   dev_belief  : {follow, deviate_commission, off_rubric} vs assumed-disease sub-rubric
   dev_godview : event-aligned commission vs the patient's true-disease rubric path (tsc)
-  vindication : confirmed / disconfirmed / uninformative
+  verification : confirmed / disconfirmed / uninformative
 
 Aggregates the population off_rubric rate overall and PER DISEASE (to test the
 pilot hypothesis: off_rubric concentrates in cholecystitis + pancreatitis, the
@@ -62,7 +62,7 @@ def main() -> None:
                 "mean_other": round(m["mean_differential"].get("other", 0.0), 3),
                 "dev_belief": dev,
                 "dev_godview": gv_flags[i],
-                "vindication": (st.get("vindication") or {}).get("vindication", ""),
+                "verification": (st.get("verification") or {}).get("verification", ""),
             })
 
     out_csv = ann_dir / "off_rubric_analysis.csv"
@@ -99,10 +99,10 @@ def main() -> None:
             final_off += 1
     print(f"case-level final-belief off_rubric: {final_off}/{n_cases} = {final_off/n_cases:.0%}")
 
-    # vindication split of off_rubric (quality: is off-rubric uniformly bad?)
+    # verification split of off_rubric (quality: is off-rubric uniformly bad?)
     off_rows = [r for r in rows if r["dev_belief"] == "off_rubric"]
     if off_rows:
-        print(f"\noff_rubric vindication: {dict(Counter(r['vindication'] for r in off_rows))}")
+        print(f"\noff_rubric verification: {dict(Counter(r['verification'] for r in off_rows))}")
 
     # biliary post-hoc recovery: off_rubric steps whose other_hypothesis named a bile-duct
     # process, relabeled 'biliary' and judged vs R[biliary]={US,MRCP}. (eff_branch, not the
@@ -111,10 +111,10 @@ def main() -> None:
     if bil:
         print(f"\nbiliary (post-hoc from off_rubric): {len(bil)} steps  "
               f"dev_belief={dict(Counter(r['dev_belief'] for r in bil))}  "
-              f"vindication={dict(Counter(r['vindication'] for r in bil))}")
+              f"verification={dict(Counter(r['verification'] for r in bil))}")
         for r in bil:
             print(f"    {r['disease']} {r['hadm']} s{r['step']} {r['modality']} "
-                  f"-> {r['dev_belief']} ({r['vindication']})")
+                  f"-> {r['dev_belief']} ({r['verification']})")
     print(f"\nwrote {out_csv}")
 
 

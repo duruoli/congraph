@@ -7,9 +7,9 @@ three-part record  INPUT -> TARGET -> REWARD  (+ derived CERTAINTY, + META label
 Inputs (all already on disk):
   - results/annotation_experiment/full/belief_deviation_filtered.csv
         labels per step (dev_belief, rubric_state, rubric_rec, eff_branch,
-        vindication) + the PROVISIONAL timing filter (excluded_monitoring).
+        verification) + the PROVISIONAL timing filter (excluded_monitoring).
   - results/annotation_experiment/full/<disease>_<hadm>.json
-        the ex-ante reconstructed reasoning trace + ex-post vindication per step.
+        the ex-ante reconstructed reasoning trace + ex-post verification per step.
   - data/raw_data/<disease>_hadm_info_first_diag.csv  (via build_masked_view)
         baseline + RR-N ordered radiology reports -> causally-masked patient state.
   - pipeline.rubric_graph.DISEASE_GRAPHS
@@ -18,7 +18,7 @@ Inputs (all already on disk):
 The five transforms (HANDOFF §8), faithfully:
   1. CAUSAL MASK   INPUT.patient_state = baseline + ONLY this step's visible prior
                    imaging reports (build_masked_view); this test's result + all
-                   later reports are dropped. Vindication never enters INPUT.
+                   later reports are dropped. Verification never enters INPUT.
   2. RUBRIC LIBRARY   serve the FULL triage every step (all 4 disease sub-rubrics +
                    open 'other'), written once to rubric_library.json and referenced
                    per row. The agent self-routes (it must OUTPUT its belief argmax),
@@ -39,7 +39,7 @@ The five transforms (HANDOFF §8), faithfully:
                    are either down-weighted (default) or relabeled when_action->stop
                    (--suppress-mode stop). FD-2 stale-anatomy needs charttime -> TODO.
   5. LEAKAGE STRIP  Discharge Dx / ICD / Procedures never present (build_masked_view
-                   never emits them); disease-godview + vindication kept out of INPUT
+                   never emits them); disease-godview + verification kept out of INPUT
                    (they live in META/REWARD only).
 
 Row scope: rrn_aligned==True (have the dev_belief WHEN label) AND not
@@ -94,7 +94,7 @@ _TERMINAL_STATES = {"terminal_confirmed", "terminal_excluded",
 
 def is_should_suppress(row) -> bool:
     return (row.dev_belief == "deviate"
-            and row.vindication == "disconfirmed"
+            and row.verification == "disconfirmed"
             and row.rubric_state in _TERMINAL_STATES)
 
 
@@ -204,7 +204,7 @@ def build_row(r, case, masked, suppress_mode, suppress_weight,
     if jstep is None:
         return None
     ex = jstep.get("representative_ex_ante") or {}
-    vind = jstep.get("vindication") or {}
+    vind = jstep.get("verification") or {}
 
     dp = next((d for d in masked["decision_points"] if int(d["step"]) == step), None)
     if dp is None:
@@ -267,7 +267,7 @@ def build_row(r, case, masked, suppress_mode, suppress_weight,
         },
 
         "REWARD": {                                 # ex-post; NEVER in INPUT
-            "vindication": vind.get("vindication", r.vindication),
+            "verification": vind.get("verification", r.verification),
             "certainty_update": vind.get("certainty_update", ""),
             "appropriateness": ex.get("appropriateness", ""),
             "appropriateness_reason": ex.get("appropriateness_reason", ""),
@@ -338,7 +338,7 @@ def main() -> None:
         for _, rr in grp.iterrows():
             dc_m[int(rr.step)] = run
             pb_m[int(rr.step)] = last_belief         # belief argmax of the PREVIOUS step
-            if str(rr.vindication) == "disconfirmed":
+            if str(rr.verification) == "disconfirmed":
                 run += 1
             last_belief = rr.top_branch if pd.notna(rr.top_branch) else last_belief
         prior_dc[(disease, hadm)] = dc_m
@@ -375,7 +375,7 @@ def main() -> None:
 
     # manifest / provenance
     when_dist = Counter(x["TARGET"]["when_action"] for x in rows)
-    vind_dist = Counter(x["REWARD"]["vindication"] for x in rows)
+    vind_dist = Counter(x["REWARD"]["verification"] for x in rows)
     suppress_n = sum(x["REWARD"]["should_suppress"] for x in rows)
     by_disease = Counter(x["disease"] for x in rows)
     first_step = sum(x["INPUT"]["active_path"] is None for x in rows)
@@ -394,7 +394,7 @@ def main() -> None:
         },
         "skipped": dict(skipped),
         "when_action_dist": dict(when_dist),
-        "vindication_dist": dict(vind_dist),
+        "verification_dist": dict(vind_dist),
         "by_disease": dict(by_disease),
         "should_suppress_n": int(suppress_n),
         "first_step_rows_no_active_path": first_step,
@@ -411,7 +411,7 @@ def main() -> None:
     print(f"wrote {out_dir / 'train_manifest.json'}")
     print(f"\nby disease : {dict(by_disease)}")
     print(f"when_action: {dict(when_dist)}")
-    print(f"vindication: {dict(vind_dist)}")
+    print(f"verification: {dict(vind_dist)}")
     print(f"should_suppress ({args.suppress_mode}): {suppress_n}")
     if skipped:
         print(f"skipped    : {dict(skipped)}")

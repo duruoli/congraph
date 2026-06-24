@@ -9,7 +9,7 @@ Pearl: certainty about the diagnosis re-aiming imaging at severity → etiology�
 
 ## Insight 2: A non-diagnostic or low-quality report is not a negative; inadequacy licenses pushing past the rubric's "stop.”
 The rubric treats a completed first-line test as terminal. Doctors read the adequacy of the study and refuse to let an inconclusive scan close the workup
-~30+ cases the reasoning: “appendix not visualized,” “US technically limited,” “limited study,” “sludge vs. non-shadowing stones,” “outside CT very limited given body habitus.” Each time, the next imaging step is vindicated 
+~30+ cases the reasoning: “appendix not visualized,” “US technically limited,” “limited study,” “sludge vs. non-shadowing stones,” “outside CT very limited given body habitus.” Each time, the next imaging step is verified 
 24478777, 23562407 appendix-not-seen→CT found it; 
 29234985, 27163978 limited-US→repeat dedicated US)
 Pearl: the rubric needs a study-adequacy gate — “negative” must be conditioned on “and the study could actually have seen it.” Absence of evidence from an inadequate test ≠ evidence of absence

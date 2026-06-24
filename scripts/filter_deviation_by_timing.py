@@ -28,14 +28,14 @@ print(f"[{mode}] total steps {len(m)} | excluded {int(m.excluded_monitoring.sum(
 print(f"wrote {D/'belief_deviation_filtered.csv'}\n")
 
 def cell(df, dev_b, vind):
-    return len(df[(df.dev_belief == dev_b) & (df.vindication == vind)])
+    return len(df[(df.dev_belief == dev_b) & (df.verification == vind)])
 
 print("DD/FD cells  (deviate/follow x disconfirmed) — before -> after filter:")
 for lab, dv in [("FD follow+disconfirmed", "follow"),
                 ("DD deviate+disconfirmed", "deviate")]:
     b, a = cell(m, dv, "disconfirmed"), cell(kept, dv, "disconfirmed")
     print(f"  {lab:26} {b:3} -> {a:3}   (-{b-a})")
-print("\nexcluded steps by dev_belief x vindication:")
+print("\nexcluded steps by dev_belief x verification:")
 ex = m[m.excluded_monitoring]
 if len(ex):
-    print(pd.crosstab(ex.dev_belief, ex.vindication, margins=True).to_string())
+    print(pd.crosstab(ex.dev_belief, ex.verification, margins=True).to_string())

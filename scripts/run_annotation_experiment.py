@@ -1,10 +1,10 @@
 """6-8 case pilot for the doctor-reasoning annotation pipeline (HANDOFF §4).
 
 For each case: build the causally-masked decision sequence (build_masked_view),
-run 思路2 Mode-A ensemble + 思路1 vindication (experiments.annotation.annotate),
+run 思路2 Mode-A ensemble + 思路1 verification (experiments.annotation.annotate),
 then measure the four pilot questions:
   (1) belief-trajectory coherence  -> per-step mean differential dumped for inspection
-  (2) ex-ante vs ex-post agreement -> vindication label per step
+  (2) ex-ante vs ex-post agreement -> verification label per step
   (3) triage-artifact share         -> 'other' mass + differential dispersion on deviation steps
   (4) disagreement tracks deviation -> ensemble diff_disagreement on deviating vs non-deviating steps
 
@@ -73,7 +73,7 @@ def main():
             m = st["metrics"]
             mod = step_modality(st["ordered"])
             is_dev_step = mod in commission
-            vind = st.get("vindication") or {}
+            vind = st.get("verification") or {}
             rows.append({
                 "disease": disease, "hadm": hadm, "case_label": label,
                 "step": st["step"], "ordered": st["ordered"], "modality": mod,
@@ -83,13 +83,13 @@ def main():
                 "diff_disagreement": round(m["diff_disagreement"], 4),
                 "top_branch_consistency": round(m["top_branch_consistency"], 3),
                 "action_role": m["modal_action_role"],
-                "vindication": vind.get("vindication", ""),
+                "verification": vind.get("verification", ""),
                 "certainty_update": vind.get("certainty_update", ""),
             })
             print(f"   step{st['step']} {mod:16} dev={is_dev_step!s:5} "
                   f"top={m['overall_top_branch']:13} other={rows[-1]['mean_other']:.2f} "
                   f"disagree={rows[-1]['diff_disagreement']:.3f} "
-                  f"vind={rows[-1]['vindication']}")
+                  f"vind={rows[-1]['verification']}")
 
     df = pd.DataFrame(rows)
     df.to_csv(f"{OUTDIR}/summary_steps.csv", index=False)
@@ -113,8 +113,8 @@ def main():
     if not dev.empty:
         print(f"[Q3] deviating steps with mean 'other' > 0.25 (triage net): "
               f"{(dev['mean_other'] > 0.25).sum()}/{len(dev)}")
-    # Q2: vindication distribution
-    print(f"[Q2] vindication dist: {df['vindication'].value_counts().to_dict()}")
+    # Q2: verification distribution
+    print(f"[Q2] verification dist: {df['verification'].value_counts().to_dict()}")
     print(f"\nwrote {OUTDIR}/summary_steps.csv  ({len(df)} decision steps)")
 
 

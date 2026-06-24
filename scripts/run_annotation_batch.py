@@ -1,7 +1,7 @@
 """Stratified-random batch annotation to estimate the population off_rubric rate.
 
 Runs the FULL updated pipeline per case (思路2 Mode-A reconstruction at n=1 +
-思路1 vindication per decision step — same annotate_case as the pilot, just n=1),
+思路1 verification per decision step — same annotate_case as the pilot, just n=1),
 on a seeded stratified-random sample of patients, EXCLUDING the 8 hand-picked pilot
 cases (those were deliberately biased toward complex/deviation patients, so they
 would over-state off_rubric). Outputs one JSON per case to results/annotation_experiment/batch/.

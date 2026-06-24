@@ -66,11 +66,11 @@
   - reasoning trace：differential(5+other)、information_gap、expected_finding、action_role、extractive grounding。
   - dev_belief 三态（follow/deviate/off_rubric）+ rubric_state（为什么）当结构化标签。
 - **REWARD/质量（ex-post，绝不进 INPUT）**：
-  - vindication（confirmed/disconfirmed/uninformative）+ certainty_update(±/0)。
+  - verification（confirmed/disconfirmed/uninformative）+ certainty_update(±/0)。
   - appropriateness（yes/partial/no）。
   - 按 §2-C 的约束使用（disconfirmed≠惩罚）。
 
-**防泄漏（硬规则，沿用 annotation pipeline）**：Discharge Dx / ICD / Procedures 永不进任何样本；disease/deviation 上帝视角标签不进 INPUT（只当 eval/label）；vindication 不进 INPUT。
+**防泄漏（硬规则，沿用 annotation pipeline）**：Discharge Dx / ICD / Procedures 永不进任何样本；disease/deviation 上帝视角标签不进 INPUT（只当 eval/label）；verification 不进 INPUT。
 
 **样本量现状**：~338 deviation events + 匹配的 follow/non-deviation 对照（§1.5 deviation 是 label 不是 filter，必须含负类/follow 步，否则学不出边界）。430 judged steps 里 follow 181 / deviate 169 / off_rubric 80，可直接当四类决策样本。
 
@@ -78,7 +78,7 @@
 
 ## 4. Certainty 信号形式化（共用层；目前 memory 标为"待做"）
 
-- 每步增量 = vindication 的 confirmed(+) / disconfirmed(−) / uninformative(0)（annotation_agent_design §1.2(b)）。
+- 每步增量 = verification 的 confirmed(+) / disconfirmed(−) / uninformative(0)（annotation_agent_design §1.2(b)）。
 - 跑出每个 case 的 certainty 轨迹，对照"医生何时停 / 何时继续加做"。
 - 辅助不确定度特征：differential entropy + `other` mass（Q3：是病人复杂度信号，弱 step 级判据，只作辅助）。
 - ⚠️ ensemble-disagreement 已证伪（Q4），不用采样方差当不确定度。
@@ -98,7 +98,7 @@
 ## 6. 里程碑顺序
 
 1. **编译共用训练集**（§3）：从 full/*.json + belief_deviation_analysis.csv 生成 step 级样本（INPUT/TARGET/REWARD 三分，含 follow 负类）。
-2. **Certainty 形式化**（§4）：vindication→轨迹，落 certainty 列。
+2. **Certainty 形式化**（§4）：verification→轨迹，落 certainty 列。
 3. **方向 A 先行（便宜快）**：prompt = rubric 图 + top-k exemplar + §2 规则；在 held-out 上跑 §5。这步同时验证行为规范是否可学。
 4. **方向 B**：把样本编译成 SFT 格式，LoRA 微调 qwen；同一 held-out 对比方向 A。
 5. （可选 RL）reward = local imitation + prediction-error；offline RL 有 distribution-shift 风险，非必须（annotation_agent_design §5）。
@@ -110,7 +110,7 @@
 - 样本量对方向 B 偏小（4 病、~338 events）→ 优先 LoRA/few-shot，警惕过拟合；可能需把 follow/off_rubric 步也充分纳入扩容。
 - exemplar 检索（方向 A）的相似度定义 = 上限，复用现有 KNN engine 但要按"当前临床问题"而非纯特征相似。
 - RR-N 仍是时序 proxy（charttime rigor TODO 挂着）；51/293 patient rrn_aligned=False 被跳过，扩样前考虑补 charttime。
-- biliary 是 post-hoc 派生 belief，不是重建的 disease（不会被 over-attribute），但其 vindication 质量较杂（~56% confirmed）——当训练材料时按 §2-C 谨慎用。
+- biliary 是 post-hoc 派生 belief，不是重建的 disease（不会被 over-attribute），但其 verification 质量较杂（~56% confirmed）——当训练材料时按 §2-C 谨慎用。
 - §2 的行为规范源自 4 病的 542 步，外推到新病种前需重标。
 
 ---
@@ -130,11 +130,11 @@
 | **WHY**（为何偏离） | `information_gap`、`expected_finding`、`grounding`(引用具体特征)、`appropriateness_reason` | → **reasoning trace target**（agent 要生成的 NL 理由 + 引用） |
 
 **编译器的 5 个转换（非简单拷贝）：**
-1. **因果遮蔽**：INPUT 只含该步之前可见的影像结果（复用 `scripts/build_masked_view.py`），后续结果 + vindication 挡掉。
+1. **因果遮蔽**：INPUT 只含该步之前可见的影像结果（复用 `scripts/build_masked_view.py`），后续结果 + verification 挡掉。
 2. **挂 rubric 库（全 4 + other，不是单个子图）**：⚠️ **2026-06 修订，下方单子图示例已被取代。** 早先方案是按 `top_branch` 取单个 sub-rubric 进 INPUT——但 belief argmax 是 agent 这一步要**输出**的 target（在 `why_trace.belief` 里），单独喂它的 sub-rubric = **泄漏 belief target** 且与推理不符（`eff_branch` 并非 ground truth，`top_branch==disease` 仅 59%，但仍是 this-step target，照样泄漏）。**现在 INPUT 每步给全 4 疾病 sub-rubric + open 'other'**（`rubric_library.json` 单独写一份，每行用 `INPUT.rubric_library_ref` 引用，jsonl 从 ~13MB 降到 ~3.5MB），再加 `INPUT.active_path` = **上一步的 belief argmax**（当前工作假设；过去信息，非泄漏；teacher-forcing 的循环输入，推理时换 agent 自己上一步输出；step1=None）。agent **自己 self-route**：输出 differential → argmax 即隐式选定 rubric。TARGET 保留 `belief_branch`(=top_branch，agent 要输出的 4+other argmax) + `effective_branch`(=eff_branch，deviate 实际对照的 rubric，可经 post-hoc 变 'biliary')。**deviate 是确定性算法不是学出来的**：argmax(agent belief) → traverse 该疾病图于因果遮蔽 features(idx_{k-1}) → rubric 此处想要的影像 ∩ imaging → 与 agent 的 ordered modality 比 → in=follow/否=deviate/argmax='other'=off_rubric（= `belief_step_deviation`，eval 用 agent belief、train 用重建 belief）。
 3. **派生双通道 certainty**：`belief` 从 differential 直接拿（max_p/entropy/other_mass）；`alarm` 从 information_gap/reasoning 的 discordance/adequacy/conflict 信号 + 前序步 disconfirm 计数算。⚠️ 当前是 **provisional 关键词版**（`method:provisional_keyword`）= 待 clarify（纯规则关键词 vs 轻量 LLM 标一列）。
 4. **混合 target 重标**：默认 target=医生动作；should-suppress 步（当前仅 **DD-1 proxy**：deviate+disconfirmed+terminal/blocked rubric_state）默认 `sample_weight=0.3` 降权（`--suppress-mode stop` 改成 `when_action→stop`，`off` 纯模仿）。FD-2 陈旧解剖需真 charttime → 暂缓。
-5. **防泄漏剥离**：Discharge Dx / ICD / Procedures / disease 上帝视角 / vindication 一律不进 INPUT。
+5. **防泄漏剥离**：Discharge Dx / ICD / Procedures / disease 上帝视角 / verification 一律不进 INPUT。
 
 **实现状态（2026-06）：`scripts/compile_training_set.py` 已写并跑通** → `data/training_set/{train_steps.jsonl(404 行), train_manifest.json, rubric_library.json}`。行 = `rrn_aligned & not excluded_monitoring`（542→404）。验证：INPUT 内 0 个序列化疾病图（belief 不泄漏）、0 个 this-step 结果；step1 的 231 行 active_path 全 None。
 
@@ -157,7 +157,7 @@ TARGET:                                 # 监督信号（医生做了什么）
     grounding: [WBC 18.2, lactate 2.1, "soft non-tender abdomen", 前次 5.7cm 脓腔]
     action_role: stage_complication
 REWARD:                                 # 仅 RL/eval，绝不进 INPUT
-  vindication: confirmed
+  verification: confirmed
   appropriateness: partial              # eGFR 低，重复造影顾虑
   certainty_update: up
   sample_weight: 1.0
@@ -188,7 +188,7 @@ REWARD:                                 # 仅 RL/eval，绝不进 INPUT
 | `27993727 s2` 术后冗余 CT (DD-1) | "做 CT" | **低**(disconfirmed+inappropriate+suppress) | 纯 SFT 会学冗余 CT；reward 让 RL 不强化 |
 | `25444703` 偏离撞中肿物 (DD-3) | "做 CT" | **高**(循证+瞄准对器官) | reward 若错设成"是否命中预测"会误罚；正确设计要奖 |
 
-→ reward 若是 f(x) vs y 的距离，两个都会"贴近医生=高分"，就永远学不会刹车。reward 是从 ex-post 字段(vindication/appropriateness/§2-C)**独立判出的好坏**。
+→ reward 若是 f(x) vs y 的距离，两个都会"贴近医生=高分"，就永远学不会刹车。reward 是从 ex-post 字段(verification/appropriateness/§2-C)**独立判出的好坏**。
 
 **(d) reward 要自己 design 吗**：要，但 design 的不是"和 y 的距离"，而是"什么动作算好"。草稿就是 §2 行为规范，例：
 `R = +1 if deviate且confirmed且appropriate ; −1 if DD-1过度复扫 ; DD-3撒网命中真相不罚(C1) ; certainty更新只作用 belief 不作用决策分(C2)`。

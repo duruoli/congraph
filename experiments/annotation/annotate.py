@@ -1,4 +1,4 @@
-"""Run 思路2 Mode-A reconstruction (with ensemble) + 思路1 vindication over the
+"""Run 思路2 Mode-A reconstruction (with ensemble) + 思路1 verification over the
 causally-masked decision sequence of one patient.
 
 Reuses scripts/build_masked_view.build_record for the masked view and
@@ -15,7 +15,7 @@ from openai import OpenAI
 
 from experiments.annotation.prompts import (
     BRANCHES, MODE_A_SYSTEM, VINDICATION_SYSTEM,
-    build_mode_a_user, build_vindication_user,
+    build_mode_a_user, build_verification_user,
 )
 from experiments.llm_experiment.env_loader import load_openrouter_key
 
@@ -130,7 +130,7 @@ def annotate_case(record: dict[str, Any], *, model: str, n_samples: int = 1,
         approps = [str(s.get("appropriateness", "")) for s in samples]
         metrics = _disagreement(diffs, roles, approps)
 
-        # vindication uses the masked result of THIS step + the modal-ish ex-ante guess
+        # verification uses the masked result of THIS step + the modal-ish ex-ante guess
         rep = dp.get("masked_result_of_this_test", "")
         # pick the sample whose differential is closest to the ensemble mean as the representative ex-ante
         def dist(d): return sum(abs(d[b] - metrics["mean_differential"][b]) for b in BRANCHES)
@@ -138,7 +138,7 @@ def annotate_case(record: dict[str, Any], *, model: str, n_samples: int = 1,
         rep_sample = samples[rep_idx] if samples else {}
         vind = call_json(
             VINDICATION_SYSTEM,
-            build_vindication_user(
+            build_verification_user(
                 str(rep_sample.get("expected_finding", "")),
                 str(rep_sample.get("information_gap", "")),
                 rep,
@@ -153,7 +153,7 @@ def annotate_case(record: dict[str, Any], *, model: str, n_samples: int = 1,
             "ensemble": samples,
             "representative_ex_ante": rep_sample,
             "metrics": metrics,
-            "vindication": vind,
+            "verification": vind,
         })
     return {
         "hadm_id": record["hadm_id"],

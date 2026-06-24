@@ -172,7 +172,7 @@ def belief_step_deviation(top_branch: str, pre_features: dict, ordered: str,
     notions, judged by god-view, not here):
 
       off_rubric : belief sits on 'other' with no biliary rescue -> no sub-rubric to judge
-                   against (do NOT call it 'wrong'; vindication judges quality — these are
+                   against (do NOT call it 'wrong'; verification judges quality — these are
                    the outlier-patch signal).
       follow     : the ordered imaging IS in the rubric's step-local recommendation.
       deviate    : the ordered imaging is NOT what the rubric wants here — because the

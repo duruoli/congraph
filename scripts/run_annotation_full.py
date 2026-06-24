@@ -1,4 +1,4 @@
-"""Annotate ALL 300 patients in joined_data with the 思路2 Mode-A + 思路1 vindication
+"""Annotate ALL 300 patients in joined_data with the 思路2 Mode-A + 思路1 verification
 pipeline (5-branch + open 'other', n=1 — biliary recovered POST-HOC offline).
 
 Resume-safe: skips any (disease,hadm) that already has a JSON in --outdir, so it can be
