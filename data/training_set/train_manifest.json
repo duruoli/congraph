@@ -2,9 +2,12 @@
   "n_rows": 404,
   "source_csv": "results/annotation_experiment/full/belief_deviation_filtered.csv",
   "ann_dir": "results/annotation_experiment/full",
+  "alarm_dir": "results/annotation_experiment/alarm",
+  "alarm_channel": "A2/A3 from offline LLM alarm pass + A1 derived algorithmically (belief max_p>=0.50 on a rubric disease & severity/etiology/complication gap)",
   "rubric_library": "rubric_library.json (all 4 disease sub-rubrics + open 'other'; referenced by every row via INPUT.rubric_library_ref)",
   "config": {
     "ann_dir": "results/annotation_experiment/full",
+    "alarm_dir": "results/annotation_experiment/alarm",
     "out": "data/training_set",
     "suppress_mode": "downweight",
     "suppress_weight": 0.3,
@@ -34,7 +37,23 @@
     "diverticulitis": 41,
     "pancreatitis": 126
   },
-  "should_suppress_n": 9,
+  "alarm_stats": {
+    "any_trigger": 285,
+    "study_inadequacy_A2": 127,
+    "discordance_A3": 148,
+    "advanced_question_A1": 123,
+    "alarm_parse_error": 0,
+    "rows_without_alarm_json": 0,
+    "missing_alarm_cases": []
+  },
+  "alarm_resolve_dist_over_triggered": {
+    "yes": 138,
+    "partial": 81,
+    "not_applicable": 46,
+    "no": 20
+  },
+  "should_suppress_n": 0,
+  "should_suppress_basis": "alarm silent (no A2/A3/A1) & belief concentrated (max_p>=0.5, other_mass<=0.3) & same-modality repeat (§2.5 criterion 2)",
   "first_step_rows_no_active_path": 231,
   "rubric_serving": "FULL triage every step (no leakage of belief argmax); agent self-routes, deviate judged wrt the agent's argmax belief rubric. INPUT.active_path = prior-step belief argmax (past info).",
   "provisional_timing_filter": true,

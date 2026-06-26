@@ -1,0 +1,78 @@
+{
+  "hadm_id": 22566240,
+  "disease": "cholecystitis",
+  "n_decision_steps": 3,
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS W/O CONTRAST)",
+      "n_visible_prior": 1,
+      "alarm_detect": {
+        "study_inadequacy": {
+          "present": false,
+          "score": 0.0,
+          "evidence": ""
+        },
+        "discordance": {
+          "present": false,
+          "score": 0.15,
+          "evidence": ""
+        },
+        "summary": "none"
+      },
+      "alarm_resolve": {
+        "addresses_alarm": "not_applicable",
+        "reason": "no trigger detected — step-2 skipped",
+        "unaddressed_alarm": false,
+        "api_skipped": true
+      }
+    },
+    {
+      "step": 2,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "n_visible_prior": 2,
+      "alarm_detect": {
+        "study_inadequacy": {
+          "present": true,
+          "score": 0.92,
+          "evidence": "\"Non-contrast scan has several limitations in detecting vascular and parenchymal organ abnormalities, including tumor detection.\" and \"There is mild fat stranding around the gallbladder which is distended and contains gallstones, concerning for ____.\" — the CT was performed without IV contrast, explicitly limiting evaluation of vascular and parenchymal pathology, and the gallbladder finding (fat stranding, distension, gallstones) is flagged as 'concerning for ____' with the diagnosis left blank, meaning the key hepatobiliary question raised by the scan remains unanswered."
+        },
+        "discordance": {
+          "present": false,
+          "score": 0.1,
+          "evidence": ""
+        },
+        "summary": "The non-contrast CT is technically limited for vascular/parenchymal assessment and explicitly leaves the gallbladder diagnosis incomplete ('concerning for ____'), so the clinical question it was meant to answer — the cause of RUQ pain with a distended, stone-containing gallbladder — remains open and requires contrast-enhanced imaging or further evaluation before defaulting to a routine next step."
+      },
+      "alarm_resolve": {
+        "addresses_alarm": "yes",
+        "reason": "Abdominal ultrasound is the appropriate next-step modality to resolve the incomplete gallbladder diagnosis left by the non-contrast CT, and the physician's reasoning explicitly targets the unanswered question of acute cholecystitis versus biliary colic by seeking wall thickening, pericholecystic fluid, sonographic Murphy's sign, and CBD caliber — findings that directly fill the capability gap of the prior limited study.",
+        "unaddressed_alarm": false
+      }
+    },
+    {
+      "step": 3,
+      "ordered": "Ultrasound Abdomen (RENAL U.S.)",
+      "n_visible_prior": 3,
+      "alarm_detect": {
+        "study_inadequacy": {
+          "present": true,
+          "score": 0.92,
+          "evidence": "with portions of the pancreatic tail obscured by overlying bowel gas",
+          "organ": "pancreas"
+        },
+        "discordance": {
+          "present": false,
+          "score": 0.1,
+          "evidence": ""
+        },
+        "summary": "The gallbladder ultrasound incompletely evaluated the pancreas ('portions of the pancreatic tail obscured by overlying bowel gas'), leaving the pancreatic tail unassessed in a patient with RUQ pain and gallstones — the clinical question about pancreatic pathology remains open."
+      },
+      "alarm_resolve": {
+        "addresses_alarm": "no",
+        "reason": "The ordered renal ultrasound is directed entirely at evaluating acute kidney injury and obstructive uropathy, and neither its imaging capability nor the physician's reasoning addresses the flagged situation — the incomplete assessment of the pancreatic tail obscured by bowel gas on the prior hepatobiliary ultrasound.",
+        "unaddressed_alarm": true
+      }
+    }
+  ]
+}

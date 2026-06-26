@@ -1,0 +1,79 @@
+{
+  "hadm_id": 25559876,
+  "disease": "pancreatitis",
+  "n_decision_steps": 3,
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN) PORT)",
+      "n_visible_prior": 0,
+      "alarm_detect": {
+        "study_inadequacy": {
+          "present": false,
+          "score": 0.0,
+          "evidence": ""
+        },
+        "discordance": {
+          "present": false,
+          "score": 0.15,
+          "evidence": ""
+        },
+        "summary": "none"
+      },
+      "alarm_resolve": {
+        "addresses_alarm": "not_applicable",
+        "reason": "no trigger detected — step-2 skipped",
+        "unaddressed_alarm": false,
+        "api_skipped": true
+      }
+    },
+    {
+      "step": 2,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN) PORT)",
+      "n_visible_prior": 1,
+      "alarm_detect": {
+        "study_inadequacy": {
+          "present": true,
+          "score": 0.95,
+          "evidence": "The assessment of the gallbladder is limited due to the presence of air from a recent ERCP study. Within this limitation, no significant gallbladder wall edema or pericholecystic fluid is seen.",
+          "reasoning": "The gallbladder is the primary organ in question (GB wall thickening/inflammation on OSH ultrasound, rising bilirubin, RUQ pain), and the current portable ultrasound explicitly states its assessment is limited due to post-ERCP air — making this a technically inadequate study rather than a true negative."
+        },
+        "discordance": {
+          "present": false,
+          "score": 0.1,
+          "evidence": ""
+        },
+        "summary": "The portable RUQ ultrasound is technically inadequate for evaluating the gallbladder — the primary organ of concern — because post-ERCP air limits its assessment, leaving the clinical question of cholecystitis/choledocholithiasis unanswered."
+      },
+      "alarm_resolve": {
+        "addresses_alarm": "yes",
+        "reason": "The repeat gallbladder ultrasound directly targets the technically inadequate prior study by explicitly aiming to reassess gallbladder wall, pericholecystic fluid, stones, and biliary ductal dilation after post-ERCP pneumobilia has had time to clear, with reasoning that squarely identifies the prior study's limitation as the driving indication.",
+        "unaddressed_alarm": false
+      }
+    },
+    {
+      "step": 3,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "n_visible_prior": 2,
+      "alarm_detect": {
+        "study_inadequacy": {
+          "present": true,
+          "score": 0.95,
+          "evidence": "Prior imaging 1: 'The assessment of the gallbladder is limited due to the presence of air from a recent ERCP study.' Prior imaging 2: 'Bowel gas and body habitus made this a difficult scan which is markedly limited. The gallbladder could not clearly be visualized.'",
+          "summary": "Both portable RUQ ultrasounds failed to adequately visualize the gallbladder — one limited by post-ERCP air and one by body habitus — leaving the question of cholecystitis/cholelithiasis (the leading suspected diagnosis) unanswered by imaging."
+        },
+        "discordance": {
+          "present": false,
+          "score": 0.1,
+          "evidence": ""
+        },
+        "summary": "Both portable abdominal ultrasounds were non-diagnostic for the gallbladder (one obscured by post-ERCP air, one by body habitus), so the primary clinical question — whether cholecystitis is present — remains unanswered by imaging and a more definitive study (e.g., HIDA scan or CT) is needed before proceeding."
+      },
+      "alarm_resolve": {
+        "addresses_alarm": "partial",
+        "reason": "The ordered repeat ultrasound is the same modality that already failed twice due to body habitus and post-ERCP air, so while the reasoning explicitly acknowledges the prior inadequacy and commits to cross-sectional imaging if this study is again non-diagnostic, the test itself does not reliably resolve the study_inadequacy flag — a more definitive modality (HIDA, CT, or MRCP) would be needed to do so.",
+        "unaddressed_alarm": true
+      }
+    }
+  ]
+}

@@ -28,16 +28,20 @@ The five transforms (HANDOFF §8), faithfully:
                    step 1). deviate is then judged wrt the rubric of the branch the
                    agent's OWN argmax belief lands on (biliary recovered post-hoc).
   3. TWO-CHANNEL CERTAINTY  belief = the reconstructed differential (max_p / entropy
-                   / other_mass); alarm = PROVISIONAL keyword signal (discordance /
-                   study-adequacy / dual-stream conflict in the ex-ante text) + the
-                   count of prior-step disconfirmations (visible at this step).
-                   ⚠ alarm is the provisional rule version pending the clarify
-                   decision (keyword vs light-LLM tag) — see HANDOFF §8 transform 3.
+                   / other_mass); alarm = the OVERRIDE switch built from A2/A3 (the
+                   offline two-call LLM alarm pass: study_inadequacy + discordance, read
+                   from results/annotation_experiment/alarm/*.json) + A1 derived here
+                   algorithmically (belief concentrated on a rubric disease & a severity/
+                   etiology/complication gap; resolution = appropriateness). Replaces the
+                   earlier provisional keyword alarm (HANDOFF §2.5.2 / §8 transform 3).
   4. HYBRID TARGET  default TARGET = the doctor's actual action (imitation). Steps
-                   flagged should-suppress (DD-1 proxy: deviate + disconfirmed at a
-                   terminal/blocked rubric state = over-imaging past a valid STOP)
-                   are either down-weighted (default) or relabeled when_action->stop
-                   (--suppress-mode stop). FD-2 stale-anatomy needs charttime -> TODO.
+                   flagged should-suppress = over-imaging by the §2.5 criterion-2
+                   (outcome-free): alarm SILENT (no A2/A3/A1) AND belief CONCENTRATED
+                   (low entropy / low other_mass) AND same-modality repeat. These are
+                   down-weighted (default) or relabeled when_action->stop (--suppress-mode
+                   stop). The OLD DD-1 proxy (deviate+disconfirmed+terminal) is dropped —
+                   it rested on a single outcome and contradicted C1/C2. FD-2 stale-
+                   anatomy needs charttime -> still deferred.
   5. LEAKAGE STRIP  Discharge Dx / ICD / Procedures never present (build_masked_view
                    never emits them); disease-godview + verification kept out of INPUT
                    (they live in META/REWARD only).
@@ -82,48 +86,108 @@ from scripts.build_masked_view import (  # noqa: E402
     RAW, build_record, load_lab_map,
 )
 
-# --- transform 4: should-suppress (DD-1 proxy) -----------------------------
-# DD-1 = deviate + disconfirmed while the rubric is at a valid terminal / blocked
-# state = defensive over-imaging past a STOP (HANDOFF §2-B4 / §8 transform 4).
-# FD-2 (stale anatomy) is intentionally NOT included: it needs real charttime to
-# separate this-admission post-op scans from old surgery -> deferred until source
-# data lands (annotation_agent_design post-intervention block).
-_TERMINAL_STATES = {"terminal_confirmed", "terminal_excluded",
-                    "terminal_low_risk", "blocked"}
+# --- transform 3: ALARM channel = real A2/A3 (LLM pass) + derived A1 --------
+# Replaces the earlier provisional keyword version (HANDOFF §8 transform 3). The two
+# objective external red flags A2 (study_inadequacy) / A3 (discordance) come from the
+# offline two-call LLM alarm pass (results/annotation_experiment/alarm/*.json, run by
+# scripts/run_alarm_pass.py); A1 (advanced_question) is NOT an external flag and is
+# DERIVED here algorithmically (HANDOFF §2.5.2).
+_TRIGGER_KEYS = ("study_inadequacy", "discordance")
+_A1_TAU = 0.5
+# etiology / complication gap language (severity is already an action_role -> below).
+_A1_GAP = re.compile(r"etiolog|underlying cause|complication|perforat|abscess"
+                     r"|necros|ischemi|gangren|biliary obstruct", re.I)
 
 
-def is_should_suppress(row) -> bool:
-    return (row.dev_belief == "deviate"
-            and row.verification == "disconfirmed"
-            and row.rubric_state in _TERMINAL_STATES)
+def _flag_present(flag) -> bool:
+    v = flag.get("present") if isinstance(flag, dict) else None
+    return v is True or (isinstance(v, str) and v.strip().lower() in ("true", "yes", "1"))
 
 
-# --- transform 3: provisional alarm-channel keyword signals -----------------
-_ALARM_PATTERNS = {
-    "discordance": re.compile(
-        r"discordan|discrepan|out of proportion|inconsistent|does not (?:match|fit)"
-        r"|atypical|unexpected|cannot (?:be )?reconcile|mismatch|conflict", re.I),
-    "study_adequacy": re.compile(
-        r"inadequate|limited study|technically limited|non-?diagnostic|suboptimal"
-        r"|not (?:well )?visualized|could not be (?:visualized|assessed)"
-        r"|poorly visualized|incomplete (?:study|exam)|equivocal|nonspecific", re.I),
-    "dual_stream": re.compile(
-        r"persist\w* despite|despite (?:a )?(?:normal|negative|benign)"
-        r"|clinical\w*[^.]{0,40}(?:but|versus|vs\.?)[^.]{0,40}(?:imag|exam|lab)"
-        r"|worsening despite", re.I),
-}
+def derive_a1(top_branch, max_p, action_role, info_gap, appropriateness) -> dict:
+    """A1 (advanced_question) is a property of the BELIEF channel, not an external red
+    flag, so a blind LLM re-judgment fights the reconstructed belief (HANDOFF §2.5.2 —
+    measured 5/12 misfires) -> derived algorithmically: belief CONCENTRATED on a RUBRIC
+    disease (max_p>=tau, argmax != 'other') AND the open question has moved past
+    diagnosis to severity / etiology / complication. Resolution quality = this step's
+    `appropriateness` (the gap-addressing judgment Mode-A already made)."""
+    role = action_role
+    if isinstance(role, list):
+        role = " ".join(map(str, role))
+    role = str(role).strip().lower()
+    concentrated = (top_branch in DISEASE_GRAPHS
+                    and max_p is not None and max_p >= _A1_TAU)
+    advanced = (role == "assess_severity") or bool(_A1_GAP.search(str(info_gap or "")))
+    present = bool(concentrated and advanced)
+    return {"present": present,
+            "concentrated": bool(concentrated),
+            "advanced_question": bool(advanced),
+            "resolution": appropriateness if present else "",
+            "basis": f"belief max_p>={_A1_TAU} on a rubric disease "
+                     "& severity/etiology/complication gap"}
 
 
-def alarm_signal(ex_ante: dict, prior_disconfirms: int) -> dict:
-    """PROVISIONAL alarm channel: keyword flags over the ex-ante text + the running
-    count of prior-step disconfirmations (results visible at this step, not leakage).
-    Marked provisional — swap for the light-LLM tag once that clarify is resolved."""
-    text = " ".join(str(ex_ante.get(k, "")) for k in
-                    ("information_gap", "expected_finding", "reasoning"))
-    flags = {name: bool(p.search(text)) for name, p in _ALARM_PATTERNS.items()}
-    score = sum(flags.values()) + prior_disconfirms
-    return {"score": score, "flags": flags,
-            "prior_disconfirmations": prior_disconfirms, "method": "provisional_keyword"}
+def alarm_channel(alarm_step, top_branch, max_p, ex_ante, prior_disconfirms) -> dict:
+    """Two-channel ALARM signal: A2/A3 from the offline LLM alarm pass + derived A1.
+    `any_trigger` = the OVERRIDE switch (HANDOFF §2.5.1) used by transform 4."""
+    detect = (alarm_step or {}).get("alarm_detect") or {}
+    resolve = (alarm_step or {}).get("alarm_resolve") or {}
+    a2 = detect.get("study_inadequacy") or {}
+    a3 = detect.get("discordance") or {}
+    a2_present = _flag_present(a2)
+    a3_present = _flag_present(a3)
+    a1 = derive_a1(top_branch, max_p, ex_ante.get("action_role", ""),
+                   ex_ante.get("information_gap", ""), ex_ante.get("appropriateness", ""))
+    return {
+        "any_trigger": bool(a2_present or a3_present or a1["present"]),
+        "study_inadequacy": {"present": a2_present, "score": a2.get("score"),
+                             "evidence": a2.get("evidence", "")},            # A2 (LLM)
+        "discordance": {"present": a3_present, "score": a3.get("score"),
+                        "evidence": a3.get("evidence", "")},                 # A3 (LLM)
+        "advanced_question": a1,                                             # A1 (derived)
+        "resolve": {"addresses_alarm": resolve.get("addresses_alarm", ""),
+                    "unaddressed_alarm": resolve.get("unaddressed_alarm"),
+                    "reason": resolve.get("reason", "")},
+        "prior_disconfirmations": prior_disconfirms,        # results visible here, no leak
+        "alarm_parse_error": bool(detect.get("_parse_error")),
+        "alarm_present": alarm_step is not None,
+        "method": "llm_a2a3+algorithmic_a1",
+    }
+
+
+# --- transform 4: should-suppress (§2.5 criterion 2, REDEFINED) -------------
+# OLD (wrong) proxy: deviate + disconfirmed + terminal/blocked rubric_state — it rests
+# on a single OUTCOME (disconfirmed) and contradicts C1/C2 (the SAME structural spot is
+# a valuable patch when confirmed; outcome isn't available ex-ante). CORRECT, outcome-
+# free criterion (HANDOFF §2.5 / §2.5.1):
+#     alarm SILENT  AND  belief CONCENTRATED (low entropy / low other_mass)
+#                   AND  SAME-modality repeat
+# = over-imaging past a de-facto stop. If ANY alarm fires (A2/A3 external red flag OR A1
+# advanced question) OR belief is diffuse, the override is a VALUABLE deviation (rubric
+# limitation), not over-imaging. FD-2 stale anatomy still needs charttime -> deferred.
+_SUPPRESS_TAU = 0.5
+_SUPPRESS_OTHER_MAX = 0.3
+
+
+def _base_modality(m) -> str:
+    """Map a modality string to its base (CT_Abdomen->ct, prior 'CT'->ct, 'Ultrasound
+    Abdomen'->ultrasound) so the CSV modality and the visible-prior modality compare."""
+    return str(m or "").replace(" ", "_").split("_")[0].strip().lower()
+
+
+def same_modality_repeat(how, visible_prior_imaging) -> bool:
+    base = _base_modality(how)
+    if not base:
+        return False
+    priors = {_base_modality(vp.get("modality")) for vp in (visible_prior_imaging or [])}
+    return base in priors
+
+
+def is_should_suppress(alarm_any: bool, belief: dict, same_repeat: bool) -> bool:
+    mp, om = belief.get("max_p"), belief.get("other_mass")
+    concentrated = (mp is not None and mp >= _SUPPRESS_TAU
+                    and om is not None and om <= _SUPPRESS_OTHER_MAX)
+    return bool((not alarm_any) and concentrated and same_repeat)
 
 
 # --- transform 3: belief-channel summary -----------------------------------
@@ -196,7 +260,17 @@ def load_case(ann_dir: Path, disease: str, hadm: int) -> dict | None:
     return json.loads(p.read_text())
 
 
-def build_row(r, case, masked, suppress_mode, suppress_weight,
+def load_alarm_case(alarm_dir: Path, disease: str, hadm: int) -> dict[int, dict]:
+    """Per-step A2/A3 alarm records (results/annotation_experiment/alarm/*.json),
+    keyed by step. Missing file -> {} (A1 still derives; flagged in the channel)."""
+    p = alarm_dir / f"{disease}_{hadm}.json"
+    if not p.exists():
+        return {}
+    data = json.loads(p.read_text())
+    return {int(s["step"]): s for s in data.get("steps", [])}
+
+
+def build_row(r, case, masked, alarm_steps, suppress_mode, suppress_weight,
               prior_disconfirms, active_path) -> dict | None:
     """Assemble one INPUT/TARGET/REWARD record for filtered-CSV row `r`."""
     step = int(r.step)
@@ -220,7 +294,15 @@ def build_row(r, case, masked, suppress_mode, suppress_weight,
 
     when = r.dev_belief                              # follow / deviate / off_rubric
     how = r.modality
-    suppress = is_should_suppress(r)
+
+    # two-channel certainty: belief (differential shape) + alarm (A2/A3 LLM + A1 derived)
+    belief = belief_summary(ex.get("differential"))
+    alarm = alarm_channel(alarm_steps.get(step), r.top_branch, belief.get("max_p"),
+                          ex, prior_disconfirms)
+    repeat = same_modality_repeat(how, dp["visible_prior_imaging"])
+
+    # transform 4: over-imaging = alarm silent + belief concentrated + same-modality repeat
+    suppress = is_should_suppress(alarm["any_trigger"], belief, repeat)
     weight = 1.0
     if suppress and suppress_mode == "stop":
         when, how = "stop", None
@@ -252,7 +334,7 @@ def build_row(r, case, masked, suppress_mode, suppress_weight,
             "when_action": when,                    # follow / deviate / off_rubric / stop
             "how_modality": how,
             "why_trace": {
-                "belief": belief_summary(ex.get("differential")).get("dist"),
+                "belief": belief.get("dist"),
                 "other_hypothesis": ex.get("other_hypothesis", ""),
                 "information_gap": ex.get("information_gap", ""),
                 "expected_finding": ex.get("expected_finding", ""),
@@ -262,8 +344,8 @@ def build_row(r, case, masked, suppress_mode, suppress_weight,
         },
 
         "CERTAINTY": {                              # derived; NOT fed as INPUT verbatim
-            "belief": belief_summary(ex.get("differential")),
-            "alarm": alarm_signal(ex, prior_disconfirms),
+            "belief": belief,
+            "alarm": alarm,
         },
 
         "REWARD": {                                 # ex-post; NEVER in INPUT
@@ -273,7 +355,8 @@ def build_row(r, case, masked, suppress_mode, suppress_weight,
             "appropriateness_reason": ex.get("appropriateness_reason", ""),
             "sample_weight": weight,
             "should_suppress": bool(suppress),
-            "suppress_basis": "DD1_overimaging_past_stop" if suppress else "",
+            "suppress_basis": ("overimaging_alarm_silent_belief_concentrated_modality_repeat"
+                               if suppress else ""),
         },
 
         "META": {                                   # eval-stratification labels (leakage-safe out of INPUT)
@@ -293,6 +376,7 @@ def build_row(r, case, masked, suppress_mode, suppress_weight,
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--ann-dir", default="results/annotation_experiment/full")
+    ap.add_argument("--alarm-dir", default="results/annotation_experiment/alarm")
     ap.add_argument("--out", default="data/training_set")
     ap.add_argument("--suppress-mode", choices=["downweight", "stop", "off"],
                     default="downweight")
@@ -302,6 +386,7 @@ def main() -> None:
     args = ap.parse_args()
 
     ann_dir = ROOT / args.ann_dir if not Path(args.ann_dir).is_absolute() else Path(args.ann_dir)
+    alarm_dir = ROOT / args.alarm_dir if not Path(args.alarm_dir).is_absolute() else Path(args.alarm_dir)
     out_dir = ROOT / args.out if not Path(args.out).is_absolute() else Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -344,6 +429,18 @@ def main() -> None:
         prior_dc[(disease, hadm)] = dc_m
         prior_belief[(disease, hadm)] = pb_m
 
+    alarm_cache: dict[tuple, dict] = {}
+    missing_alarm: set[tuple] = set()
+
+    def alarm_for(disease: str, hadm: int) -> dict[int, dict]:
+        ck = (disease, hadm)
+        if ck not in alarm_cache:
+            steps = load_alarm_case(alarm_dir, disease, hadm)
+            alarm_cache[ck] = steps
+            if not steps:
+                missing_alarm.add(ck)
+        return alarm_cache[ck]
+
     rows, skipped = [], Counter()
     for r in sub.itertuples(index=False):
         case = load_case(ann_dir, r.disease, int(r.hadm))
@@ -357,8 +454,9 @@ def main() -> None:
         ck = (r.disease, int(r.hadm))
         pdc = prior_dc.get(ck, {}).get(int(r.step), 0)
         active_path = prior_belief.get(ck, {}).get(int(r.step), None)
-        row = build_row(r, case, masked, args.suppress_mode, args.suppress_weight,
-                        pdc, active_path)
+        alarm_steps = alarm_for(r.disease, int(r.hadm))
+        row = build_row(r, case, masked, alarm_steps, args.suppress_mode,
+                        args.suppress_weight, pdc, active_path)
         if row is None:
             skipped["step_not_found"] += 1
             continue
@@ -379,10 +477,27 @@ def main() -> None:
     suppress_n = sum(x["REWARD"]["should_suppress"] for x in rows)
     by_disease = Counter(x["disease"] for x in rows)
     first_step = sum(x["INPUT"]["active_path"] is None for x in rows)
+    # alarm-channel provenance (real A2/A3 + derived A1)
+    alarm_stats = {
+        "any_trigger": sum(x["CERTAINTY"]["alarm"]["any_trigger"] for x in rows),
+        "study_inadequacy_A2": sum(x["CERTAINTY"]["alarm"]["study_inadequacy"]["present"] for x in rows),
+        "discordance_A3": sum(x["CERTAINTY"]["alarm"]["discordance"]["present"] for x in rows),
+        "advanced_question_A1": sum(x["CERTAINTY"]["alarm"]["advanced_question"]["present"] for x in rows),
+        "alarm_parse_error": sum(x["CERTAINTY"]["alarm"]["alarm_parse_error"] for x in rows),
+        "rows_without_alarm_json": sum(not x["CERTAINTY"]["alarm"]["alarm_present"] for x in rows),
+        "missing_alarm_cases": [f"{d}_{h}" for d, h in sorted(missing_alarm)],
+    }
+    resolve_dist = Counter(
+        x["CERTAINTY"]["alarm"]["resolve"]["addresses_alarm"]
+        for x in rows if x["CERTAINTY"]["alarm"]["any_trigger"])
     manifest = {
         "n_rows": len(rows),
         "source_csv": str((ann_dir / "belief_deviation_filtered.csv").relative_to(ROOT)),
         "ann_dir": str(ann_dir.relative_to(ROOT)),
+        "alarm_dir": str(alarm_dir.relative_to(ROOT)),
+        "alarm_channel": "A2/A3 from offline LLM alarm pass + A1 derived algorithmically "
+                         "(belief max_p>=%.2f on a rubric disease & severity/etiology/"
+                         "complication gap)" % _A1_TAU,
         "rubric_library": "rubric_library.json (all 4 disease sub-rubrics + open 'other'; "
                           "referenced by every row via INPUT.rubric_library_ref)",
         "config": vars(args),
@@ -396,7 +511,12 @@ def main() -> None:
         "when_action_dist": dict(when_dist),
         "verification_dist": dict(vind_dist),
         "by_disease": dict(by_disease),
+        "alarm_stats": alarm_stats,
+        "alarm_resolve_dist_over_triggered": dict(resolve_dist),
         "should_suppress_n": int(suppress_n),
+        "should_suppress_basis": "alarm silent (no A2/A3/A1) & belief concentrated "
+                                 f"(max_p>={_SUPPRESS_TAU}, other_mass<={_SUPPRESS_OTHER_MAX}) "
+                                 "& same-modality repeat (§2.5 criterion 2)",
         "first_step_rows_no_active_path": first_step,
         "rubric_serving": "FULL triage every step (no leakage of belief argmax); agent "
                           "self-routes, deviate judged wrt the agent's argmax belief rubric. "
@@ -412,6 +532,14 @@ def main() -> None:
     print(f"\nby disease : {dict(by_disease)}")
     print(f"when_action: {dict(when_dist)}")
     print(f"verification: {dict(vind_dist)}")
+    print(f"alarm      : any={alarm_stats['any_trigger']}/{len(rows)}  "
+          f"A2={alarm_stats['study_inadequacy_A2']} A3={alarm_stats['discordance_A3']} "
+          f"A1={alarm_stats['advanced_question_A1']}  "
+          f"resolve={dict(resolve_dist)}")
+    if alarm_stats["alarm_parse_error"] or alarm_stats["rows_without_alarm_json"]:
+        print(f"alarm warn : parse_error={alarm_stats['alarm_parse_error']} "
+              f"rows_without_alarm_json={alarm_stats['rows_without_alarm_json']} "
+              f"missing_cases={alarm_stats['missing_alarm_cases']}")
     print(f"should_suppress ({args.suppress_mode}): {suppress_n}")
     if skipped:
         print(f"skipped    : {dict(skipped)}")
