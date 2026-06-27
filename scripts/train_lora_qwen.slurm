@@ -23,13 +23,19 @@
 # Environment Setup
 # ============================================
 module purge all
-module load cuda                                  # match the toolkit your torch build expects
+# NOTE: do NOT `module load cuda` here — the pip torch wheel bundles its own CUDA
+# runtime, and the system cuda module drags in an ancient gcc whose libstdc++.so.6
+# lacks CXXABI_1.3.8 -> `import torch` ImportError (job dies in <10s). See below.
 source "$HOME/miniconda/bin/activate"
 conda activate congraph                           # must have: torch(+cuda) trl peft transformers
                                                   #            accelerate bitsandbytes datasets
                                                   # one-time install (login node, see notes below):
                                                   #   pip install "trl>=0.12" "peft>=0.13" \
                                                   #     "transformers>=4.45" accelerate bitsandbytes datasets
+
+# Put the conda env's modern libstdc++ AHEAD of any stale system gcc on the library
+# path, else torch fails with: libstdc++.so.6: version `CXXABI_1.3.8' not found.
+export LD_LIBRARY_PATH="$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
 
 cd /home/dlf8982/AAA/congraph
 mkdir -p runs
