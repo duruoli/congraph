@@ -36,11 +36,16 @@ def parse_args():
     ap.add_argument("--batch", type=int, default=1)
     ap.add_argument("--grad-accum", type=int, default=16)
     ap.add_argument("--lr", type=float, default=2e-4)
-    ap.add_argument("--max-len", type=int, default=6144)
+    ap.add_argument("--max-len", type=int, default=12288)  # >= longest example (~10.2k tok); see length guard below
     ap.add_argument("--lora-r", type=int, default=16)
     ap.add_argument("--lora-alpha", type=int, default=32)
     ap.add_argument("--lora-dropout", type=float, default=0.05)
     ap.add_argument("--load-4bit", action="store_true", help="QLoRA (bitsandbytes 4-bit)")
+    # gradient checkpointing: at max-len 12288 the activations of a single 12k-token
+    # forward dominate VRAM; checkpointing trades ~20% step time for a large activation
+    # cut so the run fits on a 40GB A100. On by default; --no-grad-checkpointing to disable.
+    ap.add_argument("--grad-checkpointing", action=argparse.BooleanOptionalAction,
+                    default=True, help="gradient checkpointing (default on)")
     ap.add_argument("--seed", type=int, default=0)
     return ap.parse_args()
 
@@ -65,6 +70,23 @@ def main():
     tok = AutoTokenizer.from_pretrained(args.base)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
+
+    # Truncation guard: the assistant JSON target is the LAST turn, so any example
+    # longer than max_len gets its target silently truncated -> loss on a mangled
+    # target. Count over-length examples up front and fail loudly if any exist.
+    def _tok_len(ex):
+        ids = tok.apply_chat_template(ex["messages"], tokenize=True)
+        return len(ids)
+    over = [(i, n) for i, n in ((i, _tok_len(ex)) for i, ex in enumerate(ds["train"]))
+            if n > args.max_len]
+    longest = max((_tok_len(ex) for ex in ds["train"]), default=0)
+    print(f"[len-guard] longest train example = {longest} tok; max_len = {args.max_len}; "
+          f"over-length = {len(over)}")
+    if over:
+        raise SystemExit(
+            f"[len-guard] {len(over)} example(s) exceed --max-len={args.max_len} "
+            f"(longest={longest}); their assistant target would be truncated. "
+            f"Raise --max-len to >= {longest} (watch VRAM) or shrink the rubric.")
 
     quant = None
     if args.load_4bit:
@@ -95,6 +117,10 @@ def main():
         bf16=True,
         max_length=args.max_len,
         packing=False,
+        gradient_checkpointing=args.grad_checkpointing,
+        # non-reentrant checkpointing plays nicely with PEFT (avoids the use_cache /
+        # input-grad warnings and the reentrant autograd edge cases).
+        gradient_checkpointing_kwargs={"use_reentrant": False},
         # train on the assistant turn only — the rubric+patient prompt is context.
         # (trl applies the Qwen chat template to the `messages` column automatically.)
         assistant_only_loss=True,
