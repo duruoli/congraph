@@ -182,6 +182,7 @@ class SourceTables:
     radiology: pd.DataFrame
     procedures: pd.DataFrame
     d_procedures: Optional[pd.DataFrame] = None
+    _ct_by_note: Optional[dict] = field(default=None, repr=False, compare=False)
 
     @staticmethod
     def _read(path: Path, required: set[str]) -> pd.DataFrame:
@@ -230,6 +231,20 @@ class SourceTables:
     def charttime_by_note(self, hadm: int) -> dict[str, pd.Timestamp]:
         sub = self.radiology[self.radiology.hadm_id == hadm]
         return dict(zip(sub.note_id.astype(str), sub.charttime))
+
+    def charttime_for_note(self, note_id: str) -> Optional[pd.Timestamp]:
+        """charttime for a note by its GLOBAL note_id, ignoring hadm_id.
+
+        ED / outpatient radiology often carries hadm_id=NULL in the source table, so a
+        per-hadm filter (charttime_by_note) silently drops exactly the pre-admission
+        diagnostic scans we care about. The derived data already pinned each Radiology
+        record to its stay via its note_id ("<subject_id>-RR-<n>"), and note_id is unique
+        across the whole table, so we look the timestamp up directly by that key.
+        """
+        if self._ct_by_note is None:
+            self._ct_by_note = dict(zip(self.radiology.note_id.astype(str),
+                                        self.radiology.charttime))
+        return self._ct_by_note.get(str(note_id))
 
     def first_intervention(self, hadm: int) -> tuple[Optional[pd.Timestamp], Optional[str]]:
         """(date, type) of the earliest HARD therapeutic intervention, by chartdate."""

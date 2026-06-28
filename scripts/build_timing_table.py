@@ -152,13 +152,14 @@ def build(source_dir: str | None) -> None:
         # cross-check title-derived intervention if source disagrees on existence
         if ftype is None and ivs:
             ftype = sorted(ivs)[0]  # type known from titles even if its date is unknown
-        ct_by_note = src.charttime_by_note(hadm) if src else {}
 
         for step in d["steps"]:
             i = step["step"]
             rrn = d["radiology_order"][i - 1]["rrn"] if i - 1 < len(d["radiology_order"]) else None
             note_id, report = nid_map.get(rrn, ("", ""))
-            ct = ct_by_note.get(note_id)
+            # global note_id lookup (not hadm-filtered) so ED/outpatient scans with a
+            # NULL source hadm_id still get their charttime — see timing.charttime_for_note
+            ct = src.charttime_for_note(note_id) if (src and note_id) else None
             role = timing_role(ct, admit, fdate) if src else UNKNOWN
             hint = _text_hint(report)
             devb, vind = dev_idx.get((disease, hadm, i), ("", ""))
