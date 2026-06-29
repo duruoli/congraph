@@ -1,0 +1,381 @@
+### 6 step(s)  |  passes=['base', 'sft']  |  greedy  |  device=cuda  |  adapter=runs/qwen2.5-7b-lora-certainty  |  GOLD = the annotation target
+
+====================================================================================================
+id=pancreatitis_29499458_step1  disease=pancreatitis  step=1
+GOLD when_action=follow  effective_branch=pancreatitis  verification=confirmed  appropriateness=yes
+GOLD alarm.any_trigger=True  study_inadequacy=False  discordance=True
+----------------------------------------------------------------------------------------------------
+PATIENT VIEW (trimmed):
+## Baseline
+{
+ "patient_history": "___ h/o perforated peptic ulcer >10 (Hpylori+) years ago  presents with severe epigastric abdominal pain. He states that  the pain came on suddenly around midnight prior to admission  when he was sleeping. Pain is located in his epigasrtrium and  was ___ at it's worst. He had somewhat similar abd pain when  he had a ruptured peptic ulcer, but the pain was in a different  location. He also notes that he has been having N/V starting the  night prior to admission. Emesis described as bilious and  non-bloody. He was last able to keep down POs the afternoon  prior to admission. No diarrhea or constipation, no fevers, no  blood in his stool.      He states that he has been drinking more heavily for the past 6  weeks because his mother is ill and he is having trouble with  his girlfriend. He is very concerned that his PCP ___ consider  him an alcoholic and doe ...
+----------------------------------------------------------------------------------------------------
+GOLD belief : argmax=pancreatitis   | pancreatitis=0.65  other=0.16  cholecystitis=0.15  appendicitis=0.02  diverticulitis=0.02
+BASE belief : argmax=pancreatitis   | pancreatitis=0.70  cholecystitis=0.10  other=0.10  appendicitis=0.05  diverticulitis=0.05
+ SFT belief : argmax=pancreatitis   | pancreatitis=0.75  other=0.16  cholecystitis=0.05  appendicitis=0.02  diverticulitis=0.02
+GOLD modality='Ultrasound_Abdomen'   BASE='CT_Abdomen'   SFT='CT_Abdomen'
+----------------------------------------------------------------------------------------------------
+[BASE] JSON:
+{
+ "belief": {
+  "appendicitis": 0.05,
+  "cholecystitis": 0.1,
+  "diverticulitis": 0.05,
+  "pancreatitis": 0.7,
+  "other": 0.1
+ },
+ "modality": "CT_Abdomen",
+ "information_gap": "Confirm or rule out pancreatitis and assess for complications",
+ "expected_finding": "Inflammatory changes, necrosis, or pseudocysts in the pancreas",
+ "action_role": "rule_in",
+ "grounding": [
+  "Epigastric pain, nausea, and elevated lipase levels suggest acute pancreatitis.",
+  "The patient has a history of a perforated peptic ulcer, which could predispose to pancreatitis.",
+  "Recent labs show elevated ALT and AST, which could indicate liver involvement secondary to pancreatitis."
+ ],
+ "other_hypothesis": ""
+}
+
+[SFT] JSON:
+{
+ "belief": {
+  "appendicitis": 0.02,
+  "cholecystitis": 0.05,
+  "diverticulitis": 0.02,
+  "pancreatitis": 0.75,
+  "other": 0.16
+ },
+ "modality": "CT_Abdomen",
+ "information_gap": "The markedly elevated lipase (1836 IU/L) confirms acute pancreatitis, but the etiology (alcohol vs. biliary vs. other) and severity (necrotizing vs. mild) cannot be determined from labs alone; cross-sectional imaging is needed to characterize pancreatic pathology, identify complications, and guide management.",
+ "expected_finding": "Peripancreatic fat stranding, pancreatic edema or necrosis consistent with acute pancreatitis, and/or a biliary ductal dilation suggesting biliary etiology; alternatively, a structural cause such as a pancreatic mass or vascular abnormality could be identified.",
+ "action_role": "assess_severity",
+ "grounding": [
+  "Lipase: 1836.0 IU/L (ref 0.0-60.0)",
+  "ALT: 123.0 IU/L (ref 0.0-40.0)",
+  "AST: 126.0 IU/L (ref 0.0-40.0)",
+  "Triglycerides: 184.0 mg/dL (ref 0.0-149.0)",
+  "History: 'severe epigastric abdominal pain... came on suddenly around midnight'",
+  "History: 'he has been drinking more heavily for the past 6 weeks'",
+  "Physical examination: 'TTP in epigastrium, mildly distended. No rebound.'",
+  "Prior imaging: 'No evidence for large free intraperitoneal air under the diaphragm'"
+ ],
+ "other_hypothesis": "alcoholic pancreatitis, biliary duct obstruction (choledocholithiasis), pancreatic mass or neoplasm"
+}
+
+====================================================================================================
+id=pancreatitis_26860125_step2  disease=pancreatitis  step=2
+GOLD when_action=deviate  effective_branch=pancreatitis  verification=disconfirmed  appropriateness=yes
+GOLD alarm.any_trigger=True  study_inadequacy=True  discordance=False
+----------------------------------------------------------------------------------------------------
+PATIENT VIEW (trimmed):
+## Baseline
+{
+ "patient_history": "___ y/o man w/ h/o orthotopic liver and kidney transplantation  ___, AVR ___, presents with bilateral lower abdominal pain and  nausea/vomitting. He was in his usual state of health until 3  days prior to admission when he ate a meal consisting of chowder  and pizza, after which time he developed bilateral lower  abdominal pain, progressively worsening. Pain described as dull  and burning. He became nauseous this morning and started  vomitting after lunch today. No hematemesis. Vomitted several  times today. Has had constipation recently, continues to pass  gas. Denies fever. + chills today. No headache, vision changes,  cough, shortness of breath, chest pain, diarrhea, BRBPR, melena,  hematochezia, dysuria, hematuria, urgency or urinary retention.    .   In the ED, initial VS 98.2 101 132/86 18 100% RA. UA showed  trace protein, 1 hyaline cast, no sign ...
+----------------------------------------------------------------------------------------------------
+GOLD belief : argmax=pancreatitis   | pancreatitis=0.45  other=0.32  diverticulitis=0.15  appendicitis=0.05  cholecystitis=0.03
+BASE belief : argmax=pancreatitis   | pancreatitis=0.70  other=0.15  appendicitis=0.05  cholecystitis=0.05  diverticulitis=0.05
+ SFT belief : argmax=pancreatitis   | pancreatitis=0.55  other=0.30  appendicitis=0.05  cholecystitis=0.05  diverticulitis=0.05
+GOLD modality='Ultrasound_Abdomen'   BASE='CT_Abdomen'   SFT='CT_Abdomen'
+----------------------------------------------------------------------------------------------------
+[BASE] JSON:
+{
+ "belief": {
+  "appendicitis": 0.05,
+  "cholecystitis": 0.05,
+  "diverticulitis": 0.05,
+  "pancreatitis": 0.7,
+  "other": 0.15
+ },
+ "modality": "CT_Abdomen",
+ "information_gap": "Confirm the presence of pancreatic inflammation and necrosis, and rule out other causes of abdominal pain.",
+ "expected_finding": "Evidence of pancreatic inflammation, necrosis, or other complications such as peripancreatic fluid collections or abscesses.",
+ "action_role": "rule_in",
+ "grounding": [
+  "Lipase elevated at 624 IU/L, suggesting acute pancreatitis.",
+  "CT is the gold standard for confirming pancreatitis and excluding other diagnoses.",
+  "Patient has no signs of cholecystitis, diverticulitis, or appendicitis based on clinical presentation and imaging so far."
+ ],
+ "other_hypothesis": ""
+}
+
+[SFT] JSON:
+{
+ "belief": {
+  "appendicitis": 0.05,
+  "cholecystitis": 0.05,
+  "diverticulitis": 0.05,
+  "pancreatitis": 0.55,
+  "other": 0.3
+ },
+ "modality": "CT_Abdomen",
+ "information_gap": "The lipase is markedly elevated (624) confirming pancreatitis, but the etiology (biliary vs. alcohol vs. post-transplant) and severity (necrosis, abscess, ductal obstruction) cannot be determined from labs alone; cross-sectional imaging is needed to characterize the pancreatic pathology and identify any structural causes or complications.",
+ "expected_finding": "Peripancreatic fat stranding, pancreatic edema or necrosis consistent with acute pancreatitis, and/or evidence of biliary ductal dilation, choledocholithiasis, or other structural abnormality explaining the elevated lipase; alternatively, a normal pancreas would shift suspicion toward alcohol or post-transplant etiology.",
+ "action_role": "assess_severity",
+ "grounding": [
+  "Lipase: 624.0 IU/L (ref 0.0-60.0)",
+  "Amylase: 161.0 IU/L (ref 0.0-100.0)",
+  "Triglycerides: 257.0 mg/dL (ref 0.0-149.0)",
+  "Creatinine: 3.3 mg/dL (ref 0.5-1.2) — eGFR 19-23, severe CKD",
+  "History: 'orthotopic liver and kidney transplantation'",
+  "History: 'chowder and pizza' meal 3 days ago",
+  "Physical examination: 'tender w/ voluntary guarding LLQ, also tender in suprapubic and less so in RLQ'",
+  "Prior imaging: 'The gallbladder is surgically absent' — no cholecystitis source",
+  "Prior imaging: 'There is no ascites' — no free fluid suggesting perforation"
+ ],
+ "other_hypothesis": "post-transplant pancreatitis (given liver/kidney transplant history), biliary obstruction (choledocholithiasis), alcohol-related pancreatitis"
+}
+
+====================================================================================================
+id=pancreatitis_29898958_step1  disease=pancreatitis  step=1
+GOLD when_action=deviate  effective_branch=pancreatitis  verification=confirmed  appropriateness=yes
+GOLD alarm.any_trigger=True  study_inadequacy=False  discordance=False
+----------------------------------------------------------------------------------------------------
+PATIENT VIEW (trimmed):
+## Baseline
+{
+ "patient_history": "Mr. ___ is an ___ M with a medical history notable for   2 weeks ago developed upper abdominal pain after drinking coffee  which improved with TUMS, saw PCP 2 days later, felt fine and  thought it was gastritis. Has been eating regularly since then  and trying to cut down on coffee drinking. No other history of  abdominal pain.  At about 11 am the pain came on and by 2:15 had an episode of  vomiting. No diarrhea, no constipation. No fevers, no chills, no  CP/SOB.  He originally presented to ___. His  evaluation was notable for a total bili of 0.6, Alk phos of 101,  AST of 82, ALT of 74, and lipase>4000. He was transferred to  ___ for further management. Of note, he does not drink alcohol  and notes no new medications.  Vital signs on arrival to ___ ED: T 97.4, P 92, BP 153/59, 94%  RA. His evaluation in the ED was notable for a WBC count of  11.8, an AS ...
+----------------------------------------------------------------------------------------------------
+GOLD belief : argmax=pancreatitis   | pancreatitis=0.72  cholecystitis=0.15  other=0.10  appendicitis=0.02  diverticulitis=0.01
+BASE belief : argmax=pancreatitis   | pancreatitis=0.40  cholecystitis=0.20  diverticulitis=0.20  appendicitis=0.10  other=0.10
+ SFT belief : argmax=pancreatitis   | pancreatitis=0.65  other=0.26  cholecystitis=0.05  appendicitis=0.02  diverticulitis=0.02
+GOLD modality='Ultrasound_Abdomen'   BASE='Ultrasound_Abdomen'(MATCH)   SFT='CT_Abdomen'
+----------------------------------------------------------------------------------------------------
+[BASE] JSON:
+{
+ "belief": {
+  "appendicitis": 0.1,
+  "cholecystitis": 0.2,
+  "diverticulitis": 0.2,
+  "pancreatitis": 0.4,
+  "other": 0.1
+ },
+ "modality": "Ultrasound_Abdomen",
+ "information_gap": "To rule out cholecystitis and diverticulitis, and to evaluate for gallstones and wall thickening in the abdomen.",
+ "expected_finding": "In case of cholecystitis, gallbladder wall thickening and pericholecystic fluid. For diverticulitis, wall thickening and pericolic fat stranding.",
+ "action_role": "rule_in",
+ "grounding": [
+  "The patient presents with upper abdominal pain, elevated lipase, and no history of alcohol use, which could suggest pancreatitis or cholecystitis.",
+  "The patient's WBC count is elevated, which can be seen in both pancreatitis and diverticulitis.",
+  "The initial US did not show cholelithiasis but did show gallbladder wall edema, which is consistent with cholecystitis.",
+  "The elevated lipase levels are more suggestive of pancreatitis, but we need to rule out other causes of abdominal pain."
+ ],
+ "other_hypothesis": ""
+}
+
+[SFT] JSON:
+{
+ "belief": {
+  "appendicitis": 0.02,
+  "cholecystitis": 0.05,
+  "diverticulitis": 0.02,
+  "pancreatitis": 0.65,
+  "other": 0.26
+ },
+ "modality": "CT_Abdomen",
+ "information_gap": "The lipase is markedly elevated (2506 IU/L) confirming pancreatitis, but the etiology and severity cannot be determined from labs alone — specifically whether there is pancreatic necrosis, peripancreatic fluid collection, or biliary ductal dilation that would change management.",
+ "expected_finding": "Peripancreatic fat stranding, pancreatic edema or necrosis, and/or a dilated common bile duct suggesting biliary etiology; alternatively, a pancreatic abscess or free fluid that would guide surgical intervention.",
+ "action_role": "assess_severity",
+ "grounding": [
+  "Lipase: 2506.0 IU/L (ref 0.0-60.0)",
+  "History: 'lipase>4000'",
+  "History: 'total bili of 0.6, Alk phos of 101, AST of 82, ALT of 74'",
+  "Physical examination: 'mild tenderness in the epigastric region'",
+  "Laboratory tests: 'White Blood Cells: 11.8 K/uL (ref 4.0-11.0)'",
+  "Laboratory tests: 'Neutrophils: 85.1 % (ref 50.0-70.0)'",
+  "Laboratory tests: 'Anion Gap: 16.0 mEq/L (ref 8.0-20.0)'",
+  "Laboratory tests: 'Glucose: 143.0 mg/dL (ref 70.0-100.0)'"
+ ],
+ "other_hypothesis": "Biliary pathology (choledocholithiasis, biliary duct obstruction, or biliary pancreatitis); also mesenteric ischemia given the elevated lipase and transaminases"
+}
+
+====================================================================================================
+id=appendicitis_24295328_step1  disease=appendicitis  step=1
+GOLD when_action=off_rubric  effective_branch=other  verification=confirmed  appropriateness=yes
+GOLD alarm.any_trigger=False  study_inadequacy=False  discordance=False
+----------------------------------------------------------------------------------------------------
+PATIENT VIEW (trimmed):
+## Baseline
+{
+ "patient_history": "___ who is in his usual state of health when he developed acute  onset of periumbilical pain while out of state on a business  trip 2 nights ago. He initially attributed this to reflux  because he had a glass of red wine with his dinner. However, the  pain persisted. He powered through his work day the next day and  tried taking ibuprofen and tylenol but the pain remained and in  fact \"wandered all over my abdomen\". At one point he had sharp  pains in his RUQ, then had pain in his flanks similar to the  pain he previously experienced with kidney stones. Pain has been  his only symptom. He denies F/C, N/V, CP, SOB, dysuria,  frequency/urgency, or diarrhea. He flew back into ___ this  morning and decided to come to the ED for further evaluation.   Past Medical History: PMH: GERD, nephrolithiasis PSH: lithotripsy for kidney stones    Social History: ___ ...
+----------------------------------------------------------------------------------------------------
+GOLD belief : argmax=other          | other=0.35  appendicitis=0.30  cholecystitis=0.25  diverticulitis=0.05  pancreatitis=0.05
+BASE belief : argmax=cholecystitis  | cholecystitis=0.30  appendicitis=0.20  pancreatitis=0.20  other=0.20  diverticulitis=0.10
+ SFT belief : argmax=appendicitis   | appendicitis=0.35  other=0.30  cholecystitis=0.25  diverticulitis=0.05  pancreatitis=0.05
+GOLD modality='Ultrasound_Abdomen'   BASE='Ultrasound_Abdomen'(MATCH)   SFT='CT_Abdomen'
+----------------------------------------------------------------------------------------------------
+[BASE] JSON:
+{
+ "belief": {
+  "appendicitis": 0.2,
+  "cholecystitis": 0.3,
+  "diverticulitis": 0.1,
+  "pancreatitis": 0.2,
+  "other": 0.2
+ },
+ "modality": "Ultrasound_Abdomen",
+ "information_gap": "To determine the source of the patient's abdominal pain, specifically ruling out cholecystitis, appendicitis, and diverticulitis.",
+ "expected_finding": "For appendicitis, expected to see an enlarged appendix with surrounding inflammation. For cholecystitis, expected to see gallbladder wall thickening and pericholecystic fluid. For diverticulitis, expected to see diverticular wall thickening and pericolonic fat stranding.",
+ "action_role": "rule_in",
+ "grounding": [
+  "The patient presents with periumbilical pain that has migrated to the RLQ and RUQ, which is concerning for appendicitis or cholecystitis.",
+  "The patient's past medical history includes GERD and nephrolithiasis, which could be related to diverticulitis or cholecystitis.",
+  "The physical exam shows mild discomfort in the periumbilical and RUQ regions, which aligns with the rubric criteria for these conditions."
+ ],
+ "other_hypothesis": ""
+}
+
+[SFT] JSON:
+{
+ "belief": {
+  "appendicitis": 0.35,
+  "cholecystitis": 0.25,
+  "diverticulitis": 0.05,
+  "pancreatitis": 0.05,
+  "other": 0.3
+ },
+ "modality": "CT_Abdomen",
+ "information_gap": "The anatomic source and nature of the intra-abdominal pathology cannot be determined from history, exam, and labs alone — specifically whether the RLQ pain represents appendicitis, colitis, or another process, and whether there is any concurrent biliary/hepatic abnormality contributing to the pain pattern.",
+ "expected_finding": "Periappendiceal fat stranding and/or a dilated, non-compressible appendix consistent with appendicitis, or alternatively colonic wall thickening/pericolonic fat stranding suggesting diverticulitis; additionally, the physician would look for gallbladder wall thickening, pericholecystic fluid, or common bile duct dilation suggesting biliary pathology.",
+ "action_role": "localize_source",
+ "grounding": [
+  "History: 'acute onset of periumbilical pain... wandered all over my abdomen'",
+  "Physical examination: 'TTP in RLQ without rebound/guarding'",
+  "Physical examination: 'mild discomfort to palpation in the perumbilical and RUQ regions'",
+  "Laboratory tests: 'White Blood Cells: 11.0 K/uL (ref 4.0-11.0)'",
+  "Laboratory tests: 'Neutrophils: 71.9 % (ref 50.0-70.0)'",
+  "Laboratory tests: 'Lipase: 28.0 IU/L (ref 0.0-60.0)' — pancreatitis effectively excluded",
+  "Laboratory tests: 'Alanine Aminotransferase (ALT): 28.0 IU/L' and 'Alkaline Phosphatase: 59.0 IU/L' — liver function normal, making hepatobiliary pathology less likely but not excluded"
+ ],
+ "other_hypothesis": "mesenteric adenitis, right-sided colitis, ureterolithiasis/kidney stone recurrence, psoas abscess, or other intra-abdominal inflammatory/infectious process"
+}
+
+====================================================================================================
+id=pancreatitis_26860125_step3  disease=pancreatitis  step=3
+GOLD when_action=follow  effective_branch=pancreatitis  verification=confirmed  appropriateness=yes
+GOLD alarm.any_trigger=True  study_inadequacy=True  discordance=False
+----------------------------------------------------------------------------------------------------
+PATIENT VIEW (trimmed):
+## Baseline
+{
+ "patient_history": "___ y/o man w/ h/o orthotopic liver and kidney transplantation  ___, AVR ___, presents with bilateral lower abdominal pain and  nausea/vomitting. He was in his usual state of health until 3  days prior to admission when he ate a meal consisting of chowder  and pizza, after which time he developed bilateral lower  abdominal pain, progressively worsening. Pain described as dull  and burning. He became nauseous this morning and started  vomitting after lunch today. No hematemesis. Vomitted several  times today. Has had constipation recently, continues to pass  gas. Denies fever. + chills today. No headache, vision changes,  cough, shortness of breath, chest pain, diarrhea, BRBPR, melena,  hematochezia, dysuria, hematuria, urgency or urinary retention.    .   In the ED, initial VS 98.2 101 132/86 18 100% RA. UA showed  trace protein, 1 hyaline cast, no sign ...
+----------------------------------------------------------------------------------------------------
+GOLD belief : argmax=pancreatitis   | pancreatitis=0.35  diverticulitis=0.30  other=0.30  appendicitis=0.05  cholecystitis=0.00
+BASE belief : argmax=pancreatitis   | pancreatitis=0.70  other=0.10  appendicitis=0.05  cholecystitis=0.05  diverticulitis=0.05
+ SFT belief : argmax=pancreatitis   | pancreatitis=0.55  other=0.30  appendicitis=0.05  cholecystitis=0.05  diverticulitis=0.05
+GOLD modality='CT_Abdomen'   BASE='CT_Abdomen'(MATCH)   SFT='CT_Abdomen'(MATCH)
+----------------------------------------------------------------------------------------------------
+[BASE] JSON:
+{
+ "belief": {
+  "appendicitis": 0.05,
+  "cholecystitis": 0.05,
+  "diverticulitis": 0.05,
+  "pancreatitis": 0.7,
+  "other": 0.1
+ },
+ "modality": "CT_Abdomen",
+ "information_gap": "Confirm or rule out pancreatic inflammation and necrosis",
+ "expected_finding": "Inflammatory changes, edema, or necrosis in the pancreas",
+ "action_role": "rule_in",
+ "grounding": [
+  "Lipase elevated at 624",
+  "Abdominal pain described as dull and burning",
+  "No fever but + chills today",
+  "Past medical history includes liver and kidney transplantation"
+ ],
+ "other_hypothesis": ""
+}
+
+[SFT] JSON:
+{
+ "belief": {
+  "appendicitis": 0.05,
+  "cholecystitis": 0.05,
+  "diverticulitis": 0.05,
+  "pancreatitis": 0.55,
+  "other": 0.3
+ },
+ "modality": "CT_Abdomen",
+ "information_gap": "The etiology of the pancreatitis cannot be determined from labs alone — specifically whether there is biliary obstruction (choledocholithiasis), pancreatic necrosis, or another structural cause driving the elevated lipase and amylase; additionally, the source of the bilateral lower abdominal pain (LLQ, suprapubic, RLQ) has not been imaged.",
+ "expected_finding": "Evidence of biliary obstruction (common bile duct dilation, choledocholithiasis), pancreatic edema or necrosis consistent with acute pancreatitis, or an alternative structural abnormality explaining the bilateral lower abdominal pain pattern.",
+ "action_role": "assess_severity",
+ "grounding": [
+  "Lipase: 624.0 IU/L (ref 0.0-60.0)",
+  "Amylase: 161.0 IU/L (ref 0.0-100.0)",
+  "History: 'pain described as dull and burning... progressively worsening'",
+  "History: 'bilateral lower abdominal pain... after which time he developed bilateral lower abdominal pain'",
+  "History: 'Lipase elevated at 624.'",
+  "History: 'He received morphine 4mg and zofran'",
+  "Prior imaging 1: 'The gallbladder is surgically absent'",
+  "Prior imaging 1: 'There is no ascites'",
+  "Prior imaging 1: 'Evaluation of the pancreas is limited'",
+  "Prior imaging 2: 'The transplant kidney measures 11.5 cm and is identified in the right lower quadrant without hydronephrosis'",
+  "Labs: 'Triglycerides: 257.0 mg/dL'"
+ ],
+ "other_hypothesis": "choledocholithiasis / biliary obstruction; mesenteric ischemia; bowel obstruction; ureterolithiasis"
+}
+
+====================================================================================================
+id=pancreatitis_28122817_step3  disease=pancreatitis  step=3
+GOLD when_action=deviate  effective_branch=pancreatitis  verification=disconfirmed  appropriateness=partial
+GOLD alarm.any_trigger=True  study_inadequacy=True  discordance=False
+----------------------------------------------------------------------------------------------------
+PATIENT VIEW (trimmed):
+## Baseline
+{
+ "patient_history": "HPI: ___ with return of intense epigatric pain last night at  8pm. She has had this pain several times the past few years. She was found to have gallstones in ___ and was told to follow-up with  a surgeon but she chose to pursue conservative management per her gastroenteroligist recommendation. This episode, she vomited several times and since then has not been able to tolerate PO. Does endorse diarrhea, fevers/chills. Today the pain worsened to ___. She does take a few drinks/week but no recent binge.     Past Medical History: Past Medical History: acid reflux, HTN    Social History: ___ Family History: NC",
+ "physical_examination": "upon admission ___   Temp: 96.8 HR: 105 BP: 135/90 Resp: 16 O(2)Sat: 99 Normal   Constitutional: uncomfortable HEENT: Normocephalic, atraumatic Chest: normal respiratory effort Abdominal: Soft, diffuse tenderness without r ...
+----------------------------------------------------------------------------------------------------
+GOLD belief : argmax=pancreatitis   | pancreatitis=0.85  other=0.09  cholecystitis=0.03  appendicitis=0.02  diverticulitis=0.01
+BASE belief : argmax=pancreatitis   | pancreatitis=0.70  other=0.10  appendicitis=0.05  cholecystitis=0.05  diverticulitis=0.05
+ SFT belief : argmax=pancreatitis   | pancreatitis=0.65  other=0.26  cholecystitis=0.05  appendicitis=0.02  diverticulitis=0.02
+GOLD modality='CT_Abdomen'   BASE='CT_Abdomen'(MATCH)   SFT='CT_Abdomen'(MATCH)
+----------------------------------------------------------------------------------------------------
+[BASE] JSON:
+{
+ "belief": {
+  "appendicitis": 0.05,
+  "cholecystitis": 0.05,
+  "diverticulitis": 0.05,
+  "pancreatitis": 0.7,
+  "other": 0.1
+ },
+ "modality": "CT_Abdomen",
+ "information_gap": "To confirm the presence of pancreatic necrosis and assess the severity of the condition.",
+ "expected_finding": "Evidence of pancreatic necrosis, edema, and possibly pseudocysts, confirming severe acute pancreatitis.",
+ "action_role": "assess_severity",
+ "grounding": [
+  "The patient has a high BISAP score (BUN > 25 mg/dL, WBC 12.6 K/uL, fever/chills, and elevated lipase and amylase levels).",
+  "The MRCP shows marked peripancreatic edema and induration, consistent with a severe inflammatory process.",
+  "The patient's symptoms include epigastric pain radiating to the back, nausea, vomiting, and diarrhea, which are typical of pancreatitis."
+ ],
+ "other_hypothesis": ""
+}
+
+[SFT] JSON:
+{
+ "belief": {
+  "appendicitis": 0.02,
+  "cholecystitis": 0.05,
+  "diverticulitis": 0.02,
+  "pancreatitis": 0.65,
+  "other": 0.26
+ },
+ "modality": "CT_Abdomen",
+ "information_gap": "The MRCP shows marked peripancreatic edema and inflammatory stranding extending into the mesentery and retroperitoneum, but the extent and severity of the pancreatic necrosis cannot be fully characterized on MRCP alone; additionally, the poorly defined hypoenhancing lesion adjacent to the gallbladder and the focal perfusion abnormality in segment VI of the liver need direct visualization with contrast-enhanced CT.",
+ "expected_finding": "CT would show the extent and pattern of pancreatic necrosis (liquefactive necrosis vs. coagulative necrosis), assess for any pancreatic abscess or fluid collection, characterize the poorly defined hypoenhancing lesion adjacent to the gallbladder, evaluate the segment VI hepatic abnormality for vascular compromise or necrosis, and provide a comprehensive anatomic assessment of the inflammatory process involving the mesentery and retroperitoneum.",
+ "action_role": "assess_severity",
+ "grounding": [
+  "Prior imaging 2: 'marked peripancreatic edema and induration... homogenously without evidence of pancreatic necrosis'",
+  "Prior imaging 2: 'poorly defined region of hypoenhancement adjacent to the gallbladder (12:26)'",
+  "Prior imaging 2: 'peripheral segment VI area of hypoenhancement (12:50)... is isointense to liver parenchyma on the remainder of the series'",
+  "Prior imaging 2: 'slightly narrowed by the peripancreatic/perivascular edema, but patent'",
+  "History: 'This episode, she vomited several times and since then has not been able to tolerate PO. Does endorse diarrhea, fevers/chills.'",
+  "Labs: 'Lipase: 521.0 IU/L (ref 0.0-60.0)'",
+  "Labs: 'Amylase: 246.0 IU/L (ref 0.0-100.0)'",
+  "Labs: 'White Blood Cells: 12.6 K/uL (ref 4.0-11.0)'",
+  "Labs: 'Neutrophils: 90.7 % (ref 50.0-70.0)'",
+  "Labs: 'Bilirubin, Total: 0.9 mg/dL'"
+ ],
+ "other_hypothesis":
+
