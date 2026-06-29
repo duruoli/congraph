@@ -46,6 +46,9 @@ def parse_args():
     ap.add_argument("--temperature", type=float, default=0.0, help="0 = greedy (reproducible)")
     ap.add_argument("--load-4bit", action="store_true", help="QLoRA-style 4-bit load (saves VRAM)")
     ap.add_argument("--view-chars", type=int, default=900, help="chars of the patient view to print")
+    ap.add_argument("--out", default="results/agent_inspection/inspect_outputs.txt",
+                    help="write the human-readable side-by-side here (git-tracked so you can "
+                         "push/pull it home to analyze); a sibling .jsonl holds the structured rows")
     return ap.parse_args()
 
 
@@ -131,9 +134,17 @@ def main():
     model.eval()
 
     passes = {"both": ["base", "sft"], "base": ["base"], "sft": ["sft"]}[args.only]
-    print(f"\n### {len(rows)} step(s)  |  passes={passes}  |  "
-          f"{'greedy' if args.temperature == 0 else f'T={args.temperature}'}  |  "
-          f"GOLD = the annotation target\n")
+
+    buf: list[str] = []          # mirrored to --out
+    records: list[dict] = []     # structured rows -> sibling .jsonl
+
+    def emit(s: str = ""):
+        print(s)
+        buf.append(s)
+
+    emit(f"### {len(rows)} step(s)  |  passes={passes}  |  "
+         f"{'greedy' if args.temperature == 0 else f'T={args.temperature}'}  |  "
+         f"device={device}  |  adapter={args.adapter}  |  GOLD = the annotation target\n")
 
     def _generate(enc):
         input_len = enc["input_ids"].shape[1]
@@ -169,36 +180,57 @@ def main():
         gold = _extract_json(gold_msg["content"]) or {}
         preds = {name: _extract_json(g) for name, g in outs.items()}
 
-        print("=" * 100)
-        print(f"id={meta['id']}  disease={meta['disease']}  step={meta['step']}")
-        print(f"GOLD when_action={meta.get('when_action')}  effective_branch={meta.get('effective_branch')}  "
-              f"verification={meta.get('REWARD', {}).get('verification')}  "
-              f"appropriateness={meta.get('REWARD', {}).get('appropriateness')}")
+        emit("=" * 100)
+        emit(f"id={meta['id']}  disease={meta['disease']}  step={meta['step']}")
+        emit(f"GOLD when_action={meta.get('when_action')}  effective_branch={meta.get('effective_branch')}  "
+             f"verification={meta.get('REWARD', {}).get('verification')}  "
+             f"appropriateness={meta.get('REWARD', {}).get('appropriateness')}")
         alarm = meta.get("CERTAINTY", {}).get("alarm", {})
-        print(f"GOLD alarm.any_trigger={alarm.get('any_trigger')}  "
-              f"study_inadequacy={alarm.get('study_inadequacy', {}).get('present')}  "
-              f"discordance={alarm.get('discordance', {}).get('present')}")
-        print("-" * 100)
-        print("PATIENT VIEW (trimmed):")
-        print(user_msg["content"][:args.view_chars].rstrip() + " ...")
-        print("-" * 100)
-        print(f"GOLD belief : {_belief_line(gold.get('belief'))}")
+        emit(f"GOLD alarm.any_trigger={alarm.get('any_trigger')}  "
+             f"study_inadequacy={alarm.get('study_inadequacy', {}).get('present')}  "
+             f"discordance={alarm.get('discordance', {}).get('present')}")
+        emit("-" * 100)
+        emit("PATIENT VIEW (trimmed):")
+        emit(user_msg["content"][:args.view_chars].rstrip() + " ...")
+        emit("-" * 100)
+        emit(f"GOLD belief : {_belief_line(gold.get('belief'))}")
         for name in passes:
             p = preds[name]
-            print(f"{name.upper():>4} belief : {_belief_line(p.get('belief') if p else None)}")
+            emit(f"{name.upper():>4} belief : {_belief_line(p.get('belief') if p else None)}")
         gm = gold.get("modality")
         line = f"GOLD modality={gm!r}"
         for name in passes:
             pm = (preds[name] or {}).get("modality")
             line += f"   {name.upper()}={pm!r}{'(MATCH)' if pm == gm else ''}"
-        print(line)
-        print("-" * 100)
+        emit(line)
+        emit("-" * 100)
         for name in passes:
             p = preds[name]
             if p is None:
-                print(f"[{name.upper()}] UNPARSEABLE — raw:\n" + outs[name][:1200] + "\n")
+                emit(f"[{name.upper()}] UNPARSEABLE — raw:\n" + outs[name][:1200] + "\n")
             else:
-                print(f"[{name.upper()}] JSON:\n" + json.dumps(p, indent=1, ensure_ascii=False)[:2000] + "\n")
+                emit(f"[{name.upper()}] JSON:\n" + json.dumps(p, indent=1, ensure_ascii=False)[:2000] + "\n")
+
+        records.append({
+            "id": meta["id"], "disease": meta["disease"], "step": meta["step"],
+            "when_action": meta.get("when_action"),
+            "effective_branch": meta.get("effective_branch"),
+            "verification": meta.get("REWARD", {}).get("verification"),
+            "appropriateness": meta.get("REWARD", {}).get("appropriateness"),
+            "alarm_any": alarm.get("any_trigger"),
+            "gold": {"belief": gold.get("belief"), "modality": gold.get("modality")},
+            # full raw generation + parsed JSON for each pass, for offline analysis
+            **{name: {"raw": outs[name], "parsed": preds[name]} for name in passes},
+        })
+
+    out_path = Path(args.out)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text("\n".join(buf) + "\n")
+    jsonl_path = out_path.with_suffix(".jsonl")
+    with jsonl_path.open("w") as f:
+        for rec in records:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    print(f"\n[wrote] {out_path}  (+ structured {jsonl_path.name}, {len(records)} rows)")
 
 
 if __name__ == "__main__":
