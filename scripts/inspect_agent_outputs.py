@@ -135,31 +135,36 @@ def main():
           f"{'greedy' if args.temperature == 0 else f'T={args.temperature}'}  |  "
           f"GOLD = the annotation target\n")
 
-    def _generate(prompt_ids):
+    def _generate(enc):
+        input_len = enc["input_ids"].shape[1]
         gen_kwargs = dict(max_new_tokens=args.max_new_tokens, pad_token_id=tok.pad_token_id)
         if args.temperature and args.temperature > 0:
             gen_kwargs.update(do_sample=True, temperature=args.temperature)
         else:
             gen_kwargs.update(do_sample=False)
         with torch.no_grad():
-            out = model.generate(prompt_ids, **gen_kwargs)
-        return tok.decode(out[0, prompt_ids.shape[1]:], skip_special_tokens=True)
+            out = model.generate(**enc, **gen_kwargs)
+        return tok.decode(out[0, input_len:], skip_special_tokens=True)
 
     for r in rows:
         meta = r["meta"]
         sys_msg, user_msg, gold_msg = r["messages"][0], r["messages"][1], r["messages"][-1]
-        prompt_ids = tok.apply_chat_template(
+        # return_dict=True -> a BatchEncoding (input_ids + attention_mask) we splat into
+        # generate(); apply_chat_template's bare return_tensors form is not a plain tensor
+        # in all transformers versions, which breaks generate's inputs.shape access.
+        enc = tok.apply_chat_template(
             [sys_msg, user_msg], add_generation_prompt=True,
-            return_tensors="pt").to(model.device)
+            return_tensors="pt", return_dict=True)
+        enc = {k: v.to(model.device) for k, v in enc.items()}
 
         outs = {}  # name -> raw generation
         for name in passes:
             if name == "base" and have_adapter:
                 # toggle the LoRA OFF to get the untuned base from the same weights
                 with model.disable_adapter():
-                    outs[name] = _generate(prompt_ids)
+                    outs[name] = _generate(enc)
             else:
-                outs[name] = _generate(prompt_ids)
+                outs[name] = _generate(enc)
 
         gold = _extract_json(gold_msg["content"]) or {}
         preds = {name: _extract_json(g) for name, g in outs.items()}
