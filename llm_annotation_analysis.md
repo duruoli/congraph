@@ -40,74 +40,50 @@ The doctor‘s edge is keeping the workup open on the right question, the real r
 
 # Disconfirmed groups (the symmetric signal: when NOT to keep going, and when a negative is not a failure)
 
-> Source: 430 rrn-aligned judged steps in `results/annotation_experiment/full/belief_deviation_analysis.csv`.
-> Two subsets: **Follow + Disconfirmed (FD) = 55**, **Deviate + Disconfirmed (DD) = 43**.
-> **Label caveat (critical):** `follow` is *computed* (doctor action == rubric-traversal recommendation on the belief). The LLM annotation **never saw the rubric**, so `follow` = *convergence, not obedience* — the reconstructed reasoning is the doctor's own logic. ⇒ high FD does NOT mean "the rubric misled the doctor."
-> appropriateness: FD yes 50 / partial 5; DD yes 30 / partial 13. certainty_update: ALL "down".
-> The question for the agent: which disconfirms are **unavoidable** (test was right, a negative is the informative answer → teach calibration) vs **real holes** (should not have followed / deviated → teach the override/brake).
+> **Updated 2026-06-30 to the clean pre-admission cut (real MIMIC charttime).** This supersedes the earlier 542-step / FD-55 / DD-43 taxonomy, which was contaminated by post-intervention monitoring scans (the old "Caveat 2" below — now resolved).
+>
+> **Two timing-filtered datasets now coexist** (both from `scripts/filter_deviation_by_timing.py`, real `charttime`/`admittime`):
+> - **A. intervention-cut** → `belief_deviation_filtered.csv` (**502 kept**, drops only `post_intervention`; FD=52 / DD=36). Used for agent-training so legitimate severity-staging survives.
+> - **B. pre-admission-cut** → `belief_deviation_preadmission.csv` (**285 kept**, `timing_role=='pre_admission'`, i.e. `charttime < admittime`; **FD=29 / DD=24**). The purest diagnostic-phase view — drops the admitted-but-pre-intervention grey zone (119), same-day (98), and post-intervention (40). This is the cut the disconfirm analysis below is drawn on.
+>
+> **Label caveat (unchanged, critical):** `follow` is *computed* (doctor action == rubric-traversal recommendation on the belief). The LLM annotation **never saw the rubric**, so `follow` = *convergence, not obedience* — the reconstructed reasoning is the doctor's own logic. ⇒ high FD does NOT mean "the rubric misled the doctor." certainty_update: ALL "down".
+>
+> **Disconfirm group (B-cut) = 53** (DD deviate+disconfirmed 24, FD follow+disconfirmed 29). **34/53 abd-US + 5 MRCP = 74% are biliary-tree interrogations**; pancreatitis 28, cholecystitis 17 dominate. The question for the agent: which disconfirms are **unavoidable** (test was right, a negative is the informative answer → teach calibration) vs **real holes** (should not have followed / deviated → teach the brake).
 
-## Follow + Disconfirmed (55) — three patterns
+## The 3 disconfirm findings (symmetric to the deviate+confirmed alarm/loosening findings)
 
-### FD-1 (UNAVOIDABLE, dominant 54/55): the biliary-cause hunt that comes back clean is the correct call, not a mistake.
-Biochemistry (lipase 10–280× / cholestatic LFTs / hyperbilirubinemia) makes "gallstone / CBD obstruction" the leading hypothesis; the doctor (independently — and the rubric happens to agree) orders US→MRCP to detect-or-rule-out choledocholithiasis *because it gates ERCP*. Duct comes back clean (20129489, 21775506, 25233319, 24677490, 26349833 s3). You cannot know ex-ante which lipase is gallstone-driven → imaging is mandatory and the negative IS the informative answer (removes ERCP, redirects to alcohol / metabolic / drug / idiopathic).
-Pearl: this disconfirm is a *planned-for branch, not a hole*. The rubric's defect is **representational** — no "expected-negative / rule-out" outcome node, no pretest layer — so a naïve agent reads the negative as surprise/failure. Agent should: (i) pre-register a realistic P(negative biliary); (ii) use the disconfirm to drop the **belief** (P(gallstone etiology)↓), NOT its decision-confidence; (iii) **stop re-escalating** — one clean duct is enough (repeat-MRCP-after-clean-CBD is the low-yield tail).
+### Finding 1 (dominant, ~39–51/53): most "disconfirms" are RULE-OUT BY DESIGN — the negative is the product, not a failure.
+Biochemistry (lipase 10–280× / cholestatic LFTs / hyperbilirubinemia) makes "gallstone / CBD obstruction" the leading etiology; the doctor orders US→MRCP to detect-or-rule-out choledocholithiasis *because it gates ERCP*. Pancreatitis 27/28 disconfirms are exactly this "image to find the gallstone/CBD-stone etiology → none found." Crucially the doctor is **NOT confirming a leading Dx** — they are **EXCLUDING an *actionable* alternative** (gallstone pancreatitis → would mandate ERCP/cholecystectomy). A clean negative changes management (no intervention) = the deliverable.
+Pearl: separate **"test-to-CONFIRM-my-Dx"** from **"test-to-EXCLUDE-an-actionable-alternative."** For the latter: pre-register a high P(negative), read the negative as **SUCCESS**, and drop the **etiology-belief** — NOT decision-confidence. The rubric defect is **representational** (no "expected-negative / rule-out" node, no pretest layer), so a naïve agent misreads the negative as surprise/failure.
 
-### FD-2 (REAL HOLE): stale anatomy — imaging an organ that is already removed / drained / resolved.
-US still hunting gallstones in a post-cholecystectomy patient (21061497); US of an already-drained gallbladder (20334898); follow-up of a collection that already resolved (29573603 s4). Disconfirm is *guaranteed* because the premise is dead.
-Pearl: rubric / naïve-follow has **no current-state gate**. Agent must check intervention/anatomy state before imaging → skip the futile test. A clean should-not-follow pattern.
+### Finding 2 (the "over-imaging brake" mostly EVAPORATES as a timing artifact): what survives is narrow.
+The old DD-1 "defensive re-scan past a valid STOP" (10/43) shrank once real charttime removed monitoring scans — its cleanest instances (27993727 already-had-appendectomy, 28684468, 21849575) were **post_intervention** and are now gone; the remaining candidates (25414251 / 28122817 / 24440089) are legitimate `assess_severity` staging, NOT errors. The **real** residual brake = the **8 `appropriateness=partial` cases**: re-asking an *already-answered actionable question* with a **weaker modality**. Signature traps:
+- **"CBD-dilated-but-no-stone"** — dilation ≠ stone (post-chole / sphincterotomy / passed-stone): 24922174, 24050288, 26756106.
+- **"US-after-CT for cholecystitis"** — US systematically under-reads (Murphy absent, wall not thick after CT already characterized it): 27194914, 28306018, 22023307.
+Pearl: once **one adequate study** answers the actionable question, **suppress the confirmatory second modality**. This is the whole brake — it is NOT "stop scanning" in general.
 
-### FD-3 (REAL HOLE / redundant): sonographic confirmation of CT-suspected cholecystitis systematically fails its own criteria; and "dilation ⟹ stone" fails post-intervention.
-31/55 expected cholecystitis signs; CT already showed GB distension/stranding, rubric still sends US to "confirm Murphy / wall / pericholecystic fluid," repeatedly absent (22023307, 24115267, 25633498, 27194914, 28306018). Plus the "dilated duct, no stone" sub-cluster (24050288, 24270186, 24922174) — post-chole / sphincterotomy / passed-stone give dilation without a target.
-Pearl: once CT characterized the organ, a second confirmatory modality is low-yield; condition the implicit "dilation ⟹ stone" rule on biliary-intervention history. Agent: down-weight redundant confirmation.
+### Finding 3 (KEEP the deviation — the outlier-patch signal): disconfirm ≠ wrong test; the broad net that misses its stated target is exactly how the real outlier disease gets caught.
+Local prediction failed yet the deviation was diagnostically superior. 4 clean cases: 25444703 (CT-for-pancreatitis-edema → 50 mm pancreatic-head **mass**), 28238173 (CT-for-appendicitis → true acute **cholecystitis**), 28672604 (US/CT-for-postop-complication → advanced **liver disease**), 20501678 (CT-for-appe/stone → **duodenal perforation**). Prediction disconfirmed, but the scan found the REAL unexpected pathology = exactly the outlier "patch" the project targets.
+Pearl: the reward must separate **disconfirmed-PREDICTION** from **wrong-ACTION**; never penalize the net that overturns the working Dx. Symmetric to the confirm+deviate "loosening": there the deviation found MORE, here disconfirmation **REDIRECTED**.
 
-## Deviate + Disconfirmed (43) — three patterns
+## Synthesis — the reframed brake
+- **Calibration / rule-out-by-design** (Finding 1): test correct, the negative IS the informative answer → teach realistic pretest + drop the *etiology* belief + STOP re-escalating. NOT a deviation trigger, NOT an error.
+- **The real brake, narrowed** (Finding 2): NOT "stop scanning" — that lesson was largely a post-intervention monitoring artifact. The real brake is **"stop EXPECTING A POSITIVE / stop re-escalating once the actionable cause is excluded one adequate time."** Concretely: suppress the confirmatory *second, weaker* modality after one adequate study.
+- **Anti-brake guardrail** (Finding 3): the broad net that catches the outlier must NOT be suppressed → separate disconfirmed-prediction from wrong-action.
 
-### DD-1 (REAL HOLE, cleanest should-NOT-deviate, 10/43): over-imaging past a valid rubric STOP.
-Rubric already in terminal_confirmed / terminal_low_risk / terminal_excluded / blocked ("no more imaging"); the doctor re-scans anyway — almost always a repeat CT for a feared complication (necrosis / abscess / perforation / pseudocyst) that is **absent**, disease often stable or improving (28684468 s3, 25414251 s4, 28122817 s3, 21849575 s4, 24440089 s2; 27993727 s2 re-scanned a patient who had **already had the appendectomy**).
-Pearl: here the rubric's stop was RIGHT and the deviation WRONG — defensive / anxiety re-scan. The patch must learn to **suppress** this, not imitate it. (appropriateness is "partial" far more often here than in FD — the data already flags these as questionable.)
-
-### DD-2 (UNAVOIDABLE, mirrors FD-1, 32/43 biliary): escalating the modality to chase the same biliary cause still comes up empty.
-The "skip US, go straight to CT/MRCP" deviation (cf. deviate+confirmed) — but when the etiology is truly non-obstructive, the bigger test finds no cause either (21238215, 20418179, 26349833 s1, 26472405, 25444703, 25616232).
-Pearl: going-bigger is not a fix for a clean biliary tree — the gap is the **etiology**, not test resolution. Agent must not treat modality-escalation as the response to a negative biliary look.
-
-### DD-3 (KEEP THIS deviation — the outlier-patch signal): disconfirmed ≠ wrong test; broad nets miss the stated target but catch the truth.
-Local prediction failed yet the deviation was diagnostically superior: 28238173 (CT expecting appendicitis → found the true acute cholecystitis), 25444703 (expected pancreatic edema → found a 50 mm cystic pancreatic-head mass), 28672604 (expected post-op biliary complication → found advanced intrinsic liver disease). (+ competing-organ tail 29794234 ovaries, 26860125 renal allograft — normal but defensible broad triage.)
-Pearl: a "disconfirmed" deviation must NOT be auto-penalized — the broad CT net IS the outlier-patch behavior the project targets. The reward must separate **disconfirmed-prediction** from **wrong-action**.
-
-## Synthesis — the disconfirm taxonomy the agent must learn
-- **Unavoidable / calibration** (FD-1, DD-2): test correct, negative = the informative answer → teach realistic pretest + belief-update + STOP re-escalating. NOT a deviation trigger, NOT an error.
-- **Real hole → should-not-follow / should-not-deviate** (FD-2 stale anatomy, FD-3 redundant confirmation, DD-1 over-imaging past a stop): teach current-state gate, redundancy down-weight, respect valid terminal stops.
-- **Keep despite disconfirm** (DD-3): broad net that catches the truth → do not penalize; this is the patch.
-
-**Pairing with the deviate+confirmed insights:** those said "the rubric stops reasoning too early" → the agent needs *loosening*. The disconfirm groups add the symmetric **brake**: "the doctor sometimes reasons too long / on a dead premise" (FD-2, DD-1) and "a negative is not a failure" (FD-1, DD-2). A good agent needs BOTH — the evidence-based loosening AND these brakes — otherwise loosening just becomes over-testing.
+**Pairing with the deviate+confirmed insights:** those said "the rubric stops reasoning too early" → the agent needs *loosening*. The disconfirm findings add the symmetric **brake**: "a negative is not a failure" (Finding 1) and "one adequate look is enough" (Finding 2), guarded by "don't suppress the net that overturns the Dx" (Finding 3). A good agent needs BOTH — the evidence-based loosening AND these brakes — otherwise loosening just becomes over-testing.
 
 ---
 
-# Caveats from the raw-text re-audit (2026-06) — two corrections before this taxonomy is used as training labels
+# Methodological note — the DD-3 / Finding-3 reward split (still stands)
 
-> Triggered by re-reading the cited cases against raw radiology reports + Discharge Dx + Procedures.
+> The earlier "Caveat 2" (post-intervention scans contaminating DD-1 / FD-2 / FD-3) is **RESOLVED**: real MIMIC `charttime`/`admittime` arrived 2026-06-28 and the pre-admission cut above is drawn on genuine timestamps, not text-hints. The one methodological correction that survives is on how Finding 3 (old DD-3) is rewarded.
 
-## Caveat 1 — DD-3 "caught the truth" is the WRONG reward justification; split systematic vs incidental
-Re-reading the 3 DD-3 cases shows they are not homogeneous:
-- **panc 25444703** (CT→50 mm cystic pancreatic-head mass): the CT imaged the *right organ* (lipase→pancreas) and found the real pathology there; disconfirm (mass≠edema) correctly drove CTA→EUS-FNA. **Systematic — keep.**
+**"Caught the truth" is the WRONG reward justification; split `aimed-at-truth` vs `incidental-catch`.** The Finding-3 cases are not homogeneous:
+- **panc 25444703** (CT→50 mm pancreatic-head mass): CT imaged the *right organ* (lipase→pancreas) and found the real pathology there; disconfirm (mass≠edema) correctly drove CTA→EUS-FNA. **Systematic — keep.**
 - **chole 28238173** (broad CT under failed localization→cholecystitis): localization was impossible (obese, unreliable exam) so a whole-abdomen CT was ordered by design; the net caught the real source. **Policy-validated — keep.**
 - **appe 28672604** (CT chasing post-chole liver/biliary disease): the dominant finding was advanced liver disease; the *discharge-dx* appendicitis appeared only as a report footnote ("incidental thickened appendix"). **Genuinely incidental — the truth-catch was luck, not reasoning.**
 
-⇒ Do **not** reward DD-3 because it "caught the truth" (that is a global-outcome hit, which the project's local-validation rule forbids — correct outcomes can come from luck). Reward it iff the deviation was *locally appropriate* (addressed the stated gap) and **aimed at** the region/question where the truth was found. 28672604 should be judged on its actual aim (rule out post-op complication / characterize liver), not on the incidental appendix. **Action: add a DD-3 sub-split `aimed-at-truth` vs `incidental-catch`; only the former is the outlier-patch signal.**
+⇒ Do **not** reward Finding-3 because it "caught the truth" (that is a global-outcome hit, which the project's local-validation rule forbids — correct outcomes can come from luck). Reward it iff the deviation was *locally appropriate* (addressed the stated gap) and **aimed at** the region/question where the truth was found. 28672604 should be judged on its actual aim (rule out post-op complication / characterize liver), not on the incidental appendix. **Action: sub-split `aimed-at-truth` vs `incidental-catch`; only the former is the outlier-patch signal.**
 
-## Caveat 2 — DD-1 / FD-2 / FD-3 are partly an ARTIFACT of post-intervention scans in the step sequence
-The derived `*_hadm_info_first_diag` dropped every `charttime`; decision steps are ordered only by `RR-N`, with **no gate at the first therapeutic intervention**. So monitoring scans taken *after* a procedure get swept into the diagnostic "decision sequence" and mislabeled as defensive re-scans / stale-anatomy. Confirmed post-intervention decision-steps among the flagged cells: appe **27993727 s2** (post-appendectomy, "surgical staples"), panc **21849575** (post-cholecystostomy/cholecystectomy), panc **28684468 s3** (post-ERCP, "interval decrease"), chole **24636219** (biliary stent), chole **22502935** (post-sphincterotomy); plus OLD-surgery stale-anatomy panc **21061497 / 27645140** (status-post-cholecystectomy → gallbladder already gone).
-
-**Magnitude (full 542 steps):** naïve keyword scan = 16% but *over-counts* (`status post`/`surgical clip`/`postoperative` catch unrelated OLD surgeries — gastric bypass, mastopexy, nephrectomy). Tight, hand-validated floor = **7% (39 steps)**; but the contamination concentrates in the **deviate+disconfirmed (DD-1) cell: ~9% tight / ~28% loose**, i.e. exactly where the "suppress this" conclusion is drawn. Training an agent to suppress these would teach it to suppress legitimate post-op monitoring — the wrong lesson.
-
-### Timing pipeline (built; gates the step set by intervention time)
-Two mechanisms, split cleanly:
-- **this-admission therapeutic intervention** (appendectomy / cholecystectomy / cholecystostomy / therapeutic-ERCP / percutaneous-drainage / bowel-resection) → scans after its date = `post_intervention` (monitoring) → **exclude**.
-- **old surgery → stale anatomy** (organ already removed, not in this stay's procedures) → caught by report-text, a *different* exclusion reason (dead premise).
-
-Code:
-- `experiments/annotation/timing.py` — intervention classifier (procedure titles + ICD9 codes), `SourceTables` loader (schema per `mimic_supp_data.md`), `timing_role()`.
-- `scripts/build_timing_table.py` — `--self-test` (validates classifier on existing data, 4/4), degraded (text-hint provisional, runs today), `--source-dir` (real charttime join). **Join key = full `note_id` "<subject_id>-RR-<n>"** reconstructed from the derived Radiology blob → matches MIMIC-IV-Note `radiology.csv` directly. Output `results/annotation_experiment/full/timing_roles.csv`.
-- `scripts/filter_deviation_by_timing.py` → `belief_deviation_filtered.csv` (drops `timing_role==post_intervention`; auto-uses real role once source present, else provisional text-hint).
-
-**When DUA clears:** download `hosp/admissions.csv.gz`, mimic-iv-note `radiology.csv`, `hosp/procedures_icd.csv.gz` (+ optional `d_icd_procedures`) → `build_timing_table.py --source-dir <dir>` → `filter_deviation_by_timing.py` → re-derive every DD/FD number on the cleaned step set. Until then the analysis above stands but its DD-1/FD-2/FD-3 counts carry a 7–16% post-intervention inflation.
+**Provenance / reproduce:** enrichment + dumps in scratchpad `groupB_disconfirm.py` / `groupB_enriched.csv` / `dump53.py`; counts verified from `results/annotation_experiment/full/belief_deviation_preadmission.csv` (285 rows, FD=29 / DD=24). Timing pipeline: `experiments/annotation/timing.py` + `scripts/build_timing_table.py --source-dir data/raw_data/mimic_source` → `timing_roles.csv` (pre_admission 285 / post_admission_diagnostic 119 / same_day 98 / post_intervention 40) → `scripts/filter_deviation_by_timing.py`.

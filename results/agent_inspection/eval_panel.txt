@@ -1,0 +1,29 @@
+### 5-arm certainty-agent eval panel
+data=/Users/duruoli/A/A李杜若/1-科研/PhD/0/1-code/congraph/data/training_set/sft/test.jsonl  rows=56  judged(rrn_aligned&pre)=56  arms=['doctor']  base=Qwen/Qwen2.5-7B-Instruct
+CAVEATS: rubric is NOT ground truth (agent!=rubric = patch OR over-test, undecidable here); N small => directional; brake side near-empty; ctx-sonnet's Sonnet base is a capability CONFOUND vs the Qwen arms; modality read on DISTRIBUTION (follow-prob) not greedy argmax.
+
+[validation] pre_features vs stored META.dev_belief: 56/56 match  ✓
+
+============================================================================================
+BLOCK 1-2 — vs-rubric follow/deviate/off_rubric profile (judged steps)
+
+[doctor]  OVERALL  follow  24 ( 43%)  deviate  19 ( 34%)  off_rub  13 ( 23%)
+    appendicitis    follow   3 ( 21%)  deviate   4 ( 29%)  off_rub   7 ( 50%)
+    cholecystitis   follow  10 ( 59%)  deviate   6 ( 35%)  off_rub   1 (  6%)
+    diverticulitis  follow   2 ( 33%)  deviate   0 (  0%)  off_rub   4 ( 67%)
+    pancreatitis    follow   9 ( 47%)  deviate   9 ( 47%)  off_rub   1 (  5%)
+    doctor=follow      follow  24 (100%)  deviate   0 (  0%)  off_rub   0 (  0%)
+    doctor=deviate     follow   0 (  0%)  deviate  19 (100%)  off_rub   0 (  0%)
+    doctor=off_rubric  follow   0 (  0%)  deviate   0 (  0%)  off_rub  13 (100%)
+
+============================================================================================
+BLOCK 3 — deviation x alarm landing (anchor): P(deviate|alarm) should exceed P(deviate|silent); P(follow|silent) should exceed P(follow|alarm)
+
+  channel = alarm_any
+    [doctor    ] deviate|fired(n=36)=0.36 |silent(n=20)=0.30 Δ=+0.06   follow|fired=0.53 |silent=0.25 Δ=+0.28
+
+  channel = study_inadeq
+    [doctor    ] deviate|fired(n=17)=0.29 |silent(n=39)=0.36 Δ=-0.06   follow|fired=0.65 |silent=0.33 Δ=+0.31
+
+  channel = discordance
+    [doctor    ] deviate|fired(n=18)=0.28 |silent(n=38)=0.37 Δ=-0.09   follow|fired=0.56 |silent=0.37 Δ=+0.19
