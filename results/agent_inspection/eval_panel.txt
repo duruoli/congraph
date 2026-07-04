@@ -1,5 +1,5 @@
 ### 5-arm certainty-agent eval panel
-data=/Users/duruoli/A/A李杜若/1-科研/PhD/0/1-code/congraph/data/training_set/sft/test.jsonl  rows=56  judged(rrn_aligned&pre)=56  arms=['doctor']  base=Qwen/Qwen2.5-7B-Instruct
+data=data/training_set/sft/test.jsonl  rows=56  judged(rrn_aligned&pre)=56  arms=['doctor', 'base', 'sft', 'ctx-qwen']  base=Qwen/Qwen2.5-7B-Instruct
 CAVEATS: rubric is NOT ground truth (agent!=rubric = patch OR over-test, undecidable here); N small => directional; brake side near-empty; ctx-sonnet's Sonnet base is a capability CONFOUND vs the Qwen arms; modality read on DISTRIBUTION (follow-prob) not greedy argmax.
 
 [validation] pre_features vs stored META.dev_belief: 56/56 match  ✓
@@ -16,14 +16,53 @@ BLOCK 1-2 — vs-rubric follow/deviate/off_rubric profile (judged steps)
     doctor=deviate     follow   0 (  0%)  deviate  19 (100%)  off_rub   0 (  0%)
     doctor=off_rubric  follow   0 (  0%)  deviate   0 (  0%)  off_rub  13 (100%)
 
+[base]  OVERALL  follow  23 ( 41%)  deviate  23 ( 41%)  off_rub  10 ( 18%)
+    appendicitis    follow   8 ( 57%)  deviate   3 ( 21%)  off_rub   3 ( 21%)
+    cholecystitis   follow   7 ( 41%)  deviate   7 ( 41%)  off_rub   3 ( 18%)
+    diverticulitis  follow   1 ( 17%)  deviate   2 ( 33%)  off_rub   3 ( 50%)
+    pancreatitis    follow   7 ( 37%)  deviate  11 ( 58%)  off_rub   1 (  5%)
+    doctor=follow      follow  11 ( 46%)  deviate   9 ( 38%)  off_rub   4 ( 17%)
+    doctor=deviate     follow   7 ( 37%)  deviate  11 ( 58%)  off_rub   1 (  5%)
+    doctor=off_rubric  follow   5 ( 38%)  deviate   3 ( 23%)  off_rub   5 ( 38%)
+    mean follow-PROB (distribution, greedy-robust) = 0.378
+
+[sft]  OVERALL  follow  28 ( 50%)  deviate  18 ( 32%)  off_rub  10 ( 18%)
+    appendicitis    follow   3 ( 21%)  deviate   7 ( 50%)  off_rub   4 ( 29%)
+    cholecystitis   follow  13 ( 76%)  deviate   3 ( 18%)  off_rub   1 (  6%)
+    diverticulitis  follow   2 ( 33%)  deviate   0 (  0%)  off_rub   4 ( 67%)
+    pancreatitis    follow  10 ( 53%)  deviate   8 ( 42%)  off_rub   1 (  5%)
+    doctor=follow      follow  18 ( 75%)  deviate   4 ( 17%)  off_rub   2 (  8%)
+    doctor=deviate     follow  10 ( 53%)  deviate   8 ( 42%)  off_rub   1 (  5%)
+    doctor=off_rubric  follow   0 (  0%)  deviate   6 ( 46%)  off_rub   7 ( 54%)
+    mean follow-PROB (distribution, greedy-robust) = 0.278
+
+[ctx-qwen]  OVERALL  follow  15 ( 27%)  deviate  29 ( 52%)  off_rub  12 ( 21%)
+    appendicitis    follow   3 ( 21%)  deviate   3 ( 21%)  off_rub   8 ( 57%)
+    cholecystitis   follow   6 ( 35%)  deviate  10 ( 59%)  off_rub   1 (  6%)
+    diverticulitis  follow   0 (  0%)  deviate   3 ( 50%)  off_rub   3 ( 50%)
+    pancreatitis    follow   6 ( 32%)  deviate  13 ( 68%)  off_rub   0 (  0%)
+    doctor=follow      follow   9 ( 38%)  deviate  12 ( 50%)  off_rub   3 ( 12%)
+    doctor=deviate     follow   4 ( 21%)  deviate  13 ( 68%)  off_rub   2 ( 11%)
+    doctor=off_rubric  follow   2 ( 15%)  deviate   4 ( 31%)  off_rub   7 ( 54%)
+    mean follow-PROB (distribution, greedy-robust) = 0.243
+
 ============================================================================================
 BLOCK 3 — deviation x alarm landing (anchor): P(deviate|alarm) should exceed P(deviate|silent); P(follow|silent) should exceed P(follow|alarm)
 
   channel = alarm_any
     [doctor    ] deviate|fired(n=36)=0.36 |silent(n=20)=0.30 Δ=+0.06   follow|fired=0.53 |silent=0.25 Δ=+0.28
+    [base      ] deviate|fired(n=36)=0.47 |silent(n=20)=0.30 Δ=+0.17   follow|fired=0.39 |silent=0.45 Δ=-0.06
+    [sft       ] deviate|fired(n=36)=0.33 |silent(n=20)=0.30 Δ=+0.03   follow|fired=0.56 |silent=0.40 Δ=+0.16
+    [ctx-qwen  ] deviate|fired(n=36)=0.58 |silent(n=20)=0.40 Δ=+0.18   follow|fired=0.25 |silent=0.30 Δ=-0.05
 
   channel = study_inadeq
     [doctor    ] deviate|fired(n=17)=0.29 |silent(n=39)=0.36 Δ=-0.06   follow|fired=0.65 |silent=0.33 Δ=+0.31
+    [base      ] deviate|fired(n=17)=0.47 |silent(n=39)=0.38 Δ=+0.09   follow|fired=0.35 |silent=0.44 Δ=-0.08
+    [sft       ] deviate|fired(n=17)=0.41 |silent(n=39)=0.28 Δ=+0.13   follow|fired=0.53 |silent=0.49 Δ=+0.04
+    [ctx-qwen  ] deviate|fired(n=17)=0.53 |silent(n=39)=0.51 Δ=+0.02   follow|fired=0.35 |silent=0.23 Δ=+0.12
 
   channel = discordance
     [doctor    ] deviate|fired(n=18)=0.28 |silent(n=38)=0.37 Δ=-0.09   follow|fired=0.56 |silent=0.37 Δ=+0.19
+    [base      ] deviate|fired(n=18)=0.44 |silent(n=38)=0.39 Δ=+0.05   follow|fired=0.44 |silent=0.39 Δ=+0.05
+    [sft       ] deviate|fired(n=18)=0.22 |silent(n=38)=0.37 Δ=-0.15   follow|fired=0.61 |silent=0.45 Δ=+0.16
+    [ctx-qwen  ] deviate|fired(n=18)=0.61 |silent(n=38)=0.47 Δ=+0.14   follow|fired=0.22 |silent=0.29 Δ=-0.07
