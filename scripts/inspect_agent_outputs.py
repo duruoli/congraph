@@ -4,16 +4,17 @@ you can judge the reasoning trace qualitatively BEFORE the systematic eval
 (scripts/eval_certainty_agent.py). NOT scoring — a human-readable comparison.
 
 The base and SFT generations come from the SAME loaded weights: the adapter is toggled
-off with PeftModel.disable_adapter() for the BASE pass, so memory ~= one 7B model.
+off with PeftModel.disable_adapter() for the BASE pass, so memory ~= one base model.
 
-Runs anywhere with enough memory — picks cuda > mps > cpu automatically. The weights live
-on HF (Duruo/qwen2.5-7b-congraph-lora, PRIVATE) but inference runs on THIS machine; HF
-does not serve it for you. On an Apple-Silicon Mac it works via MPS in bf16 (~14GB, slow,
-~1-3 min/step; NO --load-4bit, bitsandbytes is CUDA-only). On Quest use the GPU. Heavy
-deps import inside main so `--help` works on a CPU box.
+Base is a `--base` flag (default google/medgemma-27b-text-it, a Gemma-3 model; Qwen2.5-7B
+was the placeholder). Picks cuda > mps > cpu automatically, BUT the 27B is ~54GB in bf16 —
+it will NOT fit Apple-Silicon MPS; run it on a GPU (Quest). medgemma is a GATED HF repo, so
+`huggingface-cli login` with a token that has accepted the license. The chat template is
+Gemma-3's (folds the system message into the first user turn) — checked at load. Heavy deps
+import inside main so `--help` works on a CPU box.
 
-  pip install "peft>=0.13" "transformers>=4.45" accelerate    # + bitsandbytes only on CUDA
-  huggingface-cli login            # the adapter repo is PRIVATE
+  pip install "peft>=0.13" "transformers>=4.50" accelerate    # + bitsandbytes only on CUDA
+  huggingface-cli login            # medgemma is gated; the adapter repo may be private
 
   python scripts/inspect_agent_outputs.py --n 6 --seed 0
   python scripts/inspect_agent_outputs.py --only sft          # skip the base pass (faster)
@@ -24,17 +25,22 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+from experiments.agent.chat_compat import assert_roundtrip  # noqa: E402
 DEFAULT_DATA = ROOT / "data/training_set/sft/test.jsonl"
 
 
 def parse_args():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--base", default="Qwen/Qwen2.5-7B-Instruct")
-    ap.add_argument("--adapter", default="Duruo/qwen2.5-7b-congraph-lora",
-                    help="HF repo id or local dir of the LoRA adapter")
+    ap.add_argument("--base", default="google/medgemma-27b-text-it",
+                    help="swappable base (Gemma-3 medgemma default; Qwen2.5-7B was the placeholder)")
+    ap.add_argument("--adapter", default="runs/medgemma-27b-lora-certainty",
+                    help="HF repo id or local dir of the LoRA adapter (must match --base)")
     ap.add_argument("--only", choices=["both", "base", "sft"], default="both",
                     help="which model passes to generate (default both = 3-way with GOLD)")
     ap.add_argument("--data", default=str(DEFAULT_DATA))
@@ -111,6 +117,8 @@ def main():
     tok = AutoTokenizer.from_pretrained(args.base)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
+    # fail loud if the swapped base's template can't render [system, user] (e.g. rejects system)
+    assert_roundtrip(tok, rows[0]["messages"][:2])
 
     quant = None
     if args.load_4bit:

@@ -1,12 +1,14 @@
 """Systematic 5-ARM panel for the certainty-trigger agent (direction-A context vs
 direction-B SFT), settled in [[sft-eval-design]].
 
-ARMS (each = a (base_model, delivery) tuple; the base is a SWAPPABLE flag — Qwen2.5-7B is a
-temporary placeholder to be replaced by a larger model):
+ARMS (each = a (base_model, delivery) tuple; the base is a SWAPPABLE flag — default is now
+google/medgemma-27b-text-it (Gemma-3), Qwen2.5-7B was the earlier placeholder). The three
+model arms below share the SAME base; the arm ids keep the historical "-qwen" suffix but track
+whatever --base-model is passed:
   doctor      real trajectory (gold annotation) — a REFERENCE, NOT a correctness standard.
-  base        Qwen base, plain system prompt.                                  [floor]
-  sft         Qwen base + LoRA adapter, plain system prompt.                   [dir-B weights]
-  ctx-qwen    Qwen base (NO adapter) + configs/context_block.md in system.     [dir-A, SAME base
+  base        base model, plain system prompt.                                 [floor]
+  sft         base + LoRA adapter, plain system prompt.                        [dir-B weights]
+  ctx-qwen    base (NO adapter) + configs/context_block.md in system.          [dir-A, SAME base
               as sft => ctx-qwen-vs-sft is a clean MECHANISM ablation]
   ctx-sonnet  Sonnet + context_block.md.  [best-achievable context product; the Sonnet-vs-Qwen
               capability gap is a NAMED CONFOUND — printed in the header, do not over-read]
@@ -52,6 +54,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from experiments.annotation.deviation import belief_step_deviation, IMAGING_KEYS  # noqa: E402
+from experiments.agent.chat_compat import assert_roundtrip  # noqa: E402
 
 DISEASES = ["appendicitis", "cholecystitis", "diverticulitis", "pancreatitis"]
 MODALITIES = ["CT_Abdomen", "Ultrasound_Abdomen", "MRCP_Abdomen", "MRI_Abdomen", "CTU_Abdomen"]
@@ -66,9 +69,10 @@ def parse_args():
     ap.add_argument("--arms", nargs="+", default=["doctor"], choices=ALL_ARMS)
     ap.add_argument("--data", default=str(DEFAULT_TEST),
                     help="test.jsonl (clean, fidelity) or alarm_probe.jsonl (behavioral, HAS LEAK)")
-    ap.add_argument("--base-model", default="Qwen/Qwen2.5-7B-Instruct",
-                    help="swappable base; Qwen-7B is a placeholder for a larger model later")
-    ap.add_argument("--adapter", default="Duruo/qwen2.5-7b-congraph-lora")
+    ap.add_argument("--base-model", default="google/medgemma-27b-text-it",
+                    help="swappable base; medgemma-27b (Gemma-3) default, Qwen-7B was the placeholder")
+    ap.add_argument("--adapter", default="runs/medgemma-27b-lora-certainty",
+                    help="LoRA adapter (HF repo id or local dir) — must match --base-model")
     ap.add_argument("--sonnet-model", default="anthropic/claude-sonnet-4-6")
     ap.add_argument("--max-new-tokens", type=int, default=768)
     ap.add_argument("--limit", type=int, default=0, help="cap rows (debug); 0 = all")
@@ -176,10 +180,13 @@ def run_qwen_arms(rows, arms, args):
               else "mps" if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available()
               else "cpu")
     dtype = torch.float32 if device == "cpu" else torch.bfloat16
-    print(f"[qwen] device={device} dtype={dtype}")
+    print(f"[hf] base={args.base_model} device={device} dtype={dtype}")
     tok = AutoTokenizer.from_pretrained(args.base_model)
     if tok.pad_token is None:
         tok.pad_token = tok.eos_token
+    # fail loud if the swapped base's template can't render [system, user] (e.g. rejects system)
+    if rows:
+        assert_roundtrip(tok, rows[0]["messages"][:2])
     load_kwargs = dict(torch_dtype=dtype)
     if device == "cuda":
         load_kwargs["device_map"] = "auto"
