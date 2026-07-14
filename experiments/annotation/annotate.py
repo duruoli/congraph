@@ -7,7 +7,9 @@ experiments.llm_experiment.env_loader for the OpenRouter key.
 from __future__ import annotations
 
 import json
+import os
 import re
+from pathlib import Path
 from statistics import mean, pstdev
 from typing import Any
 
@@ -19,8 +21,14 @@ from experiments.annotation.prompts import (
 )
 from experiments.llm_experiment.env_loader import load_openrouter_key
 
+# Backend switch: default OpenRouter (unchanged); set LLM_BACKEND=anthropic to call
+# the native Anthropic API instead (same Claude Sonnet 4-6 model — see llm-api-config
+# memory). Used to fall back off an exhausted OpenRouter key onto a direct key.
+_LLM_BACKEND = os.environ.get("LLM_BACKEND", "openrouter").strip().lower()
+
 _OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 _CLIENT: OpenAI | None = None
+_ANTHROPIC_CLIENT = None  # anthropic.Anthropic, lazily built
 _JSON_OBJ_RE = re.compile(r"\{[\s\S]*\}")
 
 
@@ -33,6 +41,32 @@ def _client() -> OpenAI:
         _CLIENT = OpenAI(api_key=load_openrouter_key(), base_url=_OPENROUTER_BASE_URL,
                          max_retries=3, timeout=45.0)
     return _CLIENT
+
+
+def _load_anthropic_key() -> str:
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        return os.environ["ANTHROPIC_API_KEY"]
+    f = Path(__file__).resolve().parents[2] / ".anthropic_env"
+    if f.exists():
+        for line in f.read_text().splitlines():
+            line = line.strip()
+            if line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            if k.strip() == "ANTHROPIC_API_KEY":
+                v = v.strip().strip('"“”').strip("'‘’")
+                os.environ["ANTHROPIC_API_KEY"] = v
+                return v
+    raise RuntimeError("ANTHROPIC_API_KEY not in env and not found in .anthropic_env")
+
+
+def _anthropic_client():
+    global _ANTHROPIC_CLIENT
+    if _ANTHROPIC_CLIENT is None:
+        import anthropic
+        _ANTHROPIC_CLIENT = anthropic.Anthropic(api_key=_load_anthropic_key(),
+                                                max_retries=3, timeout=45.0)
+    return _ANTHROPIC_CLIENT
 
 
 def _strip_fences(text: str) -> str:
@@ -58,6 +92,19 @@ def _parse(text: str) -> dict | None:
 
 def call_json(system: str, user: str, *, model: str, temperature: float,
               max_tokens: int) -> dict[str, Any]:
+    if _LLM_BACKEND == "anthropic":
+        # Native Anthropic API. Strip any "anthropic/" OpenRouter prefix; same
+        # Sonnet 4-6 model. No json_object mode on Messages API — _parse handles
+        # fence-stripping + object extraction (prompts already say "STRICT JSON").
+        resp = _anthropic_client().messages.create(
+            model=model.split("/")[-1],
+            system=system,
+            messages=[{"role": "user", "content": user}],
+            temperature=temperature, max_tokens=max_tokens,
+        )
+        msg = "".join(b.text for b in resp.content if getattr(b, "type", None) == "text")
+        return {"parsed": _parse(msg), "raw": msg}
+
     resp = _client().chat.completions.create(
         model=model,
         messages=[{"role": "system", "content": system},
