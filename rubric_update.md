@@ -497,8 +497,82 @@ columns: `Patient History`, `Physical Examination`, `Laboratory Tests`, `Referen
   state=present|absent) but they mostly *raise* questions rather than *cover* them — don't force
   imaging-style anatomy×attribute; keep present/absent.
 
+### 6i. DECISION — build the Q–T tree by TRANSFORMING the original rubric (base) + clustering (extension) (2026-07-14)
+**The question tree is NOT derived from clustering-alone; it is the original guideline rubric, transformed
+and then extended.** The original rubric (`pipeline/rubric_graph_original.py`, WSES/TG18/AAFP/Atlanta
+verbatim) is ALREADY an alternating Q↔T graph — it only lacks the 4-type question labels. Concretely, per
+disease it already encodes all three §6 tables:
+- **Nodes carry the question types implicitly.** `SUSPECTED→ALVARADO` (assessment) = **existence**;
+  `US_FINDINGS`/`CT_FINDINGS` perforation/abscess/phlegmon checks = **complication**; the BISAP/Atlanta
+  /TG18 severity-grading branches = **severity**; the routing/source branches = **etiology**.
+- **Q→T guards are already there** as `edge.condition` functions: `4<=alvarado_score<=6 → US_ABDOMEN`,
+  `alvarado_score>=7 → CT`. That IS `f(question, state)→test` — the guard the clustering was meant to
+  discover, handed to us pre-written.
+- **T→Q answer-forks are already there**: `US_appendix_inflamed`, `US_perforation_abscess`,
+  `CT_perforation_abscess` = the result-value forks (A1). `required_tests` per node is also present.
+
+**Why base-on-rubric beats clustering-from-scratch (3 grounded reasons):**
+1. It is the **normative spine from international guidelines** — do not re-derive it from noisy observed
+   sequences.
+2. The **deliverable IS a "rubric UPDATE method"** ([[project-research-vision]]); the contribution =
+   **the delta (extended tree − guideline baseline)**. A fresh clustered tree throws away the "what we
+   added/changed vs the guideline" narrative that IS the contribution.
+3. §5/§6b already assume a base rubric to extend ("completing the rubric = promote recurring belief-track
+   hyps into a question-node"; "updating = enrich state till the doctor's test is derivable" — both are
+   DELTA operations). Base-on-rubric is what the doc already implies; the earlier clustering emphasis
+   under-wrote it.
+
+**Clustering still runs — as the EXTENSION source, not the base.** Per-disease clustering of observed
+question-sequences + verified-deviation mining (§6b) supplies the extra questions the guideline lacks
+(etiology depth, biliary sub-question, outlier branches) and the enriched state guards
+(pretest/habitus/prior-adequacy). **Combine both: rubric-transform = base spine; clustering/deviation =
+extensions; base→extended = the contribution.**
+
+**Scope notes:** (a) **per-disease** — transform the 4 sub-rubrics into 4 question-labeled trees; the
+question-TYPE vocabulary is shared but trees/guards are per-disease (§0). (b) **Figure-0 triage (which
+disease) = belief-track/routing = SET ASIDE** (§6h) — don't transform it now. (c) Use
+`rubric_graph_original.py` (unpatched guideline) as the base; `rubric_graph.py`'s relaxations (A OR B +
+`fever_reported_in_hpi`) are themselves an early MIMIC-driven *extension* — a ready first example of the
+delta method.
+
+### 6j. `required(S)` is keyed on the QUESTION-NODE — not question+test, not depth (2026-07-14)
+- **Key on the question, NOT the test** (non-circularity): if `required` depended on the chosen test,
+  adequacy would be "the test defines its own adequacy." Two independent tables intersect instead:
+  `question→required(S)` (dims the question intrinsically needs) ∩ `test→coverable(S)` (dims a
+  modality×region can supply); `adequate = required(q) ⊆ covered(report)`. The per-step
+  `sought_dimensions` annotation is entangled with the step's test (it recorded `required ∩
+  coverable(test)`); **aggregate the same question's sought_dims ACROSS tests/patients** to divide the
+  test factor back out and recover the fuller `required(q)`.
+- **Depth-dependence is REAL but must NOT be modeled as a depth-indexed `required(S)`** (would explode the
+  table and break "one shared tree"). Two mechanisms absorb it:
+  - **(A) residual narrowing = accumulating `covered(S)`, not changing `required`.** Same `existence` at
+    depth 2 (post non-diagnostic US) targets only the still-uncovered dims. `required(q)` is FIXED; the
+    gap `required − accumulated-covered(S)` shrinks. Depth lives in the ONE accumulating state vector
+    (§6), not in `required(S)`.
+  - **(B) genuine specialization = a CHILD node in the lattice + a `sub_question` guard.** "existence →
+    is-it-the-biliary-duct-variant" is not the same node with new dims; it is a more specific node
+    (`existence(biliary-obstruction) ≠ existence(cholecystitis)`), each with its own STABLE required set,
+    indexed by the `sub_question` state var (§6b).
+  - Net: **`required(S) = f(question-node)`, `question-node = (type, disease, [sub_question])`**; adequacy
+    checks it against accumulated `covered(S)`. Finite, shared, non-circular.
+
+### 6k. Radiology `source_test` normalization is modality × REGION (× protocol), not modality alone (2026-07-14)
+The `coverable(S)` capability key is **`(modality, anatomic-region, protocol)`**, e.g. "CT abdomen/pelvis
+with IV contrast", "US RUQ", "MRCP" — the rubric's own test nodes are already at this granularity. Modality
+alone underdetermines coverage: it can't tell whether an organ was *in-field*, which is exactly the **type
+② coverage** signal (knowing "CT abd/pelvis" tells you the appendix was in-field → its absence = coverage
+gap; "CT" alone cannot). Contrast/protocol is needed for **type ③**. So the pending "radiology
+source→modality" step is really **`radiology source → (modality, region, protocol)`**.
+
 ## 7. Open questions to resolve next (in order)
 
+> Order updated 2026-07-14 per §6i: transform the rubric FIRST (it hands us tree skeleton + guards +
+> answer-forks + partial required(S)), then fill gates with `S` + clustering extensions.
+
+0. **Transform `rubric_graph_original.py` → 4 question-labeled Q↔T trees** (tag nodes with
+   {existence, etiology, severity, complication}; extract the `edge.condition` guards and the
+   result-value answer-forks). Start with appendicitis (the most complete sub-rubric). Yields the tree
+   skeleton + a first `question→required(S)` / guard draft. **← the new first step (§6i).**
 1. **Read the 66 `assess_severity` notes** → pin down type ④ (capability) and decide whether
    `severity` and `etiology` are two distinct question types or one "post-existence" bucket.
 2. **① vs ④ — same concept or two?** Should the technical "not-visualized" (①) and the modality

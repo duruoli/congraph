@@ -1,6 +1,6 @@
-# Narrative vocabulary (名词库 / 状态库) — v1 converged
+# Narrative vocabulary (名词库 / 状态库 / 属性库) — v1 converged
 
-Built by `scripts/normalize_vocab.py` (API-free, hand-authored medical rules) from `results/evidence_pieces/*.jsonl`, NARRATIVE pieces only (labs/micro excluded). Raw→canonical maps live in `results/vocab/{anatomy,state}_map.json`.
+Built by `scripts/normalize_vocab.py` (API-free, hand-authored medical rules) from `results/evidence_pieces/*.jsonl`, NARRATIVE pieces only (labs/micro excluded — their attribute IS the analyte name, already canonical via itemid→label). Raw→canonical maps live in `results/vocab/{anatomy,state,attribute}_map.json`.
 
 ## 名词库 (anatomy): 48 canonical concepts, 18682 occurrences
 
@@ -59,12 +59,12 @@ Residual (rule-miss, self-mapped): 47 occ (0.3%). Core diagnostic mass: 10105/18
 
 ## 状态库 (state): 64 canonical descriptors, 18682 occurrences
 
-POLARITY preserved (X vs `no X` are distinct). `__NUMERIC__` (numeric vitals, read via finding_status+value_unit): 562 occ. `__DROP__` (degree-only / process words): 436 occ. Residual: 1264 occ (6.8%).
+POLARITY preserved (X vs `no X` are distinct). `__NUMERIC__` (numeric vitals, read via finding_status+value_unit): 562 occ. `__DROP__` (degree-only / process words): 436 occ. Residual: 1262 occ (6.8%).
 
 | canonical | freq | surface forms |
 |---|--:|--:|
 | absent | 4746 | 227 |
-| normal | 4686 | 405 |
+| normal | 4688 | 406 |
 | present | 3342 | 327 |
 | increased | 278 | 58 |
 | tender | 251 | 104 |
@@ -127,3 +127,75 @@ POLARITY preserved (X vs `no X` are distinct). `__NUMERIC__` (numeric vitals, re
 | no vital-abnormal | 1 | 1 |
 | perforation | 1 | 1 |
 | no patent/flow | 1 | 1 |
+
+## 属性库 (attribute): 63 canonical dims, 18682 occurrences
+
+`attribute` is the CORE axis of the adequacy gate — the atomic covered/required unit is the `(anatomy, attribute)` PAIR, and `required(S)` / `sought_dimensions` ARE attribute dims. **core = `morphology` axis** = the imaging/exam characterization dims a study COVERS (the required(S)/covered(S) dims the gate reads); the other axes (symptom / sign / vital / constitutional / history / device) are the demand-trigger side, slotted present/absent.
+
+Morphology (adequacy-covered) mass: 9775/18682 = 52%. Residual (rule-miss, self-mapped — mostly the rare comorbidity/disease-name tail): 821 occ (4.4%).
+
+| canonical | axis | core | freq | surface forms |
+|---|---|:-:|--:|--:|
+| appearance/contour | morphology | ✓ | 2184 | 152 |
+| size/caliber | morphology | ✓ | 1998 | 63 |
+| fluid/collection | morphology | ✓ | 886 | 69 |
+| mass/lesion | morphology | ✓ | 714 | 112 |
+| echogenicity/density | morphology | ✓ | 597 | 82 |
+| patency/flow | morphology | ✓ | 547 | 37 |
+| stones/calculi | morphology | ✓ | 460 | 34 |
+| opacity/consolidation | morphology | ✓ | 331 | 27 |
+| wall/thickness | morphology | ✓ | 275 | 25 |
+| edema | morphology | ✓ | 274 | 8 |
+| air/gas | morphology | ✓ | 259 | 32 |
+| enhancement/vascularity | morphology | ✓ | 227 | 40 |
+| pneumothorax | morphology | ✓ | 202 | 1 |
+| hydronephrosis | morphology | ✓ | 132 | 5 |
+| lymphadenopathy | morphology | ✓ | 130 | 3 |
+| atelectasis | morphology | ✓ | 115 | 3 |
+| fat-stranding/inflammation | morphology | ✓ | 89 | 17 |
+| pulmonary-edema/congestion | morphology | ✓ | 82 | 17 |
+| hemorrhage/thrombus | morphology | ✓ | 71 | 24 |
+| obstruction | morphology | ✓ | 66 | 11 |
+| hernia | morphology | ✓ | 52 | 11 |
+| compressibility | morphology | ✓ | 41 | 3 |
+| necrosis/ischemia | morphology | ✓ | 22 | 11 |
+| perforation | morphology | ✓ | 14 | 8 |
+| organomegaly | morphology | ✓ | 7 | 2 |
+| general-appearance | constitutional |  | 160 | 5 |
+| hydration | constitutional |  | 116 | 3 |
+| mental-status | constitutional |  | 101 | 20 |
+| body-habitus | constitutional |  | 33 | 6 |
+| device-position | device |  | 321 | 50 |
+| device/hardware | device |  | 205 | 95 |
+| foreign-body | device |  | 14 | 4 |
+| comorbidity/pmh | history |  | 1242 | 500 |
+| surgical-history | history |  | 43 | 31 |
+| social-history | history |  | 40 | 17 |
+| tenderness | sign |  | 421 | 13 |
+| lung-auscultation | sign |  | 340 | 32 |
+| heart-auscultation | sign |  | 229 | 21 |
+| skin/wound | sign |  | 196 | 35 |
+| jaundice/icterus | sign |  | 135 | 4 |
+| bowel-sounds | sign |  | 132 | 9 |
+| guarding/rigidity | sign |  | 131 | 5 |
+| rebound | sign |  | 126 | 4 |
+| musculoskeletal-exam | sign |  | 74 | 10 |
+| special-sign | sign |  | 70 | 9 |
+| pulses | sign |  | 29 | 3 |
+| peritoneal-signs | sign |  | 14 | 3 |
+| pain | symptom |  | 665 | 54 |
+| nausea/vomiting | symptom |  | 476 | 20 |
+| fever/chills | symptom |  | 417 | 18 |
+| bowel-habit | symptom |  | 285 | 38 |
+| neuro-symptom | symptom |  | 156 | 45 |
+| respiratory-symptom | symptom |  | 134 | 14 |
+| appetite/intake | symptom |  | 127 | 26 |
+| urinary-symptom | symptom |  | 126 | 24 |
+| gi-bleeding | symptom |  | 117 | 14 |
+| constitutional-symptom | symptom |  | 35 | 9 |
+| temperature | vital |  | 259 | 2 |
+| heart-rate | vital |  | 238 | 7 |
+| blood-pressure | vital |  | 236 | 6 |
+| respiratory-rate | vital |  | 218 | 6 |
+| oxygen-saturation | vital |  | 218 | 5 |
+| cardiac-rhythm | vital |  | 207 | 4 |
