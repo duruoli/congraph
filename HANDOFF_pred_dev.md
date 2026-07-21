@@ -75,9 +75,14 @@ the probability leaks the future.
 - **Calibrate**: TEST follow_probs already exist; need a VAL pass —
   `eval_certainty_agent.py --arms sft --data data/training_set/sft/val.jsonl` — then Platt on
   val, apply to test.
-- **STATUS**: test follow_probs exist; **TODO = a val pass + a small deriver/calibrate script
-  `scripts/eval_dev_from_reasoning.py`** (read follow_prob → 1−p → Platt → the shared metrics;
-  reuse `eval_deviation_cls.py`'s metric + Platt functions).
+- **STATUS**: **DERIVER BUILT (2026-07-21)** — `scripts/eval_dev_from_reasoning.py` (NO model
+  inference: reads a val + test `eval_certainty_agent` panel dump, maps `follow_prob`→raw
+  P(deviate)=1−follow_prob, z=logit, Platt on val, applies to test, prints the SAME metric block
+  as `eval_deviation_cls.py`; reuses its metric+Platt functions; label-check vs `cls/*.meta.y`
+  passes 56/56; supports `--arms sft base`; smoke-tested end-to-end on the test panel). The ONLY
+  remaining piece is the **VAL pass on a GPU node** → `scripts/eval_medgemma_agent_val.slurm`
+  (clone of `eval_medgemma_agent.slurm`, only `--data`=sft/val + `--out`=*_medgemma_val changed).
+  test follow_probs already in `results/agent_inspection/eval_panel_medgemma.jsonl`.
 
 ### c. medgemma-base → SFT (reasoning + pred dev) — the target design, RECOMMENDED
 - **FROM BASE, not from b.** Rationale: (1) clean ablation vs **a** — both start at base, both are
@@ -143,8 +148,13 @@ sbatch scripts/train_devreason_sft.slurm        # -> runs/medgemma-27b-lora-devr
 sbatch scripts/eval_devreason.slurm             # -> results/.../deviation_cls_eval_devreason.{txt,json}
 
 # --- approach B (derive from the existing reasoning SFT; NO training) ---
-#   test follow_probs already in results/agent_inspection/eval_panel_medgemma.jsonl;
-#   still TODO: a VAL pass of eval_certainty_agent.py + scripts/eval_dev_from_reasoning.py to calibrate.
+#   test follow_probs already in results/agent_inspection/eval_panel_medgemma.jsonl.
+sbatch scripts/eval_medgemma_agent_val.slurm      # VAL pass -> eval_panel_medgemma_val.jsonl (GPU)
+#   then, back home / CPU (no model):
+python scripts/eval_dev_from_reasoning.py \
+    --val-panel  results/agent_inspection/eval_panel_medgemma_val.jsonl \
+    --test-panel results/agent_inspection/eval_panel_medgemma.jsonl --arms sft base
+#   -> results/agent_inspection/deviation_dev_from_reasoning_eval.{txt,json}
 ```
 All three write the same metric block (`eval_deviation_cls.py` reporting), so the panel is a
 direct arm-by-arm read.
@@ -158,5 +168,7 @@ direct arm-by-arm read.
 - **Reuse**: `scripts/build_sft_examples.py`, `scripts/train_lora_qwen.py`,
   `scripts/eval_certainty_agent.py`, `configs/context_block.md`,
   `results/agent_inspection/eval_panel_medgemma.jsonl`, `runs/medgemma-27b-lora-certainty` (b).
-- **TODO**: `scripts/eval_dev_from_reasoning.py` (b: 1−follow_prob → Platt → shared metrics);
-  run all the slurms on Quest.
+- **Built (b)**: `scripts/eval_dev_from_reasoning.py` (1−follow_prob → Platt → shared metrics,
+  CPU/no-model) + `scripts/eval_medgemma_agent_val.slurm` (the GPU val pass that feeds it).
+- **TODO**: run the slurms on Quest (train a+c, val pass for b), then the CPU deriver for b;
+  assemble the a/b/c panel.
