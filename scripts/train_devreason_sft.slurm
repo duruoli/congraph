@@ -1,0 +1,74 @@
+#!/bin/bash
+
+# Approach C (pred_dev): FULL-QUALITY (bf16, no quantization) LoRA fine-tune of
+# google/medgemma-27b-text-it on the REASONING + deviation-tail target.
+# Target = clinical reasoning trace + a final "deviation": follow|deviate key -> the deviation
+# probability is a readout conditioned on the model's own generated reasoning (not a shortcut).
+# FROM BASE (not from the reasoning-tuned adapter) -> clean a-vs-c ablation. See HANDOFF_pred_dev.md.
+#
+# Submit from the repo root on Quest:   sbatch scripts/train_devreason_sft.slurm
+# Inputs: data/training_set/cls_reason/{train,val}.jsonl (built by scripts/build_devreason.py).
+# Output: runs/medgemma-27b-lora-devreason/  (the LoRA adapter + tokenizer).
+
+#SBATCH --account=p31777
+#SBATCH --partition=gengpu                         # ⚠️ CONFIRM H100s here: sinfo -p gengpu -o "%P %G %N"
+#SBATCH --gres=gpu:h100:1                           # one 80GB H100: fits full bf16 LoRA of 27B
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=128G
+#SBATCH --time=08:00:00
+#SBATCH --job-name=medgemma_devreason
+#SBATCH --output=runs/medgemma_devreason_%j.out
+#SBATCH --error=runs/medgemma_devreason_%j.err
+#SBATCH --mail-type=ALL
+#SBATCH --mail-user=duruoli2024@u.northwestern.edu
+
+# ============================================
+# Environment Setup  (identical to train_medgemma_sft.slurm)
+# ============================================
+module purge all
+# Do NOT `module load cuda` — the pip torch wheel bundles its own CUDA runtime; the system cuda
+# module drags in an ancient gcc whose libstdc++.so.6 lacks CXXABI_1.3.8 -> import torch dies.
+source "$HOME/miniconda/bin/activate"
+conda activate congraph                            # torch(+cuda) trl>=0.12 peft>=0.13 transformers>=4.50
+export LD_LIBRARY_PATH="$CONDA_PREFIX/lib:$LD_LIBRARY_PATH"
+
+cd /home/dlf8982/AAA/congraph
+mkdir -p runs
+
+echo "============================================"
+echo "Job started at: $(date)"
+echo "Node: $(hostname)   Job ID: $SLURM_JOB_ID"
+echo "============================================"
+python --version
+nvidia-smi
+echo "============================================"
+
+# ============================================
+# Hugging Face — GATED model + offline compute nodes
+# ============================================
+# One-time on a LOGIN node: accept the medgemma license, huggingface-cli login, then pre-download:
+#   export HF_HOME=$HOME/.cache/huggingface
+#   python -c "from huggingface_hub import snapshot_download; snapshot_download('google/medgemma-27b-text-it')"
+export HF_HOME="$HOME/.cache/huggingface"
+export HF_HUB_OFFLINE=1                             # comment out if compute nodes have net
+export TOKENIZERS_PARALLELISM=false
+
+# ============================================
+# Train  (FULL QUALITY: no --load-4bit)
+# ============================================
+# Same trainer/flags as the reasoning SFT — only --data and --out differ. The assistant target is
+# LONGER than the reasoning-only trace (adds the deviation tail) but still << the ~10.2k prompt, so
+# --max-len 12288 stays safe; the script's len-guard will confirm. Watch for:
+#   [chat-compat] assistant mask OK — N/M tokens ...
+python scripts/train_lora_qwen.py \
+    --base google/medgemma-27b-text-it \
+    --data data/training_set/cls_reason \
+    --out runs/medgemma-27b-lora-devreason \
+    --epochs 3 --batch 1 --grad-accum 16 --lr 2e-4 \
+    --max-len 12288
+
+echo "============================================"
+echo "Job completed at: $(date)"
+echo "============================================"

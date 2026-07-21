@@ -136,7 +136,7 @@ def apply_platt(z, a, b):
 
 
 # --------------------------- model scoring -----------------------------------
-def score_rows(rows, base_model, adapter, arms):
+def score_rows(rows, base_model, adapter, arms, generate_first=False, max_new_tokens=512):
     import torch
     import torch.nn.functional as F
     from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -164,10 +164,26 @@ def score_rows(rows, base_model, adapter, arms):
     print(f"[tok] follow->{cand_ids['follow']}  deviate->{cand_ids['deviate']}")
 
     def z_of(row):
-        # z = logprob(deviate) - logprob(follow), teacher-forced after the generation prompt
+        # z = logprob(deviate) - logprob(follow) at the answer slot.
+        # approach a (default): the answer slot is right after the generation prompt (target = 1 word).
+        # approach c (--generate-first): first GENERATE the reasoning trace, then read the deviate/
+        #   follow token CONDITIONED on the model's own generated reasoning (up to the "deviation" key).
         enc = tok.apply_chat_template(row["messages"][:2], add_generation_prompt=True,
                                       return_tensors="pt", return_dict=True)
-        prefix = enc["input_ids"][0].to(model.device)
+        enc = {k: v.to(model.device) for k, v in enc.items()}
+        prefix = enc["input_ids"][0]
+        if generate_first:
+            with torch.no_grad():
+                gen = model.generate(**enc, max_new_tokens=max_new_tokens,
+                                     do_sample=False, pad_token_id=tok.pad_token_id)
+            text = tok.decode(gen[0, prefix.shape[0]:], skip_special_tokens=True)
+            # cut the model's own generation at the deviation key; re-score the value ourselves
+            if '"deviation"' in text:
+                reason = text.split('"deviation"')[0] + '"deviation": "'
+            else:  # malformed: append the key onto whatever JSON body it produced
+                reason = text.rstrip().rstrip('}').rstrip().rstrip(',') + ', "deviation": "'
+            pref = tok(reason, add_special_tokens=False, return_tensors="pt")["input_ids"][0]
+            prefix = torch.cat([prefix, pref.to(model.device)])
         totals = {}
         for w, ids in cand_ids.items():
             cont = torch.tensor(ids, device=prefix.device)
@@ -207,6 +223,10 @@ def main():
     ap.add_argument("--adapter", default="runs/medgemma-27b-lora-deviate-cls")
     ap.add_argument("--data", default="data/training_set/cls")
     ap.add_argument("--arms", nargs="+", default=["base", "sft"])
+    ap.add_argument("--generate-first", action="store_true",
+                    help="approach C: generate the reasoning trace, then read the deviate/follow "
+                         "token conditioned on it (use with the cls_reason data + devreason adapter)")
+    ap.add_argument("--max-new-tokens", type=int, default=512)
     ap.add_argument("--out", default="results/agent_inspection/deviation_cls_eval")
     args = ap.parse_args()
 
@@ -221,8 +241,10 @@ def main():
         ytr = [json.loads(l)["meta"]["y"] for l in tr.read_text().splitlines() if l.strip()]
         train_base_rate = sum(ytr) / len(ytr)
 
-    zv = score_rows(val, args.base, args.adapter, args.arms)
-    zt = score_rows(test, args.base, args.adapter, args.arms)
+    zv = score_rows(val, args.base, args.adapter, args.arms,
+                    generate_first=args.generate_first, max_new_tokens=args.max_new_tokens)
+    zt = score_rows(test, args.base, args.adapter, args.arms,
+                    generate_first=args.generate_first, max_new_tokens=args.max_new_tokens)
 
     lines = ["### binary deviation classifier — P(deviate|input)",
              f"base={args.base}  adapter={args.adapter}",
