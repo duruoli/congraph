@@ -54,6 +54,7 @@ echo "============================================"
 export HF_HOME="$HOME/.cache/huggingface"
 export HF_HUB_OFFLINE=1                            # comment out if the node HAS net
 export TOKENIZERS_PARALLELISM=false
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True   # combat fragmentation (see OOM 2026-07-21)
 
 # ============================================
 # Eval  (VAL split — produces the follow_prob column used to Platt-calibrate approach B)

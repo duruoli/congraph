@@ -185,13 +185,17 @@ def score_rows(rows, base_model, adapter, arms, generate_first=False, max_new_to
             pref = tok(reason, add_special_tokens=False, return_tensors="pt")["input_ids"][0]
             prefix = torch.cat([prefix, pref.to(model.device)])
         totals = {}
+        s0 = prefix.shape[0] - 1
         for w, ids in cand_ids.items():
             cont = torch.tensor(ids, device=prefix.device)
             full = torch.cat([prefix, cont]).unsqueeze(0)
             with torch.no_grad():
-                lp = F.log_softmax(model(full).logits[0].float(), dim=-1)
-            s0 = prefix.shape[0] - 1
-            totals[w] = sum(lp[s0 + j, t].item() for j, t in enumerate(ids))
+                logits = model(full).logits[0]            # [seq, vocab] (bf16)
+                # only the answer rows need log_softmax -> slice BEFORE upcasting to float32
+                # (upcasting the whole seq x 262k-vocab tensor is an ~8GB alloc = the OOM).
+                lp = F.log_softmax(logits[s0:s0 + len(ids)].float(), dim=-1)
+            totals[w] = sum(lp[j, t].item() for j, t in enumerate(ids))
+            del logits, lp
         return totals["deviate"] - totals["follow"]
 
     out = {a: [] for a in arms}

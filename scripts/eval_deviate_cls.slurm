@@ -35,6 +35,7 @@ nvidia-smi
 export HF_HOME="$HOME/.cache/huggingface"
 export HF_HUB_OFFLINE=1
 export TOKENIZERS_PARALLELISM=false
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True   # combat fragmentation (see OOM 2026-07-21)
 
 python scripts/eval_deviation_cls.py \
     --base google/medgemma-27b-text-it \

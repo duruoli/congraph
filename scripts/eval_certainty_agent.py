@@ -224,13 +224,17 @@ def run_qwen_arms(rows, arms, args):
             pref = tok(prefix_txt, add_special_tokens=False, return_tensors="pt")["input_ids"][0]
             prefix_ids = torch.cat([enc["input_ids"][0], pref.to(model.device)])
             totals = {}
+            s0 = prefix_ids.shape[0] - 1
             for m, ids in cand_ids.items():
                 cont = torch.tensor(ids, device=prefix_ids.device)
                 full = torch.cat([prefix_ids, cont]).unsqueeze(0)
                 with torch.no_grad():
-                    lp = F.log_softmax(model(full).logits[0].float(), dim=-1)
-                s0 = prefix_ids.shape[0] - 1
-                totals[m] = sum(lp[s0 + j, t].item() for j, t in enumerate(ids))
+                    logits = model(full).logits[0]           # [seq, vocab] (bf16)
+                    # slice the answer rows BEFORE .float() — upcasting the full seq x 262k-vocab
+                    # tensor is an ~8GB alloc that OOMs the 27B on an 80GB card.
+                    lp = F.log_softmax(logits[s0:s0 + len(ids)].float(), dim=-1)
+                totals[m] = sum(lp[j, t].item() for j, t in enumerate(ids))
+                del logits, lp
             probs = F.softmax(torch.tensor([totals[m] for m in MODALITIES]), dim=0)
             dist = {m: probs[i].item() for i, m in enumerate(MODALITIES)}
         return _out_from_json(p, with_dist=dist), text
