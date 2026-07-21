@@ -1,0 +1,24 @@
+### binary deviation classifier — P(deviate|input)
+base=google/medgemma-27b-text-it  adapter=runs/medgemma-27b-lora-deviate-cls
+val n=67 (pos 34)  test n=56 (pos 32)  train base_rate=0.579136690647482
+CAVEAT: N small => DIRECTIONAL; CIs wide. Calibration (a,b) fit on VAL, applied to TEST.
+
+TEST — baselines
+  [const-base-rate]  AUROC=0.500 (95%CI 0.500-0.500)  AUPRC=0.684  Brier=0.245  logloss=0.683  acc@0.5=0.571  ECE=0.008
+
+ARM = base   (platt a=-0.153 b=-0.138 fit on val)
+  [base test RAW]  AUROC=0.521 (95%CI 0.354-0.669)  AUPRC=0.620  Brier=0.398  logloss=1.129  acc@0.5=0.446  ECE=0.401
+  [base test CALIBRATED]  AUROC=0.479 (95%CI 0.331-0.646)  AUPRC=0.579  Brier=0.250  logloss=0.693  acc@0.5=0.571  ECE=0.047
+    reliability (calibrated, test):
+      [0.4,0.5) n=12 conf=0.47 acc=0.50
+      [0.5,0.6) n=44 conf=0.54 acc=0.59
+
+ARM = sft   (platt a=0.272 b=-0.159 fit on val)
+  [sft test RAW]  AUROC=0.704 (95%CI 0.563-0.836)  AUPRC=0.766  Brier=0.229  logloss=0.669  acc@0.5=0.643  ECE=0.118
+  [sft test CALIBRATED]  AUROC=0.704 (95%CI 0.563-0.836)  AUPRC=0.766  Brier=0.228  logloss=0.649  acc@0.5=0.679  ECE=0.129
+    reliability (calibrated, test):
+      [0.3,0.4) n= 9 conf=0.35 acc=0.44
+      [0.4,0.5) n=19 conf=0.45 acc=0.37
+      [0.5,0.6) n=17 conf=0.54 acc=0.71
+      [0.6,0.7) n=10 conf=0.63 acc=0.80
+      [0.7,0.8) n= 1 conf=0.71 acc=1.00

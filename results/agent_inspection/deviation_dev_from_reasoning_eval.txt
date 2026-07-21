@@ -1,0 +1,24 @@
+### approach B — P(deviate)=1-follow_prob derived from the reasoning SFT (NO training)
+val_panel=results/agent_inspection/eval_panel_medgemma_val.jsonl  test_panel=results/agent_inspection/eval_panel_medgemma.jsonl
+raw P(deviate)=1-follow_prob (follow_prob = P(modality in rubric_rec) on the model's OWN belief); Platt(a,b) fit on VAL logit, applied to TEST.
+CAVEAT: N small => DIRECTIONAL; CIs wide. Same split/label/metrics as approaches a/c.
+
+val n=67 (pos 34)  test n=56 (pos 32)  train base_rate=0.579
+TEST — baseline
+  [const-base-rate]  AUROC=0.500 (95%CI 0.500-0.500)  AUPRC=0.684  Brier=0.245  logloss=0.683  acc@0.5=0.571  ECE=0.008
+
+ARM = sft (derived)   (platt a=0.088 b=-0.379 fit on val)
+  [sft test RAW (1-follow_prob)]  AUROC=0.669 (95%CI 0.520-0.806)  AUPRC=0.773  Brier=0.292  logloss=1.302  acc@0.5=0.589  ECE=0.267
+  [sft test CALIBRATED]  AUROC=0.669 (95%CI 0.520-0.806)  AUPRC=0.773  Brier=0.224  logloss=0.639  acc@0.5=0.607  ECE=0.090
+    reliability (calibrated, test):
+      [0.3,0.4) n=12 conf=0.37 acc=0.42
+      [0.4,0.5) n=32 conf=0.44 acc=0.50
+      [0.6,0.7) n=12 conf=0.70 acc=0.92
+
+ARM = base (derived)   (platt a=0.032 b=-0.375 fit on val)
+  [base test RAW (1-follow_prob)]  AUROC=0.703 (95%CI 0.568-0.831)  AUPRC=0.742  Brier=0.304  logloss=4.368  acc@0.5=0.696  ECE=0.320
+  [base test CALIBRATED]  AUROC=0.703 (95%CI 0.568-0.831)  AUPRC=0.742  Brier=0.240  logloss=0.672  acc@0.5=0.661  ECE=0.142
+    reliability (calibrated, test):
+      [0.3,0.4) n=18 conf=0.37 acc=0.33
+      [0.4,0.5) n=11 conf=0.44 acc=0.55
+      [0.5,0.6) n=27 conf=0.52 acc=0.74
