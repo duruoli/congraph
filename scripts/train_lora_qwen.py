@@ -5,26 +5,29 @@ y = the assistant JSON reasoning trace. Standard next-token cross-entropy, loss 
 the ASSISTANT tokens only (the rubric/patient prompt is context, not a target).
 REWARD is intentionally NOT used here — that is the later offline-RL stage.
 
-The base is a `--base` flag. Qwen2.5-7B was the placeholder; the default is now
-google/medgemma-27b-text-it (Gemma-3, medical-tuned, ~4x bigger). Two swap gotchas are
-handled here (see experiments/agent/chat_compat.py): (1) medgemma is a GATED HF repo —
-`huggingface-cli login` with a token that has accepted the license; (2) stock Gemma-3 has
-NO `{% generation %}` markers, so assistant_only_loss can't mask the target — we swap in
-configs/gemma3_assistant_loss_template.jinja and VALIDATE the mask before training.
+The base is a `--base` flag. Qwen2.5-7B was the placeholder; medgemma-27b-text-it was the
+successor; the default is now Qwen/Qwen3-30B-A3B-Instruct-2507 (a 30.5B / 3.3B-active MoE).
+Swap gotchas handled here (see experiments/agent/chat_compat.py): (1) stock Qwen3 has NO
+`{% generation %}` markers (unlike Qwen2.5), so assistant_only_loss can't mask the target —
+we swap in configs/qwen3_assistant_loss_template.jinja (validated to yield token ids identical
+to the stock template) and VALIDATE the mask before training; (2) MoE base -> LoRA on
+ATTENTION ONLY by default (resolve_lora_targets): including gate_proj/up_proj/down_proj would
+match every expert (128 experts x 48 layers) -> a huge, slow adapter. Note: Qwen3 is NOT a
+gated HF repo, so no license/login step (medgemma was).
 
 Run ON A GPU MACHINE (not the dev box). Inputs are produced by
 scripts/build_sft_examples.py (data/training_set/sft/{train,val}.jsonl, each line a
 {"messages":[system,user,assistant], "meta":{...}} record).
 
-  # transformers must be new enough to load Gemma-3:
-  pip install "trl>=0.12" "peft>=0.13" "transformers>=4.50" accelerate bitsandbytes datasets
+  pip install "trl>=0.12" "peft>=0.13" "transformers>=4.51" accelerate bitsandbytes datasets
 
-  # QLoRA on a single 48GB GPU (sweet spot for the 27B at 12k context):
+  # Full-bf16 LoRA of the 30B MoE on a single 80GB H100 (~61GB weights + activations):
   python scripts/train_lora_qwen.py \
-      --base google/medgemma-27b-text-it \
+      --base Qwen/Qwen3-30B-A3B-Instruct-2507 \
       --data data/training_set/sft \
-      --out runs/medgemma-27b-lora-certainty \
-      --epochs 3 --batch 1 --grad-accum 16 --lr 2e-4 --load-4bit
+      --out runs/qwen3-30b-a3b-lora-certainty \
+      --epochs 3 --batch 1 --grad-accum 16 --lr 2e-4
+  # add --load-4bit if it OOMs (QLoRA drops weights to ~18GB).
 
 Eval (reproduction + behavior-spec hit-rate per HANDOFF §5) is a SEPARATE script that
 loads the adapter and scores data/training_set/sft/test.jsonl; deviate is derived from
@@ -43,13 +46,28 @@ from experiments.agent.chat_compat import (  # noqa: E402
     ensure_assistant_loss_template, validate_assistant_mask)
 
 
+def resolve_lora_targets(base: str, override: str | None) -> list[str]:
+    """Which linear modules LoRA adapts. Dense models: attention + MLP (the classic 7).
+    MoE models (Qwen3-*-A3B / 235B): ATTENTION ONLY — including gate_proj/up_proj/down_proj
+    would string-match every expert's MLP (Qwen3-30B-A3B = 128 experts x 48 layers), blowing
+    up adapter size and step time. --lora-target overrides for experiments."""
+    if override:
+        return [m.strip() for m in override.split(",") if m.strip()]
+    name = base.lower()
+    is_moe = any(k in name for k in ("a3b", "-moe", "235b", "mixtral"))
+    if is_moe:
+        return ["q_proj", "k_proj", "v_proj", "o_proj"]
+    return ["q_proj", "k_proj", "v_proj", "o_proj",
+            "gate_proj", "up_proj", "down_proj"]
+
+
 def parse_args():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--base", default="google/medgemma-27b-text-it",
-                    help="swappable base; medgemma-27b-text-it (Gemma-3) is the default, "
-                         "Qwen/Qwen2.5-7B-Instruct was the placeholder")
+    ap.add_argument("--base", default="Qwen/Qwen3-30B-A3B-Instruct-2507",
+                    help="swappable base; Qwen3-30B-A3B-Instruct-2507 (MoE) is the default, "
+                         "google/medgemma-27b-text-it and Qwen/Qwen2.5-7B-Instruct were prior")
     ap.add_argument("--data", default="data/training_set/sft")
-    ap.add_argument("--out", default="runs/medgemma-27b-lora-certainty")
+    ap.add_argument("--out", default="runs/qwen3-30b-a3b-lora-certainty")
     ap.add_argument("--epochs", type=float, default=3.0)
     ap.add_argument("--batch", type=int, default=1)
     ap.add_argument("--grad-accum", type=int, default=16)
@@ -58,6 +76,10 @@ def parse_args():
     ap.add_argument("--lora-r", type=int, default=16)
     ap.add_argument("--lora-alpha", type=int, default=32)
     ap.add_argument("--lora-dropout", type=float, default=0.05)
+    ap.add_argument("--lora-target", default=None,
+                    help="comma-separated target_modules override; default auto-selects "
+                         "attention-only for MoE bases, attention+MLP for dense (see "
+                         "resolve_lora_targets)")
     ap.add_argument("--load-4bit", action="store_true", help="QLoRA (bitsandbytes 4-bit)")
     # gradient checkpointing: at max-len 12288 the activations of a single 12k-token
     # forward dominate VRAM; checkpointing trades ~20% step time for a large activation
@@ -132,11 +154,11 @@ def main():
         args.base, quantization_config=quant,
         torch_dtype=torch.bfloat16, device_map="auto")
 
+    targets = resolve_lora_targets(args.base, args.lora_target)
+    print(f"[lora] target_modules = {targets}")
     peft_cfg = LoraConfig(
         r=args.lora_r, lora_alpha=args.lora_alpha, lora_dropout=args.lora_dropout,
-        bias="none", task_type="CAUSAL_LM",
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
-                        "gate_proj", "up_proj", "down_proj"])
+        bias="none", task_type="CAUSAL_LM", target_modules=targets)
 
     cfg = SFTConfig(
         output_dir=args.out,

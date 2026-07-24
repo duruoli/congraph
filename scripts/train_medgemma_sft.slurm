@@ -1,10 +1,12 @@
 #!/bin/bash
 
 # Direction-B SFT: FULL-QUALITY (bf16, no quantization) LoRA fine-tune of
-# google/medgemma-27b-text-it (Gemma-3, medical-tuned) on the certainty-trigger traces.
+# Qwen/Qwen3-30B-A3B-Instruct-2507 (MoE) on the certainty-trigger reasoning traces.
+# This produces the REASONING adapter that pred_dev approach b derives from and c' warm-starts
+# from — keep its base identical to a/c (Qwen3) or the a/b/c comparison mixes bases.
 # Submit from the repo root on Quest:   sbatch scripts/train_medgemma_sft.slurm
 # Inputs: data/training_set/sft/{train,val}.jsonl (built by scripts/build_sft_examples.py).
-# Output: runs/medgemma-27b-lora-certainty/  (the LoRA adapter + tokenizer).
+# Output: runs/qwen3-30b-a3b-lora-certainty/  (the LoRA adapter + tokenizer).
 # Rationale + budget: see HANDOFF_medgemma_sft_quest.md.
 
 #SBATCH --account=p31777
@@ -12,15 +14,15 @@
                                                   #   sinfo -p gengpu -o "%P %G %N"
                                                   # (the Qwen run used gengpu A100s; if H100s live
                                                   #  in another partition/constraint, update here)
-#SBATCH --gres=gpu:h100:1                          # one 80GB H100: fits full bf16 LoRA of 27B
+#SBATCH --gres=gpu:h100:1                          # 80GB H100: ~61GB bf16 weights fit; --load-4bit if OOM
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8                          # dataloading is trivial (278 rows)
-#SBATCH --mem=128G                                 # host RAM: 27B checkpoint shards ~54GB + cache
+#SBATCH --mem=128G                                 # host RAM: 30B checkpoint shards ~61GB + cache
 #SBATCH --time=08:00:00                            # compute ~2-4h; 8h = headroom (download + eval)
-#SBATCH --job-name=medgemma_lora_certainty
-#SBATCH --output=runs/medgemma_lora_%j.out
-#SBATCH --error=runs/medgemma_lora_%j.err
+#SBATCH --job-name=qwen3_lora_certainty
+#SBATCH --output=runs/qwen3_lora_%j.out
+#SBATCH --error=runs/qwen3_lora_%j.err
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=duruoli2024@u.northwestern.edu
 
@@ -33,9 +35,9 @@ module purge all
 # dies in <10s. (Same trap as the Qwen run.)
 source "$HOME/miniconda/bin/activate"
 conda activate congraph                           # must have: torch(+cuda) trl>=0.12 peft>=0.13
-                                                  #   transformers>=4.50 (Gemma-3!) accelerate datasets
+                                                  #   transformers>=4.51 (Qwen3 MoE!) accelerate datasets
                                                   # one-time install on a LOGIN node:
-                                                  #   pip install -U "transformers>=4.50" "trl>=0.12" \
+                                                  #   pip install -U "transformers>=4.51" "trl>=0.12" \
                                                   #     "peft>=0.13" accelerate datasets
 # Put the conda env's modern libstdc++ ahead of any stale system gcc, else torch fails with
 # libstdc++.so.6: version `CXXABI_1.3.8' not found.
@@ -53,35 +55,31 @@ nvidia-smi
 echo "============================================"
 
 # ============================================
-# Hugging Face — GATED model + offline compute nodes
+# Hugging Face — offline compute nodes (Qwen3 is NOT gated; no license/login needed)
 # ============================================
-# medgemma is a GATED repo. ON A LOGIN NODE (which has internet), ONE TIME, do:
-#   1) In a browser, sign in to HF and click "Agree and access" on
-#      https://huggingface.co/google/medgemma-27b-text-it  (accept the Health AI license).
-#   2) Create a READ token: HF Settings -> Access Tokens.
-#   3) On the Quest LOGIN node terminal:   huggingface-cli login   (paste the token; it is
-#      saved to ~/.cache/huggingface/token and persists across jobs).
-#   4) Pre-download the weights while online (compute nodes have NO net):
+# ON A LOGIN NODE (which has internet), ONE TIME, pre-download the weights (compute nodes
+# have NO net):
 #        export HF_HOME=$HOME/.cache/huggingface
 #        python -c "from huggingface_hub import snapshot_download; \
-#                   snapshot_download('google/medgemma-27b-text-it')"
+#                   snapshot_download('Qwen/Qwen3-30B-A3B-Instruct-2507')"
 # Then this job runs fully offline:
 export HF_HOME="$HOME/.cache/huggingface"
 export HF_HUB_OFFLINE=1                            # comment out if compute nodes DO have net
 export TOKENIZERS_PARALLELISM=false
 
 # ============================================
-# Train  (FULL QUALITY: no --load-4bit)
+# Train  (FULL QUALITY: bf16, no --load-4bit; add --load-4bit if the 30B MoE OOMs)
 # ============================================
-# Full bf16 base + LoRA with gradient checkpointing (peak ~64-68GB, fits the 80GB H100).
-# assistant_only_loss + the Gemma-3 generation-marked chat template are auto-handled by the
-# script (see HANDOFF_medgemma_sft_quest.md "Why the template swap"); watch the log for
-#   [chat-compat] assistant mask OK — N/M tokens ...
-# If (unlikely) OOM: try  --max-len 10496  first, then 8-bit Adam, then --load-4bit as last resort.
+# Full bf16 base + LoRA with gradient checkpointing. MoE -> LoRA on attention only
+# ([lora] target_modules = [q/k/v/o_proj]); the 128 experts stay frozen (cheap forward).
+# assistant_only_loss + the Qwen3 generation-marked chat template are auto-handled by the
+# script (configs/qwen3_assistant_loss_template.jinja); watch the log for
+#   [chat-compat] swapped in a generation-marked template ... + assistant mask OK — N/M tokens
+# If OOM: try  --max-len 10496  first, then 8-bit Adam, then --load-4bit as last resort.
 python scripts/train_lora_qwen.py \
-    --base google/medgemma-27b-text-it \
+    --base Qwen/Qwen3-30B-A3B-Instruct-2507 \
     --data data/training_set/sft \
-    --out runs/medgemma-27b-lora-certainty \
+    --out runs/qwen3-30b-a3b-lora-certainty \
     --epochs 3 --batch 1 --grad-accum 16 --lr 2e-4 \
     --max-len 12288
 

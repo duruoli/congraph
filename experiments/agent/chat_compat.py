@@ -7,10 +7,13 @@ bite when you swap the base, and this module makes both fail loud instead of sil
   1. assistant-only loss (train_lora_qwen.py). TRL's `assistant_only_loss=True` needs the
      chat template to delimit the assistant span with a `{% generation %}...{% endgeneration %}`
      block (transformers detects it via the regex below). Qwen2.5's stock template has it;
-     stock Gemma-3 / medgemma does NOT. Training on the un-marked template would either error
-     or train on the WHOLE prompt (the ~13.5k-char rubric drowns the loss signal). For a
-     Gemma-family base we swap in configs/gemma3_assistant_loss_template.jinja, which is the
-     stock Gemma-3 template with a generation block wrapped around the model turn.
+     stock Gemma-3 / medgemma AND Qwen3 (e.g. Qwen3-30B-A3B-Instruct-2507) do NOT. Training on
+     the un-marked template would either error or train on the WHOLE prompt (the ~13.5k-char
+     rubric drowns the loss signal). For a Gemma-family base we swap in
+     configs/gemma3_assistant_loss_template.jinja; for a Qwen3-family base (ChatML,
+     `<|im_start|>`) we swap in configs/qwen3_assistant_loss_template.jinja. Both are the stock
+     template with a generation block wrapped around the assistant turn — VALIDATED to produce
+     token ids identical to the stock template (only the loss mask is added).
 
   2. system role. Gemma-3 has no native system turn; its template folds a leading system
      message into the first user turn. Both Qwen and Gemma templates accept a leading system
@@ -27,6 +30,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 GEMMA_ASSIST_TEMPLATE = ROOT / "configs" / "gemma3_assistant_loss_template.jinja"
+QWEN3_ASSIST_TEMPLATE = ROOT / "configs" / "qwen3_assistant_loss_template.jinja"
 
 # same pattern transformers uses to decide a template supports return_assistant_tokens_mask
 _GENERATION_RE = re.compile(r"\{\%-?\s*generation\s*-?\%\}")
@@ -39,6 +43,17 @@ def is_gemma(model_name: str = "", tok=None) -> bool:
         return True
     tmpl = (getattr(tok, "chat_template", None) or "") if tok is not None else ""
     return "<start_of_turn>" in tmpl
+
+
+def is_qwen(model_name: str = "", tok=None) -> bool:
+    """Qwen-family = qwen id, or a ChatML template that speaks Qwen turn tokens.
+    Only reached for Qwen3 in practice: Qwen2.5's stock template already has the
+    {% generation %} marker (supports_assistant_mask True), so it never needs a swap."""
+    name = (model_name or "").lower()
+    if "qwen" in name:
+        return True
+    tmpl = (getattr(tok, "chat_template", None) or "") if tok is not None else ""
+    return "<|im_start|>" in tmpl
 
 
 def supports_assistant_mask(tok) -> bool:
@@ -56,13 +71,15 @@ def ensure_assistant_loss_template(tok, model_name: str = "", template_path=None
     if supports_assistant_mask(tok):
         return False
     path = (Path(template_path) if template_path
-            else GEMMA_ASSIST_TEMPLATE if is_gemma(model_name, tok) else None)
+            else GEMMA_ASSIST_TEMPLATE if is_gemma(model_name, tok)
+            else QWEN3_ASSIST_TEMPLATE if is_qwen(model_name, tok) else None)
     if path is None or not path.exists():
         raise SystemExit(
             f"[chat-compat] base '{model_name}' chat template has no {{% generation %}} marker, "
             f"so assistant_only_loss cannot delimit the target. Pass --chat-template <path> to a "
-            f"generation-marked template (see configs/gemma3_assistant_loss_template.jinja for the "
-            f"Gemma-3 pattern), or --no-assistant-only-loss to train on the full sequence.")
+            f"generation-marked template (see configs/gemma3_assistant_loss_template.jinja or "
+            f"configs/qwen3_assistant_loss_template.jinja for the pattern), or "
+            f"--no-assistant-only-loss to train on the full sequence.")
     tok.chat_template = path.read_text()
     return True
 
