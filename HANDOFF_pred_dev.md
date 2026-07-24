@@ -91,19 +91,31 @@ the probability leaks the future.
   capability is trained anyway — no need to warm-start from b. (3) warm-starting from b would make
   b and c share weights and confound the b↔c contrast.
 - **Idea**: target = the full reasoning trace (belief dist / gap / expected / grounding, as in
-  `build_sft_examples.py`) + a **deviation tail**: {what the rubric would recommend here; why/how
-  I depart from it — the loosen/brake knowledge from `configs/context_block.md`; then
-  `"deviation": follow|deviate`}. Loss on the whole assistant turn → reasoning dominates the token
-  budget, the deviation label is a small tail ("even just a consequence").
+  `build_sft_examples.py`) + an **explicit rubric-reference block** + a **deviation tail**. The
+  reference block (added 2026-07-24, user's "deviate from what?" fix) is three keys between
+  `other_hypothesis` and `deviation`: `rubric_recommended` (imaging keys the rubric wants for the
+  leading hypothesis), `rubric_state` (recommends_imaging | terminal_* | wants_nonimaging |
+  blocked | biliary | off_rubric), `rubric_rationale` (one sentence: which rubric decision-point +
+  why). These are **deterministic verbalizations of the rubric's own routing on `eff_branch`**
+  (biliary rescue included) — NOT LLM/annotation; ground-truth pulled by re-traversing
+  `DISEASE_GRAPHS` on the reconstructed `pre_features` (validated: `rubric_recommended` 401/401 vs
+  META, `rubric_state` 401/401 on eff_branch, and "follow iff modality ∈ rubric_recommended"
+  reproduces the binary label 401/401). Then `"deviation": follow|deviate` as the LAST key = a
+  GROUNDED comparison against a stated reference, not a free-floating guess (kills the
+  hallucination path where the model asserts "deviate" with no "should-have-been"). Loss on the
+  whole assistant turn → reasoning dominates; the deviation label is a small tail.
 - **Read prob**: model GENERATES reasoning first, THEN teacher-force-score the `follow`/`deviate`
   token **conditioned on its own generated reasoning** → P(deviate); Platt-calibrate.
 - **Train**: `train_lora_qwen.py --base google/medgemma-27b-text-it --data
   data/training_set/cls_reason --out runs/medgemma-27b-lora-devreason ...`
-- **STATUS**: **BUILT** — (1) `scripts/build_devreason.py` → `data/training_set/cls_reason/*`
-  (done, split identical to cls/sft, leak 0, every target = valid JSON ending in `"deviation"`);
-  (2) `scripts/eval_deviation_cls.py --generate-first` read mode (done, prefix-cut logic tested);
-  (3) submittable slurms `scripts/train_devreason_sft.slurm` + `scripts/eval_devreason.slurm`.
-  **TODO = run both on Quest.**
+- **STATUS**: **BUILT + rubric-reference REVISED 2026-07-24** — (1) `scripts/build_devreason.py`
+  → `data/training_set/cls_reason/*` (rebuilt WITH the rubric_recommended/state/rationale keys;
+  split identical to cls/sft 278/67/56, leak 0, 0 rows without reconstructable pre; deviation ==
+  label AND == the follow-rule for all 278 train rows); (2) `eval_deviation_cls.py --generate-first`
+  cut is at the first `"deviation"` occurrence, so the new keys (which never contain that string)
+  correctly land in the conditioning context; (3) **`eval_devreason.slurm` `--max-new-tokens`
+  raised 512→1024** — the trace now reaches median ~513 / max ~697 tokens BEFORE the deviation key,
+  so 512 would truncate ~half the rows into the fallback. **TODO = run train+eval on Quest.**
 - **Optional 4th arm c′**: warm-start c from `runs/medgemma-27b-lora-certainty` (b) instead of
   base — tests whether a reasoning warm-start helps on N=278. Keep it SEPARATE from the a/b/c
   ladder (it confounds the a↔c ablation).

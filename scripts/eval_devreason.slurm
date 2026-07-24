@@ -56,7 +56,7 @@ python scripts/eval_deviation_cls.py \
     --adapter runs/qwen3-30b-a3b-lora-devreason \
     --data data/training_set/cls_reason \
     --arms sft \
-    --generate-first --max-new-tokens 512 \
+    --generate-first --max-new-tokens 1024 \
     --out results/agent_inspection/deviation_cls_eval_devreason
 
 echo "============================================"
