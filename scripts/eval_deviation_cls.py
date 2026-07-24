@@ -11,10 +11,10 @@ Reports AUROC / AUPRC / Brier / log-loss / acc@0.5 / ECE (reliability bins), wit
 CIs, for arms {base (adapter off), sft (adapter on)} plus a constant base-rate baseline.
 Small N (test=56) => everything is DIRECTIONAL; CIs are wide by construction.
 
-Run ON A GPU node (medgemma-27b is ~54 GB bf16). Example:
+Run ON A GPU node (Qwen3-30B-A3B is ~61 GB bf16). Example:
   python scripts/eval_deviation_cls.py \
-      --base google/medgemma-27b-text-it \
-      --adapter runs/medgemma-27b-lora-deviate-cls \
+      --base Qwen/Qwen3-30B-A3B-Instruct-2507 \
+      --adapter runs/qwen3-30b-a3b-lora-deviate-cls \
       --data data/training_set/cls
 """
 from __future__ import annotations
@@ -223,8 +223,8 @@ def report(name, y, p, lines):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--base", default="google/medgemma-27b-text-it")
-    ap.add_argument("--adapter", default="runs/medgemma-27b-lora-deviate-cls")
+    ap.add_argument("--base", default="Qwen/Qwen3-30B-A3B-Instruct-2507")
+    ap.add_argument("--adapter", default="runs/qwen3-30b-a3b-lora-deviate-cls")
     ap.add_argument("--data", default="data/training_set/cls")
     ap.add_argument("--arms", nargs="+", default=["base", "sft"])
     ap.add_argument("--generate-first", action="store_true",

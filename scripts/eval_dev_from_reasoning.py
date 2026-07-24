@@ -97,8 +97,8 @@ def cross_check_labels(ids, ys, labels_dir: Path, split: str):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--val-panel", default="results/agent_inspection/eval_panel_medgemma_val.jsonl")
-    ap.add_argument("--test-panel", default="results/agent_inspection/eval_panel_medgemma.jsonl")
+    ap.add_argument("--val-panel", default="results/agent_inspection/eval_panel_qwen3_val.jsonl")
+    ap.add_argument("--test-panel", default="results/agent_inspection/eval_panel_qwen3.jsonl")
     ap.add_argument("--arms", nargs="+", default=["sft"],
                     help="which panel arm's follow_prob to derive from (sft = the reasoning adapter "
                          "= approach b; base = base-model floor for the same derivation)")

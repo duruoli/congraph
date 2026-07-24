@@ -12,11 +12,13 @@
 
 #SBATCH --account=p31777
 #SBATCH --partition=gengpu                         # ⚠️ CONFIRM H100s here: sinfo -p gengpu -o "%P %G %N"
-#SBATCH --gres=gpu:h100:1                           # 80GB H100: ~61GB bf16 weights fit; --load-4bit if OOM
+#SBATCH --gres=gpu:h100:2                           # 2x80GB H100: ~61GB bf16 weights shard across both
+                                                   # (device_map=auto) -> comfortable headroom, guaranteed
+                                                   # fit. Single-GPU alt: set :1 and add --load-4bit.
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks-per-node=1                         # ONE process (model-parallel), NOT torchrun/DDP
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=128G
+#SBATCH --mem=192G                                  # host RAM: 30B shards ~61GB materialized on CPU at load
 #SBATCH --time=08:00:00
 #SBATCH --job-name=qwen3_devreason
 #SBATCH --output=runs/qwen3_devreason_%j.out
@@ -54,6 +56,7 @@ echo "============================================"
 export HF_HOME="$HOME/.cache/huggingface"
 export HF_HUB_OFFLINE=1                             # comment out if compute nodes have net
 export TOKENIZERS_PARALLELISM=false
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True   # combat fragmentation across the 2 GPUs
 
 # ============================================
 # Train  (FULL QUALITY: bf16, no --load-4bit; add --load-4bit if the 30B MoE OOMs)
@@ -68,6 +71,22 @@ python scripts/train_lora_qwen.py \
     --out runs/qwen3-30b-a3b-lora-devreason \
     --epochs 3 --batch 1 --grad-accum 16 --lr 2e-4 \
     --max-len 12288
+status=$?
+if [ $status -ne 0 ]; then echo "TRAIN FAILED (exit $status) — skipping eval"; exit $status; fi
+
+# ============================================
+# Eval  (auto-chained: runs in THIS job right after training, same 2-GPU allocation)
+# approach C: --generate-first (generate the reasoning trace, THEN score follow/deviate
+# conditioned on it); Platt on VAL -> TEST.
+# ============================================
+echo "=== training done; starting approach-C eval ==="
+python scripts/eval_deviation_cls.py \
+    --base Qwen/Qwen3-30B-A3B-Instruct-2507 \
+    --adapter runs/qwen3-30b-a3b-lora-devreason \
+    --data data/training_set/cls_reason \
+    --arms sft \
+    --generate-first --max-new-tokens 512 \
+    --out results/agent_inspection/deviation_cls_eval_devreason
 
 echo "============================================"
 echo "Job completed at: $(date)"

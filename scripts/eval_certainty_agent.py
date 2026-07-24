@@ -69,9 +69,9 @@ def parse_args():
     ap.add_argument("--arms", nargs="+", default=["doctor"], choices=ALL_ARMS)
     ap.add_argument("--data", default=str(DEFAULT_TEST),
                     help="test.jsonl (clean, fidelity) or alarm_probe.jsonl (behavioral, HAS LEAK)")
-    ap.add_argument("--base-model", default="google/medgemma-27b-text-it",
-                    help="swappable base; medgemma-27b (Gemma-3) default, Qwen-7B was the placeholder")
-    ap.add_argument("--adapter", default="runs/medgemma-27b-lora-certainty",
+    ap.add_argument("--base-model", default="Qwen/Qwen3-30B-A3B-Instruct-2507",
+                    help="swappable base; Qwen3-30B-A3B (MoE) default, medgemma-27b / Qwen-7B were prior")
+    ap.add_argument("--adapter", default="runs/qwen3-30b-a3b-lora-certainty",
                     help="LoRA adapter (HF repo id or local dir) — must match --base-model")
     ap.add_argument("--sonnet-model", default="anthropic/claude-sonnet-4-6")
     ap.add_argument("--max-new-tokens", type=int, default=768)

@@ -1,16 +1,18 @@
 #!/bin/bash
 
 # Approach C (pred_dev) eval: read a calibrated P(deviate) from the REASONING+deviation-tail
-# medgemma, then metrics vs the observed binary label. Uses --generate-first (generate the
+# Qwen3-30B, then metrics vs the observed binary label. Uses --generate-first (generate the
 # reasoning trace, then score the follow/deviate token conditioned on it). Platt (a,b) fit on
 # VAL, applied to TEST. See HANDOFF_pred_dev.md.
+# NOTE: train_devreason_sft.slurm ALREADY auto-runs this eval after training — use this
+# standalone slurm only to RE-RUN eval without retraining.
 # Submit from the repo root on Quest:  sbatch scripts/eval_devreason.slurm
-# Inputs:  data/training_set/cls_reason/{val,test}.jsonl  +  runs/medgemma-27b-lora-devreason/
+# Inputs:  data/training_set/cls_reason/{val,test}.jsonl  +  runs/qwen3-30b-a3b-lora-devreason/
 # Output:  results/agent_inspection/deviation_cls_eval_devreason.{txt,json}  (git-tracked)
 
 #SBATCH --account=p31777
 #SBATCH --partition=gengpu                          # ⚠️ CONFIRM this partition has the GPU below
-#SBATCH --gres=gpu:h100:1                            # 27B bf16 base ~54GB -> needs an 80GB card
+#SBATCH --gres=gpu:h100:1                            # 30B bf16 base ~61GB -> needs an 80GB card (inference)
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
@@ -50,8 +52,8 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True   # combat fragmentation
 # Eval  (approach C: --generate-first; arm = sft = the devreason adapter)
 # ============================================
 python scripts/eval_deviation_cls.py \
-    --base google/medgemma-27b-text-it \
-    --adapter runs/medgemma-27b-lora-devreason \
+    --base Qwen/Qwen3-30B-A3B-Instruct-2507 \
+    --adapter runs/qwen3-30b-a3b-lora-devreason \
     --data data/training_set/cls_reason \
     --arms sft \
     --generate-first --max-new-tokens 512 \

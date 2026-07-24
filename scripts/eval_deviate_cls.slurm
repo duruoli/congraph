@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# Approach A (pred_dev) eval: read a calibrated P(deviate) from the bare-label medgemma
+# Approach A (pred_dev) eval: read a calibrated P(deviate) from the bare-label Qwen3-30B
 # (target = one word; NO --generate-first). Platt (a,b) fit on VAL, applied to TEST.
+# NOTE: train_deviate_cls.slurm ALREADY auto-runs this eval after training — use this
+# standalone slurm only to RE-RUN eval without retraining.
 # Submit from the repo root on Quest:  sbatch scripts/eval_deviate_cls.slurm
-# Inputs:  data/training_set/cls/{val,test}.jsonl  +  runs/medgemma-27b-lora-deviate-cls/
+# Inputs:  data/training_set/cls/{val,test}.jsonl  +  runs/qwen3-30b-a3b-lora-deviate-cls/
 # Output:  results/agent_inspection/deviation_cls_eval.{txt,json}  (git-tracked)
 
 #SBATCH --account=p31777
@@ -38,8 +40,8 @@ export TOKENIZERS_PARALLELISM=false
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True   # combat fragmentation (see OOM 2026-07-21)
 
 python scripts/eval_deviation_cls.py \
-    --base google/medgemma-27b-text-it \
-    --adapter runs/medgemma-27b-lora-deviate-cls \
+    --base Qwen/Qwen3-30B-A3B-Instruct-2507 \
+    --adapter runs/qwen3-30b-a3b-lora-deviate-cls \
     --data data/training_set/cls \
     --arms base sft \
     --out results/agent_inspection/deviation_cls_eval

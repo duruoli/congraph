@@ -1,25 +1,27 @@
 #!/bin/bash
 
-# VAL pass of the MEDGEMMA-27B reasoning SFT — the calibration input for pred_dev approach B.
+# VAL pass of the QWEN3-30B reasoning SFT — the calibration input for pred_dev approach B.
 # Twin of scripts/eval_medgemma_agent.slurm, pointed at the VAL split and writing to
-# *_medgemma_val.{txt,jsonl}. Approach B derives P(deviate)=1-follow_prob from this adapter and
-# needs val follow_probs to fit Platt (test follow_probs already exist in eval_panel_medgemma.jsonl).
+# *_qwen3_val.{txt,jsonl}. Approach B derives P(deviate)=1-follow_prob from this adapter and
+# needs val follow_probs to fit Platt (test follow_probs come from eval_panel_qwen3.jsonl).
+# NOTE: train_medgemma_sft.slurm ALREADY auto-runs the val pass + the B deriver after training —
+# use this standalone slurm only to RE-RUN the val panel without retraining.
 # After this finishes, run (CPU, no model):
 #   python scripts/eval_dev_from_reasoning.py \
-#       --val-panel  results/agent_inspection/eval_panel_medgemma_val.jsonl \
-#       --test-panel results/agent_inspection/eval_panel_medgemma.jsonl --arms sft base
+#       --val-panel  results/agent_inspection/eval_panel_qwen3_val.jsonl \
+#       --test-panel results/agent_inspection/eval_panel_qwen3.jsonl --arms sft base
 # Submit from the repo root on Quest:
 #   sbatch scripts/eval_medgemma_agent_val.slurm                 # default: doctor base sft
-# Inputs:  data/training_set/sft/val.jsonl  +  runs/medgemma-27b-lora-certainty/ (local adapter)
-# Output:  results/agent_inspection/eval_panel_medgemma_val.{txt,jsonl}  (git-tracked)
+# Inputs:  data/training_set/sft/val.jsonl  +  runs/qwen3-30b-a3b-lora-certainty/ (local adapter)
+# Output:  results/agent_inspection/eval_panel_qwen3_val.{txt,jsonl}  (git-tracked)
 
 #SBATCH --account=p31777
 #SBATCH --partition=gengpu                        # ⚠️ CONFIRM this partition has the GPU below
-#SBATCH --gres=gpu:h100:1                          # 27B bf16 base ~54GB -> needs an 80GB card
+#SBATCH --gres=gpu:h100:1                          # 30B bf16 base ~61GB -> needs an 80GB card (inference)
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=128G                                 # 27B checkpoint shards ~54GB + cache
+#SBATCH --mem=160G                                 # 30B checkpoint shards ~61GB + cache
 #SBATCH --time=01:30:00                            # inference-only; val=67 rows x arms
 #SBATCH --job-name=eval_medgemma_val
 #SBATCH --output=runs/eval_medgemma_val_%j.out
@@ -49,7 +51,7 @@ nvidia-smi
 echo "============================================"
 
 # ============================================
-# Hugging Face cache / offline weights  (medgemma is GATED — pre-download on a login node)
+# Hugging Face cache / offline weights  (Qwen3 is NOT gated — pre-download on a login node)
 # ============================================
 export HF_HOME="$HOME/.cache/huggingface"
 export HF_HUB_OFFLINE=1                            # comment out if the node HAS net
@@ -64,10 +66,10 @@ echo "arms = $ARMS"
 
 python scripts/eval_certainty_agent.py \
     --arms $ARMS \
-    --base-model google/medgemma-27b-text-it \
-    --adapter runs/medgemma-27b-lora-certainty \
+    --base-model Qwen/Qwen3-30B-A3B-Instruct-2507 \
+    --adapter runs/qwen3-30b-a3b-lora-certainty \
     --data data/training_set/sft/val.jsonl \
-    --out results/agent_inspection/eval_panel_medgemma_val.txt
+    --out results/agent_inspection/eval_panel_qwen3_val.txt
 
 echo "============================================"
 echo "Job completed at: $(date)"

@@ -14,11 +14,13 @@
                                                   #   sinfo -p gengpu -o "%P %G %N"
                                                   # (the Qwen run used gengpu A100s; if H100s live
                                                   #  in another partition/constraint, update here)
-#SBATCH --gres=gpu:h100:1                          # 80GB H100: ~61GB bf16 weights fit; --load-4bit if OOM
+#SBATCH --gres=gpu:h100:2                          # 2x80GB H100: ~61GB bf16 weights shard across both
+                                                  # (device_map=auto) -> comfortable headroom, guaranteed
+                                                  # fit. Single-GPU alt: set :1 and add --load-4bit.
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks-per-node=1                        # ONE process (model-parallel), NOT torchrun/DDP
 #SBATCH --cpus-per-task=8                          # dataloading is trivial (278 rows)
-#SBATCH --mem=128G                                 # host RAM: 30B checkpoint shards ~61GB + cache
+#SBATCH --mem=192G                                 # host RAM: 30B shards ~61GB materialized on CPU at load
 #SBATCH --time=08:00:00                            # compute ~2-4h; 8h = headroom (download + eval)
 #SBATCH --job-name=qwen3_lora_certainty
 #SBATCH --output=runs/qwen3_lora_%j.out
@@ -66,6 +68,7 @@ echo "============================================"
 export HF_HOME="$HOME/.cache/huggingface"
 export HF_HUB_OFFLINE=1                            # comment out if compute nodes DO have net
 export TOKENIZERS_PARALLELISM=false
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True   # combat fragmentation across the 2 GPUs
 
 # ============================================
 # Train  (FULL QUALITY: bf16, no --load-4bit; add --load-4bit if the 30B MoE OOMs)
@@ -82,6 +85,36 @@ python scripts/train_lora_qwen.py \
     --out runs/qwen3-30b-a3b-lora-certainty \
     --epochs 3 --batch 1 --grad-accum 16 --lr 2e-4 \
     --max-len 12288
+status=$?
+if [ $status -ne 0 ]; then echo "TRAIN FAILED (exit $status) — skipping eval"; exit $status; fi
+
+# ============================================
+# Eval  (auto-chained: pred_dev approach B end-to-end, same 2-GPU allocation).
+# B derives P(deviate)=1-follow_prob from THIS reasoning adapter. It needs a TEST pass and a
+# VAL pass of the certainty-agent panel (for Platt), then a CPU deriver. All three run here so
+# one sbatch yields B's calibrated result with no manual step.
+# ============================================
+echo "=== training done; starting approach-B eval (test panel) ==="
+python scripts/eval_certainty_agent.py \
+    --arms doctor base sft \
+    --base-model Qwen/Qwen3-30B-A3B-Instruct-2507 \
+    --adapter runs/qwen3-30b-a3b-lora-certainty \
+    --data data/training_set/sft/test.jsonl \
+    --out results/agent_inspection/eval_panel_qwen3.txt
+
+echo "=== approach-B eval (val panel, for Platt calibration) ==="
+python scripts/eval_certainty_agent.py \
+    --arms doctor base sft \
+    --base-model Qwen/Qwen3-30B-A3B-Instruct-2507 \
+    --adapter runs/qwen3-30b-a3b-lora-certainty \
+    --data data/training_set/sft/val.jsonl \
+    --out results/agent_inspection/eval_panel_qwen3_val.txt
+
+echo "=== approach-B deriver (CPU: 1-follow_prob -> Platt on val -> test metrics) ==="
+python scripts/eval_dev_from_reasoning.py \
+    --val-panel  results/agent_inspection/eval_panel_qwen3_val.jsonl \
+    --test-panel results/agent_inspection/eval_panel_qwen3.jsonl \
+    --arms sft base
 
 echo "============================================"
 echo "Job completed at: $(date)"

@@ -37,9 +37,9 @@ DEFAULT_DATA = ROOT / "data/training_set/sft/test.jsonl"
 
 def parse_args():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--base", default="google/medgemma-27b-text-it",
-                    help="swappable base (Gemma-3 medgemma default; Qwen2.5-7B was the placeholder)")
-    ap.add_argument("--adapter", default="runs/medgemma-27b-lora-certainty",
+    ap.add_argument("--base", default="Qwen/Qwen3-30B-A3B-Instruct-2507",
+                    help="swappable base (Qwen3-30B-A3B MoE default; medgemma-27b / Qwen2.5-7B were prior)")
+    ap.add_argument("--adapter", default="runs/qwen3-30b-a3b-lora-certainty",
                     help="HF repo id or local dir of the LoRA adapter (must match --base)")
     ap.add_argument("--only", choices=["both", "base", "sft"], default="both",
                     help="which model passes to generate (default both = 3-way with GOLD)")
