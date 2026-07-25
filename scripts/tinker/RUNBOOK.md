@@ -10,9 +10,9 @@ existing `data/training_set/{cls,cls_reason}` — unchanged. See `HANDOFF_pred_d
 | **c+RL** | `cls_reason` prompts + label reward | RLVR from the **c** checkpoint | RL on top of imposed structure |
 | **b-NEW** | prompts + label reward | RLVR from the **instruct base** | structure DISCOVERED by RL |
 
-> ⚠️ The Tinker method names in `eval_prob_tinker.py` come from the quickstart docs and may need
-> small tweaks against the installed SDK — we iterate on first-run errors. The SFT/RL themselves
-> reuse the cookbook's **tested** recipes; only the reward + prob-readout are ours.
+> ⚠️ The Tinker method names in `eval_prob_tinker.py` come from the quickstart docs and STILL need
+> fixing against the installed SDK (see step 5). The SFT (steps 3–4) is DONE and reuses the
+> cookbook's tested `supervised.train`; only the reward + prob-readout are ours.
 
 ---
 
@@ -42,6 +42,15 @@ import tinker; print([m.model_name for m in tinker.ServiceClient().get_server_ca
 Note: `Qwen3-30B-A3B-Instruct-2507` is ALSO on Tinker (the "retired" claim was stale) — but we
 stay on `Qwen3.6-35B-A3B` (newer; Tinker manages the arch).
 
+**`tinker_cookbook` (renderers, dataset builders, `supervised.train`, `rl.train`) is a SEPARATE
+install and the PyPI `tinker-cookbook` is a 0.0.0 stub — it MUST come from git:**
+```bash
+git clone --depth 1 https://github.com/thinking-machines-lab/tinker-cookbook.git ~/tinker-cookbook
+/opt/anaconda3/envs/tinker/bin/pip install -e ~/tinker-cookbook
+```
+✅ DONE 2026-07-24 (`tinker_cookbook 0.1.dev1+gd82f03c8e`; it downgrades transformers 5.14.1 → 5.5.4
+and installs torch/datasets/chz — harmless, that env is Tinker-only).
+
 ## Step 2 — prep data (converts your JSONL → Tinker conversation files)
 ```bash
 python scripts/tinker/prep_data.py --arm a   # -> data/training_set/tinker/cls/{train,val}.jsonl
@@ -49,39 +58,72 @@ python scripts/tinker/prep_data.py --arm c   # -> data/training_set/tinker/cls_r
 ```
 (No Tinker dep; just strips `meta`, keeps `messages`.)
 
-## Step 3 — SFT arm a (bare label)
-Use the cookbook's tested SFT recipe with a conversation-file dataset:
-1. Copy `tinker_cookbook/recipes/sl_basic.py` → `sl_deviate_a.py`.
-2. Edit these fields:
-   - `base_model = "Qwen/Qwen3.6-35B-A3B"`  (LoRA rank 32 is Tinker's default)
-   - dataset builder → `FromConversationFileBuilder(file="data/training_set/tinker/cls/train.jsonl")`
-     (sl_basic has this line commented — uncomment + point it here; add val similarly)
-   - `renderer_name = model_info.get_recommended_renderer_name("Qwen/Qwen3.6-35B-A3B")`
-   - train on assistant tokens only (default in the common config), `lr = 2e-4`, `num_epochs = 3`
-   - `log_path = "/tmp/tinker/deviate_a"`
-3. Run it: `python sl_deviate_a.py`
-4. **Record the saved checkpoint path** it prints (a `tinker://...` id) → you pass it to eval as
-   `--checkpoint`.
-
-## Step 4 — SFT arm c (reasoning + deviation tail)
-Same as step 3 but a second copy `sl_deviate_c.py` with
-`FromConversationFileBuilder(file="data/training_set/tinker/cls_reason/train.jsonl")` and
-`log_path=/tmp/tinker/deviate_c`. Record its checkpoint id too.
-
-## Step 5 — eval readout (arms a + c) → the panel
+## Steps 3+4 — SFT arms a and c  ✅ DONE 2026-07-24 (commit `dd49202`)
+Built as `scripts/tinker/sl_deviate_a.py` / `sl_deviate_c.py`, both thin `chz` entrypoints over
+`scripts/tinker/sft_common.py` (shared config + `TwoFileConversationBuilder`), so a↔c differ ONLY
+in the data directory.
 ```bash
-# arm a: score follow/deviate right after the prompt
-python scripts/tinker/eval_prob_tinker.py \
-    --checkpoint <arm_a_ckpt> --arm-name a \
-    --data data/training_set/cls \
+/opt/anaconda3/envs/tinker/bin/python scripts/tinker/sl_deviate_a.py log_path=runs/tinker/pred_dev_a
+/opt/anaconda3/envs/tinker/bin/python scripts/tinker/sl_deviate_c.py log_path=runs/tinker/pred_dev_c
+# any field is CLI-overridable, e.g.  ... learning_rate=1e-4 num_epochs=2 batch_size=4
+# smoke test (2 steps):  ... max_steps=2 save_every=2 eval_every=2 num_epochs=1
+```
+Results, val-NLL curves and all `tinker://` checkpoint paths: **`results/tinker/RESULTS_sft_a_c.md`**.
+
+Three non-obvious choices baked into `sft_common.py` (do NOT "fix" them back):
+- **Renderer = `qwen3_5_disable_thinking`, NOT `get_recommended_renderer_name()`'s `qwen3_5`.**
+  Qwen3.6 is a hybrid thinking model. Both variants build the SAME supervised example (the empty
+  `<think>\n\n</think>\n\n` block is inserted either way, since our targets carry no
+  reasoning_content), but the GENERATION PROMPT differs: `qwen3_5` ends at `<think>\n`,
+  `qwen3_5_disable_thinking` ends at `<think>\n\n</think>\n\n` — the latter is exactly the prefix
+  training saw. Sampling/scoring with the thinking renderer would condition on a prefix that never
+  occurred after SFT. **`eval_prob_tinker.py` must use the same renderer.**
+- **`TwoFileConversationBuilder`, not the cookbook's `FromConversationFileBuilder`.** The latter
+  takes ONE file and carves out its own random held-out set; that would re-split and leak patients
+  across our LOCKED seed-0 patient-level 278/67/56 split. Ours reads train.jsonl and val.jsonl as
+  given. The val dataset is auto-wrapped by `train.main` as an `NLLEvaluator` → `test/nll` in
+  `metrics.jsonl` (all 67 rows, one forward call; batch size must be the full 67 because
+  `SupervisedDataset.__len__` floor-divides and 67 is prime — a smaller batch silently drops rows).
+- **`train_on_what=LAST_ASSISTANT_MESSAGE`** — identical to ALL_ASSISTANT_MESSAGES for our
+  single-turn data, but avoids the extension-property warning (qwen3_5 has
+  `has_extension_property=False`).
+
+Verified before launch (Qwen3.6 tokenizer): arm a trains 3 tokens (`deviate<|im_end|>`), arm c
+~574 (the JSON trace ending `..."deviation": "deviate"}<|im_end|>`); max prompt 9157 / 10372 tok
+vs `max_length=16384`, so nothing truncates — which matters because the label is the LAST token.
+
+**⚠️ Checkpoint selection: use best-val, not `final`.** Arm a's val NLL bottoms at end of epoch 1
+(0.2639) and then rises to 0.3132 — it overfits the 278-row shortcut. Arm c peaks at epoch 2
+(0.3147) and degrades only slightly. Using `final` for both would confound a↔c with "a trained
+past its optimum". See RESULTS for the per-checkpoint paths.
+
+## Step 5 — eval readout (arms a + c) → the panel  ⬅️ NEXT
+```bash
+# arm a: score follow/deviate right after the prompt  (best-val ckpt = epoch 1)
+/opt/anaconda3/envs/tinker/bin/python scripts/tinker/eval_prob_tinker.py \
+    --checkpoint tinker://c000136e-4a44-5279-9a0e-a79631aa0835:train:0/sampler_weights/000034 \
+    --arm-name a --data data/training_set/cls \
     --out results/agent_inspection/tinker_deviation_a
 
-# arm c: generate the reasoning first, then score the tail
-python scripts/tinker/eval_prob_tinker.py \
-    --checkpoint <arm_c_ckpt> --arm-name c --generate-first \
-    --data data/training_set/cls_reason \
+# arm c: generate the reasoning first, then score the tail  (best-val ckpt = epoch 2)
+/opt/anaconda3/envs/tinker/bin/python scripts/tinker/eval_prob_tinker.py \
+    --checkpoint tinker://6621e009-cb6c-5fc6-b4de-2a9910f96232:train:0/sampler_weights/000068 \
+    --arm-name c --generate-first --data data/training_set/cls_reason \
     --out results/agent_inspection/tinker_deviation_c
 ```
+**`eval_prob_tinker.py` needs 2 fixes first** (checked against the installed SDK 0.23.4):
+1. **Prompt building must go through the cookbook renderer, not `tokenizer.apply_chat_template`.**
+   Replace the `apply_chat_template(...)` call with
+   `get_renderer("qwen3_5_disable_thinking", tok).build_generation_prompt(row["messages"][:2])`
+   (see `sft_common.RENDERER_NAME`). The HF template defaults to thinking mode and would end the
+   prompt at `<think>\n` — a prefix the SFT'd model never saw. This is the single highest-risk
+   line in the eval.
+2. **Method names.** `create_sampling_client(model_path=..., base_model=...)` ✓ exists;
+   `sample(prompt, num_samples, sampling_params)` and `compute_logprobs(prompt)` ✓ exist, but both
+   return a `ConcurrentFuture` (`.result()`), and the `_async` variants are separate methods —
+   the current `await sampling_client.sample_async(...)` / `compute_logprobs_async(...)` needs its
+   awaiting checked. `compute_logprobs` returns `list[float | None]` over the WHOLE prompt, so the
+   existing tail-slicing `lp[-len(ids):]` is right, but guard against `None` entries.
 Each writes AUROC/AUPRC/Brier/logloss/acc@0.5/ECE (raw + calibrated, Platt on val→test) —
 identical metric block to the Quest eval, so arms compare directly.
 
