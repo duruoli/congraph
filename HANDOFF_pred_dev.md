@@ -286,10 +286,58 @@ python scripts/tinker/eval_prob_tinker.py --checkpoint <c_ckpt> --arm-name c --g
 - **Quest pipeline (NOT used under Plan T)**: `train_lora_qwen.py` + slurms `train/eval_deviate_cls`,
   `train/eval_devreason` — reverted to committed `Qwen3-30B-A3B-Instruct-2507`; kept for reference.
 - **TODO**: ~~(1) install Tinker + smoke test~~ DONE; ~~(2) SFT a+c~~ DONE 2026-07-24;
-  (3) fix `eval_prob_tinker.py` (renderer + the `ConcurrentFuture` awaiting) and run the a/c
-  readout off the best-val checkpoints; (4) phase-2 RL env (`deviation_env.py` + `rl_c.py`) —
-  the cookbook is now installed at `~/tinker-cookbook`, so read `tinker_cookbook/rl/` and
-  `recipes/math_rl/` signatures directly; (5) assemble the a / c / c+RL / b-NEW panel.
+  ~~(3) fix `eval_prob_tinker.py`~~ DONE 2026-07-26 (rewritten, commits `e52498b`+`a504791`);
+  (3b) arm a readout RUN, arm c running — see `results/tinker/RESULTS_eval_panel.md`;
+  (4) phase-2 RL env (`deviation_env.py` + `rl_c.py`) — the cookbook is at `~/tinker-cookbook`, so
+  read `tinker_cookbook/rl/` and `recipes/math_rl/` signatures directly; (5) **b-NEW needs two
+  pieces built first — see "b-NEW prerequisites" below**; (6) assemble the four-arm panel.
+
+## Eval readout — REWRITTEN 2026-07-26 (`scripts/tinker/eval_prob_tinker.py`)
+
+Two real bugs fixed, both verified against SDK 0.23.4 and the actual Qwen3.6 tokenizer:
+- **Renderer.** Prompts now go through the cookbook renderer with `RENDERER_NAME` imported from
+  `sft_common` (so it cannot drift from what SFT used). Confirmed the prompts genuinely differ:
+  disable-thinking ends `assistant\n<think>\n\n</think>\n\n`, the HF chat template ends
+  `assistant\n<think>\n`. Also, under transformers 5.5.4 `apply_chat_template(tokenize=True)`
+  returns an `Encoding`, not `list[int]` — the old code would have crashed regardless. Arm c's
+  conditioning uses the renderer's `prefill=` argument.
+- **Awaiting.** `sample_async` / `compute_logprobs_async` ARE true coroutines, so the original
+  `await` was already correct (only the sync variants return `ConcurrentFuture`). `None` entries
+  from `compute_logprobs` now raise instead of silently corrupting `z`. Rows score with bounded
+  concurrency (`--concurrency`, default 8).
+
+**Metric panel rebuilt for a calibrated-probability deliverable.** Primary = Brier+CI, **BSS**+CI
+(`1 − Brier/Brier(const train base rate)`), AUROC+CI, ECE(5 equal-frequency)+reliability table.
+Secondary line = AUPRC / logloss / acc@0.5 / ECE(10 equal-width, the old Quest number). Plus a
+**const-base-rate baseline row** (the BSS=0 anchor; rate from TRAIN, never test) and a **prediction
+SPREAD line** — which catches the two failure modes ECE alone cannot: calibrated-but-useless
+(everything at the base rate) and RLVR collapse (everything at 0/1). The RAW row moved to an
+appendix (Platt is monotone ⇒ its AUROC/AUPRC are identical; its level is partly a tokenisation
+artefact). Equal-frequency binning is **tie-safe** — a naive version scored a CONSTANT predictor at
+ECE 0.11 instead of 0.008, and that is exactly the all-ties shape an RL-collapsed model produces.
+
+⚠️ **Tokenisation asymmetry (now empirically confirmed):** `follow` is 1 token, `deviate` is 2, so
+raw `z` is biased toward `follow`. In the arm-a run, raw predictions had median 0.295 and all five
+reliability bins showed actual > predicted; Platt's intercept `b=+0.674` corrected it (raw ECE 0.26
+→ calibrated 0.067). **Read the calibrated row.**
+
+## b-NEW prerequisites (BUILD THESE BEFORE RUNNING b-NEW)
+
+Found while rewriting the eval; full detail in `scripts/tinker/RUNBOOK.md` Step 7.
+1. **b-NEW has no prompt yet.** `cls/` carries the one-word instruction, `cls_reason/` carries c's
+   JSON schema — reusing either contaminates the manipulation (`cls_reason`'s system message would
+   hand b-NEW the very structure RL is supposed to discover). Build
+   `scripts/build_bnew.py` → `data/training_set/cls_free/`, reusing `build_sft_examples`'s split
+   and input verbatim and swapping ONLY the system output-instruction.
+2. **`--generate-first` cuts at the literal `"deviation"`**, which is c's JSON key. Free reasoning
+   never emits it, so every b-NEW row would fall through to the malformed branch and be grafted
+   back into c's schema. Needs an `--answer-cue` (default = current behaviour; b-NEW uses something
+   like `"\n\nAnswer: "`). Keep consistent with `rl_reward.parse_prediction`, whose fallback takes
+   the LAST bare `deviate`/`follow` — free reasoning about "deviating" can easily produce earlier
+   occurrences, so score only after the cue (the prefill approach already guarantees this).
+
+**Already works:** b-NEW **pre-RL** = `eval_prob_tinker.py` with `--checkpoint` omitted (bare
+instruct base). `--dump-generations` writes traces for the reward-hacking audit the RL arms need.
 - **Appendix (retired old-b)**: `scripts/eval_dev_from_reasoning.py` + `eval_medgemma_agent_val.slurm`
   + `runs/medgemma-27b-lora-certainty` + `results/agent_inspection/eval_panel_medgemma.jsonl` —
   derive-P-from-reasoning-agent; still functional, out of the live comparison.

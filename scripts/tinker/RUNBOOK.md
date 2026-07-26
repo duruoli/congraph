@@ -176,10 +176,39 @@ Same env/reward as step 6, but:
 - **Start from the instruct base**, NOT a c checkpoint. The prompt must instruct free reasoning:
   "Reason step by step, then output `deviate` or `follow`." (Keep it UNstructured — do NOT give it
   c's JSON schema; that's the whole manipulation.)
-- If the pre-RL base can't reliably emit a parseable answer, do a **format-only** light SFT first
-  (target = "<free reasoning> ... deviate/follow" with generic reasoning, NOT c's structured schema).
+- **NO structured SFT, ever.** The only SFT allowed is a **format-only** light pass, and only if
+  the pre-RL base cannot emit a parseable answer (target = "<free reasoning> … deviate/follow"
+  with GENERIC reasoning). Teaching it c's schema would destroy the imposed-vs-discovered contrast.
 - Eval BOTH pre-RL and post-RL with `eval_prob_tinker.py --arm-name b_new` to show RL's structuring
   effect.
+
+### Two code gaps b-NEW hits that a and c did not (found 2026-07-26 while rewriting the eval)
+
+**1. b-NEW needs its own PROMPT, and no data dir currently has it.**
+`cls/` carries the "answer with one word" system instruction; `cls_reason/` carries c's JSON-schema
+instruction. Neither is the free-reasoning prompt, and reusing either silently contaminates the
+manipulation (`cls_reason`'s system message would hand b-NEW the structure RL is supposed to
+discover). Fix before running b-NEW, pick one:
+  - (a) a `scripts/build_bnew.py` that reuses `build_sft_examples`'s split/input verbatim and swaps
+    ONLY the system output-instruction → `data/training_set/cls_free/{train,val,test}.jsonl`
+    (preferred — same pattern as `build_deviation_cls.py` / `build_devreason.py`, keeps `meta.y`); or
+  - (b) a `--system-override` flag on `eval_prob_tinker.py`. Cheaper, but then the RL env and the
+    eval read the prompt from two different places — easy to drift. **(a) is the recommendation.**
+
+**2. `--generate-first` cuts at the string `"deviation"`, which is c's JSON key.**
+Free reasoning will not emit it, so every b-NEW row would fall into the malformed branch and get
+the `, "deviation": "` graft appended — i.e. b-NEW would be scored through c's schema after all.
+Needs a b-NEW answer convention, e.g. a `--answer-cue` flag defaulting to c's current behaviour and
+set to something like `"\n\nAnswer: "` for b-NEW; the prefill then becomes
+`<generated reasoning up to the cue> + cue` and the follow/deviate scoring proceeds unchanged.
+Keep it CONSISTENT with `rl_reward.parse_prediction`, which already accepts a bare trailing
+`deviate`/`follow` (its regex takes the LAST standalone occurrence — so the cue must not make the
+answer word appear anywhere earlier, and free reasoning about "deviating" plausibly will; consider
+scoring only after the cue, which the prefill approach already guarantees).
+
+**Already supported, no work needed:** b-NEW **pre-RL** is just `eval_prob_tinker.py` with
+`--checkpoint` OMITTED (bare instruct base) — that path exists. `--dump-generations` writes the
+traces for the qualitative reward-hacking audit the handoff requires for the RL arms.
 
 ## Step 8 — assemble the panel
 Collect the `tinker_deviation_{a,c,c_rl,b_new}.json` files into one table:
