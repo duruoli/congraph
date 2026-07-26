@@ -1,0 +1,50 @@
+### Tinker P(deviate|input)   arm = c
+base=Qwen/Qwen3.6-35B-A3B   checkpoint=tinker://6621e009-cb6c-5fc6-b4de-2a9910f96232:train:0/sampler_weights/000068
+renderer=qwen3_5_disable_thinking   generate_first=True
+val n=67 (pos 34)   test n=56 (pos 32)   train base_rate=0.5791
+
+CAVEATS: n=56 => DIRECTIONAL, CIs wide. Platt (a,b) fit on VAL, applied to TEST — and the
+checkpoint was ALSO selected on val NLL, so val is used twice (mild at 2 params, but state
+it). Everything below is Platt-CALIBRATED; the raw scale is in the appendix at the bottom.
+BSS ceiling is Var(q)/base < 1, so a 'low' BSS is not a failed model: for
+behavioural prediction with causally-masked inputs, 0.05-0.15 is real signal, ~0 is not.
+
+TEST — BASELINE (knows only the overall deviation rate; the anchor for BSS=0)
+  [const-base-rate]
+    PRIMARY    Brier=0.2450 (95%CI 0.2252-0.2647)   BSS=+0.0000 (95%CI +0.0000-+0.0000)
+               AUROC=0.5000 (95%CI 0.5000-0.5000)   ECE(5 eq-freq)=0.0077
+    SECONDARY  AUPRC=0.6838  logloss=0.6830  acc@0.5=0.5714  ECE(10 eq-width)=0.0077
+    SPREAD     min=0.579 p25=0.579 med=0.579 p75=0.579 max=0.579  sd=0.000  frac in [0.4,0.6]=1.00  frac <0.1 or >0.9=0.00
+    reliability (5 equal-frequency bins):
+      p in [0.579,0.579]  n=56  conf=0.579  actual=0.571  gap=-0.008
+
+TEST — ARM c   (Platt-calibrated; a=0.1142 b=-0.3423, fit on val)
+  [c]
+    PRIMARY    Brier=0.2139 (95%CI 0.1605-0.2672)   BSS=+0.1267 (95%CI -0.0969-+0.3397)
+               AUROC=0.7214 (95%CI 0.5824-0.8592)   ECE(5 eq-freq)=0.0418
+    SECONDARY  AUPRC=0.7725  logloss=0.6166  acc@0.5=0.6786  ECE(10 eq-width)=0.1103
+    SPREAD     min=0.250 p25=0.292 med=0.641 p75=0.758 max=0.817  sd=0.220  frac in [0.4,0.6]=0.04  frac <0.1 or >0.9=0.00
+    reliability (5 equal-frequency bins):
+      p in [0.250,0.272]  n=11  conf=0.261  actual=0.364  gap=+0.103
+      p in [0.275,0.313]  n=11  conf=0.299  actual=0.364  gap=+0.064
+      p in [0.323,0.662]  n=12  conf=0.586  actual=0.583  gap=-0.003
+      p in [0.671,0.781]  n=11  conf=0.708  actual=0.727  gap=+0.020
+      p in [0.783,0.817]  n=11  conf=0.795  actual=0.818  gap=+0.024
+
+------------------------------------------------------------------------------
+APPENDIX — arm c, RAW (uncalibrated) scale. NOT for the main panel:
+  AUROC/AUPRC are identical to the calibrated row (Platt is monotone). The raw
+  Brier/BSS/ECE level is inflated by 'deviate' being a 2-token word vs 'follow'
+  1 token, a near-constant offset Platt removes — do not compare it across arms.
+
+  [c RAW]
+    PRIMARY    Brier=0.3178 (95%CI 0.1945-0.4421)   BSS=-0.2974 (95%CI -0.8113-+0.1980)
+               AUROC=0.7214 (95%CI 0.5824-0.8592)   ECE(5 eq-freq)=0.2845
+    SECONDARY  AUPRC=0.7725  logloss=2.4425  acc@0.5=0.6786  ECE(10 eq-width)=0.3164
+    SPREAD     min=0.001 p25=0.009 med=1.000 p75=1.000 max=1.000  sd=0.489  frac in [0.4,0.6]=0.00  frac <0.1 or >0.9=1.00
+    reliability (5 equal-frequency bins):
+      p in [0.001,0.004]  n=11  conf=0.002  actual=0.364  gap=+0.361
+      p in [0.004,0.020]  n=11  conf=0.013  actual=0.364  gap=+0.351
+      p in [0.029,1.000]  n=12  conf=0.842  actual=0.583  gap=-0.258
+      p in [1.000,1.000]  n=11  conf=1.000  actual=0.727  gap=-0.273
+      p in [1.000,1.000]  n=11  conf=1.000  actual=0.818  gap=-0.182

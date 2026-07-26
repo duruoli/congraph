@@ -11,16 +11,55 @@ from `scripts/eval_deviation_cls.py`). Base `Qwen/Qwen3.6-35B-A3B`, renderer
 
 ## Panel (Platt-calibrated; lead with Brier/BSS, not AUROC)
 
-| arm | Brier ↓ | BSS ↑ | AUROC ↑ | ECE(5) ↓ | pred spread (sd) |
-|---|---|---|---|---|---|
-| const base-rate baseline | 0.2450 | +0.0000 | 0.500 | 0.008 | 0.000 |
-| **a** (SFT direct label, ep1 ckpt) | **0.2233** | **+0.0886** | **0.7025** | 0.0668 | 0.150 |
-| c (SFT structured trace + tail, ep2 ckpt) | _pending_ | | | | |
-| c+RL | _not built_ | | | | |
-| b-NEW pre-RL | _not built_ | | | | |
-| b-NEW post-RL | _not built_ | | | | |
+| arm | Brier ↓ | BSS ↑ | AUROC ↑ | ECE(5) ↓ | cal. spread (sd) | RAW frac at 0/1 |
+|---|---|---|---|---|---|---|
+| const base-rate baseline | 0.2450 | +0.0000 | 0.500 | 0.008 | 0.000 | — |
+| **a** (SFT direct label, ep1 ckpt) | 0.2233 | +0.0886 | 0.7025 | 0.0668 | 0.150 | 0.20 |
+| **c** (SFT structured trace + tail, ep2 ckpt) | **0.2139** | **+0.1267** | **0.7214** | **0.0418** | 0.220 | **1.00** |
+| c+RL | _not built_ | | | | | |
+| b-NEW pre-RL | _not built_ | | | | | |
+| b-NEW post-RL | _not built_ | | | | | |
 
-95% CIs (bootstrap, 2000 draws): arm a Brier 0.187–0.259, BSS −0.073–+0.243, AUROC 0.569–0.835.
+95% CIs (bootstrap, 2000 draws):
+- a — Brier 0.187–0.259, BSS −0.073–+0.243, AUROC 0.569–0.835. Platt a=0.582 b=+0.674.
+- c — Brier 0.161–0.267, BSS −0.097–+0.340, AUROC 0.582–0.859. Platt **a=0.114** b=−0.342.
+
+## a ↔ c: does structured reasoning in the target help?
+
+**c wins on every primary metric — and every gap sits well inside the CIs.** Brier 0.214 vs 0.223,
+BSS +0.127 vs +0.089, AUROC 0.721 vs 0.703, ECE 0.042 vs 0.067. The direction matches the
+prediction (structured reasoning helps), the magnitudes do not support a claim at n=56. Report as
+directional, with the CIs, and do not lead with "c is better".
+
+Generation health for c: **56/56 traces emitted the `"deviation"` key**, so the cut landed cleanly
+on every row and none fell into the malformed-graft fallback; all four schema fields present;
+traces 1638–2712 chars, so `--max-new-tokens 1024` was adequate.
+
+## ⚠️ FINDING: c's raw probability is already fully saturated, BEFORE any RL
+
+The RAW appendix for c shows **100% of predictions at 0/1** (median 1.000, p25 0.009), vs 20% for
+arm a. Platt rescues it only by shrinking hard — slope **a=0.114 for c vs 0.582 for a**, a 5×
+stronger squash — mapping a near-binary signal into 0.25–0.82.
+
+Why: c generates its own trace first, and by the time it reaches `"deviation": "` it has already
+written `rubric_recommended` / `rubric_state` / `rubric_rationale`. The training data was built so
+that "follow iff modality ∈ rubric_recommended" reproduces the label 401/401 — so the label is a
+near-deterministic function of text the model has already committed to. It is **reading off its own
+conclusion, not expressing a graded belief.** Greedy decoding (`temperature=0.0`) makes that trace
+deterministic too, so there is no per-case gradation left anywhere in the readout.
+
+**Consequences — these change the RL plan:**
+1. The handoff's headline RL risk ("RLVR → overconfidence → P collapses to 0/1") **has already
+   happened in c, without RL.** The `c ↔ c+RL` calibration contrast therefore has little headroom
+   to show anything; do not expect it to. The informative RL contrast is now b-NEW pre↔post.
+2. c's calibrated probability is a hard decision softened by a *global* constant, not a per-case
+   uncertainty. Any claim that c is "better calibrated" must say this out loud — its ECE 0.042 is
+   an artefact of Platt fitting one slope, not evidence the model knows when it is unsure.
+3. **A different readout would give genuine gradation**: sample K traces at temperature > 0 and use
+   the fraction voting `deviate` as P (self-consistency), instead of one greedy trace + a
+   teacher-forced tail. That is a real design option for c / c+RL / b-NEW, and it is the honest way
+   to get a graded probability out of a model whose reasoning commits before the answer. Costs K×
+   generation. NOT yet implemented — flagged, not done.
 
 ## Reading arm a (the floor)
 
