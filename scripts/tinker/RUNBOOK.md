@@ -111,21 +111,44 @@ past its optimum". See RESULTS for the per-checkpoint paths.
     --arm-name c --generate-first --data data/training_set/cls_reason \
     --out results/agent_inspection/tinker_deviation_c
 ```
-**`eval_prob_tinker.py` needs 2 fixes first** (checked against the installed SDK 0.23.4):
-1. **Prompt building must go through the cookbook renderer, not `tokenizer.apply_chat_template`.**
-   Replace the `apply_chat_template(...)` call with
-   `get_renderer("qwen3_5_disable_thinking", tok).build_generation_prompt(row["messages"][:2])`
-   (see `sft_common.RENDERER_NAME`). The HF template defaults to thinking mode and would end the
-   prompt at `<think>\n` — a prefix the SFT'd model never saw. This is the single highest-risk
-   line in the eval.
-2. **Method names.** `create_sampling_client(model_path=..., base_model=...)` ✓ exists;
-   `sample(prompt, num_samples, sampling_params)` and `compute_logprobs(prompt)` ✓ exist, but both
-   return a `ConcurrentFuture` (`.result()`), and the `_async` variants are separate methods —
-   the current `await sampling_client.sample_async(...)` / `compute_logprobs_async(...)` needs its
-   awaiting checked. `compute_logprobs` returns `list[float | None]` over the WHOLE prompt, so the
-   existing tail-slicing `lp[-len(ids):]` is right, but guard against `None` entries.
-Each writes AUROC/AUPRC/Brier/logloss/acc@0.5/ECE (raw + calibrated, Platt on val→test) —
-identical metric block to the Quest eval, so arms compare directly.
+**`eval_prob_tinker.py` was REWRITTEN 2026-07-26 — the two fixes below are DONE**, verified against
+the installed SDK 0.23.4 + the real Qwen3.6 tokenizer (offline; no API call made yet):
+1. ✅ **Prompt now goes through the cookbook renderer**, `get_renderer(RENDERER_NAME, tok)
+   .build_generation_prompt(messages[:2])`, importing `sft_common.RENDERER_NAME` so it can never
+   drift from what SFT used. Confirmed the two prompts really do differ:
+   disable_thinking ends `...assistant\n<think>\n\n</think>\n\n`, the HF chat template ends
+   `...assistant\n<think>\n`. Bonus: under transformers 5.5.4 `apply_chat_template(tokenize=True)`
+   returns an `Encoding`, not `list[int]`, so the old `prefix_ids + ids` would have crashed anyway.
+   Arm c's conditioning now uses the renderer's `prefill=` argument (verified: prefix bytes
+   identical, prefill appended after the generation suffix).
+2. ✅ **Awaiting.** `sample_async` / `compute_logprobs_async` ARE true coroutines
+   (`inspect.iscoroutinefunction` → True), so the existing `await` was already correct — only the
+   sync `sample`/`compute_logprobs` return `ConcurrentFuture`. Tail-slice `lp[-len(ids):]` kept,
+   with a hard error (not a silent skip) if any entry is `None`. Rows are now scored with bounded
+   concurrency (`--concurrency`, default 8) instead of one at a time.
+
+**Metrics rewritten for a calibrated-probability deliverable** (metric fns still imported from
+`eval_deviation_cls.py`, so numbers stay cross-venue comparable):
+- PRIMARY: **Brier + CI**, **BSS + CI** (`1 − Brier/Brier(const train base rate)`), **AUROC + CI**,
+  **ECE(5 equal-frequency) + reliability table**.
+- SECONDARY (appendix line): AUPRC, logloss, acc@0.5, ECE(10 equal-width) = the old Quest number.
+- **SPREAD line** (quartiles, sd, frac in [0.4,0.6], frac at the extremes) — catches the two
+  failure modes ECE cannot see: a useless-but-calibrated model, and RLVR collapse onto 0/1.
+- **A const-base-rate BASELINE row** so every number has an anchor (that row is BSS = 0 by
+  definition). Base rate comes from TRAIN, never test.
+- `--checkpoint` is now OPTIONAL (omit → bare instruct base, i.e. the b-NEW pre-RL reference);
+  `--dump-generations` writes the traces for the qualitative RL audit.
+
+Offline self-tests that passed: const baseline reproduces `q̄(1−q̄)`=0.2449 and BSS=0.0000 exactly;
+tie-safe equal-frequency binning (a naive version scored a CONSTANT predictor at ECE 0.11 instead
+of 0.008 — the same artefact would hit an RL-collapsed model, which is all ties at 0/1); 200
+random partition checks; a synthetic well-calibrated model gives ECE 0.013 / BSS +0.25; a synthetic
+RL-collapsed model gives AUROC 0.62 but Brier 0.39 / BSS −0.60 / ECE 0.39 — i.e. the panel does
+flag "RL sharpened discrimination while destroying calibration", which AUROC alone would call a win.
+
+⚠️ Reading the output: `follow` is 1 token but `deviate` is 2 on this tokenizer, so raw z is
+biased toward `follow` by a near-constant amount. Platt's intercept absorbs it → **read the
+CALIBRATED row**; RAW's absolute level is not comparable across arms (ranking/AUROC is unaffected).
 
 **Checkpoint gate:** confirm arms a + c produce sane, parseable output and calibrated ECE before
 starting RL. RL only makes sense once c is a solid warm-start.
