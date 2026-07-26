@@ -46,6 +46,12 @@ What we report (and why), for a deliverable that is a CALIBRATED PROBABILITY, no
                       useless (everyone gets 0.571), and RLVR fails the opposite way (everything
                       collapses to 0/1). Neither shows up in ECE alone.
   BASELINE ROW: constant train-base-rate predictor, so every number has an anchor.
+
+LAYOUT: the main panel shows the BASELINE row and the CALIBRATED arm row only. The RAW
+(uncalibrated) row is pushed to an APPENDIX at the bottom of the .txt — Platt is monotone so its
+AUROC/AUPRC are identical to the calibrated row, and its Brier/ECE level is partly a tokenisation
+artefact (see the note in `score_rows`), so it earns no space in the main read. Both are always
+kept in the .json under metrics.{baseline,calibrated,raw}.
 """
 from __future__ import annotations
 
@@ -262,8 +268,8 @@ async def amain(args):
         "",
         "CAVEATS: n=56 => DIRECTIONAL, CIs wide. Platt (a,b) fit on VAL, applied to TEST — and the",
         "checkpoint was ALSO selected on val NLL, so val is used twice (mild at 2 params, but state",
-        "it). Platt is monotone => AUROC/AUPRC are identical raw vs calibrated; only Brier/BSS/ECE/",
-        "logloss move. BSS ceiling is Var(q)/base < 1, so a 'low' BSS is not a failed model: for",
+        "it). Everything below is Platt-CALIBRATED; the raw scale is in the appendix at the bottom.",
+        "BSS ceiling is Var(q)/base < 1, so a 'low' BSS is not a failed model: for",
         "behavioural prediction with causally-masked inputs, 0.05-0.15 is real signal, ~0 is not.",
         "",
     ]
@@ -274,10 +280,22 @@ async def amain(args):
     m_const = report_arm("const-base-rate", yt, p_const, base_rate, lines)
     lines.append("")
 
-    lines.append(f"TEST — ARM {args.arm_name}   (platt a={a:.4f} b={b:.4f}, fit on val)")
-    m_raw = report_arm(f"{args.arm_name} RAW", yt, raw_t, base_rate, lines)
-    lines.append("")
-    m_cal = report_arm(f"{args.arm_name} CALIBRATED", yt, cal_t, base_rate, lines)
+    lines.append(f"TEST — ARM {args.arm_name}   (Platt-calibrated; a={a:.4f} b={b:.4f}, fit on val)")
+    m_cal = report_arm(args.arm_name, yt, cal_t, base_rate, lines)
+
+    # ---- appendix: the model's NATIVE scale, kept out of the main read ---------
+    # Platt is monotone => AUROC/AUPRC are identical to the calibrated row above; only
+    # Brier/BSS/ECE/logloss differ. And the raw level is partly an artefact of 'deviate' costing
+    # two tokens vs 'follow' one, so it is not comparable across arms. It is here to show how far
+    # off the model's native scale was, nothing more.
+    appendix = ["", "-" * 78,
+                f"APPENDIX — arm {args.arm_name}, RAW (uncalibrated) scale. NOT for the main panel:",
+                "  AUROC/AUPRC are identical to the calibrated row (Platt is monotone). The raw",
+                "  Brier/BSS/ECE level is inflated by 'deviate' being a 2-token word vs 'follow'",
+                "  1 token, a near-constant offset Platt removes — do not compare it across arms.",
+                ""]
+    m_raw = report_arm(f"{args.arm_name} RAW", yt, raw_t, base_rate, appendix)
+    lines.extend(appendix)
 
     out = ROOT / args.out if not Path(args.out).is_absolute() else Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
