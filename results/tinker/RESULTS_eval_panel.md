@@ -35,31 +35,55 @@ Generation health for c: **56/56 traces emitted the `"deviation"` key**, so the 
 on every row and none fell into the malformed-graft fallback; all four schema fields present;
 traces 1638–2712 chars, so `--max-new-tokens 1024` was adequate.
 
-## ⚠️ FINDING: c's raw probability is already fully saturated, BEFORE any RL
+## ⚠️ FINDING: arm c turns a probability question into a deterministic lookup
 
-The RAW appendix for c shows **100% of predictions at 0/1** (median 1.000, p25 0.009), vs 20% for
-arm a. Platt rescues it only by shrinking hard — slope **a=0.114 for c vs 0.582 for a**, a 5×
-stronger squash — mapping a near-binary signal into 0.25–0.82.
+**(Self-contained; this is the item to pick up in a fresh discussion.)**
 
-Why: c generates its own trace first, and by the time it reaches `"deviation": "` it has already
-written `rubric_recommended` / `rubric_state` / `rubric_rationale`. The training data was built so
-that "follow iff modality ∈ rubric_recommended" reproduces the label 401/401 — so the label is a
-near-deterministic function of text the model has already committed to. It is **reading off its own
-conclusion, not expressing a graded belief.** Greedy decoding (`temperature=0.0`) makes that trace
-deterministic too, so there is no per-case gradation left anywhere in the readout.
+### The observation
+c's RAW predictions are **100% at 0/1** (median 1.000, p25 0.009) against 20% for arm a. Platt only
+rescues them by shrinking 5× harder — slope **0.114 for c vs 0.582 for a** — mapping a near-binary
+signal into the 0.25–0.82 range that the calibrated panel reports.
 
-**Consequences — these change the RL plan:**
+### The mechanism (verified, not inferred)
+c's generated trace contains two fields *before* the answer:
+```
+"modality": "CT_Abdomen"        <- its guess at which study the doctor will order
+"rubric_recommended": []        <- the studies it says the rubric wants
+"rubric_state": "off_rubric"
+"rubric_rationale": "Leading hypothesis is outside the four rubric diseases ('other');
+                     the rubric offers no recommendation here."
+"deviation": "deviate"          <- the token we score
+```
+So `deviation` is answering **"is the modality I just wrote inside the list I just wrote?"** — a
+comparison of two strings the model has already committed to on paper, not a judgement under
+uncertainty. Checked directly on the 56 dumped test traces: **the scored answer equals that
+deterministic rule applied to the model's own two fields in 56/56 rows (100%)**.
+(Consistent with how the data was built: "follow iff modality ∈ rubric_recommended" reproduces the
+gold label 401/401 — see `build_devreason.py`.)
+
+### Where the uncertainty went
+It did not vanish; it moved **upstream** into the `modality` guess — which is the genuinely hard
+question ("what will this doctor order?"). The model writes ONE definite modality string; it never
+writes "probably CT, possibly ultrasound". The doubt is erased at that step, so nothing is left to
+express by the time the answer token arrives. Arm a, having no intermediate text, must express all
+of its uncertainty in that single word choice — which is exactly why a's predictions are graded
+(0.255–0.738) and c's are not. Greedy decoding (`temperature=0.0`) removes the last remaining
+source of variation, since only the single most likely trace is ever produced.
+
+### Consequences — these change the RL plan
 1. The handoff's headline RL risk ("RLVR → overconfidence → P collapses to 0/1") **has already
-   happened in c, without RL.** The `c ↔ c+RL` calibration contrast therefore has little headroom
-   to show anything; do not expect it to. The informative RL contrast is now b-NEW pre↔post.
-2. c's calibrated probability is a hard decision softened by a *global* constant, not a per-case
-   uncertainty. Any claim that c is "better calibrated" must say this out loud — its ECE 0.042 is
-   an artefact of Platt fitting one slope, not evidence the model knows when it is unsure.
-3. **A different readout would give genuine gradation**: sample K traces at temperature > 0 and use
-   the fraction voting `deviate` as P (self-consistency), instead of one greedy trace + a
-   teacher-forced tail. That is a real design option for c / c+RL / b-NEW, and it is the honest way
-   to get a graded probability out of a model whose reasoning commits before the answer. Costs K×
-   generation. NOT yet implemented — flagged, not done.
+   happened in c, with no RL involved.** `c ↔ c+RL` therefore has almost no calibration headroom;
+   do not expect that contrast to show anything. The informative RL contrast is **b-NEW pre↔post**.
+2. c's ECE 0.042 is **not** evidence that c knows when it is unsure. It is one global Platt slope
+   flattening a hard decision. Any "c is better calibrated" claim must state this.
+3. **The honest fix is a self-consistency readout**: sample K traces at temperature > 0 and take
+   P = the fraction voting `deviate`, instead of one greedy trace + a teacher-forced tail. Different
+   sampled traces would guess different modalities, so the vote share is a real graded probability —
+   and it is graded *at the step where the uncertainty actually lives*. Costs K× generation.
+   **NOT implemented — flagged only.** Applies to c, c+RL and b-NEW alike.
+4. Framing for the paper: imposing reasoning structure in the SFT target made the model *recite its
+   own conclusion* rather than express a belief. That is a finding about structured-reasoning SFT,
+   not a bug in this pipeline.
 
 ## Reading arm a (the floor)
 
