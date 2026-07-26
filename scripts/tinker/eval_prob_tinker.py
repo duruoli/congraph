@@ -173,9 +173,33 @@ def report_arm(name, y, p, base_rate, lines):
 
 
 # --------------------------- Tinker scoring -----------------------------------
+def _prefill_from_gen(gen_text):
+    """Cut the model's own trace just before the `deviation` label it would emit."""
+    if '"deviation"' in gen_text:
+        return gen_text.split('"deviation"')[0] + '"deviation": "'
+    # malformed: graft the key onto whatever JSON body it produced
+    return gen_text.rstrip().rstrip('}').rstrip().rstrip(',') + ', "deviation": "'
+
+
+async def _tf_z(sampling_client, prefix_ids, cand_ids):
+    """z = logprob(deviate) - logprob(follow), teacher-forced after prefix_ids."""
+    from tinker import types
+    totals = {}
+    for w, ids in cand_ids.items():
+        full = types.ModelInput.from_ints(tokens=prefix_ids + ids)
+        lp = await sampling_client.compute_logprobs_async(full)   # per-token over the WHOLE input
+        tail = lp[-len(ids):]                                     # the candidate tokens
+        if any(x is None for x in tail):
+            raise RuntimeError(
+                f"compute_logprobs returned None for candidate {w!r} tokens {ids} — the "
+                f"candidate landed at position 0, i.e. the prompt is empty. Check the renderer.")
+        totals[w] = float(sum(tail))
+    return totals["deviate"] - totals["follow"]
+
+
 async def _score_one(row, sem, sampling_client, renderer, tokenizer, cand_ids,
                      generate_first, max_new_tokens, stop):
-    """z = logprob(deviate) - logprob(follow) for one row."""
+    """z = logprob(deviate) - logprob(follow) for one row (single greedy trace)."""
     from tinker import types
 
     msgs = row["messages"][:2]          # system + user; the assistant turn is what we score
@@ -188,25 +212,47 @@ async def _score_one(row, sem, sampling_client, renderer, tokenizer, cand_ids,
             res = await sampling_client.sample_async(
                 prompt=prompt, num_samples=1, sampling_params=params)
             gen_text = tokenizer.decode(res.sequences[0].tokens, skip_special_tokens=True)
-            # condition on the model's OWN reasoning, cut just before the label it would emit
-            if '"deviation"' in gen_text:
-                prefill = gen_text.split('"deviation"')[0] + '"deviation": "'
-            else:  # malformed: graft the key onto whatever JSON body it produced
-                prefill = gen_text.rstrip().rstrip('}').rstrip().rstrip(',') + ', "deviation": "'
+            prefill = _prefill_from_gen(gen_text)   # condition on the model's OWN reasoning
 
         prefix_ids = renderer.build_generation_prompt(msgs, prefill=prefill).to_ints()
+        z = await _tf_z(sampling_client, prefix_ids, cand_ids)
+    return z, gen_text
 
-        totals = {}
-        for w, ids in cand_ids.items():
-            full = types.ModelInput.from_ints(tokens=prefix_ids + ids)
-            lp = await sampling_client.compute_logprobs_async(full)   # per-token over the WHOLE input
-            tail = lp[-len(ids):]                                     # the candidate tokens
-            if any(x is None for x in tail):
-                raise RuntimeError(
-                    f"compute_logprobs returned None for candidate {w!r} tokens {ids} — the "
-                    f"candidate landed at position 0, i.e. the prompt is empty. Check the renderer.")
-            totals[w] = float(sum(tail))
-    return totals["deviate"] - totals["follow"], gen_text
+
+async def _score_one_sc(row, sem, sampling_client, renderer, tokenizer, cand_ids,
+                        K, temperature, max_new_tokens, stop):
+    """Self-consistency readout for one row.
+
+    Sample K reasoning traces at temperature>0. Each trace independently commits to (possibly
+    different) upstream fields — crucially the `modality` guess, which is where arm c's uncertainty
+    actually lives — then we read that trace's OWN hard deviate/follow decision (teacher-forced
+    argmax after its prefill; near-deterministic given the two fields it already wrote). The graded
+    probability is the VOTE SHARE across traces: P = #(deviate) / K. Gradation therefore comes from
+    trace-to-trace disagreement about the modality, marginalised at the step the doubt lives at,
+    not from one greedy trace's collapsed answer token.
+    """
+    from tinker import types
+
+    msgs = row["messages"][:2]
+    async with sem:
+        prompt = renderer.build_generation_prompt(msgs)
+        params = types.SamplingParams(max_tokens=max_new_tokens, temperature=temperature, stop=stop)
+        res = await sampling_client.sample_async(prompt=prompt, num_samples=K, sampling_params=params)
+        votes, first_gen = [], None
+        for seq in res.sequences:
+            gen_text = tokenizer.decode(seq.tokens, skip_special_tokens=True)
+            if first_gen is None:
+                first_gen = gen_text
+            prefix_ids = renderer.build_generation_prompt(
+                msgs, prefill=_prefill_from_gen(gen_text)).to_ints()
+            z = await _tf_z(sampling_client, prefix_ids, cand_ids)
+            votes.append(1 if z > 0 else 0)
+    n_dev = sum(votes)
+    # Laplace smoothing (+0.5 / +1): keeps the logit finite when a vote is unanimous, and caps the
+    # confidence K samples can justify (K=16 => p in [0.029, 0.971]); Platt then rescales as usual.
+    p_sc = (n_dev + 0.5) / (K + 1)
+    z_sc = math.log(p_sc / (1.0 - p_sc))
+    return z_sc, n_dev, first_gen
 
 
 async def score_rows(rows, sampling_client, renderer, tokenizer, generate_first,
@@ -228,6 +274,20 @@ async def score_rows(rows, sampling_client, renderer, tokenizer, generate_first,
     return [z for z, _ in out], [g for _, g in out]
 
 
+async def score_rows_sc(rows, sampling_client, renderer, tokenizer, K, temperature,
+                        max_new_tokens, concurrency, tag):
+    """Self-consistency scoring: returns (z_sc list, n_deviate-votes list, first-trace list)."""
+    cand_ids = {w: tokenizer.encode(w, add_special_tokens=False) for w in CANDIDATES}
+    stop = renderer.get_stop_sequences() or None
+    sem = asyncio.Semaphore(concurrency)
+    print(f"[{tag}] self-consistency K={K} temp={temperature} over {len(rows)} rows "
+          f"(concurrency {concurrency})")
+    out = await asyncio.gather(*[
+        _score_one_sc(r, sem, sampling_client, renderer, tokenizer, cand_ids,
+                      K, temperature, max_new_tokens, stop) for r in rows])
+    return [z for z, _, _ in out], [n for _, n, _ in out], [g for _, _, g in out]
+
+
 async def amain(args):
     import tinker
     from tinker_cookbook.renderers import get_renderer
@@ -236,6 +296,8 @@ async def amain(args):
     def _load(split):
         return [json.loads(l) for l in (data / f"{split}.jsonl").read_text().splitlines() if l.strip()]
     val, test = _load("val"), _load("test")
+    if args.limit:                      # smoke test: first N rows of each split
+        val, test = val[:args.limit], test[:args.limit]
     yv = [r["meta"]["y"] for r in val]
     yt = [r["meta"]["y"] for r in test]
 
@@ -250,10 +312,20 @@ async def amain(args):
     tokenizer = sampling_client.get_tokenizer()
     renderer = get_renderer(args.renderer, tokenizer)       # MUST match the SFT renderer
 
-    zv, _ = await score_rows(val, sampling_client, renderer, tokenizer, args.generate_first,
-                             args.max_new_tokens, args.concurrency, "val")
-    zt, gen_t = await score_rows(test, sampling_client, renderer, tokenizer, args.generate_first,
-                                 args.max_new_tokens, args.concurrency, "test")
+    K = args.self_consistency
+    ndev_t = None
+    if K and K > 0:
+        assert args.generate_first, "--self-consistency requires --generate-first (arm c/c_rl/b_new)"
+        zv, _, _ = await score_rows_sc(val, sampling_client, renderer, tokenizer, K,
+                                       args.sc_temperature, args.max_new_tokens, args.concurrency, "val")
+        zt, ndev_t, gen_t = await score_rows_sc(test, sampling_client, renderer, tokenizer, K,
+                                                args.sc_temperature, args.max_new_tokens,
+                                                args.concurrency, "test")
+    else:
+        zv, _ = await score_rows(val, sampling_client, renderer, tokenizer, args.generate_first,
+                                 args.max_new_tokens, args.concurrency, "val")
+        zt, gen_t = await score_rows(test, sampling_client, renderer, tokenizer, args.generate_first,
+                                     args.max_new_tokens, args.concurrency, "test")
 
     a, b = fit_platt(zv, yv)
     raw_t = [1.0 / (1.0 + math.exp(-z)) for z in zt]
@@ -273,6 +345,16 @@ async def amain(args):
         "behavioural prediction with causally-masked inputs, 0.05-0.15 is real signal, ~0 is not.",
         "",
     ]
+
+    if ndev_t is not None:
+        unanimous = sum(1 for n in ndev_t if n == 0 or n == K) / len(ndev_t)
+        lines[1:1] = [
+            f"SELF-CONSISTENCY: K={K} traces/row at temperature={args.sc_temperature}. "
+            f"P(deviate)=vote share (Laplace-smoothed), fit through the SAME Platt path.",
+            f"  Gradation lives in trace-to-trace disagreement about the upstream `modality` guess.",
+            f"  rows with a UNANIMOUS vote (0/K or K/K) = {unanimous:.2f}  "
+            f"(low => SC actually recovered a graded signal; ~1.0 => even sampling can't split it)",
+        ]
 
     # ---- baseline: predict the train base rate for everyone -------------------
     lines.append("TEST — BASELINE (knows only the overall deviation rate; the anchor for BSS=0)")
@@ -304,8 +386,11 @@ async def amain(args):
         "arm": args.arm_name, "base": args.base, "checkpoint": args.checkpoint,
         "renderer": args.renderer, "generate_first": args.generate_first,
         "train_base_rate": base_rate, "platt": {"a": a, "b": b},
+        "self_consistency": ({"K": K, "temperature": args.sc_temperature} if ndev_t is not None
+                             else None),
         "metrics": {"baseline": m_const, "raw": m_raw, "calibrated": m_cal},
         "test_z": zt, "test_raw": raw_t, "test_cal": cal_t, "test_y": yt,
+        "test_sc_ndev": ndev_t,
         "val_z": zv, "val_y": yv,
     }, indent=2))
     if args.dump_generations and args.generate_first:
@@ -328,9 +413,16 @@ def main():
                     help="cls for arm a; cls_reason for arm c (+ --generate-first)")
     ap.add_argument("--generate-first", action="store_true",
                     help="arm c/c_rl/b_new: sample the reasoning, then score the label after it")
+    ap.add_argument("--self-consistency", type=int, default=0, metavar="K",
+                    help="if K>0: sample K traces/row at --sc-temperature and set P(deviate)=vote "
+                         "share (needs --generate-first). Recovers gradation collapsed by greedy.")
+    ap.add_argument("--sc-temperature", type=float, default=0.8,
+                    help="sampling temperature for --self-consistency traces")
     ap.add_argument("--max-new-tokens", type=int, default=1024,
                     help="traces reach ~700 tok before the deviation key; 512 truncates ~half")
     ap.add_argument("--concurrency", type=int, default=8)
+    ap.add_argument("--limit", type=int, default=0,
+                    help="smoke test: only score the first N rows of val/test")
     ap.add_argument("--dump-generations", action="store_true",
                     help="also write <out>_generations.jsonl for qualitative trace audit")
     ap.add_argument("--out", default="results/agent_inspection/tinker_deviation")

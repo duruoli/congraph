@@ -16,6 +16,7 @@ from `scripts/eval_deviation_cls.py`). Base `Qwen/Qwen3.6-35B-A3B`, renderer
 | const base-rate baseline | 0.2450 | +0.0000 | 0.500 | 0.008 | 0.000 | — |
 | **a** (SFT direct label, ep1 ckpt) | 0.2233 | +0.0886 | 0.7025 | 0.0668 | 0.150 | 0.20 |
 | **c** (SFT structured trace + tail, ep2 ckpt) | **0.2139** | **+0.1267** | **0.7214** | **0.0418** | 0.220 | **1.00** |
+| **c — self-consistency** (same ckpt, K=16 @ T=0.8, vote share) | 0.2116 | +0.1361 | 0.7233 | 0.1444 | 0.249 | **~0 (capped)** |
 | c+RL | _not built_ | | | | | |
 | b-NEW pre-RL | _not built_ | | | | | |
 | b-NEW post-RL | _not built_ | | | | | |
@@ -84,6 +85,48 @@ source of variation, since only the single most likely trace is ever produced.
 4. Framing for the paper: imposing reasoning structure in the SFT target made the model *recite its
    own conclusion* rather than express a belief. That is a finding about structured-reasoning SFT,
    not a bug in this pipeline.
+
+### SC readout CONFIRMS the mechanism (K=16, existing c checkpoint, no retrain)
+
+Ran `eval_prob_tinker.py --self-consistency 16 --sc-temperature 0.8` on the same c checkpoint
+(`results/agent_inspection/tinker_deviation_c_sc.{txt,json}`). Sample K traces per row at T>0, read
+each trace's own hard deviate/follow decision, P = vote share (Laplace-smoothed, then the same Platt
+path). This tests the claim above: if the doubt really lives in the upstream `modality` guess, then
+independent traces should guess *different* modalities and the votes should split.
+
+**They do.** The vote distribution over the 56 test rows:
+- **only 6/56 rows are unanimous (16/16); 43/56 (77%) show a genuine split (2–14 of 16 votes).**
+- RAW spread goes from the greedy collapse `frac<0.1 or >0.9 = 1.00` to **0.23**, min 0.088 / med
+  0.618 / max 0.971 (0.971 is the Laplace cap for K=16 — SC *structurally* cannot report hard 0/1,
+  which is honest: 16 samples can't justify >97% confidence).
+- The split is predictive, not noise: the top vote bins are enriched for true deviate (16/16 → 6/6
+  deviate, 15/16 → 5/5, 12/16 → 6:1) and the low bins for follow — hence AUROC is unchanged.
+
+**Chain of proof.** Within any single trace, `deviation` is a deterministic function of
+(`modality`, `rubric_recommended`) — verified 56/56 in the greedy finding above — and
+`rubric_recommended` is fixed by the case. So a trace-to-trace *split in the deviation vote* can only
+come from a *split in the guessed modality*. 77% split ⇒ the modality guess genuinely varies ⇒ the
+uncertainty was live upstream all along and greedy decoding merely hid it. The collapse was a
+**decoding artefact, not a knowledge limit.** (User's reorder hypothesis is thus corroborated
+without retraining: the graded token was downstream of a hard commitment; sampling that commitment
+restores the gradation.)
+
+**What SC buys, and what it costs.**
+- Predictive quality is **unchanged**: Brier 0.2116 vs greedy 0.2139, BSS +0.136 vs +0.127, AUROC
+  0.723 vs 0.721 — all identical inside the CIs. So the honestly-graded probability is obtained at
+  **no loss** of discrimination or Brier. Decision accuracy dips slightly (acc@0.5 0.625–0.66 vs
+  greedy 0.679, within noise) — thresholding a graded prob loses a hair vs the model's own argmax.
+- ECE(5) **rises 0.042 → 0.144**. This is NOT SC being worse-calibrated; greedy's 0.042 was the
+  artefact called out above (one global Platt slope over a binary — nothing to be miscalibrated
+  *about*). SC exposes real, non-monotonic structure: it is over-confident-deviate in the
+  [0.66,0.74] band (actual 0.333, but n=6 — noisy) and under-confident low (bin [0.07,0.28] actual
+  0.417). That is diagnostic and honest; the greedy panel simply couldn't show it. n=56 caveat.
+
+**Takeaway for the plan.** SC is the honest readout layer for c / c+RL / b-NEW alike — it grades the
+probability *at the step the uncertainty lives at*, needs no retrain, costs K× generation, and here
+recovered a genuine graded signal with no predictive-quality loss. The schema-reorder re-SFT is now
+**optional** (only needed if a single-sample structured arm that stays graded is wanted for the
+paper); SC already gives the graded c readout the panel needs.
 
 ## Reading arm a (the floor)
 
