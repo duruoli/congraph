@@ -21,10 +21,23 @@ _POS = "deviate"
 _NEG = "follow"
 
 
-def parse_prediction(completion: str) -> str | None:
+def parse_prediction(completion: str, answer_cue: str | None = None) -> str | None:
     """Pull the predicted answer word from a generated completion.
-    Accepts either a JSON-ish `"deviation": "deviate"` tail (arm c / structured) or a bare
-    trailing `deviate`/`follow` (arm b-NEW / free reasoning). Returns 'deviate'|'follow'|None."""
+    Returns 'deviate'|'follow'|None.
+
+    Precedence:
+      1. answer_cue (b-NEW free reasoning, e.g. "\\n\\nAnswer: "): the word right after the LAST
+         cue occurrence. This is required because free reasoning ABOUT deviating sprinkles the
+         words 'deviate'/'follow' through the prose, so the bare-word fallback (step 3) would grab
+         a mid-reasoning mention instead of the committed answer.
+      2. JSON `"deviation": "deviate"` tail (arm c / structured).
+      3. fallback: the LAST standalone occurrence of either word."""
+    if answer_cue:
+        idx = completion.rfind(answer_cue)
+        if idx != -1:
+            m = re.match(r'\s*"?(follow|deviate)"?', completion[idx + len(answer_cue):], re.I)
+            if m:
+                return m.group(1).lower()
     m = re.search(r'"deviation"\s*:\s*"(follow|deviate)"', completion)
     if m:
         return m.group(1)
@@ -33,9 +46,10 @@ def parse_prediction(completion: str) -> str | None:
     return hits[-1] if hits else None
 
 
-def deviation_reward(completion: str, gold_y: int, format_coef: float = 0.1) -> float:
+def deviation_reward(completion: str, gold_y: int, format_coef: float = 0.1,
+                     answer_cue: str | None = None) -> float:
     """gold_y: 1 = deviate/off_rubric (positive), 0 = follow. Returns reward in [0, 1+format_coef]."""
-    pred = parse_prediction(completion)
+    pred = parse_prediction(completion, answer_cue)
     if pred is None:
         return 0.0                      # unparseable -> no format bonus, no correctness
     gold_word = _POS if gold_y == 1 else _NEG
@@ -44,10 +58,21 @@ def deviation_reward(completion: str, gold_y: int, format_coef: float = 0.1) -> 
 
 
 if __name__ == "__main__":  # tiny self-test
+    CUE = "\n\nAnswer: "
     assert parse_prediction('... "deviation": "deviate"}') == "deviate"
     assert parse_prediction("I think we should follow") == "follow"
     assert parse_prediction("no answer here") is None
     assert deviation_reward('"deviation": "deviate"', 1) == 1.1
     assert deviation_reward('"deviation": "follow"', 1) == 0.1
     assert deviation_reward("garbage", 0) == 0.0
+    # b-NEW cue path: word right after the cue, case-insensitive.
+    assert parse_prediction("reasoning...\n\nAnswer: deviate", CUE) == "deviate"
+    assert parse_prediction("reasoning...\n\nAnswer: DEVIATE", CUE) == "deviate"
+    # THE TRAP the cue exists for: committed answer is 'follow', but a later stray line ends in
+    # 'deviate', so the bare-word fallback (no cue) grabs the WRONG word; the cue path fixes it.
+    trap = "They might deviate.\n\nAnswer: follow\n(ordering CT instead of US would be a deviate.)"
+    assert parse_prediction(trap) == "deviate"          # no cue -> last bare word -> WRONG
+    assert parse_prediction(trap, CUE) == "follow"      # cue-anchored -> RIGHT
+    assert deviation_reward(trap, 0, answer_cue=CUE) == 1.1    # gold=follow, cue-correct
+    assert deviation_reward(trap, 1, answer_cue=CUE) == 0.1    # gold=deviate, wrong
     print("rl_reward self-test OK")

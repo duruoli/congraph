@@ -173,8 +173,17 @@ def report_arm(name, y, p, base_rate, lines):
 
 
 # --------------------------- Tinker scoring -----------------------------------
-def _prefill_from_gen(gen_text):
-    """Cut the model's own trace just before the `deviation` label it would emit."""
+def _prefill_from_gen(gen_text, answer_cue=None):
+    """Cut the model's own trace just before the answer word it would emit, so we teacher-force
+    follow/deviate at exactly the position the model was about to speak.
+
+    answer_cue=None -> arm c/structured: cut at the JSON `"deviation"` key.
+    answer_cue set  -> b-NEW/free reasoning: cut at (and keep) the LAST occurrence of the cue
+                       (e.g. "\\n\\nAnswer: "), so the next token is the bare answer word."""
+    if answer_cue is not None:
+        if answer_cue in gen_text:
+            return gen_text.rsplit(answer_cue, 1)[0] + answer_cue
+        return gen_text.rstrip() + answer_cue          # malformed: graft the cue on
     if '"deviation"' in gen_text:
         return gen_text.split('"deviation"')[0] + '"deviation": "'
     # malformed: graft the key onto whatever JSON body it produced
@@ -198,7 +207,7 @@ async def _tf_z(sampling_client, prefix_ids, cand_ids):
 
 
 async def _score_one(row, sem, sampling_client, renderer, tokenizer, cand_ids,
-                     generate_first, max_new_tokens, stop):
+                     generate_first, max_new_tokens, stop, answer_cue=None):
     """z = logprob(deviate) - logprob(follow) for one row (single greedy trace)."""
     from tinker import types
 
@@ -212,7 +221,7 @@ async def _score_one(row, sem, sampling_client, renderer, tokenizer, cand_ids,
             res = await sampling_client.sample_async(
                 prompt=prompt, num_samples=1, sampling_params=params)
             gen_text = tokenizer.decode(res.sequences[0].tokens, skip_special_tokens=True)
-            prefill = _prefill_from_gen(gen_text)   # condition on the model's OWN reasoning
+            prefill = _prefill_from_gen(gen_text, answer_cue)  # condition on the model's OWN reasoning
 
         prefix_ids = renderer.build_generation_prompt(msgs, prefill=prefill).to_ints()
         z = await _tf_z(sampling_client, prefix_ids, cand_ids)
@@ -220,7 +229,7 @@ async def _score_one(row, sem, sampling_client, renderer, tokenizer, cand_ids,
 
 
 async def _score_one_sc(row, sem, sampling_client, renderer, tokenizer, cand_ids,
-                        K, temperature, max_new_tokens, stop):
+                        K, temperature, max_new_tokens, stop, answer_cue=None):
     """Self-consistency readout for one row.
 
     Sample K reasoning traces at temperature>0. Each trace independently commits to (possibly
@@ -244,7 +253,7 @@ async def _score_one_sc(row, sem, sampling_client, renderer, tokenizer, cand_ids
             if first_gen is None:
                 first_gen = gen_text
             prefix_ids = renderer.build_generation_prompt(
-                msgs, prefill=_prefill_from_gen(gen_text)).to_ints()
+                msgs, prefill=_prefill_from_gen(gen_text, answer_cue)).to_ints()
             z = await _tf_z(sampling_client, prefix_ids, cand_ids)
             votes.append(1 if z > 0 else 0)
     n_dev = sum(votes)
@@ -256,7 +265,7 @@ async def _score_one_sc(row, sem, sampling_client, renderer, tokenizer, cand_ids
 
 
 async def score_rows(rows, sampling_client, renderer, tokenizer, generate_first,
-                     max_new_tokens, concurrency, tag):
+                     max_new_tokens, concurrency, tag, answer_cue=None):
     # NOTE (Qwen3.6 tokenizer): 'follow' is ONE token [18000] but 'deviate' is TWO [3464, 6290].
     # Summing token logprobs gives the correct sequence probability of each WORD, so the
     # comparison is well-posed — but the 2-token word pays an extra sub-1 factor, biasing raw z
@@ -270,12 +279,12 @@ async def score_rows(rows, sampling_client, renderer, tokenizer, generate_first,
           f"token ids follow->{cand_ids['follow']} deviate->{cand_ids['deviate']}")
     out = await asyncio.gather(*[
         _score_one(r, sem, sampling_client, renderer, tokenizer, cand_ids,
-                   generate_first, max_new_tokens, stop) for r in rows])
+                   generate_first, max_new_tokens, stop, answer_cue) for r in rows])
     return [z for z, _ in out], [g for _, g in out]
 
 
 async def score_rows_sc(rows, sampling_client, renderer, tokenizer, K, temperature,
-                        max_new_tokens, concurrency, tag):
+                        max_new_tokens, concurrency, tag, answer_cue=None):
     """Self-consistency scoring: returns (z_sc list, n_deviate-votes list, first-trace list)."""
     cand_ids = {w: tokenizer.encode(w, add_special_tokens=False) for w in CANDIDATES}
     stop = renderer.get_stop_sequences() or None
@@ -284,7 +293,7 @@ async def score_rows_sc(rows, sampling_client, renderer, tokenizer, K, temperatu
           f"(concurrency {concurrency})")
     out = await asyncio.gather(*[
         _score_one_sc(r, sem, sampling_client, renderer, tokenizer, cand_ids,
-                      K, temperature, max_new_tokens, stop) for r in rows])
+                      K, temperature, max_new_tokens, stop, answer_cue) for r in rows])
     return [z for z, _, _ in out], [n for _, n, _ in out], [g for _, _, g in out]
 
 
@@ -317,15 +326,16 @@ async def amain(args):
     if K and K > 0:
         assert args.generate_first, "--self-consistency requires --generate-first (arm c/c_rl/b_new)"
         zv, _, _ = await score_rows_sc(val, sampling_client, renderer, tokenizer, K,
-                                       args.sc_temperature, args.max_new_tokens, args.concurrency, "val")
+                                       args.sc_temperature, args.max_new_tokens, args.concurrency,
+                                       "val", args.answer_cue)
         zt, ndev_t, gen_t = await score_rows_sc(test, sampling_client, renderer, tokenizer, K,
                                                 args.sc_temperature, args.max_new_tokens,
-                                                args.concurrency, "test")
+                                                args.concurrency, "test", args.answer_cue)
     else:
         zv, _ = await score_rows(val, sampling_client, renderer, tokenizer, args.generate_first,
-                                 args.max_new_tokens, args.concurrency, "val")
+                                 args.max_new_tokens, args.concurrency, "val", args.answer_cue)
         zt, gen_t = await score_rows(test, sampling_client, renderer, tokenizer, args.generate_first,
-                                     args.max_new_tokens, args.concurrency, "test")
+                                     args.max_new_tokens, args.concurrency, "test", args.answer_cue)
 
     a, b = fit_platt(zv, yv)
     raw_t = [1.0 / (1.0 + math.exp(-z)) for z in zt]
@@ -413,6 +423,10 @@ def main():
                     help="cls for arm a; cls_reason for arm c (+ --generate-first)")
     ap.add_argument("--generate-first", action="store_true",
                     help="arm c/c_rl/b_new: sample the reasoning, then score the label after it")
+    ap.add_argument("--answer-cue", default=None,
+                    help="generate-first cut marker. Omit for arm c (cuts at the JSON \"deviation\" "
+                         "key); for b-NEW free reasoning pass the final-answer cue, e.g. "
+                         "$'\\n\\nAnswer: '. Must match build_bnew.ANSWER_CUE / rl_reward.")
     ap.add_argument("--self-consistency", type=int, default=0, metavar="K",
                     help="if K>0: sample K traces/row at --sc-temperature and set P(deviate)=vote "
                          "share (needs --generate-first). Recovers gradation collapsed by greedy.")
