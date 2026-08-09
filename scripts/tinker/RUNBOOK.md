@@ -227,7 +227,32 @@ c+RL↔b-NEW+RL (imposed vs discovered converge?). N=56 → directional; report 
 
 ---
 
-## What to hand me for phase 2
-Once arms a+c run: paste the `ProblemEnv` / `RLDatasetBuilder` base-class signatures from your
-installed `tinker_cookbook` (or any first-run error), and I'll write `deviation_env.py` + `rl_c.py`
-concretely against the real API instead of the doc summary.
+## Step 9 — b-NEW RLVR (BUILT 2026-07-27, smoke-passed)
+The b-NEW reward was redesigned bottom-up into a **4-term process reward** — see
+`results/tinker/RESULTS_bnew_reward_emergence.md`. Env + entrypoint are built against the real
+cookbook API:
+- `scripts/tinker/deviation_env.py` — `DeviationEnv(ProblemEnv)` (system as `convo_prefix`,
+  `step()` overridden to return `rl_reward.bnew_reward`), `DeviationDataset`, `DeviationDatasetBuilder`.
+- `scripts/tinker/rl_bnew.py` — chz entrypoint → `rl.train.Config` + `main`; no checkpoint =
+  warm-start from the bare base (= b-NEW pre-RL reference).
+
+Run with the **tinker env** (`/opt/anaconda3/envs/tinker/bin/python`, `PYTHONPATH="$PWD"`):
+```
+# smoke (2 steps, ~$ small): confirmed exit 0, reward flows, frac_mixed 0.75, ckpt saved
+python scripts/tinker/rl_bnew.py group_size=4 groups_per_batch=4 max_tokens=768 max_steps=2 \
+    save_every=2 eval_every=100 log_path=<tmp> behavior_if_log_dir_exists=delete
+# real run
+python scripts/tinker/rl_bnew.py group_size=16 groups_per_batch=32 learning_rate=1e-5 \
+    max_tokens=768 log_path=runs/tinker/rl_bnew wandb_project=congraph-preddev
+```
+⚠️ `behavior_if_log_dir_exists` ∈ {delete, resume, ask, raise} (NOT "overwrite").
+Reward weights are CLI-tunable: `w_ans=1.0 w_dx=0.25 w_rec=0.25 w_std=0.25`.
+
+Eval post-RL (expects verdict collapse → use SC):
+```
+python scripts/tinker/eval_prob_tinker.py --arm-name b_new_rl --generate-first \
+    --self-consistency 16 --answer-cue $'\nAnswer: ' \
+    --checkpoint <bnew rl sampler_path> --data data/training_set/cls_free \
+    --out results/agent_inspection/tinker_deviation_bnew_rl
+```
+b-NEW **pre↔post** is the informative RL contrast for the panel (Step 8 above).

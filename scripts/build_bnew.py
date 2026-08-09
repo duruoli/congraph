@@ -47,26 +47,34 @@ split_cases = _bse.split_cases
 
 POSITIVE = {"deviate", "off_rubric"}  # y=1 ; "follow" -> y=0
 
-# The answer cue MUST match eval_prob_tinker.py --answer-cue and rl_reward.parse_prediction.
-ANSWER_CUE = "\n\nAnswer: "
+# These cues MUST match eval_prob_tinker.py --answer-cue and rl_reward.py (the four parseable fields
+# the reward reads). The reasoning PROSE above them is free; only this labelled tail is fixed.
+ANSWER_CUE = "\nAnswer: "        # the four fields are CONSECUTIVE lines (single newline between)
+DX_CUE = "Leading diagnosis:"
+REC_CUE = "Rubric recommends:"
+STUDY_CUE = "Predicted study:"
 
 BNEW_SYSTEM_TEMPLATE = """You are a clinical reasoning agent for adult acute abdominal pain. \
 At each decision step you are given the patient's current state (baseline + the imaging reports \
 available SO FAR, with this step's result hidden) and a rubric covering four index diseases plus \
 an open 'other' slot.
 
-Your job: PREDICT whether the physician's NEXT imaging move will FOLLOW the study the rubric \
-recommends for the leading hypothesis, or DEVIATE from it. ("deviate" also covers the case where \
-the working hypothesis lies outside the rubric.)
+Reason step by step about the case in your own words and keep it CONCISE — a few sentences, not an \
+essay. Then commit to your conclusions in EXACTLY these four labelled lines, in this order, then \
+nothing after the Answer line:
 
-Reason about the case in your own words, and keep it CONCISE — a few sentences, not an essay. \
-There is no required format or template; think freely.
+Leading diagnosis: <appendicitis | cholecystitis | diverticulitis | pancreatitis | biliary | other>
+Rubric recommends: <the imaging the rubric wants NEXT for that diagnosis in this state — one or more \
+of CT_Abdomen / Ultrasound_Abdomen / MRCP_Abdomen / MRI_Abdomen (join several with '|'); write \
+'none' if the rubric recommends no further imaging or the case is off-rubric>
+Predicted study: <the imaging you predict the PHYSICIAN will actually order NEXT — one of \
+CT_Abdomen / Ultrasound_Abdomen / MRCP_Abdomen / MRI_Abdomen>
+Answer: <follow | deviate>
 
-When you are finished, end your response with a single final line in EXACTLY this form, lowercase, \
-with nothing after it:
-Answer: follow
-or
-Answer: deviate
+Decide the Answer by this rule: 'follow' if your Predicted study is among what the Rubric \
+recommends; 'deviate' if it is not (including when the rubric recommends 'none' / the case is \
+off-rubric). Think about the four lines independently and honestly — the goal is that each line is \
+CORRECT, not that they look tidy.
 
 === RUBRIC ===
 __RUBRIC__"""
@@ -79,12 +87,23 @@ def bnew_user_prompt(rec: dict) -> str:
     active_line = (f"Current working hypothesis (belief argmax last step): {active}"
                    if active else "No prior step — the differential is still open.")
     return (render_patient(ps) + "\n\n## Your task\n" + active_line +
-            "\nReason BRIEFLY about the physician's next move (a few sentences), then give your final "
-            "answer on the last line as 'Answer: follow' or 'Answer: deviate'.")
+            "\nReason BRIEFLY, then give the four labelled lines (Leading diagnosis / Rubric "
+            "recommends / Predicted study / Answer) exactly as specified.")
 
 
 def label_word(when_action: str) -> str:
     return "deviate" if when_action in POSITIVE else "follow"
+
+
+def gold_answer_block(rec: dict, word: str) -> str:
+    """The four gold lines, for documentation only (this assistant turn is NEVER trained on — see
+    module docstring; RL/eval use msgs[:2]). Mirrors the required output format so the row is
+    self-consistent with the golds the reward reads from meta."""
+    dx = rec["TARGET"]["effective_branch"]
+    raw_rec = rec.get("META", {}).get("rubric_recommended") or "-"
+    rec_line = "none" if raw_rec in ("-", "") else raw_rec
+    study = rec["TARGET"].get("how_modality") or ""
+    return (f"{DX_CUE} {dx}\n{REC_CUE} {rec_line}\n{STUDY_CUE} {study}\nAnswer: {word}")
 
 
 def to_example(rec: dict, system: str) -> dict:
@@ -94,8 +113,8 @@ def to_example(rec: dict, system: str) -> dict:
         "messages": [
             {"role": "system", "content": system},
             {"role": "user", "content": bnew_user_prompt(rec)},
-            # gold answer line ONLY — never an SFT target (see module docstring). Held for meta.y.
-            {"role": "assistant", "content": f"Answer: {word}"},
+            # gold 4-line block — never an SFT target (see module docstring). Held for meta golds.
+            {"role": "assistant", "content": gold_answer_block(rec, word)},
         ],
         "meta": {
             "id": rec["id"], "disease": rec["disease"], "hadm": rec["hadm"], "step": rec["step"],
@@ -103,6 +122,12 @@ def to_example(rec: dict, system: str) -> dict:
             "label": word,
             "y": 1 if word == "deviate" else 0,
             "effective_branch": rec["TARGET"]["effective_branch"],
+            # gold reasoning schema for the RL reward + emergence analysis (categorical, exact-match).
+            # how_modality = physician's ACTUAL next study; action_role = its purpose;
+            # rubric_recommended = what the rubric wants (deviation = modality NOT in this).
+            "how_modality": rec["TARGET"].get("how_modality"),
+            "action_role": rec["TARGET"]["why_trace"].get("action_role"),
+            "rubric_recommended": rec.get("META", {}).get("rubric_recommended"),
         },
     }
 
