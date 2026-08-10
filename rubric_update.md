@@ -1,816 +1,217 @@
-# Rubric Update — a question-driven redesign
+# Rubric Update — a minimal state model of clinical testing
 
-> Working design doc. Motivation: the "wrap the rubric with alarm-override rules" patch (A2/A3/A1
-> as external booleans) is too shallow — it treats the rubric's blind spots as exceptions bolted on
-> top. This doc explores the deeper move the analysis points to: **rebuild the rubric so that
-> inadequacy, ask-the-right-question, and (tentatively) discordance are native consequences of the
-> rubric's own state, not add-ons.** Grounded in the `study_inadequacy` corpus (185 flagged steps,
-> `results/annotation_experiment/alarm/*.json` joined to `full/*.json`).
+## 1. Thesis
+
+Clinical testing is a partially observed sequential decision process. The patient has an underlying
+clinical state; tests generate imperfect observations; observations update both what the current
+question has learned and what the physician believes; the remaining decision-relevant uncertainty
+determines the next test.
+
+A standard rubric conditions mainly on a disease label and a narrow pathway position. A physician
+acts on a richer state. A **deviation** is therefore initially a residual produced by an insufficient
+state representation—not automatically a physician error, and not automatically a reasonable action.
+
+The project asks:
+
+> What is the smallest clinically coherent state that makes the physician's next test, test order,
+> and reasonable deviations derivable from information available before the order?
+
+The proposed factorization of that state is **belief, open question, and question coverage**. This is
+a testable model of clinical reasoning, not a claim that the physician's private mental process can
+be uniquely recovered from behavior.
 
 ---
 
-## Current conceptual frame (2026-08-09 — design simplification)
+## 2. Core state
 
-The project should be explained and implemented around one clinical loop, not around the names of
-the alarms or the details of the graph implementation:
+At step `t`:
 
+- `I_t`: observations available before the next order—history, examination, laboratory values,
+  prior tests, reports, and report quality.
+- `A_t`: the physician's revisable belief state about the patient's latent clinical state.
+- `Q_t`: the current decision-relevant unknown. Resolving it could change a clinical action.
+- `C_t(Q_t)`: how much the available evidence has answered the current question.
+- `T_t`: the ordered test.
+- `O_{t+1}`: the observation produced by that test, including whether the result is interpretable
+  and adequate for the question.
+
+These objects must not be collapsed:
+
+1. **Patient state** is how the patient actually is, whether observed or not.
+2. **Observation state** is what evidence is currently available.
+3. **Belief state** is what the physician infers from that evidence.
+
+Coverage is not solely a patient fact or physician belief. It is a question-relative relation:
+
+```text
+C_t(Q) = coverage(observations available at t, question Q, test/report quality)
 ```
-observed patient information I_t
-        ↓
-assumption / belief state A_t
-        ↓
-decision-relevant open question Q_t
-        ↓
-test action T_t
-        ↓
-new observation O_{t+1} (including report quality)
-        ↓
-update A_{t+1} and Q_{t+1}
+
+The same observation may adequately answer one question and be inadequate or irrelevant for
+another.
+
+---
+
+## 3. One clinical loop
+
+```text
+observations I_t
+      │
+      ├──> belief update A_t         (what the physician believes)
+      │
+      └──> coverage update C_t(Q)   (what the current question has learned)
+                       │
+                 open question Q_t
+                       │
+             next-test policy π(A_t, Q_t, C_t, I_t)
+                       │
+                 ordered test T_t
+                       │
+              new observation O_{t+1}
+                       └──> repeat
 ```
 
-This is the current conceptual lock-in:
+There is only one test-routing rule:
 
-- **Question-first, assumption-aware.** The question is the procedural control object; the current
-  assumption/belief state supplies its frame, expected findings, and routing context. Do not make
-  the rubric a disease→test lookup, but also do not detach a question from the hypothesis or
-  clinical frame it is about.
-- **A question is a decision-relevant unknown, not any missing fact.** It is information whose
-  resolution could change the next clinical action. `existence`, `etiology`, `severity`, and
-  `complication` are recurring question purposes, not a mandatory linear order.
-- **A gap is question-relative.** It is the still-unresolved part of the current question. A test
-  can fail to reduce the gap because it was inadequate; a valid result can replace the old gap by
-  contradicting the current assumption and opening a new one.
-- **Patient information and assumptions are different state layers.** `I_t` is the observed
-  record; `A_t` is an interpreted, revisable clinical model. Patient observations may accumulate,
-  but assumptions must be updated, downgraded, contradicted, or replaced rather than appended as
-  permanent truths.
-- **Every deviation is initially a candidate explanation, not automatically a normal action.**
-  The discovery prior is: “what missing state, question, or medical knowledge would make this
-  action reasonable?” Absorption requires ex-ante justification and must not erase the
-  over-imaging brake.
-
-### Assumption / belief state (the proposed clinical model state)
-
-The assumption library is a typed, evidence-linked set of claims rather than a second copy of the
-question tree. It can contain a stable frame and graded beliefs:
-
+```text
+T_t = π(A_t, Q_t, C_t, I_t)
 ```
-assumption_claim := {
+
+A new observation has two distinct update effects:
+
+```text
+C_{t+1} = U_C(C_t, O_{t+1}, Q_t)   # Does the observation answer the question?
+A_{t+1} = U_A(A_t, O_{t+1})        # Does it change the clinical belief?
+```
+
+The familiar special cases are consequences of this loop:
+
+- **Advance:** the current question is adequately answered; close it and select the next
+  decision-relevant question.
+- **Inadequate / retry:** coverage remains insufficient; the question stays open and another test
+  may be routed to the same information need.
+- **Inconsistent / reroute:** the observation materially changes the belief state; update or replace
+  the question and route a test under the revised belief.
+
+These are transitions, not external alarm rules.
+
+---
+
+## 4. Representation constraints
+
+### Belief state
+
+The assumption library is a shared, finite vocabulary of clinically meaningful claims. A patient's
+belief state instantiates claims from that library with evidence, confidence, and status:
+
+```text
+belief_claim := {
   scope: frame | disease | etiology | severity | complication | alternative,
-  target: <disease / cause / grade / complication / alternative>,
-  value: <claim value>,
-  confidence: <probability or calibrated level>,
+  target: <clinical target>,
+  confidence: <calibrated value or level>,
   status: active | supported | contradicted | ruled_out | unknown,
-  evidence_refs: [<observed(S) ids>],
-  last_updated: <step>
+  evidence_refs: [<pre-order observation ids>]
 }
 ```
 
-The distinction between two kinds of assumption is important:
+Beliefs must be produced by a cross-patient update rule rather than freely invented per case:
 
-1. **Frame assumption:** what the current question is about, e.g. “manage this as pancreatitis”
-   or “evaluate the biliary branch.” This need not be highly certain.
-2. **Probabilistic belief:** how strongly the agent believes a claim, e.g. biliary etiology 0.55 or
-   severe disease 0.10.
-
-Thus a severity question can exist without a strong pre-belief about the severity grade, while it
-still has a disease frame. The question node should carry the relevant frame/target; the belief
-state should carry confidence and evidence. A useful abstract state is therefore:
-
-```
-I_t = observed information
-A_t = Update(A_{t-1}, O_t)
-Q_t = SelectOpenQuestion(I_t, A_t, decision_context)
-T_t = SelectTest(Q_t, I_t, A_t)
+```text
+A_{t+1} = U_A(A_t, O_{t+1})
 ```
 
-### RL/POMDP interpretation (research lens, not the immediate deliverable)
+### Open question
 
-The mapping is useful, but the project is closer to a partially observable diagnostic decision
-process than to “reward = entropy reduction”:
+A question is not any missing fact. It is an unresolved variable whose answer could change the next
+clinical action. `existence`, `etiology`, `severity`, and `complication` are recurring purposes, not a
+mandatory sequence.
 
-```
-latent patient state s_t  →  observation o_t  →  belief A_t
-active question Q_t       →  action T_t      →  next observation
-```
+### Guard against post-hoc explanation
 
-The test should be rewarded for its expected decision value, not merely for reducing total belief
-entropy. A question-specific information gain can be an auxiliary signal, but the desired objective
-is closer to:
+Any state added to explain a deviation must be:
 
-```
-expected next-decision utility
-  − test cost − risk − delay − unjustified repeat/over-imaging
-```
+1. available before the order;
+2. reproducible across patients;
+3. low-dimensional and parsimonious;
+4. clinically and normatively defensible.
 
-A disconfirming or outlier-finding test can be good even when entropy increases. Full offline RL is
-deferred: the immediate work is to build the aligned step-level state/question/test records and a
-local value/verification signal. Do not start by implementing a global entropy reward or a policy
-learner.
-
-## 0. The two build directions (2026-07-13 — the organizing frame)
-
-Everything below decomposes into **two construction directions**. They are not parallel: **Direction 2
-is the substrate Direction 1 runs on.** (Discordance / A3 is deliberately SET ASIDE for now — folding it
-in makes the thread too diffuse; revisit after these two are standing.)
-
-**Direction 1 — build the Question–Test tree (the procedural spine, §3/§6).**
-Nodes = the LLM-annotated `target question`s (Phase-1 done: seed was `existence / etiology / severity /
-complication / broaden`; **`broaden` was subsequently REMOVED — it is a belief-track re-route, not a
-question type, see §6h — so the node set is the 4 remaining types**, `results/question_targets/`). The **hard part is not the nodes,
-it is deriving ONE shared, consistent Q–T tree per disease** — the edges and their ordering. Two
-constraints the data imposes:
-- **It is a question-type LATTICE / partial order, NOT a linear pointer.** 452/542 steps are
-  multi-label — a single step holds 2–3 open questions at once (panc `complication+etiology`=91,
-  `complication+severity`=61). The §3 "advance one pointer existence→etiology→severity→complication"
-  model is too linear; the shared object is a lattice, and each patient traverses a *subset path*
-  through it. That is how "one shared tree" (lattice fixed) coexists with "every patient differs"
-  (path differs).
-- **Cross-disease consistency lives in the question-TYPE vocabulary, not the content.** The 4 types
-  are shared across all 4 diseases; the disease-specific part (what `etiology` *means*: stone vs
-  alcohol vs perforation-source) is pushed down into `required(S)` per (question, disease). So the
-  tree is shared in shape, specialized in its guards.
-
-**Direction 2 — build the evidence pieces = the shared signal ontology `S` (§6c).**
-To let the tree *flow*, its edges need conditions (guards). The language of those conditions is `S`:
-fragment every report into structured **evidence pieces** = `(anatomy/名词 + state/状态)` records,
-cluster them to discover a **名词库 (anatomy vocabulary)** and **状态库 (state vocabulary)**, and these
-become the raw material for the two gates — the Q→T **guard** state and the T→Q **adequacy** gate.
-Coverage spans **physical exam + radiology + laboratory** — every patient-state signal in the raw data.
-Note the split by perception method: **labs/vitals are already tabular** `(name, value)` → parse, don't
-build a text-splitter; the fragmentation task proper is **radiology reports + physical-exam narrative**.
-
-**Why 2 is under 1:** `observed(S)` is the ONE accumulating state vector (§6 "state is one vector"). The
-SAME vector both *guards the Q→T edges* (Direction 1's conditions) and *drives the T→Q adequacy gate*.
-So without `S` there is no language to write Direction 1's edges in — build (or at least schema-fix) `S`
-first.
-
-**Implementation status of v1 vocabulary:** `results/vocab/` is currently a canonicalization artifact
-generated by API-free, hand-authored medical normalization rules in `scripts/normalize_vocab.py`. It is
-useful as the shared vocabulary substrate, but it is not evidence that unsupervised clustering has
-discovered the final ontology. Keep “vocabulary normalization,” “medical knowledge for required /
-coverable,” and “verification of thresholds” as three separate operations.
-
-**The `S` schema (what "schema" means here) — v1 LOCKED 2026-07-13.** `S` ≈ the noun-state combination,
-but "schema" is the **fixed slot TEMPLATE** each evidence piece is decomposed into, so pieces become
-machine-queryable conditions (a flat "pancreatic tail not visualized" string can't be queried; a slotted
-record can). Validated against the real demand-side phrasing (`sought_dimensions`, all 542 rows) before
-locking. Template for one element of `observed(S)` / `coverable(S)`:
-```
-evidence_piece := {
-  # CORE (every piece)
-  anatomy:        <organ/region>       # 名词库 — clustered, CORPUS-WIDE  (appendix, CBD, pancreatic tail, GB wall, adnexa, aorta, ureter, mesentery, terminal ileum, RLQ…)
-  attribute:      <property>           # wall / diameter / stones / fat-stranding / fluid / enhancement / compressibility / sonographic-Murphy
-  state:          <raw descriptor>     # 状态库 — clustered  (thickened / dilated / absent / necrosis / pneumatosis / non-compressible / non-visualized / normal …)
-  finding_status: abnormal|normal|not_evaluated|equivocal   # ← the NORMALIZED enum the GATES read; carries inadequacy ①②
-  source_test:    <modality/exam>      # key for coverable(S)-per-test (capability template)
-  # OPTIONAL
-  value+unit:     <numeric>            # thresholded guards (appendix >6mm)
-  qualifier:      <hedge / protocol>   # "not fully visualized" / "limited by bowel gas" / "non-contrast" → inadequacy ①③ detail
-  section:        findings|impression  # provenance / dedup
-}
-```
-名词库 and 状态库 are SLOTS discovered by clustering; the schema is the fixed template, the vocabulary
-fills it. The gates query BY SLOT: `adequacy(R,q) = required(q) ⊆ covered(R)` reads
-**`(anatomy, attribute)` pairs** with `finding_status ∈ {normal,abnormal}` (i.e. actually evaluated); a
-guard reads e.g. `pancreatic_tail.state == non_visualized`.
-
-**Three decisions the `sought_dimensions` validation settled (2026-07-13):**
-- **The atomic covered/required unit is the `(anatomy, attribute)` PAIR, so `attribute` is CORE not
-  optional** — the demand side is dominantly sub-organ: the *same* organ recurs with *different*
-  attributes as *distinct* required dims (gallbladder × {wall / stones / pericholecystic-fluid /
-  sonographic-Murphy}; CBD × {diameter / obstructing-stone / dilation}). `anatomy` alone would let a
-  study that never assessed the GB *wall* pass "GB was covered."
-- **`state` (free, clustered) vs `finding_status` (normalized enum) SPLIT is confirmed** — the state
-  vocabulary is genuinely rich (thickened/dilated/stranding/necrosis/pneumatosis/non-compressible),
-  clustering has real work; the gate keys on the small enum, not the free field.
-- **`anatomy` vocabulary is CORPUS-WIDE, not per-disease** — demands routinely reach neighbors /
-  alternatives (adnexa, aorta, ureter+hydronephrosis, mesentery, portal vein). Index disease only
-  *weights* the vocabulary.
-
-**Two elements deliberately NOT slotted in v1 (the fragmentation prompt STRIPS them):**
-- **implication tails** ("...*indicating* cholecystitis", "...*to grade* severity") = the
-  finding→hypothesis link = **M-matrix / belief-track = the discordance track set aside.** Strip, don't
-  slot.
-- **temporal/comparative dims** ("*interval change* in size", "*persistence/increase* of free air") —
-  a few dims are vs-prior not absolute; fold into `state` as a value ("interval-increased") for v1,
-  flag a proper comparative axis as later-maybe.
-
-**⚠️ Clustering ≠ the gates (the load-bearing caveat, ties to §6c).** Clustering discovers only the
-VOCABULARY (名词库/状态库 = the nodes). It gives NEITHER (a) `question → required(S)` (which dims answer a
-question — needs standard medical knowledge + verification mining), NOR (b) the thresholds, NOR (c) the
-tree edges/ordering. Recipe = **clustering (vocab) + standard knowledge (structure/edges/required sets)
-+ verification (thresholds, keep it non-circular)**. "Evidence pieces → gates" is really "evidence
-pieces are the *raw material* for gates."
-
-**⚠️ "verification" is NOT "outcome = confirmed" (correction, 2026-07-13, replaces the old
-"vindication").** The success criterion below and the §6c recipe both said "absorb only vindicated
-deviations." Renamed to **verification**, and widened: a deviation is *verified / worth absorbing* when
-it was **ex-ante justified — alarm firing OR belief diffuse — regardless of whether the outcome
-confirmed or disconfirmed.** The agent-training analysis is explicit: *a mistake judgment NEVER rests on
-a single outcome; outcome only updates next-step belief* (`agent_training_plan` §2.5), and most
-DISCONFIRMED deviations are legitimate (rule-out-by-design, serendipity redirect — `disconfirm_preadmission_findings`).
-So a broad net that comes back negative but was the right ex-ante move IS verified and absorbable. What
-verification still EXCLUDES is the over-imaging brake = **alarm silent ∧ belief concentrated ∧
-same-modality repeat** (the ex-ante distinguisher, not the outcome). Absorbing all deviation would import
-the doctor's mistakes; absorbing only outcome-confirmed would throw away the reasonable rule-outs.
+The model must never use the target order or later documentation to reconstruct the pre-order belief
+or question.
 
 ---
 
-## 1. Empirical typology of "inadequate" (185 flagged steps)
+## 5. What a deviation can mean
 
-A study is flagged inadequate for **4 distinct mechanisms**. Each has a *different* detection
-signature when reading a report — this matters because "how do we systematically judge inadequacy"
-has a different answer per type.
+A deviation from the standard rubric has four possible explanations:
 
-| # | Mechanism | Share | Report signature (the detection sign) | Grounded example |
-|---|-----------|-------|----------------------------------------|------------------|
-| **①** | **VISUALIZATION** — target organ obscured / not shown (technical) | **~113/185 (61%)** | Report **self-declares**: "not visualized / not fully visualized / tail obscured / limited by bowel gas / suboptimal / body habitus / not definitively" | panc 20474777 (lipase 4555 but pancreatic tail not fully visualized); chole 21948836 (distal CBD not visualized); appe 20123918 s2 (tail obscured by bowel gas) |
-| **②** | **COVERAGE** — target organ never in the report's field / findings | ~12 | Report **does not mention** the organ of the current question; it answered a *different* question | appe 20123918 s1 (pelvic US reported normal tubes/ovaries — appendix never mentioned) |
-| **③** | **PROTOCOL** — modality ran without the parameter the question needs | ~9 | "without IV contrast / non-contrast / unenhanced" + the question requires enhancement | diver 22429578 (thyrotoxicosis → no IV contrast → solid-organ & vascular eval limited); panc 20009550 (high creatinine → no contrast → appendix not definitively seen) |
-| **④** | **CAPABILITY** — modality *intrinsically* cannot answer the current question (grade / etiology) | lexical scan caught only 3, **but `action_role=assess_severity` = 66 steps** → this class is large and hides in semantics ("leaving extent/severity unanswered"), not in "cannot stage" | US confirms pancreatitis exists but cannot grade necrosis; US insensitive to microlithiasis |
+1. **Missing state:** the rubric has the relevant question but lacks a guard such as prior-test
+   adequacy or a belief condition.
+2. **Missing question:** the physician is pursuing a decision-relevant unknown absent from the
+   rubric.
+3. **Missing belief representation:** the question or route depends on a clinical frame or
+   alternative the rubric cannot express.
+4. **Unsupported action:** no ex-ante, parsimonious, clinically defensible completion makes the test
+   reasonable.
 
-**Detection method per type (the "sign" for systematic report reading):**
-- ① = **lexical scan** of a closed hedge vocabulary (highest yield, easiest, ~60%). The report says it itself.
-- ② = **coverage check**: is the organ that the current question is about present in the findings section? Absent → flag. Needs a `question → organ(s)-that-must-appear` map.
-- ③ = **protocol-line check**: contrast/parameter missing ∧ question needs it.
-- ④ = **modality × question capability table** (a knowledge rule, NOT in the report text): which modality can answer which question (existence / etiology / severity / complication).
-
-**Caveat / next read:** ① is essentially solved (lexical) but is also the *shallowest* type — the
-report already admitted it. The classes that actually need defining are **② and ④**, especially ④.
-The regex under-counts ④ badly (3) while `assess_severity`=66 says it is the real mass; those notes
-phrase it semantically. **Next step: read the 66 `assess_severity` notes in full to nail the ④
-definition** (and decide whether "existence confirmed → grade severity" vs "existence confirmed →
-find etiology" should be two separate question types).
+The aim is to separate rubric incompleteness (1–3) from unsupported testing (4), not to explain every
+observed action as correct. A useful updated rubric should retain a non-zero error floor and an
+over-testing brake.
 
 ---
 
-## 2. The load-bearing insight: **adequacy is question-relative**
+## 6. Falsifiable claim and evaluation
 
-Type ④ exposes the core structure: **a study is never adequate/inadequate in the absolute — only
-relative to the question currently open.** The same abdominal US is *adequate* for "is this
-pancreatitis?" and *inadequate* for "how severe is the necrosis?" The study did not change; **the
-question moved, and adequacy flipped.**
+> Compared with a disease-and-pathway rubric, a temporally blinded model of belief, open question,
+> and question coverage will more accurately predict the next test, test order, and reasonable
+> deviations in held-out patients, beyond improvement attributable merely to added model capacity.
 
-Consequence: the two alarms we wanted to add are **not independent modules** —
-`inadequacy` and `ask-the-right-question / question-moved` are **two readings of one predicate**:
+Evaluation must be patient-level and strictly ex-ante. At each step the model sees only information
+available before the order. Report:
 
-```
-answered(current_question, study_history) ?
-   NO  → inadequacy alarm  → do NOT advance; re-image (better modality / coverage / protocol)
-   YES → question resolved → advance the question pointer; route the next modality BY THE NEW
-                             QUESTION, not by the disease label   (= "ask the right question", A1)
-```
+- next-test prediction;
+- ordered-test sequence prediction;
+- prediction and classification of deviations;
+- question-closing versus retry/reroute transitions;
+- calibration and error analysis;
+- performance relative to equally flexible baselines;
+- complexity of the added state.
 
-So A1 (question-moved) and A2 (inadequacy) collapse into **one machine**: an adequacy check between
-the completed study and the open question, whose two outcomes are "advance" vs "re-image".
+Prediction supports the proposed latent model but does not uniquely identify the physician's true
+mental process. Stronger evidence comes from counterfactual transition tests: changing an adequate
+result to inadequate should preserve the question and induce retry; changing a consistent result to
+inconsistent should update belief and may induce rerouting.
 
----
+The central empirical object is the **derivability curve**:
 
-## 3. Proposed architecture: a question-driven rubric
+| Model state | Added information | Expected residual deviation |
+|---|---|---:|
+| `S0` | disease + standard pathway | baseline |
+| `S1` | + open question | lower |
+| `S2` | + question coverage / adequacy | lower |
+| `S3` | + belief state | lower |
+| floor | unsupported or irreducibly ambiguous actions | non-zero |
 
-**State is no longer "which disease node am I at" but "which decision-relevant QUESTIONS are currently
-open under the active frame."**
-
-- **Question frontier, not a fixed stack.** The guideline supplies a partial order among questions;
-  a patient can hold several open questions at once and traverse only a subset. An implementation
-  may maintain an active pointer for one decision, but it must preserve the frontier and allow a
-  question to be attached, reopened, or replaced. `existence`, `etiology`, `severity`, and
-  `complication` are not a mandatory sequence.
-- Each question carries: candidate answers; the **modalities capable of answering it** (capability,
-  type ④); the **organs/fields that must be covered** (coverage, type ②); **protocol requirements**
-  (type ③).
-- **Adequacy = a computable predicate** `adequate(study, question)` = coverage ∩ capability ∩
-  protocol satisfied. This is exactly types ②③④; type ① is a study-quality flag that fails
-  adequacy even when the modality was capable in principle.
-- **A2 inadequacy** = `adequate(last_study, current_question) == False` → re-image, don't advance.
-- **A1 ask-right-question** = when the current question *is* answered, advance the pointer and
-  **route by the new question** (this is the whole "route by clinical question, not disease label"
-  finding — it becomes the pointer-advance rule, not a special case).
-
-In this frame the rubric no longer "stops reasoning too early" because *stopping* is redefined:
-you stop only when there is no unresolved decision-relevant question under the active frame, not
-when the first disease-first study completes.
+Each state increment must be declared before evaluation. This tests whether the proposed structure
+explains behavior rather than merely memorizing exceptions.
 
 ---
 
-## 4. Where discordance (A3) fits — GROUNDED (215 discordance-flagged steps)
+## 7. Minimal next experiment
 
-Dug into all 215 `discordance.present` steps (`alarm/*.json` ⋈ `full/*.json`; the reasoning lives in
-the `evidence` field — `note` is empty in 199/215, and `evidence` is already written as a two-pole
-contrast sentence, 99/215 with an explicit connector: versus / yet / contrasted-with / out of
-proportion / cannot explain).
+Use one disease cohort and reconstruct step-level trajectories:
 
-**Definition (authoritative, from the detector prompt `prompts.py:129`) — discordance is
-MODALITY-AGNOSTIC:** *a MARKED conflict between two streams of evidence that the leading suspected
-diagnosis CANNOT explain, striking enough to change management.* The prompt lists BOTH "grossly
-abnormal labs/vitals with a benign abdomen" AND "**imaging findings out of proportion to the clinical
-picture**" as first-class cases. ⚠️ **Correction of an earlier overclaim in this doc / memory:
-discordance is NOT "an objective NON-IMAGING stream."** Imaging is in the conflict in **91/215 (42%)**
-of flags — as the *violation* pole 64× (severe finding vs benign exam/leading Dx, e.g. CT-perforation
-with a soft abdomen; MRCP cecal colitis under a post-ERCP biliary lead) and as the *anchor* pole 20×
-(normal/negative study vs abnormal labs). Only **124/215 (58%)** are purely labs/vitals/exam with no
-imaging. The "non-imaging" phrasing was a category error: it named A3's *distinctive contribution*
-(the streams the question-tree does not natively track — labs/vitals/UA are the purest of these) and
-mistook that for the *definition*.
-
-**The extractable structure is a 3-slot, stream-agnostic tuple:**
-```
-discordance := {
-  expectation:  the picture the leading hypothesis PREDICTS / is consistent with   # usu. benign exam; can be expected imaging
-  violation:    {stream, value, direction}     # stream ∈ {exam, vital, lab, UA, hCG, PRIOR-imaging}  ← modality-agnostic
-  relation:     out_of_proportion(severity) | points_elsewhere(localization) | internally_contradictory
-}
-```
-The load-bearing classification axis is **`relation`, NOT imaging-vs-non-imaging.** The `violation`
-is an unexplained **residual**; note the detector is masked/blind, so the imaging it can use as a pole
-is only ALREADY-RESULTED `visible_prior_imaging`, never the study being ordered. Residual-stream
-tallies (multi-count of 215): WBC/bands 134, LFT/biliary 97, lactate 89, acid-base 59, lipase/amylase
-58, vitals/hemodynamic 49, D-dimer/vascular 29, cardiac 19, renal 17, coag 14, Ca/UA/hCG 6/5/2.
-
-**The flow response is a CONTINUUM in the residual size (≈ `other_mass`), not two discrete modes:**
-- **small residual — disease still peaked (58/215):** keep the diagnosis, **forward-attach** a
-  reconciliation sub-question (second source / severity / etiology). e.g. chole 27738411 (UA→urinary
-  second source), panc 22944548 (lipase 14240 + benign exam → severity).
-- **large residual — other-heavy (108/215):** localization collapses → **re-open / broaden** (the
-  "倒车"). e.g. diver 21292285 (unstable+peritonitic, CT no source), diver 23962694 (other=0.85),
-  appe 23562407 (hCG+→gynecologic). (49 mid.)
-
-`other_mass` is the ready-made operationalization of the residual; disease-max vs other_mass is a
-sound proxy for which flow fires. **Backtrack-to-a-deprioritized-sibling is only the sub-case where
-the residual LOCALIZES to a specific alternative** (hCG→gyn, UA→urinary); when the residual is
-diffuse (no clean sibling) the op is just "widen." So A3 = **re-open proportional to the residual;
-retreat to a specific sibling when the residual localizes, else cast a broad net.**
-
-**Layered picture of the three alarms — by WHAT each reads:**
-- **A2 inadequacy = STRUCTURE** (node-local): reads `(study, current_question)` → adequacy predicate
-  (coverage/capability/protocol) → re-image vs pass.
-- **A1 ask-right-question = LOCAL forward transition**: reads `(question, answered?)` → advance the
-  pointer, route next modality by the new question. *(Note: A1 is flow, not structure — the earlier
-  "A1+A2 both structural" grouping is wrong; the clean cut is A2=structure vs A1/A3=transitions.)*
-- **A3 discordance = RESIDUAL-DRIVEN re-open transition**: reads `(leading hypothesis, all objective
-  streams — exam/labs/vitals/UA AND already-resulted prior imaging)` → the stream the hypothesis
-  cannot explain = unexplained residual → re-open with magnitude ∝ residual, mode set by `relation`
-  (localized → retreat to the named sibling; diffuse/severity → widen).
-
-**Honest structural cost of A3 (confirmed, harder, second-phase):** it needs **all objective streams
-IN the state PLUS a model of what the leading hypothesis PREDICTS for each stream** (to compute the
-residual) — heavier than A1/A2. The extra streams over A1/A2 are the non-imaging ones (labs/vitals/UA)
-— which is A3's distinctive load, though the violation can equally be an off-target *prior* imaging
-finding. A3 co-occurs with inadequacy only **26%** of the time → a genuinely independent channel.
-
----
-
-## 5. Assumption/belief state alongside the question tree
-
-The question tree (§3) is the **procedural/normative** axis. It should not be asked to store the
-doctor's entire clinical interpretation. Add a coupled **assumption/belief state** — the two layers
-have different jobs:
-
-- **Question tree (procedural):** nodes = questions; holds **A1** (advance) and **A2**
-  (adequacy/re-image). = the rubric.
-- **Assumption/belief state (epistemic):** typed, evidence-linked claims evolving over time —
-  disease, etiology, severity, complication, and named alternatives. It contains both the stable
-  **frame** that identifies what a question is about and graded **beliefs** over claims. The existing
-  reconstructed `differential` + `other_hypothesis` are only the first disease-level slice of this
-  state; they are not yet the full assumption library.
-
-**Coupling (the two tracks cross-drive each other):**
-- the current frame and the open claims → **select the active question branch**; belief argmax is
-  one routing signal, not the whole question-selection rule.
-- question-tree outcomes and new observations → **update assumption claims**, including confidence,
-  status, and evidence provenance.
-- **A3 discordance** = a belief-state operation: an observed stream is not explained by the active
-  assumption. It can act on the question tree by reopening the current question, attaching a
-  reconciliation question, or switching to a named sibling/alternative. This is why A3 remains a
-  second-phase extension rather than an external boolean alarm.
-
-**What this unlocks (the load-bearing payoff — ties back to the project's core goal):**
-- **The belief track is the rubric-incompleteness / OUTLIER detector.** A live belief-track
-  hypothesis with **no corresponding question-node** in the rubric tree = the rubric is missing a
-  branch for THIS patient = the patch signal. **Outlier = belief track escapes the question tree.**
-- It **retroactively explains the biliary post-hoc branch**: a belief-track hypothesis (biliary
-  duct) with no rubric node → a branch was hand-patched. The two-track view makes that ad-hoc move
-  systematic — strong evidence the architecture is right.
-- "Completing the rubric" = promoting belief-track hypotheses that **recur across patients** into
-  their own question-node = **exactly step 5 synthesis of the rubric-update pipeline.**
-
-**Refinement (important):** the assumption state must carry **named, typed claims with mass/status,
-not a scalar `other_mass`** — otherwise the localized-residual "retreat to a specific sibling" case
-(hCG→gyn) has nothing to point at. `other_hypothesis` already supplies names; structure them into
-the library. Do not make this library append-only: a later result may downgrade or invalidate an
-earlier claim.
-
-**Design cost:** the coupling **protocol** (routing / update / re-open rules) is the hard part.
-
-## 6. The executable graph: an alternating question↔test state machine (2026-07-11/12)
-
-The two-track idea (§5) becomes runnable as a **procedural spine** driven by the assumption/belief
-state. The most compact interpretation is:
-
-```
-I_t = observed patient information
-A_t = current assumption / belief state
-Q_t = current decision-relevant open question
-T_t = selected test or other clinical action
-O_{t+1} = new observation, including adequacy/quality
-
-A_{t+1}, Q_{t+1} = update(A_t, Q_t, O_{t+1})
+```text
+(I_t, A_t, Q_t, C_t, T_t, O_{t+1})
 ```
 
-The graph below is an implementation of that loop. It is a question↔test spine, not the whole
-clinical state: the assumption library remains a separate, revisable state object.
+Then:
 
-```
-     assumption state ─── frame/belief 选中当前 Qi ───┐  ┌── residual → push 新 Q(可能树外)
-        ▲ 更新 claims                               │  │
-        │                                       ▼        ▲
-   ┌────┴───────────────────────────────── [Question Qi] │
-   │      ──state guard g1──▶ [Test A]           │   labs/vitals/前片(≠当前 test 的 result)
-   │ Qi ────state guard g2──▶ [Test B] ──下单出报告──▶ observed(S) 累积进 state
-   │      ──state guard g3──▶ [Test C]                    │
-   │                                                      ├─ adequate(report,Qi)=False ─▶ 回 Qi(**re-image / 模态升级边**,必换 test = A2)
-   │                                                      └─ adequate=True ─┬─ confirmed ─▶ [Q severity]
-   └────────────────────────────────────────────────────────────────────  ├─ excluded ──▶ [Q sibling/done]
-                                                                           └─ partial ───▶ …
-```
+1. enforce temporal blinding of `A_t`, `Q_t`, and `C_t`;
+2. compare `S0–S3` on held-out patients;
+3. measure next-test, ordering, and deviation prediction;
+4. audit which residuals are missing state, missing question, missing belief, or unsupported action;
+5. test whether the remaining errors concentrate in test timing and question priority.
 
-- **Q→T edges = state guards.** Each out-edge of a question carries a condition on the *accumulated*
-  observed information and assumption state → routes to a different test. This is
-  `f(Qi, enriched_state) → test` (§ below). The guards are exactly the absorbed-deviation state
-  variables (pretest_prob / body_habitus / prior_study_adequacy / sub_question / active frame).
-- **T→Q is a TWO-STAGE gate, not one edge.** (1) **adequacy gate first**: decompose the report into
-  `observed(S)`, test `required(Qi) ⊆ diagnostically-covered?` — **inadequate → re-image edge back to Qi**
-  (retry with a **different** modality = **A2**; inadequacy does NOT branch, it retries). (2) **only if
-  adequate, fork on the ANSWER value** (= verification: result vs `expected_finding`): confirmed→
-  severity, excluded→sibling/done, partial→… This second stage is the "test result routes to a
-  different question" = **A1**.
-
-  **⚠️ Naming fix (2026-07-12): "self-loop" is misleading — it loops on the QUESTION node, NOT the
-  test.** A2 is a **re-image / modality-escalation edge**: return to Qi, but Qi's out-edge now carries
-  `prior_study_adequacy=inadequate` as a guard → it routes to a *different, better-suited* test (US→CT,
-  noncon→con CT, US→MRCP). It is **never "repeat the same test twice."** Empirically this IS the dominant
-  multi-step pattern: **79% of 249 consecutive step-pairs change modality** (US→CT 75, CT→US 59, US→MRCP
-  31); only 21% same-modality (and those are mostly protocol escalation noncon→con). Because state is
-  richer each pass (`prior_study_adequacy`), it is not a true loop — the test choice changes every
-  round, terminating when a test reaches adequacy (or capability is exhausted → question unanswerable).
-  **The adequacy gate is exactly what separates legitimate re-image (A2, `adequate==False`) from the
-  defensive re-scan we want to REMOVE (over-imaging brake, `adequate==True` yet re-scanned): "same test
-  twice" is the brake, and A2 refuses to fire on it.**
-- **discordance is NOT an ordinary edge on this chain.** It is an **assumption-state interrupt**
-  that reads ALL objective streams (labs/vitals/UA + already-resulted prior imaging — often NOT the
-  current test's result, e.g. lactate 3.8 + benign exam before any imaging returns) and can `push a
-  new Q` at ANY node (localized residual → sibling Q; diffuse → widen). Drawing it as a simple
-  "test-result→Q" edge mis-models the ~42% of flags triggered by labs/vitals alone.
-- **Observed state is cumulative, while assumptions are cumulative-but-revisable.**
-  `report → observed(S)` updates the information record; `observation + prior claims → A_t` updates
-  the assumption library. The combined state guards Q→T and drives the T→Q adequacy/answer test.
-  A later result may invalidate an assumption even though the observation history remains in the
-  record. This distinction prevents an old belief from becoming a permanent feature merely because
-  it was once inferred.
-
-### 6b. "Updating the rubric" = enriching the state until the doctor's test becomes derivable
-The binding is NOT static `question→test`; it is a deterministic function `f(question, ENRICHED
-state) → test`. **"Deviation" is only relative to the raw rubric's impoverished state (disease label
-only).** Absorbing a deviate+confirmed finding = **discovering the missing state variable** that made
-the doctor's choice non-derivable:
-
-### Deviation taxonomy for the update operation
-
-The two main deviation forms are distinct and must not be collapsed:
-
-1. **Question-level deviation:** the observed information and current assumption open a
-   decision-relevant question that the rubric does not represent or does not activate. The update is
-   a new question node, a belief-to-question route, or a missing sub-question. Example: disease
-   existence is already likely, but the rubric has no explicit severity/etiology question.
-2. **Test-level deviation:** the question exists, but the Q→T policy lacks the state-conditioned
-   test that can answer it. The update is an enriched guard, a new test capability, or a finer
-   modality×region×protocol node. Example: the question is biliary duct obstruction, but the old
-   rubric only routes through a generic abdomen test.
-3. **Adequacy failure:** the question and intended test are present, but the performed study did not
-   answer the question (not visualized, out of field, wrong protocol, or intrinsically incapable).
-   The question remains open; the correct update is a re-image/escalation edge, not a new negative
-   answer.
-4. **Retained deviation / brake:** the question was already adequately answered and the belief was
-   concentrated, but the clinician repeated the same or weaker test without a new alarm. This is a
-   candidate error or over-imaging behavior and must not be absorbed just to make doctor/rubric
-   agreement equal to 100%.
-
-The operational diagnostic sequence is:
-
-```
-Is there a live decision-relevant question?
-  no  → do not invent a question merely because a feature exists
-  yes → does the rubric represent it?
-          no  → question-level extension
-          yes → can the current test answer it?
-                   no  → test/capability or adequacy extension
-                   yes → was the action ex-ante justified and clinically useful?
-                              no  → retain the deviation as a brake
-                              yes → absorb it into the enriched rubric
-```
-
-| absorbed finding (deviate+confirmed) | state var added to `f` | after absorption `f` derives |
-|---|---|---|
-| adult/obese skip US → CT | `pretest_prob / body_habitus` | high-pretest adult → CT (no "deviation") |
-| overturn stop when prior study equivocal/limited | `prior_study_adequacy` (= §3/§6c adequacy predicate output) | inadequate prior → keep imaging |
-| CT→US/MRCP when the question is biliary | `sub_question(duct vs parenchyma)` | question=duct → US/MRCP |
-
-`f` **collapses to a single test** when state is rich enough (the derivable core); it stays a *set*
-only where (a) genuinely underdetermined, or (b) the rubric *correctly disagrees* with the doctor.
-
-**Success criterion (must守住): absorb only VERIFIED deviations, not all deviation.** ⚠️ **VERIFIED ≠
-outcome-confirmed** (see §0): a deviation is verified when it was **ex-ante justified (alarm firing OR
-belief diffuse)**, whether or not the result came back positive — most disconfirmed deviations are
-legitimate rule-outs and ARE absorbable. What stays excluded is the over-imaging brake (**alarm silent ∧
-belief concentrated ∧ same-modality repeat**), which is doctor over-imaging / defensive re-scan / error
-(the disconfirm/brake findings B1–B3, DD-1). So the "adult/obese skip US→CT" table row absorbs on the
-ex-ante state var (pretest/habitus), NOT on that one CT confirming. Target = "no *verified* deviation
-left underivable, AND the rubric still diverges where the doctor was wrong." Residual divergence from the
-doctor is not failure — it is the rubric refusing a suboptimal order. Metric = step-6 **asymmetric**
-validation: recover verified-deviation→follow WITHOUT starting to endorse bad orders. Aiming for literal "zero deviation vs doctor" would import the doctor's mistakes
-and make the rubric descriptive instead of normative.
-
-### 6c. One shared signal ontology `S` is the mandatory substrate (ties §1/§4/§6 together)
-Construction recipe for the whole system = **clustering (discover nodes/vocabulary) + standard medical
-knowledge (structure, templates, edges) + verification validation (set thresholds, keep it
-non-circular)**. Clustering alone CANNOT give thresholds, the `question→required(S)` sets, or the tree
-edges/ordering — those need standard knowledge + supervised mining against observed verification.
-
-To make adequacy, discordance and questions *compose* (not grow three incompatible vocabularies),
-define ONE canonical signal/dimension ontology `S` (per test-type dimensions + labs + vitals + exam),
-and have everything reference it:
-
-| mapping | meaning | used by |
-|---|---|---|
-| `report → observed(S)` | extraction / fragmentation (perception layer; labs already structured — don't build a text-splitter for tabular data) | shared |
-| `test-type → coverable(S)` | capability template (finite # of test types) | adequacy ④ |
-| `question → required(S)` | which dimensions answer this question (adequacy is question-RELATIVE — targeted set-cover on required dims, NOT an aggregate "missing > k" threshold) | **adequacy** |
-| `assumption claim → expected_profile(S)` | the `claim × stream` matrix `M` (signed/ranged) | **discordance** |
-
-Then `adequacy(R,q) = required(q) ⊆ diagnostically-covered(R)`; `discordance(observed, A) = ∃ s:
-observed abnormal ∧ expected_profile(A) can't predict it`. The report-dimension template also unifies
-all 4 inadequacy types (§1) as operations on ONE template: ②=required dim absent, ①=dim present but
-hedged, ③=dim present but protocol-limited, ④=required dim not in this test's `coverable(S)`.
-
-### 6d. Discordance without enumerating pairs — read `M` two ways
-Never enumerate all stream-pairs (O(n²)). One pole of every conflict is ALWAYS the leading
-hypothesis's prediction ⇒ O(n) residuals against ONE reference. Build `M[h][s]` (does hypothesis `h`
-predict/explain abnormality in stream `s`, and in what direction). **Row-wise (fix h):** observed
-abnormal `s` with `M[h][s]=∅` → discordant residual (the "is it discordant?" test). **Column-wise (fix
-s):** which OTHER `h'` has `M[h'][s]=✓` → the residual localizes to that named sibling (routing). The
-`relation` type falls out: stream hits exactly one sibling = localization→retreat; systemic streams
-(lactate/bands/AG/hemodynamics) explained by NO single disease = diffuse→widen; joint-pattern
-violation = internally_contradictory (needs a coherence rule, not a marginal lookup). **Build `M`**
-by (a) a small hand seed (4 diseases × ~15 streams) and (b) mining existing annotation:
-`grounding`/`expected_finding` = the ✓ cells, `discordance.evidence` = the ∅ cells. Perception (LLM/
-rules extract structured `observed(S)`) is split from judgment (algorithmic `M` lookup + threshold) —
-more auditable than today's end-to-end-LLM alarm.
-
-### 6e. Phase-1 question_target extraction — DONE (2026-07-12, `scripts/extract_question_targets.py`)
-Re-grounded the OPEN question of all 542 steps from free-text `information_gap`(+`expected_finding`)
-via Claude Sonnet/OpenRouter → `results/question_targets/`. Multi-label seed {existence, etiology,
-severity, complication, broaden} + open `other:` escape; also extracts modality-free `sought_dimensions`
-(raw material for `required(S)`). **540/542 labeled, 452 multi-label** (characterize questions come in
-bundles). Results:
-- **`action_role` incompleteness CONFIRMED, hard:** old `localize_source` splits into **etiology=189,
-  complication=115**, existence=126, broaden=112, severity=37; old `assess_severity` hides
-  complication=128. **etiology & complication (the two targets `action_role` LACKS) are the largest
-  classes corpus-wide** (panc etiology=164/complication=120, chole etiology=109). This is the empirical
-  justification for the question-target ontology over `action_role`.
-- **NO `other` spans** → the 5-label seed set is closed at this granularity (no 6th target).
-- **`sought_dimensions` is clean** (anatomy/pathology only, no modality words) → usable required(S) seed.
-- **broaden↔discordance are STATISTICALLY INDEPENDENT** (lift=0.93; P(discord|broaden)=0.37 vs
-  P(discord|~broaden)=0.42). Empirically refutes "conflict→broaden" as an identity and **confirms the
-  two-track claim that broaden (question-tree move) and discordance (belief-track interrupt) are
-  different, independent layers.**
-- **⚠️ broaden is too loose (228/542 = 42%, flat across n_prior)** — RESOLVED by removal, see §6h. (It
-  over-fired because it was catching "differential breadth" + non-visualization; the clean definition
-  turned out to be a belief-track event, not a question type, so it leaves the label set entirely.)
-- severity & complication co-fire heavily (panc complication+severity=61) but have distinct marginals →
-  keep separate for now; the merge decision is a downstream analysis, not baked into extraction.
-
-### 6h. `broaden` REMOVED from the question-target label set (2026-07-13 DECISION)
-The 5th seed label `broaden` is **dropped**. The clean definition of broaden — *prior evidence made the
-leading diagnosis untenable, so switch to a new possibility* — is a **belief-track / routing event, NOT
-a question type.** The other four (existence/etiology/severity/complication) are all questions asked
-*about one already-held hypothesis* (the tree's nodes); broaden is a *switch between hypotheses/trees*,
-a different ontological kind. Forcing it into the same multi-label slot is a category error and is
-exactly why it over-fired (42%, flat across n_prior). Consequences:
-- **Question-tree label set = {existence, etiology, severity, complication}** — homogeneous "verify /
-  characterize a held hypothesis" nodes. `existence` = verify a suspected disease is present (its
-  "which disease among several" flavor is just existence under *diffuse* belief — NOT a separate type;
-  `existence` well-attested corpus-wide, old `action_role=rule_in`≈57 steps are pure confirm/rule-out).
-- **Choosing / switching the leading hypothesis** (t0 prior AND broaden re-route) lives in the
-  **belief track** — the SAME place, deliberately SET ASIDE with discordance/A3. broaden is set aside
-  with it. It is not "downgraded"; it was never a question type.
-- **Re-route is TARGETED, not a meta re-walk** (corrects an earlier framing): on discordance you do NOT
-  re-enter a blank "which disease?" node — the violating abnormal stream `s` with `M[leading][s]=∅`
-  self-localizes to the sibling `h'` where `M[h'][s]=✓` (§6d column-read), so you jump straight into
-  `h'`'s tree with the suspicion already in hand; the question there is again plain `existence(h')`.
-- This also **dissolves the broaden↔discordance "independence" puzzle** above: the independence was an
-  artifact of the polluted label; under the clean definition broaden *is* the discordance re-route.
-- **Extraction impact:** `results/question_targets/extractions.jsonl` keeps its `broaden` spans on disk
-  (no re-run needed / no re-run planned); downstream tree construction simply IGNORES the `broaden`
-  label and reads only the 4 types. `sought_dimensions` is unaffected.
-
-### 6f. DEFERRED BLOCKER — lab + microbiology per-test timestamps not yet sourced (2026-07-13)
-The `Laboratory Tests` and `Microbiology` columns in `data/raw_data/{disease}_hadm_info_first_diag.csv`
-are **admission-aggregated `{itemid: value}` dicts with NO per-test `charttime`.** To place a lab/micro
-result on the timeline (what the doctor knew *before* a given imaging decision — the ordering the
-question tree, §3/§6, is built on), each result needs its real chart time. That must come from MIMIC-IV
-raw source, and is **deliberately DEFERRED** (not blocking the current Direction-1/Direction-2 build off
-narrative + already-timed radiology).
-
-- **Where the timestamps live — the `hosp` module, NOT `icu`** (the icu link is the wrong module for
-  labs/micro): `https://physionet.org/content/mimiciv/3.1/hosp/`.
-- **Files to download when we do this:**
-  - `hosp/labevents.csv.gz` — carries `charttime`, `storetime`, `valuenum`, `ref_range_lower/upper`,
-    `flag`. ⚠️ ~2 GB compressed / ~100M+ rows → filter by our `hadm_id` set on ingest, don't load whole.
-  - `hosp/microbiologyevents.csv.gz` — `charttime`/`chartdate`, `storetime`, specimen fields (small).
-  - `hosp/d_labitems.csv.gz` — itemid→label dictionary (partly covered already by
-    `data/raw_data/lab_test_mapping.csv`).
-- **Already present** in `data/raw_data/mimic_source/` (git-ignored): `admissions.csv.gz`,
-  `radiology.csv.gz` (report charttimes — imaging already timed), `procedures_icd.csv.gz`,
-  `d_icd_procedures.csv.gz`. So only **labevents + microbiologyevents (+ d_labitems)** are missing.
-  Same PhysioNet-credentialed / AWS-S3-access-point route as the note pull ([[real-charttime-timing]]).
-- **Consequence for Direction 2 ingestion (§6c path A):** until sourced, lab/micro evidence pieces can be
-  built as *untimed* `observed(S)` (finding_status still free from the CSV's ref ranges), but they can NOT
-  yet be split into pre-/post-decision — so any lab/micro-dependent guard or adequacy check stays
-  admission-global, not step-relative, for now.
-
-### 6g. How raw fields map onto the locked `S` schema — THREE ingestion paths, not one (2026-07-13)
-`observed(S)` = the union of three ingestion paths, split by *perception method* (extends §0 "labs are
-already tabular — don't build a text-splitter"). Reads `data/raw_data/{disease}_hadm_info_first_diag.csv`
-columns: `Patient History`, `Physical Examination`, `Laboratory Tests`, `Reference Range Lower/Upper`,
-`Microbiology`, `Microbiology Spec`, `Radiology`.
-
-- **Path A — tabular parse, NO LLM (Laboratory + Microbiology + vitals block).**
-  `Laboratory Tests` is `{itemid: value}` and the SAME CSV already carries `Reference Range Lower/Upper`
-  per itemid ⇒ slot-fill is mechanical: `attribute`=analyte (itemid→label via `lab_test_mapping.csv`),
-  `anatomy`=organ/system the analyte indexes (or `serum/blood`), `state`=raw value string,
-  `value+unit`=parsed numeric, **`finding_status`=valuenum vs ref_range → normal/abnormal (FREE — the
-  normalized enum costs ~nothing for labs)**, `source_test`=laboratory. Microbiology parallels: anatomy=
-  specimen site (`Microbiology Spec` itemid), state=growth result, finding_status=growth/no-growth. The
-  vitals line (`Temp/HR/BP/RR/SpO2`) is quasi-tabular: regex-split + physiologic thresholds.
-- **Path B — narrative fragmentation, LLM (Physical-Exam organ-system narrative + Radiology reports).**
-  `Abd: soft, non tender, non distended` → anatomy=abdomen, attribute=tenderness/distension,
-  state=soft/non-tender, finding_status=normal. This — together with radiology — is the *real*
-  text-splitter task (the fragmentation prompt of Direction 2).
-- **Path C — Patient History = the demand/trigger side, slot lightly.** History is symptom + PMH
-  narrative (RLQ pain / anorexia / denies fever); these are symptom pieces (anatomy=RLQ, attribute=pain,
-  state=present|absent) but they mostly *raise* questions rather than *cover* them — don't force
-  imaging-style anatomy×attribute; keep present/absent.
-
-### 6i. DECISION — build the Q–T tree by TRANSFORMING the original rubric (base) + clustering (extension) (2026-07-14)
-**The question tree is NOT derived from clustering-alone; it is the original guideline rubric, transformed
-and then extended.** The original rubric (`pipeline/rubric_graph_original.py`, WSES/TG18/AAFP/Atlanta
-verbatim) is ALREADY an alternating Q↔T graph — it only lacks the 4-type question labels. Concretely, per
-disease it already encodes all three §6 tables:
-- **Nodes carry the question types implicitly.** `SUSPECTED→ALVARADO` (assessment) = **existence**;
-  `US_FINDINGS`/`CT_FINDINGS` perforation/abscess/phlegmon checks = **complication**; the BISAP/Atlanta
-  /TG18 severity-grading branches = **severity**; the routing/source branches = **etiology**.
-- **Q→T guards are already there** as `edge.condition` functions: `4<=alvarado_score<=6 → US_ABDOMEN`,
-  `alvarado_score>=7 → CT`. That IS `f(question, state)→test` — the guard the clustering was meant to
-  discover, handed to us pre-written.
-- **T→Q answer-forks are already there**: `US_appendix_inflamed`, `US_perforation_abscess`,
-  `CT_perforation_abscess` = the result-value forks (A1). `required_tests` per node is also present.
-
-**Why base-on-rubric beats clustering-from-scratch (3 grounded reasons):**
-1. It is the **normative spine from international guidelines** — do not re-derive it from noisy observed
-   sequences.
-2. The **deliverable IS a "rubric UPDATE method"** ([[project-research-vision]]); the contribution =
-   **the delta (extended tree − guideline baseline)**. A fresh clustered tree throws away the "what we
-   added/changed vs the guideline" narrative that IS the contribution.
-3. §5/§6b already assume a base rubric to extend ("completing the rubric = promote recurring belief-track
-   hyps into a question-node"; "updating = enrich state till the doctor's test is derivable" — both are
-   DELTA operations). Base-on-rubric is what the doc already implies; the earlier clustering emphasis
-   under-wrote it.
-
-**Clustering still runs — as the EXTENSION source, not the base.** Per-disease clustering of observed
-question-sequences + verified-deviation mining (§6b) supplies the extra questions the guideline lacks
-(etiology depth, biliary sub-question, outlier branches) and the enriched state guards
-(pretest/habitus/prior-adequacy). **Combine both: rubric-transform = base spine; clustering/deviation =
-extensions; base→extended = the contribution.**
-
-**Scope notes:** (a) **per-disease** — transform the 4 sub-rubrics into 4 question-labeled trees; the
-question-TYPE vocabulary is shared but trees/guards are per-disease (§0). (b) **Figure-0 triage (which
-disease) = belief-track/routing = SET ASIDE** (§6h) — don't transform it now. (c) Use
-`rubric_graph_original.py` (unpatched guideline) as the base; `rubric_graph.py`'s relaxations (A OR B +
-`fever_reported_in_hpi`) are themselves an early MIMIC-driven *extension* — a ready first example of the
-delta method.
-
-### 6j. `required(S)` is keyed on the QUESTION-NODE — not question+test, not depth (2026-07-14)
-- **Key on the question, NOT the test** (non-circularity): if `required` depended on the chosen test,
-  adequacy would be "the test defines its own adequacy." Two independent tables intersect instead:
-  `question→required(S)` (dims the question intrinsically needs) ∩ `test→coverable(S)` (dims a
-  modality×region can supply); `adequate = required(q) ⊆ covered(report)`. The per-step
-  `sought_dimensions` annotation is entangled with the step's test (it recorded `required ∩
-  coverable(test)`); **aggregate the same question's sought_dims ACROSS tests/patients** to divide the
-  test factor back out and recover the fuller `required(q)`.
-- **Depth-dependence is REAL but must NOT be modeled as a depth-indexed `required(S)`** (would explode the
-  table and break "one shared tree"). Two mechanisms absorb it:
-  - **(A) residual narrowing = accumulating `covered(S)`, not changing `required`.** Same `existence` at
-    depth 2 (post non-diagnostic US) targets only the still-uncovered dims. `required(q)` is FIXED; the
-    gap `required − accumulated-covered(S)` shrinks. Depth lives in the ONE accumulating state vector
-    (§6), not in `required(S)`.
-  - **(B) genuine specialization = a CHILD node in the lattice + a `sub_question` guard.** "existence →
-    is-it-the-biliary-duct-variant" is not the same node with new dims; it is a more specific node
-    (`existence(biliary-obstruction) ≠ existence(cholecystitis)`), each with its own STABLE required set,
-    indexed by the `sub_question` state var (§6b).
-  - Net: **`required(S) = f(question-node)`, `question-node = (frame/target, type, disease,
-    [sub_question])`**; confidence belongs to the assumption state, not to the identity of the
-    question. Adequacy checks the stable required set against accumulated `covered(S)`. Finite,
-    shared, non-circular.
-
-### 6k. Radiology `source_test` normalization is modality × REGION (× protocol), not modality alone (2026-07-14)
-The `coverable(S)` capability key is **`(modality, anatomic-region, protocol)`**, e.g. "CT abdomen/pelvis
-with IV contrast", "US RUQ", "MRCP" — the rubric's own test nodes are already at this granularity. Modality
-alone underdetermines coverage: it can't tell whether an organ was *in-field*, which is exactly the **type
-② coverage** signal (knowing "CT abd/pelvis" tells you the appendix was in-field → its absence = coverage
-gap; "CT" alone cannot). Contrast/protocol is needed for **type ③**. So the pending "radiology
-source→modality" step is really **`radiology source → (modality, region, protocol)`**.
-
-## 7. Open questions and next operations (re-prioritized 2026-08-09)
-
-> The immediate deliverable is a **question-conditioned clinical state representation and one
-> executable adequacy path**, not a full RL agent or a complete A3/M-matrix. Work from the original
-> guideline graph outward and preserve the distinction between observation, assumption, question,
-> test, and verification.
-
-0. **Define and audit the unified step-level record.** Join the existing artifacts by
-   `(disease, hadm_id, step)` and specify one row containing:
-
-   ```
-   observed_before_step
-   assumption_state (frame + typed claims/beliefs)
-   current_question (type, target, sub_question, decision consequence)
-   ordered_test (modality, region, protocol)
-   report_observation / finding_status / quality
-   required(question) / covered(report) / adequacy
-   answer / verification / next_question
-   deviation_level (question | test | adequacy | retained brake)
-   ```
-
-   Existing `full` annotations, `question_targets`, `rubric_features`, and standardized evidence
-   pieces are partial inputs to this record, but none alone is the final schema. First produce a
-   join/coverage audit; do not claim that the raw sequence is already fully structuralized.
-
-1. **Transform the remaining original sub-rubrics.** Use
-   `pipeline/rubric_graph_original.py` as the normative base and complete Q↔T transformations for
-   cholecystitis, diverticulitis, and pancreatitis. The appendicitis document is the first template,
-   not proof that the runtime graph has been updated. Label the four question purposes, extract
-   guards and answer-forks, and record where severity and complication fuse or co-occur.
-
-2. **Specify the assumption library minimally.** Start with the data already available:
-   disease-level `differential`, named `other_hypothesis`, and evidence-linked claims. Add typed
-   frame/disease/etiology/severity/complication fields, confidence, status, and provenance. Do not
-   begin with a full medical knowledge graph or a scalar `other_mass`; do not make claims
-   append-only.
-
-3. **Build one end-to-end `required(S)` / `coverable(S)` / adequacy example.** Start with
-   appendicitis. `required(S)` belongs to the question node; `coverable(S)` belongs to the
-   modality×region×protocol test type. Validate the pair against `sought_dimensions` and report
-   fragments, but do not derive either table from clustering alone. Demonstrate all four outcomes:
-   adequate-positive, adequate-negative, inadequate, and equivocal.
-
-4. **Formalize the deviation update rule.** For each candidate deviation, determine whether it is a
-   missing question, missing test route, adequacy failure, or retained brake. Absorb only actions that
-   are ex-ante justified and decision-relevant; preserve cases where an adequate question was
-   answered and the later test is an unjustified repeat. The target is asymmetric validation:
-   verified deviation→follow recovery without importing bad orders.
-
-5. **Resolve the capability/severity cases.** Read the 66 `assess_severity` notes and decide how
-   to represent modality capability versus technical visualization failure. Keep `severity` and
-   `complication` as separate vocabulary labels for now, but allow disease-specific fusion and
-   multi-label questions. Do not force a linear post-existence order.
-
-6. **Only then implement belief-state discordance.** Verify whether A3 can be represented as
-   assumption-state updates plus stack operations: retain/reconcile the current question, attach a
-   severity/etiology sub-question, or switch to a named sibling. Build `M` only after the typed
-   assumption schema and step-level evidence alignment exist.
-
-7. **Treat RL/POMDP as a later decision layer.** A question-specific value-of-information model may
-   be useful, but global entropy reduction is not the reward. First obtain local question resolution,
-   adequacy, verification, burden, and timing signals; then consider constrained offline RL. The
-   current data are observational and do not provide counterfactual outcomes for unchosen tests.
-
-### Deferred but tracked blockers
-
-- Lab/microbiology per-test charttimes are still missing; until sourced, those pieces are
-  admission-global rather than step-relative.
-- Radiology `source_test` must be normalized to modality×region×protocol before `coverable(S)` can
-  be trusted.
-- A3's full expected-profile matrix and named alternative routing remain second-phase work.
-
----
-
-## Provenance
-- Corpus: `study_inadequacy.present==True` steps from `results/annotation_experiment/alarm/*.json`
-  (285→185 flagged), joined by `(disease, hadm, step)` to `results/annotation_experiment/full/*.json`
-  for `representative_ex_ante` (information_gap, action_role).
-- Alarm pass origin: `experiments/annotation/alarm.py` + `scripts/run_alarm_pass.py` (A2
-  study_inadequacy detector is blind to the doctor's order → a function of patient state, which is
-  what keeps any downstream rubric non-circular).
-- Loosen/brake findings this builds on: `llm_annotation_analysis.md` (authoritative 2026-06-30
-  pre-admission cut); generalized principles in `configs/context_block.md`.
+The project succeeds if a small shared state vocabulary produces reproducible gains and a clinically
+meaningful residual floor. It fails if gains require patient-specific assumptions, post-order
+information, or an ever-expanding exception list.
