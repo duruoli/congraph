@@ -1,217 +1,203 @@
-# Rubric Update — a minimal state model of clinical testing
+# Rubric Update — explaining clinical imaging orders
 
-## 1. Thesis
+## 1. Project scope
 
-Clinical testing is a partially observed sequential decision process. The patient has an underlying
-clinical state; tests generate imperfect observations; observations update both what the current
-question has learned and what the physician believes; the remaining decision-relevant uncertainty
-determines the next test.
+This project explains **which image is ordered next, in what order, and why imaging is repeated,
+switched, or stopped** for:
 
-A standard rubric conditions mainly on a disease label and a narrow pathway position. A physician
-acts on a richer state. A **deviation** is therefore initially a residual produced by an insufficient
-state representation—not automatically a physician error, and not automatically a reasonable action.
+- appendicitis;
+- cholecystitis;
+- diverticulitis;
+- acute pancreatitis.
 
-The project asks:
+The model may use all information available before an order—symptoms, examination, labs, diagnoses,
+prior images, reports, and time course—but its predicted actions are limited to imaging:
 
-> What is the smallest clinically coherent state that makes the physician's next test, test order,
-> and reasonable deviations derivable from information available before the order?
+```text
+US | CT | MRI/MRCP | HIDA | X-ray | repeat | switch | no further imaging
+```
 
-The proposed factorization of that state is **belief, open question, and question coverage**. This is
-a testable model of clinical reasoning, not a claim that the physician's private mental process can
-be uniquely recovered from behavior.
+We are not trying to model every lab, treatment, or the physician's private mental process.
 
 ---
 
-## 2. Core state
+## 2. Guideline baseline
 
-At step `t`:
+The old disease-specific trees were artificial compilations of heterogeneous sources. They should
+not be treated as the guideline itself.
 
-- `I_t`: observations available before the next order—history, examination, laboratory values,
-  prior tests, reports, and report quality.
-- `A_t`: the physician's revisable belief state about the patient's latent clinical state.
-- `Q_t`: the current decision-relevant unknown. Resolving it could change a clinical action.
-- `C_t(Q_t)`: how much the available evidence has answered the current question.
-- `T_t`: the ordered test.
-- `O_{t+1}`: the observation produced by that test, including whether the result is interpretable
-  and adequate for the question.
-
-These objects must not be collapsed:
-
-1. **Patient state** is how the patient actually is, whether observed or not.
-2. **Observation state** is what evidence is currently available.
-3. **Belief state** is what the physician infers from that evidence.
-
-Coverage is not solely a patient fact or physician belief. It is a question-relative relation:
+The new primary baseline is the **ACR Appropriateness Criteria**, which uses the same structure
+across the four imaging problems:
 
 ```text
-C_t(Q) = coverage(observations available at t, question Q, test/report quality)
+clinical variant X
+    → imaging option Y
+    → usually appropriate | may be appropriate | usually not appropriate
 ```
 
-The same observation may adequately answer one question and be inadequate or irrelevant for
-another.
+Relevant topics:
+
+- ACR Right Lower Quadrant Pain;
+- ACR Right Upper Quadrant Pain;
+- ACR Left Lower Quadrant Pain;
+- ACR Acute Pancreatitis.
+
+ACR defines a **set of acceptable imaging actions**, not one mandatory path.
+
+Disease-specific sources remain secondary references:
+
+- WSES 2025: appendicitis;
+- WSES 2020 and TG18: cholecystitis;
+- WSES 2020: diverticulitis;
+- ACG 2024 and Revised Atlanta: acute pancreatitis.
+
+They define clinical states such as risk, diagnosis, severity, and complication. TG18 and Revised
+Atlanta are not used as complete imaging policies.
 
 ---
 
-## 3. One clinical loop
+## 3. Proposed explanatory state
+
+ACR variants describe part of the clinical context, but do not fully explain a patient's longitudinal
+imaging sequence. We test whether three latent variables provide the missing structure.
+
+### Assumption `A_t`
+
+What clinical frame is active before the order?
 
 ```text
-observations I_t
-      │
-      ├──> belief update A_t         (what the physician believes)
-      │
-      └──> coverage update C_t(Q)   (what the current question has learned)
-                       │
-                 open question Q_t
-                       │
-             next-test policy π(A_t, Q_t, C_t, I_t)
-                       │
-                 ordered test T_t
-                       │
-              new observation O_{t+1}
-                       └──> repeat
+suspected disease | confidence/risk | confirmed disease
+suspected etiology | severity | complication | alternative diagnosis
 ```
 
-There is only one test-routing rule:
+Assumption is one part of the context. Age, pregnancy, resource availability, and contraindications
+remain separate observed conditions.
+
+### Question `Q_t`
+
+What decision-relevant unknown is the image intended to answer?
 
 ```text
-T_t = π(A_t, Q_t, C_t, I_t)
+existence | etiology | severity | complication | alternative diagnosis
 ```
 
-A new observation has two distinct update effects:
+During discovery, the actual order may help annotate a reference question `Q*`. During held-out
+evaluation, the target order cannot be used: `Q_t` must be inferred from pre-order information.
+
+### Coverage `C_t(Q_t)`
+
+How well has the current question already been answered?
 
 ```text
-C_{t+1} = U_C(C_t, O_{t+1}, Q_t)   # Does the observation answer the question?
-A_{t+1} = U_A(A_t, O_{t+1})        # Does it change the clinical belief?
+unanswered | partially answered | answered
 ```
 
-The familiar special cases are consequences of this loop:
-
-- **Advance:** the current question is adequately answered; close it and select the next
-  decision-relevant question.
-- **Inadequate / retry:** coverage remains insufficient; the question stays open and another test
-  may be routed to the same information need.
-- **Inconsistent / reroute:** the observation materially changes the belief state; update or replace
-  the question and route a test under the revised belief.
-
-These are transitions, not external alarm rules.
+Coverage depends on the question, available observations, prior image quality, and whether the
+relevant anatomy or finding was actually assessed. `negative` is not the same as `inadequate`.
 
 ---
 
-## 4. Representation constraints
-
-### Belief state
-
-The assumption library is a shared, finite vocabulary of clinically meaningful claims. A patient's
-belief state instantiates claims from that library with evidence, confidence, and status:
+## 4. Imaging loop
 
 ```text
-belief_claim := {
-  scope: frame | disease | etiology | severity | complication | alternative,
-  target: <clinical target>,
-  confidence: <calibrated value or level>,
-  status: active | supported | contradicted | ruled_out | unknown,
-  evidence_refs: [<pre-order observation ids>]
-}
+pre-order information I_t
+        ↓
+assumption A_t + open question Q_t + coverage C_t
+        ↓
+ACR-allowed imaging set under the observed context
+        ↓
+ordered image T_t
+        ↓
+new image/report O_{t+1}
+        ├── updates coverage: was Q answered?
+        └── updates assumption: did the clinical frame change?
 ```
 
-Beliefs must be produced by a cross-patient update rule rather than freely invented per case:
+This produces three common transitions:
+
+- **close/advance:** the question is answered; stop imaging or move to another question;
+- **retry/switch:** the question remains open because the prior image was inadequate;
+- **reroute:** the result changes the assumption and opens a different question.
+
+The prediction target is:
 
 ```text
-A_{t+1} = U_A(A_t, O_{t+1})
+P(next image or stop | I_t, A_t, Q_t, C_t, ACR context)
 ```
-
-### Open question
-
-A question is not any missing fact. It is an unresolved variable whose answer could change the next
-clinical action. `existence`, `etiology`, `severity`, and `complication` are recurring purposes, not a
-mandatory sequence.
-
-### Guard against post-hoc explanation
-
-Any state added to explain a deviation must be:
-
-1. available before the order;
-2. reproducible across patients;
-3. low-dimensional and parsimonious;
-4. clinically and normatively defensible.
-
-The model must never use the target order or later documentation to reconstruct the pre-order belief
-or question.
 
 ---
 
-## 5. What a deviation can mean
+## 5. What an apparent deviation means
 
-A deviation from the standard rubric has four possible explanations:
+A mismatch with the old tree is only a **rubric residual**. It is not automatically a guideline
+deviation.
 
-1. **Missing state:** the rubric has the relevant question but lacks a guard such as prior-test
-   adequacy or a belief condition.
-2. **Missing question:** the physician is pursuing a decision-relevant unknown absent from the
-   rubric.
-3. **Missing belief representation:** the question or route depends on a clinical frame or
-   alternative the rubric cannot express.
-4. **Unsupported action:** no ex-ante, parsimonious, clinically defensible completion makes the test
-   reasonable.
+Under the new baseline, residuals are separated into:
 
-The aim is to separate rubric incompleteness (1–3) from unsupported testing (4), not to explain every
-observed action as correct. A useful updated rubric should retain a non-zero error floor and an
-over-testing brake.
+1. **formalization loss:** the textual/ACR guideline allows the action but the executable rubric
+   omitted the relevant condition;
+2. **guideline-underdetermined:** several actions are acceptable or the situation is not covered;
+3. **missing explanatory state:** assumption, question, or coverage explains the order;
+4. **unsupported order:** the action remains difficult to justify from ex-ante information.
+
+The goal is not to make every observed order correct. The model must preserve an unsupported floor.
 
 ---
 
-## 6. Falsifiable claim and evaluation
+## 6. Main hypothesis
 
-> Compared with a disease-and-pathway rubric, a temporally blinded model of belief, open question,
-> and question coverage will more accurately predict the next test, test order, and reasonable
-> deviations in held-out patients, beyond improvement attributable merely to added model capacity.
+> A temporally blinded representation of assumption, question, and coverage will explain and predict
+> held-out imaging sequences better than ACR clinical variants alone, without relying on
+> patient-specific exceptions or post-order information.
 
-Evaluation must be patient-level and strictly ex-ante. At each step the model sees only information
-available before the order. Report:
+Compare:
 
-- next-test prediction;
-- ordered-test sequence prediction;
-- prediction and classification of deviations;
-- question-closing versus retry/reroute transitions;
-- calibration and error analysis;
-- performance relative to equally flexible baselines;
-- complexity of the added state.
+| Model | State |
+|---|---|
+| `R0` | old deterministic disease tree |
+| `R1` | ACR clinical variant and set-valued imaging policy |
+| `R2` | `R1 + assumption` |
+| `R3` | `R2 + question` |
+| `R4` | `R3 + coverage` |
 
-Prediction supports the proposed latent model but does not uniquely identify the physician's true
-mental process. Stronger evidence comes from counterfactual transition tests: changing an adequate
-result to inadequate should preserve the question and induce retry; changing a consistent result to
-inconsistent should update belief and may induce rerouting.
+Evaluate on held-out patients:
 
-The central empirical object is the **derivability curve**:
+- next-image prediction;
+- ordered imaging sequence;
+- repeat, switch, and stop prediction;
+- coverage of observed orders by the guideline-allowed set;
+- model complexity and residual audit.
 
-| Model state | Added information | Expected residual deviation |
-|---|---|---:|
-| `S0` | disease + standard pathway | baseline |
-| `S1` | + open question | lower |
-| `S2` | + question coverage / adequacy | lower |
-| `S3` | + belief state | lower |
-| floor | unsupported or irreducibly ambiguous actions | non-zero |
-
-Each state increment must be declared before evaluation. This tests whether the proposed structure
-explains behavior rather than merely memorizing exceptions.
+Prediction supports the usefulness of the latent state; it does not prove that it uniquely recovers
+the physician's true mental process.
 
 ---
 
-## 7. Minimal next experiment
+## 7. Work plan
 
-Use one disease cohort and reconstruct step-level trajectories:
+### Task 1 — Build the normative baseline
 
-```text
-(I_t, A_t, Q_t, C_t, T_t, O_{t+1})
-```
+- [ ] Extract the four ACR topics into `clinical variant → appropriateness-rated image set` rules.
+- [ ] Preserve population, prior image/result, timing, contraindication, and source provenance.
+- [ ] Map each old-rubric edge to `source-supported | transformed | added | unsupported`.
 
-Then:
+### Task 2 — Build imaging trajectories
 
-1. enforce temporal blinding of `A_t`, `Q_t`, and `C_t`;
-2. compare `S0–S3` on held-out patients;
-3. measure next-test, ordering, and deviation prediction;
-4. audit which residuals are missing state, missing question, missing belief, or unsupported action;
-5. test whether the remaining errors concentrate in test timing and question priority.
+- [ ] Normalize image modality, body region, protocol, and timestamp.
+- [ ] Construct patient-level sequences with all pre-order information.
+- [ ] Represent repeat, modality switch, and imaging stop.
 
-The project succeeds if a small shared state vocabulary produces reproducible gains and a clinically
-meaningful residual floor. It fails if gains require patient-specific assumptions, post-order
-information, or an ever-expanding exception list.
+### Task 3 — Define and test `A/Q/C`
+
+- [ ] Create the smallest reusable label set for assumption, question, and coverage.
+- [ ] Annotate 10–20 trajectories first; revise labels until cases can be represented consistently.
+- [ ] Separate retrospective reference `Q*` from pre-order predicted `Q_t`.
+
+### Task 4 — Run the comparison
+
+- [ ] Compare `R0–R4` with strict patient-level temporal blinding.
+- [ ] Plot prediction gain against added state complexity.
+- [ ] Audit remaining residuals rather than automatically absorbing them.
+
+The immediate next task is **Task 1: extract the four ACR rule sets and compare them with the old
+rubric**. This establishes a defensible baseline before building the latent reasoning model.
