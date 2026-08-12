@@ -1,4 +1,4 @@
-# Rubric Update — explaining clinical imaging orders
+# Rubric Update — extracting normative and empirical imaging-decision knowledge
 
 ## 1. Project scope
 
@@ -21,19 +21,38 @@ We are not trying to model every lab, treatment, or the physician's private ment
 
 ---
 
-## 2. Guideline baseline
+## 2. Normative source: extract ACR before imposing a schema
 
-The old disease-specific trees were artificial compilations of heterogeneous sources. They should
-not be treated as the guideline itself.
+The old disease-specific trees were artificial compilations of heterogeneous sources. Their source
+selection and executable translation were neither complete nor sufficiently faithful. They are
+historical artifacts, not a standard rubric, guideline baseline, or model to preserve in the new
+study.
 
-The new primary baseline is the **ACR Appropriateness Criteria**, which uses the same structure
-across the four imaging problems:
+The primary normative source is the **ACR Appropriateness Criteria**. Before deciding how to
+formalize it, we will extract every relevant clinical variant and imaging option from the original
+text. A provisional surface form is:
 
 ```text
 clinical variant X
     → imaging option Y
     → usually appropriate | may be appropriate | usually not appropriate
 ```
+
+This surface form is an observation to test, not a schema to assume. For every rule, extraction will
+preserve at least:
+
+```text
+source topic + variant ID + original variant text
+context: presentation/symptoms | suspected or known condition | population
+         timing | severity/complication | prior imaging and result | constraints
+action: modality | body region/protocol | initial/next/repeat/interventional role
+rating: appropriateness category and numeric rating
+evidence strength: stored separately from appropriateness
+rationale and exact source provenance
+```
+
+Only after this faithful extraction will recurring context and action types be induced from the ACR
+corpus. `Assumption / Question / Coverage` must not be used as a compulsory extraction template.
 
 Relevant topics:
 
@@ -42,7 +61,9 @@ Relevant topics:
 - ACR Left Lower Quadrant Pain;
 - ACR Acute Pancreatitis.
 
-ACR defines a **set of acceptable imaging actions**, not one mandatory path.
+ACR primarily supports the choice of imaging or image-guided intervention for a stated clinical
+scenario. It usually defines a **set of rated actions**, not one mandatory diagnostic path and not a
+complete disease-management guideline.
 
 Disease-specific sources remain secondary references:
 
@@ -51,15 +72,43 @@ Disease-specific sources remain secondary references:
 - WSES 2020: diverticulitis;
 - ACG 2024 and Revised Atlanta: acute pancreatitis.
 
-They define clinical states such as risk, diagnosis, severity, and complication. TG18 and Revised
-Atlanta are not used as complete imaging policies.
+They define clinical states such as risk, diagnosis, severity, and complication. They are retained
+with separate provenance and are not silently merged into ACR or converted into a single composite
+tree. TG18 and Revised Atlanta are not used as complete imaging policies.
 
 ---
 
-## 3. Proposed explanatory state
+## 3. Parallel empirical source: order-aware reconstruction
 
-ACR variants describe part of the clinical context, but do not fully explain a patient's longitudinal
-imaging sequence. We test whether three latent variables provide the missing structure.
+The empirical knowledge source is different from ACR. The existing annotation pipeline was designed
+as open, order-aware abductive reconstruction:
+
+```text
+pre-order patient record + physician's actual ordered test
+    → a plausible reconstruction of what the physician may have been trying to establish
+```
+
+The actual order was deliberately shown. The annotation task was not next-test prediction: the order
+served as evidence for recovering possible `when / how / why` reasoning while reducing the tendency
+of an LLM to substitute its own preferred test. The order result and later information were hidden
+from the ex-ante reconstruction and used separately for local verification.
+
+These annotations were rubric-free and were **not originally generated under an A/Q/C ontology**.
+They contain fields suggested during the earlier annotation work—such as differential, information
+gap, expected finding, action role, and grounding—but A/Q/C was induced only later by comparing the
+reconstructed traces. The traces therefore remain a discovery corpus rather than pre-existing A/Q/C
+labels.
+
+The reconstruction is not a direct observation of the physician's private mental state. It is a
+plausible account constrained by the chart and the observed action, and it may contain knowledge
+contributed by the annotating model. Claims should therefore concern recurrent explanatory patterns,
+not unique recovery of true intentions.
+
+## 4. Candidate explicit representation: `A/Q/C`
+
+`A/Q/C` is a candidate schema for decoding recurrent knowledge in the empirical reconstructions. It
+is **parallel to**, not derived from, the schema induced from ACR. The two representations will first
+be developed independently and then compared for overlap, omissions, and conflicts.
 
 ### Assumption `A_t`
 
@@ -97,14 +146,14 @@ relevant anatomy or finding was actually assessed. `negative` is not the same as
 
 ---
 
-## 4. Imaging loop
+## 5. Imaging loop represented by A/Q/C
 
 ```text
 pre-order information I_t
         ↓
 assumption A_t + open question Q_t + coverage C_t
         ↓
-ACR-allowed imaging set under the observed context
+candidate actions under observed context and normative guidance
         ↓
 ordered image T_t
         ↓
@@ -127,15 +176,15 @@ P(next image or stop | I_t, A_t, Q_t, C_t, ACR context)
 
 ---
 
-## 5. What an apparent deviation means
+## 6. What a mismatch means
 
-A mismatch with the old tree is only a **rubric residual**. It is not automatically a guideline
+A mismatch between an observed order and an extracted ACR rule set is not automatically a guideline
 deviation.
 
 Under the new baseline, residuals are separated into:
 
-1. **formalization loss:** the textual/ACR guideline allows the action but the executable rubric
-   omitted the relevant condition;
+1. **extraction/formalization loss:** the ACR text allows the action but the structured
+   representation omitted or distorted the relevant condition;
 2. **guideline-underdetermined:** several actions are acceptable or the situation is not covered;
 3. **missing explanatory state:** assumption, question, or coverage explains the order;
 4. **unsupported order:** the action remains difficult to justify from ex-ante information.
@@ -144,21 +193,20 @@ The goal is not to make every observed order correct. The model must preserve an
 
 ---
 
-## 6. Main hypothesis
+## 7. Main hypothesis
 
 > A temporally blinded representation of assumption, question, and coverage will explain and predict
 > held-out imaging sequences better than ACR clinical variants alone, without relying on
 > patient-specific exceptions or post-order information.
 
-Compare:
+Compare independently constructed representations:
 
-| Model | State |
+| Representation | Source and state |
 |---|---|
-| `R0` | old deterministic disease tree |
-| `R1` | ACR clinical variant and set-valued imaging policy |
-| `R2` | `R1 + assumption` |
-| `R3` | `R2 + question` |
-| `R4` | `R3 + coverage` |
+| `N` | faithfully extracted ACR context–action–rating rules |
+| `E` | open order-aware physician-reasoning reconstructions |
+| `AQC` | explicit A/Q/C coding induced from `E` |
+| `N + AQC` | normative rules plus the candidate empirical explanatory state |
 
 Evaluate on held-out patients:
 
@@ -173,13 +221,15 @@ the physician's true mental process.
 
 ---
 
-## 7. Work plan
+## 8. Work plan
 
-### Task 1 — Build the normative baseline
+### Task 1 — Extract the normative ACR corpus
 
-- [ ] Extract the four ACR topics into `clinical variant → appropriateness-rated image set` rules.
-- [ ] Preserve population, prior image/result, timing, contraindication, and source provenance.
-- [ ] Map each old-rubric edge to `source-supported | transformed | added | unsupported`.
+- [ ] Extract every relevant ACR variant and action without using A/Q/C as the template.
+- [ ] Preserve original text, population, presentation, prior image/result, timing, severity,
+      constraints, appropriateness rating, evidence strength, rationale, and provenance.
+- [ ] Induce a context/action vocabulary from the extracted corpus and document ambiguous cases.
+- [ ] Validate a sample against the source text before using the structured corpus as a baseline.
 
 ### Task 2 — Build imaging trajectories
 
@@ -187,17 +237,27 @@ the physician's true mental process.
 - [ ] Construct patient-level sequences with all pre-order information.
 - [ ] Represent repeat, modality switch, and imaging stop.
 
-### Task 3 — Define and test `A/Q/C`
+### Task 3 — Recode and test `A/Q/C`
 
-- [ ] Create the smallest reusable label set for assumption, question, and coverage.
-- [ ] Annotate 10–20 trajectories first; revise labels until cases can be represented consistently.
-- [ ] Separate retrospective reference `Q*` from pre-order predicted `Q_t`.
+- [ ] Preserve the existing open annotations unchanged as the discovery corpus.
+- [ ] Create the smallest reusable codebook for assumption, question, and coverage.
+- [ ] On 10–20 trajectories, run paired structured passes: (a) recode the existing open
+      reconstruction into A/Q/C, and (b) independently annotate A/Q/C from the pre-order record plus
+      actual order without showing the old reconstruction. Compare them to detect framing dependence
+      before revising and freezing the codebook.
+- [ ] After freezing the codebook, recode the remaining corpus rather than replacing the original
+      annotations.
+- [ ] Separate retrospective, order-aware reference labels `(A*, Q*, C*)` from pre-order-only
+      inferred labels `(A_t, Q_t, C_t)` used at evaluation time.
 
-### Task 4 — Run the comparison
+### Task 4 — Compare the two knowledge structures
 
-- [ ] Compare `R0–R4` with strict patient-level temporal blinding.
-- [ ] Plot prediction gain against added state complexity.
+- [ ] Compare the independently induced ACR and A/Q/C vocabularies: overlap, missing dimensions,
+      contradictions, and disease/topic coverage.
+- [ ] Test `N`, pre-order `AQC`, and `N + AQC` with strict patient-level temporal blinding.
+- [ ] Plot explanatory/predictive gain against added state complexity.
 - [ ] Audit remaining residuals rather than automatically absorbing them.
 
-The immediate next task is **Task 1: extract the four ACR rule sets and compare them with the old
-rubric**. This establishes a defensible baseline before building the latent reasoning model.
+The immediate next task is **Task 1: faithfully extract the four ACR topics and induce their native
+context/action schema**. In parallel, the existing annotations remain the raw empirical material
+from which the distinct A/Q/C schema is developed.
