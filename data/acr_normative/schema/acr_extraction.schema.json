@@ -1,0 +1,226 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://congraph.local/schema/acr_extraction.schema.json",
+  "title": "Faithful ACR normative topic extraction",
+  "description": "ACR-native topic/variant/procedure extraction. It intentionally contains no Assumption/Question/Coverage fields.",
+  "type": "object",
+  "required": ["schema_version", "ranking_policy", "topics"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "1.1.0"},
+    "ranking_policy": {"$ref": "#/$defs/rankingPolicy"},
+    "topics": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {"$ref": "#/$defs/topic"}
+    }
+  },
+  "$defs": {
+    "topic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slug", "topic_id", "title", "topic_version", "official_urls", "source_files", "variants", "rationales"],
+      "properties": {
+        "slug": {"type": "string"},
+        "topic_id": {"type": "integer", "enum": [20, 21, 126, 132]},
+        "title": {"type": "string"},
+        "topic_version": {"type": "string"},
+        "official_urls": {"type": "object", "additionalProperties": {"type": "string", "format": "uri"}},
+        "source_files": {"type": "object", "additionalProperties": {"type": "string"}},
+        "variants": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/variant"}},
+        "rationales": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/rationale"}}
+      }
+    },
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["variant_id", "variant_text", "context", "provenance", "actions", "action_relationships"],
+      "properties": {
+        "variant_id": {"type": "integer", "minimum": 1},
+        "variant_text": {"type": "string", "minLength": 1},
+        "context": {"$ref": "#/$defs/context"},
+        "provenance": {"$ref": "#/$defs/variantProvenance"},
+        "actions": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/action"}},
+        "action_relationships": {"type": "array", "items": {"$ref": "#/$defs/actionRelationship"}}
+      }
+    },
+    "action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action_id", "procedure", "action_family", "action_components", "appropriateness_category", "strength_of_evidence", "adult_rrl", "pediatric_rrl", "final_rating", "median_rating", "final_tabulations", "evidence_references", "rationale_ids", "provenance"],
+      "properties": {
+        "action_id": {"type": "string", "pattern": "^acr_[0-9]+_v[0-9]+_a[0-9]{2}$"},
+        "procedure": {"type": "string", "minLength": 1},
+        "action_family": {"type": "string", "minLength": 1},
+        "action_components": {"$ref": "#/$defs/actionComponents"},
+        "appropriateness_category": {"enum": ["Usually appropriate", "May be appropriate", "May be appropriate (Disagreement)", "Usually not appropriate"]},
+        "strength_of_evidence": {"enum": ["Strong", "Moderate", "Limited", "Expert Consensus", "Expert Opinion"]},
+        "adult_rrl": {"type": "string"},
+        "pediatric_rrl": {"type": ["string", "null"]},
+        "final_rating": {"type": "integer", "minimum": 1, "maximum": 9, "description": "Primary action-ranking metric; higher is more appropriate. Equal values remain tied."},
+        "median_rating": {"oneOf": [{"type": "integer", "minimum": 1, "maximum": 9}, {"const": "n/a"}]},
+        "final_tabulations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+          "properties": {
+            "1": {"type": "integer", "minimum": 0}, "2": {"type": "integer", "minimum": 0},
+            "3": {"type": "integer", "minimum": 0}, "4": {"type": "integer", "minimum": 0},
+            "5": {"type": "integer", "minimum": 0}, "6": {"type": "integer", "minimum": 0},
+            "7": {"type": "integer", "minimum": 0}, "8": {"type": "integer", "minimum": 0},
+            "9": {"type": "integer", "minimum": 0}
+          }
+        },
+        "evidence_references": {"type": "array", "items": {"$ref": "#/$defs/evidenceReference"}},
+        "rationale_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "provenance": {"$ref": "#/$defs/actionProvenance"}
+      }
+    },
+    "rankingPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary_metric", "direction", "range", "tie_policy", "non_ranking_fields"],
+      "properties": {
+        "primary_metric": {"const": "final_rating"},
+        "direction": {"const": "higher_is_more_appropriate"},
+        "range": {"const": [1, 9]},
+        "tie_policy": {"type": "string"},
+        "non_ranking_fields": {
+          "const": ["appropriateness_category", "strength_of_evidence", "median_rating", "final_tabulations"]
+        }
+      }
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["clinical_state", "imaging_history", "modifiers", "decision_stage"],
+      "properties": {
+        "clinical_state": {
+          "type": "object", "additionalProperties": false,
+          "required": ["presentation", "condition", "severity_or_complication"],
+          "properties": {
+            "presentation": {"$ref": "#/$defs/stringList"},
+            "condition": {"$ref": "#/$defs/stringList"},
+            "severity_or_complication": {"$ref": "#/$defs/stringList"}
+          }
+        },
+        "imaging_history": {
+          "type": "object", "additionalProperties": false,
+          "required": ["prior_test", "prior_result", "source_phrases"],
+          "properties": {
+            "prior_test": {"$ref": "#/$defs/stringList"},
+            "prior_result": {"$ref": "#/$defs/stringList"},
+            "source_phrases": {"$ref": "#/$defs/stringList"}
+          }
+        },
+        "modifiers": {
+          "type": "object", "additionalProperties": false,
+          "required": ["population", "timing", "constraints_or_confounders"],
+          "properties": {
+            "population": {"$ref": "#/$defs/stringList"},
+            "timing": {"$ref": "#/$defs/stringList"},
+            "constraints_or_confounders": {"$ref": "#/$defs/stringList"}
+          }
+        },
+        "decision_stage": {
+          "type": "object", "additionalProperties": false,
+          "required": ["imaging_stage", "encounter_status", "source_phrase"],
+          "properties": {
+            "imaging_stage": {"enum": ["initial", "next", "unspecified"]},
+            "encounter_status": {"$ref": "#/$defs/stringList"},
+            "source_phrase": {"type": ["string", "null"]}
+          }
+        }
+      }
+    },
+    "stringList": {
+      "type": "array", "items": {"type": "string"}, "uniqueItems": true
+    },
+    "actionRelationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["relationship", "procedure_names", "action_ids", "source_text", "provenance"],
+      "properties": {
+        "relationship": {"enum": ["equivalent_alternatives", "complementary"]},
+        "procedure_names": {"type": "array", "minItems": 2, "items": {"type": "string"}, "uniqueItems": true},
+        "action_ids": {"type": "array", "minItems": 2, "items": {"type": "string"}, "uniqueItems": true},
+        "source_text": {"type": "string", "minLength": 1},
+        "provenance": {"$ref": "#/$defs/summaryProvenance"}
+      }
+    },
+    "actionComponents": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["family", "modality", "body_region_or_target", "protocol_terms", "procedure_role"],
+      "properties": {
+        "family": {"type": "string"},
+        "modality": {"type": "string"},
+        "body_region_or_target": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "protocol_terms": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "procedure_role": {"enum": ["diagnostic imaging", "image-guided intervention"]}
+      }
+    },
+    "evidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reference_number", "pmid_as_printed", "study_quality_as_printed"],
+      "properties": {
+        "reference_number": {"type": "integer", "minimum": 1},
+        "pmid_as_printed": {"type": "string", "description": "Parenthesized identifier copied exactly; negative values in ACR are not silently repaired."},
+        "study_quality_as_printed": {"type": "string"}
+      }
+    },
+    "rationale": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rationale_id", "variant_id", "acr_section_heading", "text", "provenance"],
+      "properties": {
+        "rationale_id": {"type": "string"},
+        "variant_id": {"type": "integer", "minimum": 1},
+        "acr_section_heading": {"type": "string"},
+        "text": {"type": "string", "minLength": 1},
+        "provenance": {"$ref": "#/$defs/narrativeProvenance"}
+      }
+    },
+    "variantProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_kind", "source_file", "source_url", "locator"],
+      "properties": {
+        "source_kind": {"const": "ACR appendix"}, "source_file": {"type": "string"},
+        "source_url": {"type": "string", "format": "uri"}, "locator": {"type": "string"}
+      }
+    },
+    "actionProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_kind", "source_file", "source_url", "page", "locator", "html_source_file", "html_locator"],
+      "properties": {
+        "source_kind": {"const": "ACR appendix"}, "source_file": {"type": "string"},
+        "source_url": {"type": "string", "format": "uri"}, "page": {"type": "integer", "minimum": 1},
+        "locator": {"type": "string"}, "html_source_file": {"type": "string"}, "html_locator": {"type": "string"}
+      }
+    },
+    "narrativeProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_kind", "source_file", "source_url", "page_start", "page_end", "locator"],
+      "properties": {
+        "source_kind": {"const": "ACR narrative"}, "source_file": {"type": "string"},
+        "source_url": {"type": "string", "format": "uri"}, "page_start": {"type": "integer", "minimum": 1},
+        "page_end": {"type": "integer", "minimum": 1}, "locator": {"type": "string"}
+      }
+    },
+    "summaryProvenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_kind", "source_file", "source_url", "page_start", "page_end", "locator"],
+      "properties": {
+        "source_kind": {"const": "ACR narrative summary"}, "source_file": {"type": "string"},
+        "source_url": {"type": "string", "format": "uri"}, "page_start": {"type": "integer", "minimum": 1},
+        "page_end": {"type": "integer", "minimum": 1}, "locator": {"type": "string"}
+      }
+    }
+  }
+}

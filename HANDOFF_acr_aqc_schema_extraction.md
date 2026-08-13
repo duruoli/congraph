@@ -28,12 +28,15 @@
 
 ### Track A — ACR normative extraction
 
-1. Acquire and version the four complete ACR topics: RLQ Pain, RUQ Pain, LLQ Pain, and Acute
+Completed 2026-08-13. Outputs and the frozen operational contract are documented in
+`data/acr_normative/TRACK_A_COMPLETE.md`.
+
+1. [x] Acquire and version the four complete ACR topics: RLQ Pain, RUQ Pain, LLQ Pain, and Acute
    Pancreatitis.
-2. Extract every variant, action, rating, evidence strength, rationale, and exact provenance.
-3. Preserve original wording; do not use A/Q/C as the extraction template.
-4. Induce the native ACR context/action vocabulary from the extracted corpus.
-5. Manually audit a sample against the original text.
+2. [x] Extract every variant, action, rating, evidence strength, rationale, and exact provenance.
+3. [x] Preserve original wording; do not use A/Q/C as the extraction template.
+4. [x] Induce the native ACR context/action vocabulary from the extracted corpus.
+5. [x] Manually audit a sample against the original text.
 
 ### Track B — Empirical A/Q/C development
 
@@ -55,14 +58,13 @@ unsupported residual rather than explaining every observed order post hoc.
 
 ## Recommended first task in the new window
 
-Start with **Track A, steps 1–4**: build the faithful ACR extraction schema and extract the four
-topics. Do not start batch A/Q/C annotation until the assumption ontology and pilot prompt have been
-reviewed.
+Start with **Track B, steps 1–4**: sample diverse schema-free annotations, induce a provisional
+assumption codebook, and draft the trajectory-level pilot prompt. Do not start batch A/Q/C
+annotation until the assumption ontology and pilot prompt have been reviewed.
 
 ## Suggested opening prompt
 
-> Read `HANDOFF_acr_aqc_next_steps.md`, `rubric_update.md`, and `aqc_annotation_design.md` completely.
-> Continue with Track A: faithfully extract the four ACR topics from the original sources, preserving
-> provenance and without imposing A/Q/C. First inspect the repository and propose the concrete output
-> files/schema, then perform the extraction and validate a sample against the source text.
-
+> Read `HANDOFF_acr_aqc_schema_extraction.md`, `rubric_update.md`,
+> `aqc_annotation_design.md`, and `data/acr_normative/TRACK_A_COMPLETE.md` completely. Treat the
+> completed ACR v1.1 corpus as the independent normative representation `N`. Continue with Track B:
+> sample diverse schema-free annotations, open-code assumptions, and prepare the paired A/Q/C pilot.

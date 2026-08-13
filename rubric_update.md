@@ -230,11 +230,22 @@ the physician's true mental process.
 
 ### Task 1 — Extract the normative ACR corpus
 
-- [ ] Extract every relevant ACR variant and action without using A/Q/C as the template.
-- [ ] Preserve original text, population, presentation, prior image/result, timing, severity,
+- [x] Extract every relevant ACR variant and action without using A/Q/C as the template.
+- [x] Preserve original text, population, presentation, prior image/result, timing, severity,
       constraints, appropriateness rating, evidence strength, rationale, and provenance.
-- [ ] Induce a context/action vocabulary from the extracted corpus and document ambiguous cases.
-- [ ] Validate a sample against the source text before using the structured corpus as a baseline.
+- [x] Induce a context/action vocabulary from the extracted corpus and document ambiguous cases.
+- [x] Validate a sample against the source text before using the structured corpus as a baseline.
+
+Track A was completed on 2026-08-13. The operational ACR schema is `data/acr_normative` v1.1:
+
+```text
+Context = clinical_state + imaging_history + modifiers + decision_stage
+Action  = exact procedure + normalized action components
+Rank    = final_rating (1-9; higher is more appropriate; ties retained)
+```
+
+Appropriateness category, SOE, median, vote distribution, rationale, and provenance remain
+available but are not alternative ranking metrics. See `data/acr_normative/TRACK_A_COMPLETE.md`.
 
 ### Task 2 — Build imaging trajectories
 
@@ -263,6 +274,6 @@ the physician's true mental process.
 - [ ] Plot explanatory/predictive gain against added state complexity.
 - [ ] Audit remaining residuals rather than automatically absorbing them.
 
-The immediate next task is **Task 1: faithfully extract the four ACR topics and induce their native
-context/action schema**. In parallel, the existing annotations remain the raw empirical material
-from which the distinct A/Q/C schema is developed.
+The immediate next task is **Task 3: develop and pilot the empirical A/Q/C codebook** from existing
+schema-free annotations. Treat the completed ACR corpus as an independent normative input `N`; do
+not modify it to fit empirical A/Q/C annotations.
