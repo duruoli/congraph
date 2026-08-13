@@ -110,6 +110,11 @@ not unique recovery of true intentions.
 is **parallel to**, not derived from, the schema induced from ACR. The two representations will first
 be developed independently and then compared for overlap, omissions, and conflicts.
 
+The operational definitions, transition logic, and proposed two-pass annotation procedure are kept
+in [`aqc_annotation_design.md`](aqc_annotation_design.md). In brief, A/Q/C is the core state;
+question-relative study adequacy and assumption–evidence discordance are relations that drive its
+cross-step updates rather than additional free-standing state variables.
+
 ### Assumption `A_t`
 
 What clinical frame is active before the order?
