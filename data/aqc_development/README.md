@@ -4,7 +4,8 @@ Status: **preliminary Track B prototype; formal full-corpus discovery not comple
 
 ## Boundary
 
-This directory is derived only from the existing schema-free, order-aware patient annotations.
+This directory is derived only from the existing A/Q/C-free, schema-light, order-aware patient
+annotations.
 The completed ACR v1.1 corpus remains the independent normative representation `N` and is neither
 loaded nor used as an A/Q/C template.
 

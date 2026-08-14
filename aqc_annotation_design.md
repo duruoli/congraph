@@ -241,7 +241,8 @@ The result of current order `Y_t` is not used until the next decision point.
 
 Do not lock assumption types from intuition alone:
 
-1. open-code assumption propositions in a diverse sample of the existing schema-free annotations;
+1. open-code assumption propositions in a diverse sample of the existing A/Q/C-free,
+   schema-light annotations;
 2. cluster recurring types and levels across all four diseases;
 3. keep the original proposition plus a normalized type and an `other/unclear` option;
 4. freeze the codebook before large-scale annotation;
@@ -299,9 +300,9 @@ reconstructs:
 Annotate a small pilot in two ways:
 
 - directly reconstruct A/Q/C from the masked trajectory plus actual orders;
-- recode the existing open reasoning into A/Q/C.
+- recode the existing schema-light reasoning into A/Q/C.
 
-Their agreement measures framing dependence. Preserve the old schema-free annotations rather than
+Their agreement measures framing dependence. Preserve the old schema-light annotations rather than
 overwriting them.
 
 ## 9. Prompt requirements
