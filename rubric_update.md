@@ -255,8 +255,10 @@ available but are not alternative ranking metrics. See `data/acr_normative/READM
 
 ### Task 3 — Recode and test `A/Q/C`
 
-- [ ] Preserve the existing open annotations unchanged as the discovery corpus.
-- [ ] Create the smallest reusable codebook for assumption, question, and coverage.
+- [x] Preserve the existing open annotations unchanged as the discovery corpus.
+- [ ] Create the smallest reusable codebook for assumption, question, and coverage. A preliminary
+      38-trajectory-subset prototype exists in `data/aqc_development`, but formal discovery must be
+      redone from the 293-trajectory `results/annotation_experiment/full` corpus.
 - [ ] On 10–20 trajectories, run paired structured passes: (a) recode the existing open
       reconstruction into A/Q/C, and (b) independently annotate A/Q/C from the pre-order record plus
       actual order without showing the old reconstruction. Compare them to detect framing dependence
@@ -274,6 +276,8 @@ available but are not alternative ranking metrics. See `data/acr_normative/READM
 - [ ] Plot explanatory/predictive gain against added state complexity.
 - [ ] Audit remaining residuals rather than automatically absorbing them.
 
-The immediate next task is **Task 3: develop and pilot the empirical A/Q/C codebook** from existing
-schema-free annotations. Treat the completed ACR corpus as an independent normative input `N`; do
-not modify it to fit empirical A/Q/C annotations.
+The immediate next task is **Task 3: create patient-level discovery/held-out splits from the full
+Mode-A corpus**, compare reasoning-only blind coding with coding of the complete schema-light
+fields, and revise the preliminary assumption/question contract. Then run the paired 10–20-
+trajectory A/Q/C pilot, audit over-rationalization, and freeze. Treat the completed ACR corpus as an
+independent normative input `N`; do not modify it to fit empirical A/Q/C annotations.

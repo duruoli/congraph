@@ -13,6 +13,66 @@ This is order-aware knowledge discovery, not next-test prediction. The current t
 events remain hidden. The reconstruction is a plausible explanation grounded in the chart, not a
 claim that we uniquely recover the physician's private thoughts.
 
+### 1.1 Source layers and nested schemas
+
+Keep four representations separate:
+
+| Symbol | Representation | Source | Epistemic role |
+|---|---|---|---|
+| `O_t` | causally available patient observations | raw chart and prior reports | observed patient evidence |
+| `E_t` | order-aware reasoning reconstruction | `results/annotation_experiment/full/*.json` | plausible, LLM-reconstructed explanation |
+| `A/Q/C_t` | decoded decision state | induced/tested from `E_t` and grounded in `O_t` | candidate empirical representation |
+| `N` | ACR Context–Action–Rating corpus | `data/acr_normative` | independent normative representation |
+
+`results/vocab` standardizes observation content inside `O_t`. Its source chain is:
+
+```text
+data/raw_data
+    -> scripts/fragment_evidence.py
+    -> results/evidence_pieces/*.jsonl
+    -> scripts/normalize_vocab.py
+    -> results/vocab/{anatomy,attribute,state}_{vocab,map}.json
+```
+
+The atomic observation should be treated as more than `attribute + state`:
+
+```text
+EvidencePiece = anatomy + attribute + state/value + finding_status
+                + source/provenance + time + qualifier
+```
+
+It is a **small schema repeated inside entries of a larger patient-context schema**:
+
+```text
+PatientContext_t
+├── clinical_observations: EvidencePiece[]
+├── imaging_history: Study[]
+│   ├── modality + region + protocol + order/result time
+│   ├── adequacy/limitations
+│   └── findings: EvidencePiece[]
+├── modifiers_and_constraints
+└── decision_stage
+```
+
+Thus the vocabulary is not a complete Context ontology and is not itself ACR Context. It provides
+the standardized observation language for parts of `clinical_observations`, prior imaging results,
+and some modifiers. ACR `condition`, severity/complication state, and decision stage may require
+higher-level aggregation or inference and must not be equated directly with an evidence piece.
+
+The same observation layer supports A/Q/C without defining its latent ontology:
+
+```text
+O_t grounds A_t and Q_t
+O_t × Q_t supports coverage C_t(Q_t)
+prior Study metadata + findings support adequacy/capability/result-status judgments
+O_t can later be matched to N.Context through an explicit bridge
+```
+
+Raw text remains authoritative; canonical evidence pieces are indexes for comparison and coverage.
+Do not load an admission-wide `results/evidence_pieces` row directly into a decision point: future
+reports would leak, and some labs/microbiology are currently admission-global. Construct `O_t` from
+the causally masked record and retain exact source quotes.
+
 ## 2. Core state: A/Q/C
 
 ### Assumption `A_t`
@@ -190,6 +250,40 @@ Do not lock assumption types from intuition alone:
 The seed types in this document are hypotheses to test against the raw annotations, not a closed
 ontology.
 
+### 7.1 What Track B is intended to recover
+
+The existing Mode-A corpus is not form-free text. It was generated as strict JSON with a constrained
+five-branch `differential`, free-text `other_hypothesis`, `information_gap`, `expected_finding`, a
+categorical `action_role`, appropriateness, grounding, and a prose `reasoning` field. It is better
+described as **A/Q/C-free, schema-light reconstruction**. In particular, `differential` is already an
+assumption proxy and `information_gap` is already a question proxy. Their existence cannot by
+itself prove that A/Q/C emerged without framing.
+
+Track B should therefore recover and test four specific products:
+
+1. **Assumption propositions:** atomic propositions, their hierarchy/level, recurring empirical
+   types, proposition-specific status, and `other/unclear` residuals.
+2. **Question representation:** recurring target/type, one primary versus optional secondary
+   questions, and what positive or negative answers would change. This is a normalization and
+   audit of free-text gaps, not merely renaming `information_gap` to `Q`.
+3. **Coverage rules:** how all causally available observations answer a question, separating study
+   adequacy, test–question capability, result status, and aggregate coverage. Coverage cannot be
+   extracted from the old reasoning text alone; it must be reconstructed from `O_t` plus `Q_t`.
+4. **Trajectory updates:** assumption change, question continuity, discordance, and only then a
+   derived transition summary, while preserving unsupported orders.
+
+The intended downstream use is:
+
+```text
+order-aware A/Q/C* reference labels for knowledge discovery
+        -> learn/infer pre-order A/Q/C without the current order at evaluation time
+        -> compare N vs A/Q/C vs N+A/Q/C on held-out next-image/repeat/switch/stop
+```
+
+Useful compression or agreement does not prove recovery of private physician thought. Evidence for
+a shared logic requires codebook saturation on held-out trajectories, independent coding views,
+an unsupported residual, and incremental held-out predictive value beyond `O_t` and `N`.
+
 ## 8. Annotation procedure
 
 The main unit is an entire trajectory, not an isolated order. For each current order, the LLM sees
@@ -221,4 +315,3 @@ overwriting them.
 - Require explicit evidence for material discordance.
 - Allow multiple plausible explanations and `unclear/weakly supported`.
 - Do not force every real order to fit A/Q/C or rationalize unsupported imaging.
-

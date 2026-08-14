@@ -40,10 +40,17 @@ Completed 2026-08-13. Outputs and the frozen operational contract are documented
 
 ### Track B — Empirical A/Q/C development
 
-1. Sample diverse existing schema-free annotations across all four diseases.
-2. Open-code their verbatim assumptions, then cluster recurring types and levels.
-3. Produce a provisional assumption codebook with `other/unclear`.
-4. Draft a trajectory-level, order-aware A/Q/C prompt from `aqc_annotation_design.md`.
+Preliminary steps 1–4 were prototyped 2026-08-14, but the initial source scan covered only 38
+pilot+batch trajectories. The canonical `results/annotation_experiment/full` corpus contains 293
+trajectories and 542 decision steps. Formal discovery must be redone from `full/`; the current
+codebook and prompt are **not frozen**. See `data/aqc_development/README.md`.
+
+1. [ ] Create patient-level discovery/held-out splits from `full/` and sample diverse trajectories
+   across all four diseases and timing strata.
+2. [ ] Open-code assumptions and questions in a reasoning-only blind view, then compare against the
+   complete schema-light ex-ante fields.
+3. [ ] Revise the preliminary assumption codebook and add a question codebook with `other/unclear`.
+4. [ ] Revise the trajectory-level, order-aware A/Q/C prompt after the full-corpus discovery audit.
 5. Pilot 10–20 trajectories in two ways:
    - reconstruct A/Q/C directly from masked trajectories plus actual orders;
    - recode the old open reasoning into A/Q/C.
@@ -56,15 +63,16 @@ Compare faithfully extracted ACR knowledge (`N`), pre-order inferred A/Q/C, and 
 patient-level held-out next-image, repeat/switch/stop, and sequence prediction. Preserve an
 unsupported residual rather than explaining every observed order post hoc.
 
-## Recommended first task in the new window
+## Recommended next task
 
-Start with **Track B, steps 1–4**: sample diverse schema-free annotations, induce a provisional
-assumption codebook, and draft the trajectory-level pilot prompt. Do not start batch A/Q/C
-annotation until the assumption ontology and pilot prompt have been reviewed.
+Redo **Track B steps 1–4 from `full/`** using the documented discovery/held-out design, then execute
+the paired pilot. Do not start batch A/Q/C annotation before the full-corpus audit and review.
 
 ## Suggested opening prompt
 
 > Read `HANDOFF_acr_aqc_schema_extraction.md`, `rubric_update.md`,
-> `aqc_annotation_design.md`, and `data/acr_normative/README.md` completely. Treat the
-> completed ACR v1.1 corpus as the independent normative representation `N`. Continue with Track B:
-> sample diverse schema-free annotations, open-code assumptions, and prepare the paired A/Q/C pilot.
+> `aqc_annotation_design.md`, `data/acr_normative/README.md`, and
+> `data/aqc_development/README.md` completely. Treat the completed ACR v1.1 corpus as the
+> independent normative representation `N`. Continue with Track B: rebuild discovery/held-out
+> sampling from `results/annotation_experiment/full`, run blind and schema-assisted open coding,
+> then revise the paired A/Q/C pilot before execution.

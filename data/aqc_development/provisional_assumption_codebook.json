@@ -1,0 +1,184 @@
+{
+  "schema_version": "0.1.0-provisional",
+  "status": "provisional; review after paired 10-20 trajectory pilot before freezing",
+  "source": "first-cycle open coding of data/aqc_development/discovery_open_coding.jsonl",
+  "unit": "one atomic clinical proposition; a decision step may contain several hierarchical propositions",
+  "rules": [
+    "Retain the source proposition verbatim alongside every normalized code.",
+    "Assign type, level, and status to each atomic proposition, never once to the whole step.",
+    "Use multiple propositions when disease existence is established but etiology, severity, complication, or intervention state remains uncertain.",
+    "Do not infer an assumption type from modality or action_role alone.",
+    "Observed conditions such as age, pregnancy, renal function, contrast constraints, and resource availability are context unless the order is explicitly investigating them.",
+    "Use other for a coherent recurring proposition outside the listed types and preserve a free-text proposed type.",
+    "Use unclear when the proposition or its level cannot be reliably recovered; do not force it into other."
+  ],
+  "types": [
+    {
+      "id": "syndrome_or_source_frame",
+      "level": "pre_diagnostic_or_anatomic_frame",
+      "definition": "A broad syndrome or incompletely localized anatomic process organizes the workup before one disease or finding identity dominates.",
+      "include": [
+        "an intra-abdominal inflammatory or infectious process is present but its organ source is unknown",
+        "the abdominal source of sepsis, obstruction, or pain remains unlocalized"
+      ],
+      "exclude": [
+        "a named disease is the proposition being tested; use disease_or_finding_identity",
+        "a known disease is being staged; use severity_extent_or_course"
+      ],
+      "sample_assignments": 7,
+      "origin": "induced beyond the seed types"
+    },
+    {
+      "id": "disease_or_finding_identity",
+      "level": "disease_or_finding",
+      "definition": "The existence or identity of a named disease, lesion, collection, or observed abnormality organizes the workup.",
+      "include": [
+        "appendicitis is present",
+        "a hepatic collection is a biloma rather than a hematoma",
+        "pelvic lymphadenopathy is reactive rather than lymphoproliferative"
+      ],
+      "exclude": [
+        "what caused an already identified disease; use etiology_or_mechanism",
+        "how extensive or progressive an established process is; use severity_extent_or_course"
+      ],
+      "sample_assignments": 24,
+      "origin": "seed disease-existence type broadened empirically to finding identity"
+    },
+    {
+      "id": "etiology_or_mechanism",
+      "level": "cause_or_mechanism",
+      "definition": "A cause or mechanism of an established or strongly suspected disease/finding organizes the workup.",
+      "include": [
+        "pancreatitis has a biliary cause",
+        "duct dilation is caused by a retained stone, stricture, or ampullary lesion",
+        "persistent cholestasis reflects incomplete drainage"
+      ],
+      "exclude": [
+        "an unrelated organ system may instead cause the symptoms; use alternative_source",
+        "whether a device is positioned or functioning; use intervention_or_device_state"
+      ],
+      "sample_assignments": 9,
+      "origin": "seed type retained"
+    },
+    {
+      "id": "severity_extent_or_course",
+      "level": "extent_or_temporal_course",
+      "definition": "The extent, grade, response, stability, progression, or resolution of an already recognized process organizes the workup.",
+      "include": [
+        "an abscess has enlarged or responded to treatment",
+        "inflammation has progressed or resolved",
+        "the current anatomic extent could change management"
+      ],
+      "exclude": [
+        "the possible new adverse entity itself, such as necrosis or perforation; also code complication",
+        "the base disease has not yet been identified; use disease_or_finding_identity or syndrome_or_source_frame"
+      ],
+      "sample_assignments": 19,
+      "origin": "seed severity type expanded empirically to longitudinal course"
+    },
+    {
+      "id": "complication",
+      "level": "complication",
+      "definition": "A consequential adverse development of a disease, procedure, or prior finding organizes the workup.",
+      "include": [
+        "perforation, abscess, necrosis, pseudocyst, fistula, bile leak, or post-procedural injury",
+        "superinfection or rupture of a known collection"
+      ],
+      "exclude": [
+        "size or interval response without a distinct adverse entity; use severity_extent_or_course",
+        "an unrelated competing diagnosis; use alternative_source"
+      ],
+      "sample_assignments": 25,
+      "origin": "seed type retained"
+    },
+    {
+      "id": "alternative_source",
+      "level": "competing_clinical_frame",
+      "definition": "A different disease, organ, or clinical frame may replace or materially compete with the focal explanation for the presentation.",
+      "include": [
+        "a gynecologic, urologic, vascular, malignant, or other bowel source may explain the pain",
+        "another abdominal process may explain deterioration better than the current focal disease"
+      ],
+      "exclude": [
+        "a cause nested under the retained disease; use etiology_or_mechanism",
+        "a list of possibilities before any focal frame exists; use syndrome_or_source_frame and code named propositions individually when supported"
+      ],
+      "sample_assignments": 26,
+      "origin": "seed type retained"
+    },
+    {
+      "id": "intervention_or_device_state",
+      "level": "post_intervention_or_device",
+      "definition": "The position, patency, adequacy, effectiveness, or failure of a prior intervention or device organizes the next imaging decision.",
+      "include": [
+        "a biliary stent is patent, well positioned, or adequately decompressing",
+        "a drain is positioned and controlling a collection",
+        "a prior intervention has failed or requires revision"
+      ],
+      "exclude": [
+        "injury, leak, bleeding, or infection caused by a procedure; also code complication",
+        "the biological cause of disease independent of the intervention; use etiology_or_mechanism"
+      ],
+      "sample_assignments": 9,
+      "origin": "induced beyond the seed types"
+    },
+    {
+      "id": "other",
+      "level": "free_text_required",
+      "definition": "A coherent assumption proposition is recoverable but its type is outside the provisional codebook.",
+      "include": [
+        "a supported proposition with a proposed free-text type that should be audited for recurrence"
+      ],
+      "exclude": [
+        "insufficiently recoverable propositions; use unclear"
+      ],
+      "sample_assignments": 0,
+      "origin": "required residual"
+    },
+    {
+      "id": "unclear",
+      "level": "uncertain",
+      "definition": "The available text does not support a stable proposition or level.",
+      "include": [
+        "the order is weakly motivated or several incompatible propositions cannot be separated"
+      ],
+      "exclude": [
+        "a clear but novel type; use other"
+      ],
+      "sample_assignments": 0,
+      "origin": "required uncertainty residual"
+    }
+  ],
+  "statuses": [
+    {
+      "id": "suspected",
+      "definition": "Plausible and actively considered, but not the clear leading proposition and not adequately established."
+    },
+    {
+      "id": "likely",
+      "definition": "The leading supported proposition, but still awaiting decisive confirmation."
+    },
+    {
+      "id": "established",
+      "definition": "Adequately supported by causally available evidence or explicitly documented as known; downstream uncertainty may remain at another level."
+    },
+    {
+      "id": "challenged",
+      "definition": "Previously active and still possible, but materially weakened by valid negative, discordant, or temporal evidence."
+    },
+    {
+      "id": "excluded",
+      "definition": "Sufficiently and validly refuted for the current decision point; nonvisualization, nondiagnostic study, or not-assessed anatomy is not exclusion."
+    },
+    {
+      "id": "unclear",
+      "definition": "The proposition is recoverable but its status cannot be assigned without overstatement."
+    }
+  ],
+  "cross_cutting_notes": [
+    "Temporal qualifiers such as new, persistent, recurrent, stable, improving, and worsening remain attributes of the proposition; they are not standalone assumption types.",
+    "Anatomic target, disease identity, and intervention state can coexist in one step and should remain separate propositions.",
+    "Alternative_source is relational: state which focal proposition it competes with.",
+    "The source sample is purposive and multi-label, so assignment counts are not prevalence estimates."
+  ]
+}
