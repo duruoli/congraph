@@ -245,7 +245,7 @@ Rank    = final_rating (1-9; higher is more appropriate; ties retained)
 ```
 
 Appropriateness category, SOE, median, vote distribution, rationale, and provenance remain
-available but are not alternative ranking metrics. See `data/acr_normative/TRACK_A_COMPLETE.md`.
+available but are not alternative ranking metrics. See `data/acr_normative/README.md`.
 
 ### Task 2 — Build imaging trajectories
 

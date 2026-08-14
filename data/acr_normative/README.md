@@ -1,87 +1,190 @@
-# Track A - faithful ACR normative extraction
+# ACR normative corpus
 
-This directory contains an ACR-native extraction for the four study topics. It is deliberately
-independent of the empirical A/Q/C representation and does not encode a mandatory diagnostic path.
+Status: **Track A complete** (2026-08-13). Schema: **v1.1.0**.
 
-## Corpus and versions
+## Purpose
 
-| Topic | ACR topic ID | Topic version printed in narrative | Variants | Actions | Rationale sections |
-|---|---:|---|---:|---:|---:|
-| Right Lower Quadrant Pain | 21 | Revised 2022 | 3 | 30 | 21 |
-| Right Upper Quadrant Pain | 132 | Revised 2022 | 5 | 34 | 19 |
-| Left Lower Quadrant Pain | 20 | Revised 2023 | 3 | 29 | 20 |
-| Acute Pancreatitis | 126 | New 2019 | 6 | 48 | 30 |
-| **Total** | | | **17** | **141** | **90** |
+Faithfully represent four ACR topics as an independent normative input `N`:
 
-The source manifest records the UTC acquisition time separately. ACR dynamically generates the
-download files, so their generation date is not treated as the topic revision date.
+```text
+Context -> candidate Action -> final_rating
+Context -> explicit relation among an Action set
+```
 
-## Files
+It covers RLQ Pain, RUQ Pain, LLQ Pain, and Acute Pancreatitis. It does not impose A/Q/C, infer a
+mandatory diagnostic path, or rewrite ACR to fit observed physician orders.
 
-- `acr_topics.json`: canonical nested topic -> variant -> action corpus, plus narrative rationale.
-- `acr_actions.jsonl`: denormalized action-level view for analysis and modeling.
-- `schema/acr_extraction.schema.json`: formal schema for the canonical JSON.
-- `native_vocabulary.json`: context phrases and action vocabulary induced from this corpus only.
-- `sources/`: official narrative, appendix, and evidence-table snapshots plus HTML appendix/evidence
-  snapshots and a SHA-256 manifest.
-- `audit/sample_audit.md`: stratified manual comparison against rendered source pages.
-- `ambiguities.md`: source inconsistencies and extraction decisions that must not be silently erased.
+## Outcome
 
-Rebuild without changing existing source snapshots:
+- 4 ACR topics: Right Lower Quadrant Pain, Right Upper Quadrant Pain, Left Lower Quadrant Pain,
+  and Acute Pancreatitis.
+- 17 ACR-defined clinical variants: the patient situations for which ACR rates imaging options.
+- 141 rated context-action pairs: one ACR procedure row within one variant. These are not 141
+  unique procedures and are not clusters.
+- Complete rating, SOE, radiation, evidence-reference, rationale, and source provenance fields.
+- 4 `equivalent_alternatives` and 4 `complementary` action-set relations explicitly stated by ACR.
+- Extraction audit only: 90 source-delimited rationale text blocks were preserved, 12/12 stratified
+  source-page samples passed, and source hashes and integrity checks pass. The count of rationale
+  blocks is a completeness check, not a modeling variable or analytical outcome.
+
+## Stored representation
+
+```text
+Topic
+└── Variant = one Context
+    ├── clinical_state
+    │   ├── presentation
+    │   ├── condition
+    │   └── severity_or_complication
+    ├── imaging_history
+    ├── modifiers: population + timing + constraints
+    ├── decision_stage: initial | next | unspecified
+    ├── Actions[]
+    │   └── exact procedure + components + final_rating + evidence + provenance
+    └── action_relationships[]
+        └── equivalent_alternatives | complementary over 2+ actions
+```
+
+`variant_text` and exact `procedure` wording remain authoritative. Structured fields are indexes
+over the source wording.
+
+`final_rating` (1-9; higher is more appropriate) is the only action-ranking metric. Ties remain
+ties. Category, SOE, median, and vote distribution are retained for interpretation or audit, not
+as alternative ranking values. Absence of an `action_relationships` entry means ACR did not state a
+relationship; it does not mean independent or interchangeable.
+
+## Plain-English field guide
+
+### What does one record mean?
+
+> For a patient situation defined by ACR (`variant/context`), an ACR expert panel judged how
+> appropriate a candidate imaging test or procedure (`action`) would be and documented the
+> supporting evidence and clinical reasoning.
+
+Example: **right lower quadrant pain; initial imaging** → **CT abdomen and pelvis with IV
+contrast** → the ACR panel assigned **Usually appropriate**, `final_rating = 9`, with **Strong**
+evidence.
+
+The ratings are expert judgments published by ACR. They are not orders observed in our patient
+data, labels added by our annotators, or predictions made by a model.
+
+### Context: what kind of patient situation is being considered?
+
+- `variant_text`: ACR's complete description of the clinical situation. Read this first; it is the
+  authoritative context.
+- `clinical_state.presentation`: what is currently observed—symptoms, signs, or laboratory findings,
+  such as right lower quadrant pain, fever, or elevated lipase.
+- `clinical_state.condition`: the disease or clinical problem that ACR explicitly says is suspected
+  or already known, such as suspected appendicitis or known necrotizing pancreatitis.
+- `clinical_state.severity_or_complication`: any explicitly stated severity, deterioration, or
+  complication, such as SIRS or suspected complications of diverticulitis.
+- `imaging_history.prior_test`: imaging already performed before the candidate action.
+- `imaging_history.prior_result`: what that earlier imaging showed, such as negative, equivocal, or
+  nondiagnostic. This distinguishes a next-step decision from an initial-imaging decision.
+- `imaging_history.source_phrases`: the exact words in `variant_text` supporting the extracted
+  imaging history.
+- `modifiers.population`: a patient group that changes the decision; currently pregnancy.
+- `modifiers.timing`: where the patient is in the disease course, such as `<48–72 hours` or
+  `>4 weeks` after onset.
+- `modifiers.constraints_or_confounders`: a condition that limits test choice or complicates
+  interpretation, such as AKI/CKD affecting pancreatic enzyme interpretation.
+- `decision_stage.imaging_stage`: whether ACR is rating the first imaging test (`initial`), the next
+  test after earlier imaging (`next`), or does not state the stage (`unspecified`).
+- `decision_stage.encounter_status`: other visit-level wording, such as a first-time presentation.
+- `decision_stage.source_phrase`: the exact ACR phrase supporting `initial` or `next`.
+
+`variant_text` is copied from ACR. The other Context fields are our structured breakdown of that
+text for matching and analysis. They do not add facts that are absent from the source.
+
+### Action: which test or procedure did the panel judge?
+
+- `procedure`: the complete procedure name in the ACR table, such as `CT abdomen and pelvis with IV
+  contrast`. This is the actual option that received the rating.
+- `action_family`: our broader normalized group, such as `ct_abdomen_pelvis`, used to find related
+  procedures. It is a grouping aid, not a substitute for `procedure`.
+- `action_components.modality`: the imaging technology, such as CT, US, MRI, or radiography.
+- `action_components.body_region_or_target`: the anatomy examined or the target of an intervention.
+- `action_components.protocol_terms`: details that distinguish similar tests, such as IV contrast,
+  MRCP, Doppler, or a transvaginal approach.
+- `action_components.procedure_role`: diagnostic imaging or an image-guided intervention.
+
+`procedure` is copied from ACR. `action_family` and `action_components` are the only
+project-created grouping layer, used for matching and comparison. This is deterministic
+normalization, not statistical clustering.
+
+### Rating and evidence: what did the ACR panel conclude?
+
+- `appropriateness_category`: the ACR panel's plain-language recommendation for this procedure in
+  this exact context: `Usually appropriate`, `May be appropriate`, or `Usually not appropriate`.
+  `May be appropriate (Disagreement)` means the panel did not reach a stable shared view.
+- `final_rating`: ACR's final 1–9 appropriateness score. Here, 7–9 means usually appropriate, 4–6 may
+  be appropriate, and 1–3 usually not appropriate. This is the primary value for ranking actions
+  within the same Context: higher is better, and equal scores remain tied.
+- `strength_of_evidence` (SOE): ACR's judgment of how strongly the published evidence supports the
+  recommendation, such as `Strong`, `Limited`, or `Expert Consensus`. It is not the appropriateness
+  score, an individual doctor's confidence, or model confidence.
+- `median_rating`: the median of the panelists' 1–9 votes, when ACR reports it. It is retained for
+  audit; ranking uses `final_rating`.
+- `final_tabulations`: how many panelists selected each score from 1 through 9. It shows agreement
+  or disagreement within the panel; it is not another ranking target.
+- `adult_rrl` / `pediatric_rrl`: ACR's typical relative radiation level for adults or children, not
+  the radiation dose received by a specific patient.
+- `evidence_references`: studies ACR attached to the recommendation, preserving the printed
+  reference number, identifier, and study-quality label.
+
+### Rationale, relations, and provenance: why, how are actions connected, and where is the source?
+
+- `rationales`: ACR-authored "why this kind of test may or may not help" discussion blocks. Each
+  block covers one procedure family within one clinical variant, including diagnostic performance,
+  limitations, and supporting literature. These are extracted source sections, not explanations
+  generated by this project. Rationale is optional supporting text, not a Context/Action/Rating
+  dimension and not an action-ranking value.
+- `rationale_ids`: links an Action to the relevant ACR narrative section. ACR often discusses a
+  whole family such as CT or US together, so every sentence in a rationale may not apply uniquely
+  to every contrast or protocol variant.
+- `action_relationships`: a relation that ACR explicitly states between two or more Actions in the
+  same Context. `equivalent_alternatives` means the actions can serve as alternatives;
+  `complementary` means they provide different information and may be used together. The normalized
+  label is ours, but `source_text` preserves the supporting ACR statement. No entry means ACR did
+  not explicitly state a relationship.
+- `provenance`: the official ACR URL, saved source file, page or section, and locator needed to
+  verify an extracted value against the original source.
+
+## Files by use
+
+### Pipeline inputs
+
+- **`acr_topics.json` - canonical source of truth.** Use when the pipeline needs complete context,
+  grouped candidate actions, action-set relations, rationale, or provenance.
+- **`acr_actions.jsonl` - action-level working table.** Usually the most convenient input for
+  ranking, training, evaluation, and dataframe analysis. One row is one context-action-rating. It
+  intentionally does not flatten action-set relations.
+- `native_vocabulary.json` - optional vocabulary/configuration for normalized context terms and
+  action families. Do not treat it as a separate knowledge source.
+
+### Schema and maintenance
+
+- `schema/acr_extraction.schema.json` - machine-readable contract for `acr_topics.json`.
+- `scripts/extract_acr_normative.py` - deterministic rebuild script.
+- `scripts/validate_acr_normative.py` - integrity and provenance validation.
+
+### Archive and audit only
+
+- `sources/` and `sources/manifest.json` - versioned official source snapshots and SHA-256 hashes.
+- `audit/sample_audit.md` - manual source-page audit.
+- `audit/ambiguities.md` - source inconsistencies and mapping edge cases.
+
+These archive/audit files should not be loaded by the routine modeling pipeline.
+
+## Downstream boundary
+
+Treat v1.1 as read-only normative input `N`. Develop empirical A/Q/C independently from the
+schema-free patient annotations. Reopen Track A only for a source-version update, provenance error,
+or demonstrated schema defect.
 
 ```bash
 python3 scripts/extract_acr_normative.py
 python3 scripts/validate_acr_normative.py
 ```
 
-Pass `--refresh` only when intentionally creating a new source snapshot; ACR source files are
-dynamic and refreshing can change hashes or content.
-
-## Schema principles
-
-The primary unit is an ACR `topic / variant / procedure`. The exact variant and procedure wording
-is retained. Each action separately stores:
-
-- appropriateness category, numeric rating, median, and full 1-9 final tabulations;
-- strength of evidence (SOE), not conflated with appropriateness;
-- adult and pediatric relative radiation levels;
-- the appendix references and study-quality values exactly as printed;
-- a link to the corresponding ACR narrative procedure-family rationale;
-- PDF page, semantic locator, official URL, local file, and stable HTML locator.
-
-`context` and `action_components` are post-extraction views derived from literal source phrases.
-They do not replace the original wording. No A/Q/C fields occur in this corpus.
-
-The reviewed context has four top-level parts:
-
-```text
-clinical_state   = presentation + condition + severity/complication
-imaging_history  = prior test + prior result
-modifiers        = population + timing + constraints/confounders
-decision_stage   = initial/next/unspecified imaging + encounter status
-```
-
-`first time presentation` is encounter status, not population. Prior imaging remains distinct from
-presentation because it is the key normative signal for repeat/switch/next-imaging decisions.
-
-## Action ranking
-
-`final_rating` (1-9, higher is more appropriate) is the single primary ranking metric. Equal ratings
-remain tied: the extraction does not fabricate a unique path. `appropriateness_category`, SOE,
-median, and vote distribution remain for interpretation and audit but do not alter the primary
-rank. The category preserves the one explicit panel-disagreement case; SOE describes evidentiary
-support, not action preference. When ACR explicitly calls procedures `equivalent alternatives` or
-`complementary`, the variant stores that source-backed relationship in `action_relationships`.
-
-## Fidelity boundary
-
-The narrative rationale is stored by ACR's own procedure-family headings (for example, `A. CT
-Abdomen and Pelvis`), because the narrative generally discusses protocol alternatives together.
-The action table remains procedure-specific. Thus, a rationale link means “this action belongs to
-the source's rationale family,” not that every sentence in the paragraph applies uniquely to that
-protocol.
-
-This extraction preserves the complete official topic source snapshots. It structures all variant
-tables and all procedure-family rationale sections. Introductory narrative, panel membership,
-references, and full evidence tables remain available verbatim in `sources/` rather than being
-duplicated into the JSON.
+Use `--refresh` only when intentionally creating a new ACR source snapshot.

@@ -29,7 +29,7 @@
 ### Track A — ACR normative extraction
 
 Completed 2026-08-13. Outputs and the frozen operational contract are documented in
-`data/acr_normative/TRACK_A_COMPLETE.md`.
+`data/acr_normative/README.md`.
 
 1. [x] Acquire and version the four complete ACR topics: RLQ Pain, RUQ Pain, LLQ Pain, and Acute
    Pancreatitis.
@@ -65,6 +65,6 @@ annotation until the assumption ontology and pilot prompt have been reviewed.
 ## Suggested opening prompt
 
 > Read `HANDOFF_acr_aqc_schema_extraction.md`, `rubric_update.md`,
-> `aqc_annotation_design.md`, and `data/acr_normative/TRACK_A_COMPLETE.md` completely. Treat the
+> `aqc_annotation_design.md`, and `data/acr_normative/README.md` completely. Treat the
 > completed ACR v1.1 corpus as the independent normative representation `N`. Continue with Track B:
 > sample diverse schema-free annotations, open-code assumptions, and prepare the paired A/Q/C pilot.
