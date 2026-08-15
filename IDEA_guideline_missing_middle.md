@@ -155,12 +155,4 @@ decision structure.
 
 ## 6. Open questions
 
-- Should guideline-context relation `M_t` remain separate from A/Q/C, or become part of the final
-  representation?
-- Which feasibility variables `F_t` are sufficiently documented to model rather than leave latent?
-- How should empirical out-of-scope Contexts be represented without prematurely expanding ACR?
-- Should the primary evaluation emphasize action prediction, transition prediction, uncertainty
-  decomposition, or a deliberately ordered combination of them?
-- What additional provider, site, cost, availability, or patient-preference data would make latent
-  implementation factors identifiable?
 
