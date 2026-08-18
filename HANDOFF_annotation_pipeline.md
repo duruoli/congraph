@@ -1,5 +1,12 @@
 # Handoff: Doctor-Reasoning Annotation Pipeline & Certainty-Trigger Agent
 
+> **Status: historical implementation record.** This pipeline produced the order-aware empirical
+> reconstruction corpus and remains relevant as the source representation `E`. It no longer defines
+> the central research question. The current framing treats deviation as a downstream signal of the
+> missing epistemic bridge and develops an explicit A/Q/C state; read
+> `IDEA_guideline_missing_middle.md`, `aqc_annotation_design.md`, and
+> `HANDOFF_acr_aqc_schema_extraction.md` first. Do not delete or reinterpret the historical results.
+
 > 本文档是一次长对话的总结，作为下一个对话的执行context。
 > 配套memory: `~/.claude/.../memory/annotation_agent_design.md`（同一套设计的精简版）。
 

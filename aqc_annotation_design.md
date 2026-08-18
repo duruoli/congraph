@@ -2,16 +2,20 @@
 
 ## 1. Goal
 
-Use the real imaging order as a clue to reconstruct a plausible physician reasoning chain:
+Build order-aware A/Q/C reference representations for knowledge discovery, then use them to develop
+and test a separate pre-order inference model. During reference annotation, use the real imaging
+order as a clue to reconstruct a plausible physician reasoning chain:
 
 ```text
 previous question → previous test/result → updated assumption
                   → current question → current order
 ```
 
-This is order-aware knowledge discovery, not next-test prediction. The current test result and later
-events remain hidden. The reconstruction is a plausible explanation grounded in the chart, not a
-claim that we uniquely recover the physician's private thoughts.
+The **annotation task** is order-aware knowledge discovery, not next-test prediction. The current
+test result and later events remain hidden. The reconstruction is a plausible explanation grounded
+in the chart, not a claim that we uniquely recover the physician's private thoughts. In later
+validation, the target order must also be hidden and A/Q/C must be inferred from pre-order evidence
+alone before predicting the next image or stop.
 
 ### 1.1 Source layers and nested schemas
 
@@ -53,6 +57,10 @@ PatientContext_t
 ├── modifiers_and_constraints
 └── decision_stage
 ```
+
+Here `decision_stage` means the procedural position of the imaging decision—for example initial,
+next, repeat, or post-intervention—not the biological stage of the disease. It is an operational
+Context field, not a fourth epistemic state and not one of the two primary ambiguity sources.
 
 Thus the vocabulary is not a complete Context ontology and is not itself ACR Context. It provides
 the standardized observation language for parts of `clinical_observations`, prior imaging results,
@@ -96,7 +104,8 @@ only suspected.
 
 ### Question `Q_t`
 
-The main decision-relevant unknown that the current order appears intended to answer:
+The main decision-relevant unknown that the current order appears intended to answer, together with
+the dimensions that would count as answering it:
 
 ```text
 Does appendicitis exist?
@@ -105,21 +114,46 @@ Has necrosis or an abscess developed?
 Is another disease causing the symptoms?
 ```
 
-Record its target, type, and what a positive or negative answer would change. The question should not
-merely restate the modality. If an order serves several purposes, identify one primary question and
-optional secondary questions.
+Record its target, type, what a positive or negative answer would change, and its **answer
+requirements**. An answer requirement is a question-specific dimension that available evidence
+must address; it is not a preferred modality. For example, a question about CBD obstruction may
+require adequate assessment of the duct plus evidence about dilation, stone, or another obstructing
+process. The question should not merely restate the modality. If an order serves several purposes,
+identify one primary question and optional secondary questions.
+
+For the minimal three-state framework, answer requirements are stored inside `Q_t` rather than as a
+fourth state variable:
+
+```text
+Q_t = decision-relevant unknown + answer requirements + decision consequence
+```
 
 ### Coverage `C_t(Q_t)`
 
-How well **all evidence available before the current order** answers that question:
+The current profile of how well **all evidence available before the current order** addresses the
+answer requirements of that question. Each requirement should be marked separately:
+
+```text
+unaddressed | partially addressed | sufficiently addressed
+```
+
+For each requirement, record the supporting evidence and whether its direction supports, refutes,
+mixes, or gives no direction toward the question. An optional summary can compress the profile to:
 
 ```text
 unanswered | partially answered | sufficiently answered
 ```
 
-Also record whether the evidence supports, refutes, mixes, or gives no direction. Coverage belongs
-to `(all current evidence, question)`, not to one test. Several weak observations may jointly answer
-a question; a technically excellent scan may contribute nothing to a question outside its scope.
+Coverage belongs to `(all current evidence, question requirements)`, not to one test. Several weak
+observations may jointly answer a requirement; a technically excellent scan may contribute nothing
+to a requirement outside its scope. `C_t` is the state being tracked. The rule that incorporates new
+evidence and produces `C_{t+1}` is a separate update mechanism.
+
+The minimal relation is:
+
+```text
+A frames Q -> Q specifies what must be covered -> C records what has been covered
+```
 
 ## 3. Keep four judgments separate
 
@@ -136,7 +170,8 @@ target, incomplete acquisition/protocol, or incomplete documentation.
 
 ### Test–question capability
 
-Could that modality, body region, and protocol answer this particular question in principle?
+Could that modality, body region, and protocol address the answer requirements of this particular
+question in principle?
 
 ```text
 capable | partially capable | not capable | uncertain
@@ -159,8 +194,8 @@ sought and not found. It is different from `indeterminate` (examined but unresol
 
 ### Aggregate coverage
 
-Coverage combines study quality, test capability, result status, clinical findings, labs, other
-images, and prior plausibility:
+Coverage combines study quality, requirement-specific test capability, result status, clinical
+findings, labs, other images, and prior plausibility:
 
 ```text
 diagnostic study + valid negative + sufficient total evidence → question may close toward refutation
@@ -226,16 +261,24 @@ pancreatitis.
 At current decision point `t`:
 
 ```text
-(A_{t-1}, Q_{t-1}) → prior test Y_{t-1} → prior result O_t
-                                              ↓
-                 assess study adequacy, capability, result status, and discordance
-                                              ↓
-                         update A_t and derive Q_t and C_t(Q_t)
-                                              ↓
+(A_{t-1}, Q_{t-1}, C_{t-1}) → prior test Y_{t-1} → prior result O_t
+                                                        ↓
+                     assess adequacy, requirement-specific capability,
+                     result status, and evidence–assumption discordance
+                                                        ↓
+                         update C_t → reassess A_t and Q_t
+                                                        ↓
                               explain current observed order Y_t
 ```
 
 The result of current order `Y_t` is not used until the next decision point.
+
+ACR is not shown during this empirical annotation. Guideline Context mapping is a downstream,
+independent comparison:
+
+```text
+(O_t, A_t, Q_t, C_t) × N.Contexts -> exact | partial | multiple | uncertain | out_of_scope
+```
 
 ## 7. Assumption ontology
 
@@ -265,11 +308,12 @@ Track B should therefore recover and test four specific products:
 1. **Assumption propositions:** atomic propositions, their hierarchy/level, recurring empirical
    types, proposition-specific status, and `other/unclear` residuals.
 2. **Question representation:** recurring target/type, one primary versus optional secondary
-   questions, and what positive or negative answers would change. This is a normalization and
-   audit of free-text gaps, not merely renaming `information_gap` to `Q`.
-3. **Coverage rules:** how all causally available observations answer a question, separating study
-   adequacy, test–question capability, result status, and aggregate coverage. Coverage cannot be
-   extracted from the old reasoning text alone; it must be reconstructed from `O_t` plus `Q_t`.
+   questions, answer requirements, and what positive or negative answers would change. This is a
+   normalization and audit of free-text gaps, not merely renaming `information_gap` to `Q`.
+3. **Coverage rules:** a requirement-level profile of how all causally available observations
+   answer a question, separating study adequacy, test–question capability, result status, and the
+   optional aggregate summary. Coverage cannot be extracted from the old reasoning text alone; it
+   must be reconstructed from `O_t` plus the answer requirements in `Q_t`.
 4. **Trajectory updates:** assumption change, question continuity, discordance, and only then a
    derived transition summary, while preserving unsupported orders.
 
@@ -294,7 +338,7 @@ reconstructs:
 1. the previous question and what the previous result did to it;
 2. the updated assumption;
 3. whether the question continued, advanced, reopened, or rerouted;
-4. the current question and its pre-order coverage;
+4. the current question, its answer requirements, and its pre-order coverage profile;
 5. why the current test could answer it.
 
 Annotate a small pilot in two ways:
@@ -312,6 +356,9 @@ overwriting them.
 - Maintain one coherent A/Q/C chain across the trajectory.
 - Separate disease certainty from uncertainty about etiology, severity, and complication.
 - Separate study adequacy, test–question capability, result status, and aggregate coverage.
+- Define the answer requirements inside Q before assigning C; do not let C invent its own target.
+- Record C as a requirement-level state grounded in all causally available evidence, with an
+  optional aggregate summary.
 - Treat a valid negative as informative; do not confuse it with nonvisualization.
 - Require explicit evidence for material discordance.
 - Allow multiple plausible explanations and `unclear/weakly supported`.

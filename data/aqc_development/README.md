@@ -39,10 +39,22 @@ prevalence estimates.
 
 The current prototype extracted only **text-level assumption-type clusters**. It did not yet split
 every step into atomic assumption propositions or assign proposition-specific status. It also did
-not empirically induce a question codebook, annotate aggregate coverage, or produce patient-level
-A/Q/C trajectories. The `QUESTION_TYPES` currently present in `experiments/aqc/prompts.py` are seed
-hypotheses copied from the design logic, not findings from open coding, and must be revised after the
-full-corpus discovery audit.
+not empirically induce a question codebook, identify the answer requirements that define what would
+resolve each question, annotate requirement-level coverage, or produce patient-level A/Q/C
+trajectories. The `QUESTION_TYPES` and scalar `pre_order_coverage` currently present in
+`experiments/aqc/prompts.py` are seed hypotheses copied from the design logic, not findings from open
+coding, and must be revised after the full-corpus discovery audit.
+
+The current conceptual contract is:
+
+```text
+A frames the problem
+Q specifies the decision-relevant unknown and its answer requirements
+C records which requirements all causally available evidence has addressed
+```
+
+`C` is a time-indexed coverage profile, not the update mechanism. Study adequacy, test–question
+capability, result status, and aggregate coverage remain separate judgments.
 
 ## Files
 
@@ -102,15 +114,16 @@ reproducible design before the paired pilot:
    old action role, prior-study limitation, differential concentration/`other`, and timing stratum.
 4. **Two coding views.** First open-code prose `reasoning` with field names such as `differential`,
    `information_gap`, and `action_role` hidden. Then code the complete schema-light ex-ante record.
-   Compare which assumption and question types survive the blind view and which appear tied to the
-   old scaffold.
+   Compare which assumption and question types survive the blind view, which answer requirements
+   recur, and which appear tied to the old scaffold.
 5. **Held-out pilot.** Select 16 non-overlapping held-out trajectories (four per disease) with the
    same variation audit. Run direct A/Q/C from masked chart+actual order and recode A/Q/C from the old
    ex-ante annotation. Neither arm sees current results, verification, later events, ACR, or
    deviation labels.
 6. **Freeze criteria.** Compare atomic-proposition compatibility, type/status agreement, question
-   target/type and positive/negative consequence, coverage agreement, `other/unclear`, unsupported
-   residuals, and over-rationalization. Revise once, audit fresh held-out residuals, then freeze.
+   target/type, answer requirements, positive/negative consequence, requirement-level coverage,
+   `other/unclear`, unsupported residuals, and over-rationalization. Revise once, audit fresh held-out
+   residuals, then freeze.
 
 The observation vocabulary in `results/vocab` is a nested EvidencePiece schema inside patient
 Context, not the assumption ontology. It should ground propositions and coverage and later support
@@ -119,7 +132,9 @@ an explicit patient-context-to-ACR-context bridge; it must not define assumption
 ## Next work
 
 Implement the full-corpus split and discovery/held-out manifests above, redo the open coding, then
-run the paired pilot. Do not freeze or batch-annotate from the current 16-trajectory prototype.
+revise the A/Q/C output contract to include `answer_requirements[]` under Q and requirement-level
+coverage entries under C. Run the paired pilot only after that revision. Do not freeze or
+batch-annotate from the current 16-trajectory prototype.
 
 ```bash
 /opt/anaconda3/bin/python3.12 scripts/build_aqc_discovery_sample.py

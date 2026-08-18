@@ -8,6 +8,12 @@
 
 ## Decisions already made
 
+- Deviation is a downstream observable signal, not the central scientific problem. The central
+  problem is the missing epistemic bridge between interpretable-but-ambiguous patient evidence and
+  judgment-dependent guideline Contexts.
+- The two main ambiguity sources are patient-side interpretation (including missingness, negative
+  findings, and nonvisualization) and guideline Contexts that mix observable facts with clinical
+  judgments. A/Q/C is the candidate minimal mediation state.
 - The old executable disease trees are historical artifacts, not a standard rubric or baseline.
 - ACR and patient annotations are two independent knowledge sources.
 - Extract ACR faithfully before imposing any ontology, especially A/Q/C.
@@ -17,6 +23,8 @@
   result and all later events are hidden.
 - Keep these distinct: study adequacy, test–question capability, result status, and aggregate
   question coverage.
+- Q contains both the decision-relevant unknown and the dimensions that would count as answering it.
+  C is the time-indexed coverage profile over those requirements, not the update mechanism.
 - A valid negative result is informative; it is not the same as indeterminate, nonvisualized, or not
   assessed.
 - `advance/reroute/remedy/...` are summaries derived from assumption and question changes, not
@@ -49,12 +57,17 @@ codebook and prompt are **not frozen**. See `data/aqc_development/README.md`.
    across all four diseases and timing strata.
 2. [ ] Open-code assumptions and questions in a reasoning-only blind view, then compare against the
    complete schema-light ex-ante fields.
-3. [ ] Revise the preliminary assumption codebook and add a question codebook with `other/unclear`.
-4. [ ] Revise the trajectory-level, order-aware A/Q/C prompt after the full-corpus discovery audit.
-5. Pilot 10–20 trajectories in two ways:
+3. [ ] For each recurrent question, open-code the answer requirements that define what evidence
+   would count as resolving it.
+4. [ ] Revise the preliminary assumption codebook and add a question/answer-requirement codebook
+   with `other/unclear`.
+5. [ ] Revise the trajectory-level, order-aware A/Q/C prompt after the full-corpus discovery audit;
+   replace the current scalar-only coverage prototype with requirement-level coverage plus an
+   optional summary.
+6. Pilot 10–20 trajectories in two ways:
    - reconstruct A/Q/C directly from masked trajectories plus actual orders;
    - recode the old open reasoning into A/Q/C.
-6. Compare agreement and over-rationalization, revise the codebook/prompt, then freeze them before
+7. Compare agreement and over-rationalization, revise the codebook/prompt, then freeze them before
    batch annotation.
 
 ### Later validation
@@ -63,10 +76,17 @@ Compare faithfully extracted ACR knowledge (`N`), pre-order inferred A/Q/C, and 
 patient-level held-out next-image, repeat/switch/stop, and sequence prediction. Preserve an
 unsupported residual rather than explaining every observed order post hoc.
 
+After representation validation, mine recurrent A/Q/C transitions and Context remappings that are
+absent or under-specified in ACR. These are candidate practice-knowledge patterns, not normative
+recommendations, until they replicate and receive clinician/external validation.
+
 ## Recommended next task
 
-Redo **Track B steps 1–4 from `full/`** using the documented discovery/held-out design, then execute
-the paired pilot. Do not start batch A/Q/C annotation before the full-corpus audit and review.
+Redo **Track B steps 1–5 from `full/`** using the documented discovery/held-out design, then execute
+the paired pilot. The first concrete engineering task is to replace the hard-coded 16-trajectory
+prototype in `scripts/build_aqc_discovery_sample.py` with reproducible patient-level discovery and
+held-out manifests over `results/annotation_experiment/full`. Do not start batch A/Q/C annotation or
+next-test validation before the full-corpus audit and codebook review.
 
 ## Suggested opening prompt
 
@@ -74,5 +94,6 @@ the paired pilot. Do not start batch A/Q/C annotation before the full-corpus aud
 > `aqc_annotation_design.md`, `data/acr_normative/README.md`, and
 > `data/aqc_development/README.md` completely. Treat the completed ACR v1.1 corpus as the
 > independent normative representation `N`. Continue with Track B: rebuild discovery/held-out
-> sampling from `results/annotation_experiment/full`, run blind and schema-assisted open coding,
-> then revise the paired A/Q/C pilot before execution.
+> sampling from `results/annotation_experiment/full`, run blind and schema-assisted open coding of
+> assumptions, questions, and answer requirements, then revise the paired A/Q/C pilot so C is a
+> requirement-level coverage profile before execution.

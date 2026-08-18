@@ -129,25 +129,30 @@ remain separate observed conditions.
 
 ### Question `Q_t`
 
-What decision-relevant unknown is the image intended to answer?
+What decision-relevant unknown must be resolved under the current assumption, and what dimensions
+would count as an answer?
 
 ```text
 existence | etiology | severity | complication | alternative diagnosis
 ```
 
-During discovery, the actual order may help annotate a reference question `Q*`. During held-out
-evaluation, the target order cannot be used: `Q_t` must be inferred from pre-order information.
+During discovery, the actual order may help annotate a reference question `Q*`. Store its target,
+type, answer requirements, and decision consequence. During held-out evaluation, the target order
+cannot be used: `Q_t` and its requirements must be inferred from pre-order information.
 
 ### Coverage `C_t(Q_t)`
 
-How well has the current question already been answered?
+Which answer requirements of the current question have all available evidence addressed, and which
+remain open?
 
 ```text
-unanswered | partially answered | answered
+per requirement: unaddressed | partially addressed | sufficiently addressed
+optional summary: unanswered | partially answered | sufficiently answered
 ```
 
 Coverage depends on the question, available observations, prior image quality, and whether the
-relevant anatomy or finding was actually assessed. `negative` is not the same as `inadequate`.
+relevant anatomy or finding was actually assessed. `C_t` is a time-indexed state/profile, not the
+tracking mechanism itself. `negative` is not the same as `inadequate`.
 
 ---
 
@@ -163,8 +168,12 @@ candidate actions under observed context and normative guidance
 ordered image T_t
         ↓
 new image/report O_{t+1}
-        ├── updates coverage: was Q answered?
-        └── updates assumption: did the clinical frame change?
+        ├── updates requirement-level coverage C
+        └── supports or challenges the current assumption A
+                         ↓
+                  reassess A and Q
+                         ↓
+                  remap guideline Context
 ```
 
 This produces three common transitions:
@@ -198,7 +207,7 @@ The goal is not to make every observed order correct. The model must preserve an
 
 ---
 
-## 7. Main hypothesis
+## 7. Research aims and main hypothesis
 
 > A temporally blinded representation of assumption, question, and coverage will explain and predict
 > held-out imaging sequences better than ACR clinical variants alone, without relying on
@@ -223,6 +232,15 @@ Evaluate on held-out patients:
 
 Prediction supports the usefulness of the latent state; it does not prove that it uniquely recovers
 the physician's true mental process.
+
+The project has two sequential aims:
+
+1. **Validate the representation.** Infer A/Q/C using only pre-order information and test whether it
+   adds held-out predictive value for the next image, repeat/switch/stop, and state transition beyond
+   patient evidence and ACR Contexts alone.
+2. **Discover missing knowledge.** Mine recurrent A/Q/C transitions, coverage gaps, compensatory
+   actions, and Context remappings that are absent or under-specified in ACR. Treat them as candidate
+   empirical knowledge until they replicate and pass clinician or outcome-based validation.
 
 ---
 
@@ -259,6 +277,8 @@ available but are not alternative ranking metrics. See `data/acr_normative/READM
 - [ ] Create the smallest reusable codebook for assumption, question, and coverage. A preliminary
       38-trajectory-subset prototype exists in `data/aqc_development`, but formal discovery must be
       redone from the 293-trajectory `results/annotation_experiment/full` corpus.
+- [ ] Induce question-specific answer requirements from the discovery corpus; do not treat the
+      current seed `QUESTION_TYPES` or a scalar coverage label as frozen findings.
 - [ ] On 10–20 trajectories, run paired structured passes: (a) recode the existing open
       reconstruction into A/Q/C, and (b) independently annotate A/Q/C from the pre-order record plus
       actual order without showing the old reconstruction. Compare them to detect framing dependence
@@ -276,8 +296,17 @@ available but are not alternative ranking metrics. See `data/acr_normative/READM
 - [ ] Plot explanatory/predictive gain against added state complexity.
 - [ ] Audit remaining residuals rather than automatically absorbing them.
 
+### Task 5 — Discover and validate candidate transition knowledge
+
+- [ ] Mine recurrent `(A_t, Q_t, C_t) -> result -> (A_{t+1}, Q_{t+1}, C_{t+1})` motifs.
+- [ ] Identify which motifs are absent, partial, or ambiguous in the extracted ACR Contexts.
+- [ ] Replicate candidate motifs in held-out patients and audit for institutional workflow artifacts.
+- [ ] Review clinically important candidates with physicians; require external or outcome evidence
+      before interpreting recurrent practice as normative knowledge.
+
 The immediate next task is **Task 3: create patient-level discovery/held-out splits from the full
-Mode-A corpus**, compare reasoning-only blind coding with coding of the complete schema-light
-fields, and revise the preliminary assumption/question contract. Then run the paired 10–20-
-trajectory A/Q/C pilot, audit over-rationalization, and freeze. Treat the completed ACR corpus as an
-independent normative input `N`; do not modify it to fit empirical A/Q/C annotations.
+Mode-A corpus**. In the discovery partition, open-code assumptions, questions, and the dimensions
+that would count as answering each question. Then revise the prompt so Q contains explicit answer
+requirements and C records requirement-level coverage. Run the paired 10–20-trajectory A/Q/C pilot,
+audit over-rationalization, and freeze the codebook before batch annotation. Treat the completed ACR
+corpus as an independent normative input `N`; do not modify it to fit empirical A/Q/C annotations.

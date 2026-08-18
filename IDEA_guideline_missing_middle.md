@@ -1,158 +1,199 @@
-# The Missing Middle Between Guidelines and Clinical Decisions
+# Decoding the Missing Middle Between Patient Evidence and Clinical Guidelines
 
-> **Guidelines rank tests for predefined contexts; clinicians must determine which context applies,
-> manage what remains unknown, and decide how the diagnostic state should change.**
+> **A guideline is a book indexed by clean clinical contexts, but the patient does not arrive with
+> a page number.**
 
-Status: conceptual working note. This document fixes the current project direction without closing
-questions that still require empirical discovery.
+Status: canonical conceptual note, updated 2026-08-18. This document states the current project
+direction. Historical deviation/certainty-agent documents remain useful as implementation records,
+but no longer define the central scientific problem.
 
-## 1. The central problem
+## 1. Central thesis
 
-ACR provides conditional normative knowledge:
-
-```text
-given guideline Context X -> candidate Action -> appropriateness rating
-```
-
-It is not a complete patient-level diagnostic policy. In practice, the difficult reasoning often
-occurs around this mapping:
+Guidelines provide conditional normative knowledge:
 
 ```text
-patient evidence
-  -> construct the current clinical state
-  -> decide whether one, several, or no guideline Contexts apply
-  -> identify the consequential unanswered question
-  -> judge whether existing evidence is sufficient
-  -> choose a feasible and useful action
-  -> update, continue, switch, advance, reroute, or stop
+given guideline Context X -> candidate Actions and appropriateness
 ```
 
-This is the **missing middle**. The issue is not simply that a guideline is wrong or incomplete.
-The guideline deliberately starts from an already defined Context, while real care must first
-construct, test, and revise that Context.
-
-ACR is an independent normative reference in this project. We do not know whether a physician
-actually consulted it, and an observed physician action is not automatically correct.
-
-## 2. Where the missing middle appears
-
-### Context construction
-
-A Context mixes different epistemic kinds:
-
-- directly recorded facts or measurements: age, pain location, temperature, laboratory values;
-- derived states: leukocytosis, SIRS, severe scores, deterioration, temporal trends;
-- working assumptions: suspected appendicitis, biliary disease, complication, alternative source;
-- interpretations of prior evidence: negative/equivocal, adequate/nondiagnostic, target assessed or
-  not assessed;
-- decision-stage judgments: initial, next, persistent, recurrent, or post-intervention.
-
-Only the first layer is close to direct lookup. The others require thresholds, aggregation,
-temporal reasoning, or clinical inference. Thus, finding a phrase in the chart is not the same as
-establishing membership in a guideline Context.
-
-### Context reconciliation
-
-A real patient may have an `exact`, `partial`, `multiple`, `uncertain`, or `out_of_scope` relation
-to available guideline Contexts. Apparent deviation may therefore result from forcing a patient
-into the wrong or overly narrow Context.
-
-Repeated out-of-scope patterns may reveal **empirical context candidates** omitted from the
-guideline representation: discordant evidence, a limited prior study, another anatomic source,
-clinical deterioration, intervention planning, unusual comorbidity, or a diagnostic trajectory
-not represented by existing variants. These are hypotheses for discovery, not predetermined
-categories and not new normative recommendations.
-
-### Epistemic management
-
-A/Q/C represents the recoverable clinical core:
+Real care begins earlier. Patient evidence is incomplete, evolving, and does not identify its own
+guideline Context. Clinicians must interpret the evidence, decide what clinical frame is active,
+identify what remains unresolved, and judge whether the evidence is sufficient to move to another
+Context or action.
 
 ```text
-A: What proposition is currently organizing the workup?
-Q: What consequential unknown should the next action answer?
-C: How sufficiently does all currently available evidence answer that question?
+patient evidence -> epistemic bridge -> guideline Context -> action
 ```
 
-It can explain why a negative result closes one question but not another, why a study is repeated
-or replaced, why the workup advances from diagnosis to cause or complication, and why the clinical
-frame is rerouted.
+This **epistemic bridge** is the missing middle. Deviation is only one observable downstream signal:
+an action can differ from a guideline because the patient was mapped to another Context, matched
+several Contexts, remained outside the represented Contexts, or required a transition that the
+static guideline did not encode. Some deviations may still be unsupported. Therefore, the project
+does not begin by assuming that every deviation is meaningful or correct.
 
-### Action realization and transition
+ACR remains an independent normative reference. We do not know whether a physician consulted it,
+and an observed physician action is not automatically appropriate.
 
-Appropriateness alone does not fully determine the next action. Choice can also depend on
-question-specific capability, expected management consequence, urgency, contraindications,
-patient burden, availability, cost, and preferences. After the result, a dynamic policy must update
-the assumption and question and decide whether to continue or stop. Static variants rarely encode
-this full transition logic.
+## 2. Why the middle is missing
 
-## 3. Decompose uncertainty by identifiability
+The gap has two interacting sources.
 
-The project should not divide factors only into “structured” and “noise”:
+### 2.1 Patient-side ambiguity: evidence is not self-interpreting
 
-| Level | Meaning | Treatment |
-|---|---|---|
-| Observed structured | Explicit pre-order facts that can be standardized | Use directly |
-| Inferred structured | Recurrent states grounded in prior evidence but not stored as fields | Primary Track B target |
-| Latent structured | Systematic factors not measured well in the current data | Use documented proxies or retain as latent |
-| Idiosyncratic / error | Unstable, accidental, or unsupported variation | Preserve as residual |
+Clinical records contain symptoms, measurements, and report findings, but their decision meaning is
+conditional on the working assumption and question. Missingness, a negative finding,
+nonvisualization, and an unmentioned target are not interchangeable.
 
-Unmeasured does not mean unstructured. Cost, insurance, scanner availability, service workflow,
-physician preference, and patient preference may be systematic, but cannot be assigned a specific
-causal role unless the relevant data or credible proxies exist. Private physician beliefs, actual
-guideline consultation, undocumented conversations, and real-time operational constraints are
-usually not identifiable from an imaging order alone.
-
-Accordingly, an observed action can be decomposed conceptually as:
+For example, an ultrasound may report:
 
 ```text
-Y_t <- normative reference N
-     + guideline-context relation M_t
-     + epistemic state (A_t, Q_t, C_t)
-     + documented feasibility F_t
-     + latent implementation factors L_t
-     + unsupported residual R_t
+Gallstones seen; common bile duct not visualized.
 ```
 
-The goal is not to force every action into a rational explanation. It is to separate recoverable
-clinical structure from unobserved implementation effects and genuinely unsupported residuals.
+The same report supports different interpretations:
 
-## 4. What real data can add
+- under a biliary-pancreatitis assumption, gallstones are an etiologic clue;
+- under a non-biliary frame, gallstones may be incidental;
+- for the question "Are gallstones present?", the report provides an answer;
+- for the question "Is the CBD obstructed?", the report leaves a required dimension open.
 
-Track B should discover and test:
+Thus, `adequate`, `inadequate`, `negative`, and `informative` are never free-standing labels. They
+are relative to a target question and its answer requirements.
 
-1. which guideline Context predicates are observed, derived, assumed, or interpretive;
-2. whether each patient decision is an exact, partial, multiple, uncertain, or out-of-scope match;
-3. recurrent A/Q/C states and transitions before the observed order;
-4. documented feasibility constraints that change action choice;
-5. which apparent deviations become context mismatch, guideline underdetermination,
-   epistemically supported actions, operationally explained actions, or unsupported residuals.
+### 2.2 Guideline-side ambiguity: Contexts mix facts with judgment
 
-A candidate hidden structure should be retained only if it is:
+A guideline Context may combine observable predicates with judgment-dependent conditions:
 
-- available before the order and grounded in quotable evidence;
-- recurrent across patients rather than a one-case story;
-- clinically interpretable and not a restatement of the observed action;
-- reproducible in held-out patients;
-- useful beyond patient observations and ACR alone for explanation or prediction.
+```text
+observable facts:              RUQ pain, temperature, WBC count
+judgment-dependent conditions: suspected biliary disease,
+                               negative or equivocal ultrasound
+```
 
-An empirically recurrent missing Context can reveal a representational gap in the guideline, but
-observational frequency does not make it normatively appropriate. Safety, outcomes, and independent
-evidence would be required for that stronger claim.
+The second layer cannot be recovered by direct lookup. It requires a clinician to decide what the
+facts mean, whether a prior study addressed the relevant target, and which Context now applies.
+A patient can therefore have an `exact`, `partial`, `multiple`, `uncertain`, or `out_of_scope`
+relation to the available guideline Contexts.
 
-## 5. Project question and intended contribution
+### 2.3 The clinician supplies the epistemic bridge
 
-> **Which recurrent and observable structures bridge guideline-defined contexts and real
-> patient-level diagnostic decisions, and which parts remain unidentifiable from clinical data?**
+Clinicians mediate the two ambiguities: they decide what the evidence means, which Context applies,
+and what remains unanswered. A/Q/C is the project's minimal candidate representation of this role:
 
-The intended contribution is an **uncertainty decomposition map**: what the guideline already
-specifies, what patient data can restore as structured clinical reasoning, what remains a latent
-implementation factor, and what remains unsupported.
+```text
+A — Assumption
+    What working proposition currently frames the workup?
 
-Prediction is a validation instrument, not the whole scientific goal. If adding the recovered
-structure improves held-out explanation or prediction especially for repeat, switch, advance,
-reroute, and stop decisions, it supports the claim that the missing middle captures genuine dynamic
-decision structure.
+Q — Question
+    What must be resolved under A, and what would count as an answer?
 
-## 6. Open questions
+C — Coverage
+    Which answer requirements of Q have all currently available evidence addressed,
+    and which remain open?
+```
 
+In one sentence:
 
+> **A frames the problem; Q specifies what the evidence must resolve; C records what the evidence
+> has actually resolved.**
+
+The answer requirements are part of the operational representation of `Q`, not a fourth core state.
+`C_t` is a time-indexed coverage profile over those requirements, not the updating mechanism itself.
+
+## 3. The bridge is dynamic
+
+New evidence does not map directly to an action. It first changes what has been answered and may
+support or challenge the current assumption:
+
+```text
+new evidence -> update C -> reassess A and Q -> remap guideline Context -> action
+```
+
+Common transition patterns include:
+
+- **remedy:** the same question remains open because the prior study was limited or did not assess
+  the target;
+- **adjudicate:** discordant evidence requires a test that can resolve the conflict;
+- **advance:** one question closes and a downstream question about cause, severity, or complication
+  opens;
+- **reroute:** the current assumption is challenged or replaced, so another Context becomes relevant;
+- **reopen:** time or clinical change makes a previously settled question uncertain again;
+- **close:** no consequential imaging question remains.
+
+Keep four judgments separate throughout this process:
+
+1. **study adequacy:** was the examination technically usable for what it attempted?
+2. **test–question capability:** could the test address the requirements of this Q in principle?
+3. **result status:** positive, negative, indeterminate, or not assessed relative to Q;
+4. **aggregate coverage:** what all evidence together has resolved about Q.
+
+Do not replace these with a generic `accurate/inaccurate` label.
+
+## 4. What longitudinal clinical data can and cannot reveal
+
+Longitudinal data can support recovery of:
+
+- recurrent, evidence-grounded assumptions and questions;
+- question-specific answer requirements and coverage profiles;
+- transitions between A/Q/C states after new results;
+- repeated Context mismatches, out-of-scope states, compensatory tests, switches, and stopping logic;
+- documented feasibility constraints that affect action realization.
+
+It usually cannot uniquely recover:
+
+- the physician's private belief or actual guideline consultation;
+- undocumented patient or physician preferences;
+- real-time availability, cost, workflow, or insurance constraints without credible proxies;
+- whether a recurrent observed practice is clinically optimal or causally beneficial.
+
+The empirical target is therefore a **recoverable decision-state representation**, not mind reading.
+Repeated observed practice is candidate knowledge, not automatically normative knowledge.
+
+## 5. Research program
+
+### Aim 1 — Validate the representation
+
+Test whether a strictly pre-order A/Q/C state captures decision-relevant structure:
+
+```text
+pre-order record -> infer A/Q/C -> predict next test or stop
+```
+
+The evaluation must prevent target leakage: the current order, its result, and later events cannot
+be used to infer the A/Q/C state being evaluated. Compare patient evidence alone (`O`), guideline
+knowledge alone (`N`), pre-order A/Q/C, and `N + A/Q/C` on held-out patients. Useful outcomes include
+next-image ranking, repeat/switch/stop prediction, calibration, and transition prediction.
+
+Incremental predictive value supports the claim that A/Q/C captures a useful part of the missing
+middle. It does not prove unique recovery of the physician's mental state.
+
+### Aim 2 — Surface knowledge left implicit by guidelines
+
+Aggregate explicit trajectories of the form:
+
+```text
+(A_t, Q_t, C_t) -- test/result --> (A_{t+1}, Q_{t+1}, C_{t+1})
+```
+
+Identify recurrent coverage gaps, compensatory actions, assumption shifts, and Context transitions
+that are absent or under-specified in the guideline representation. Retain a pattern only if it is
+pre-order grounded, recurrent, interpretable, reproducible in held-out patients, and not a trivial
+restatement of the observed order.
+
+The output is a set of **candidate empirical transition rules or Context extensions**. Clinician
+review, external replication, and eventually outcome or safety evidence are required before making
+normative claims.
+
+## 6. Intended contribution
+
+The intended contribution is not another list of deviations. It is an explicit map of:
+
+```text
+what guidelines specify
++ what longitudinal data can recover as epistemic decision structure
++ what remains latent or unidentifiable
++ what remains unsupported
+```
+
+The scientific payoff of A/Q/C is that the bridge becomes inspectable, testable, and reusable:
+prediction can validate the representation, while recurrent state transitions can expose candidate
+knowledge that a static guideline does not encode.

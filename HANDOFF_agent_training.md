@@ -1,5 +1,12 @@
 # Handoff: Certainty-Trigger Agent — Training Goal Decomposition
 
+> **Status: previous implicit-agent direction.** The agent experiments remain useful baselines and
+> evidence about what can be absorbed implicitly from the empirical corpus. They are no longer the
+> project's primary representation. The current direction makes the epistemic bridge explicit with
+> A/Q/C, validates it using strictly pre-order prediction, and mines reusable transition knowledge.
+> See `IDEA_guideline_missing_middle.md`, `aqc_annotation_design.md`, and
+> `HANDOFF_acr_aqc_schema_extraction.md` before continuing this historical branch.
+
 > 本文档把"用 LLM annotation 材料训练 deviation/certainty agent"这个目标拆成可执行的工作流。
 > 上游：`HANDOFF_annotation_pipeline.md`（数据怎么来）、`llm_annotation_analysis.md`（抽出来的医生知识 = 行为规范）。
 > 配套 memory：`annotation_agent_design.md`、`belief_step_deviation_traversal.md`、本文件对应的 `agent_training_plan.md`。
