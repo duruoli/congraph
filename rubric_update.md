@@ -1,6 +1,6 @@
 # Rubric Update — extracting normative and empirical imaging-decision knowledge
 
-## 1. Project scope
+## 1. Project Scope
 
 This project explains **which image is ordered next, in what order, and why imaging is repeated,
 switched, or stopped** for:
