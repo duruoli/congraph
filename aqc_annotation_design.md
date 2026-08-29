@@ -329,6 +329,25 @@ Useful compression or agreement does not prove recovery of private physician tho
 a shared logic requires codebook saturation on held-out trajectories, independent coding views,
 an unsupported residual, and incremental held-out predictive value beyond `O_t` and `N`.
 
+### 7.2 Codebook sample versus pattern-discovery corpus
+
+Do not confuse the small qualitative codebook sample with the corpus used to discover and estimate
+final patterns. From the 293-patient `full/` corpus, first make a stable patient-level approximately
+80/20 development/final-test split within disease. Keep the final test untouched while developing
+the representation. Within development, an initial approximately 24 trajectories total (about six
+per disease) are read deeply to define atomic assumption types/statuses, question types/targets,
+answer requirements, and coverage rules. They are selected for structural variation and are not a
+statistically representative prevalence sample.
+
+Twenty-four is an initial batch rather than a fixed sample size. Add fresh, non-overlapping
+development batches when they reveal new top-level types, recurrent answer-requirement dimensions,
+or systematic `other/unclear` clusters. Check every revision on another fresh development batch and
+freeze only after qualitative saturation across diseases and major timing/sequence strata. After
+freezing, apply the codebook to the larger development partition; that larger coded set is where
+recurrent transition patterns and frequencies are discovered. The untouched final test is then used
+to test codebook coverage, pattern replication, and pre-order predictive value. Any patient used to
+revise the codebook belongs to development and cannot remain part of the final test.
+
 ## 8. Annotation procedure
 
 The main unit is an entire trajectory, not an isolated order. For each current order, the LLM sees
@@ -346,8 +365,14 @@ Annotate a small pilot in two ways:
 - directly reconstruct A/Q/C from the masked trajectory plus actual orders;
 - recode the existing schema-light reasoning into A/Q/C.
 
-Their agreement measures framing dependence. Preserve the old schema-light annotations rather than
-overwriting them.
+In plain terms, these are two independent annotation routes for the same historical cases: one
+starts from the causally available patient record, while the other converts the old reasoning
+annotation. Their agreement measures dependence on the old annotation scaffold. If A and Q agree
+closely, the old annotations may be reused as the main bulk source for those fields, with independent
+re-annotation focused on disagreements and weak support. This does not eliminate the need to build a
+new A/Q/C data layer, and requirement-level C still requires causally available patient evidence.
+Agreement alone is not proof of clinical correctness or recovery of private physician intent.
+Preserve the old schema-light annotations rather than overwriting them.
 
 ## 9. Prompt requirements
 

@@ -60,7 +60,17 @@ reconstructions, and an explicit unsupported residual must remain available.
 
 ## Freeze criterion
 
-This codebook is not frozen. Run a paired 10–20-trajectory pilot, atomize every assumption
-proposition, compare the two arms at proposition/type/status/question/coverage level, audit
-over-rationalization, and revise once. Freeze only after residual `other/unclear` cases have been
-reviewed and the prompt has passed causal-leakage checks.
+This codebook is not frozen. The existing 16-trajectory sample is a preliminary prototype and the
+formal first codebook batch should start from approximately 24 trajectories total selected from the
+full-corpus development partition. Twenty-four is not a fixed stopping number: add fresh,
+non-overlapping development batches if they reveal new top-level types, recurrent answer
+requirements, or systematic `other/unclear` clusters. Check revisions on further unused development
+cases. Freeze only after fresh-case qualitative saturation, residual review, and causal-leakage
+checks. Do not use the final-test partition to revise the codebook.
+
+Before bulk annotation, compare the two independent annotation routes on unused development cases:
+direct construction from the causally masked chart plus actual order, and conversion of the old
+schema-light reasoning. Compare atomic propositions, type/status, question, requirements, and
+coverage, and audit over-rationalization. Close agreement may justify reusing the old annotations as
+the main bulk source for A and Q, but requirement-level C still needs causally available patient
+evidence and the original annotations must remain unchanged.

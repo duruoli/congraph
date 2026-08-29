@@ -53,22 +53,32 @@ pilot+batch trajectories. The canonical `results/annotation_experiment/full` cor
 trajectories and 542 decision steps. Formal discovery must be redone from `full/`; the current
 codebook and prompt are **not frozen**. See `data/aqc_development/README.md`.
 
-1. [ ] Create patient-level discovery/held-out splits from `full/` and sample diverse trajectories
-   across all four diseases and timing strata.
-2. [ ] Open-code assumptions and questions in a reasoning-only blind view, then compare against the
+1. [ ] Create a stable patient-level approximately 80/20 development/final-test split from `full/`,
+   stratified within disease. Keep final-test patients unopened until the framework and models are
+   frozen.
+2. [ ] From development, select an initial approximately 24-trajectory codebook sample total
+   (about six per disease) for structural diversity. This sample defines the annotation vocabulary;
+   it does not estimate final pattern counts or prevalence.
+3. [ ] Open-code assumptions and questions in a reasoning-only blind view, then compare against the
    complete schema-light ex-ante fields.
-3. [ ] For each recurrent question, open-code the answer requirements that define what evidence
+4. [ ] For each recurrent question, open-code the answer requirements that define what evidence
    would count as resolving it.
-4. [ ] Revise the preliminary assumption codebook and add a question/answer-requirement codebook
+5. [ ] Revise the preliminary assumption codebook and add a question/answer-requirement codebook
    with `other/unclear`.
-5. [ ] Revise the trajectory-level, order-aware A/Q/C prompt after the full-corpus discovery audit;
+6. [ ] Add fresh non-overlapping development batches if new top-level types, recurrent answer
+   requirements, or systematic residuals continue to appear. Twenty-four is a starting batch, not a
+   fixed sample size; freeze only after fresh-case qualitative saturation.
+7. [ ] Revise the trajectory-level, order-aware A/Q/C prompt after the full-corpus discovery audit;
    replace the current scalar-only coverage prototype with requirement-level coverage plus an
    optional summary.
-6. Pilot 10–20 trajectories in two ways:
+8. Check the framework on about 16 unused development trajectories in two independent ways:
    - reconstruct A/Q/C directly from masked trajectories plus actual orders;
    - recode the old open reasoning into A/Q/C.
-7. Compare agreement and over-rationalization, revise the codebook/prompt, then freeze them before
-   batch annotation.
+9. Compare agreement and over-rationalization, revise when necessary, and re-check on another fresh
+   development batch before freezing. If A and Q agree closely, reuse the old reconstruction for
+   bulk conversion where supported; C still requires causally available patient evidence.
+10. After freezing, annotate the larger development corpus and discover/estimate patterns there.
+    Use the untouched final-test partition only for replication and final prediction evaluation.
 
 ### Later validation
 
@@ -82,18 +92,14 @@ recommendations, until they replicate and receive clinician/external validation.
 
 ## Recommended next task
 
-Redo **Track B steps 1–5 from `full/`** using the documented discovery/held-out design, then execute
-the paired pilot. The first concrete engineering task is to replace the hard-coded 16-trajectory
-prototype in `scripts/build_aqc_discovery_sample.py` with reproducible patient-level discovery and
-held-out manifests over `results/annotation_experiment/full`. Do not start batch A/Q/C annotation or
-next-test validation before the full-corpus audit and codebook review.
+Redo **Track B codebook development from `full/`** using the documented development/final-test
+design. The first concrete engineering task is to replace the hard-coded 16-trajectory prototype in
+`scripts/build_aqc_discovery_sample.py` with reproducible patient-level split and development-sample
+manifests over `results/annotation_experiment/full`. Build the first formal codebook from an initial
+approximately 24 development trajectories, expand with fresh development batches until saturated,
+and keep the final test unopened. Do not start batch A/Q/C annotation or next-test validation before
+the full-corpus codebook audit.
 
 ## Suggested opening prompt
 
-> Read `HANDOFF_acr_aqc_schema_extraction.md`, `rubric_update.md`,
-> `aqc_annotation_design.md`, `data/acr_normative/README.md`, and
-> `data/aqc_development/README.md` completely. Treat the completed ACR v1.1 corpus as the
-> independent normative representation `N`. Continue with Track B: rebuild discovery/held-out
-> sampling from `results/annotation_experiment/full`, run blind and schema-assisted open coding of
-> assumptions, questions, and answer requirements, then revise the paired A/Q/C pilot so C is a
-> requirement-level coverage profile before execution.
+Use the complete, copy-ready prompt in `HANDOFF_aqc_codebook_discovery.md`.

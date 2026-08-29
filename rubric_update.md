@@ -274,6 +274,10 @@ available but are not alternative ranking metrics. See `data/acr_normative/READM
 ### Task 3 — Recode and test `A/Q/C`
 
 - [x] Preserve the existing open annotations unchanged as the discovery corpus.
+- [ ] Make a stable patient-level development/final-test split from the 293-trajectory `full/`
+      corpus, stratified within disease so both partitions retain all four prespecified clinical
+      domains. The working target is approximately 80% development and 20% final test. Disease is
+      used for sampling coverage only and is not shown as an A/Q/C annotation answer.
 - [ ] Create the smallest reusable codebook for assumption, question, and coverage. A preliminary
       38-trajectory-subset prototype exists in `data/aqc_development`, but formal discovery must be
       redone from the 293-trajectory `results/annotation_experiment/full` corpus.
@@ -287,6 +291,22 @@ available but are not alternative ranking metrics. See `data/acr_normative/READM
       annotations.
 - [ ] Separate retrospective, order-aware reference labels `(A*, Q*, C*)` from pre-order-only
       inferred labels `(A_t, Q_t, C_t)` used at evaluation time.
+
+The initial approximately 24-trajectory qualitative sample is **not** the dataset on which final
+transition patterns or their frequencies will be estimated. It is a first codebook-development
+sample (about six trajectories per disease, 24 total) selected from the development partition for
+maximum structural variation. Its job is to define a stable annotation language: atomic assumption
+types/statuses, question types/targets, question-specific answer requirements, and coverage rules.
+After the codebook is frozen, the larger development partition is annotated and used to discover
+and estimate recurrent patterns.
+
+Twenty-four is a starting batch, not a claim of guaranteed representativeness or a fixed stopping
+number. Add fresh, non-overlapping development batches if new top-level assumption/question types,
+recurrent answer-requirement dimensions, or systematic `other/unclear` cases continue to appear.
+Freeze only after fresh development cases show qualitative saturation across all four diseases and
+major timing/sequence strata. Cases used to revise the codebook are development data. The final-test
+partition must remain unopened during this process; if it is used to revise the framework, it is no
+longer a final test and a new untouched test set is required.
 
 ### Task 4 — Compare the two knowledge structures
 
@@ -304,9 +324,12 @@ available but are not alternative ranking metrics. See `data/acr_normative/READM
 - [ ] Review clinically important candidates with physicians; require external or outcome evidence
       before interpreting recurrent practice as normative knowledge.
 
-The immediate next task is **Task 3: create patient-level discovery/held-out splits from the full
-Mode-A corpus**. In the discovery partition, open-code assumptions, questions, and the dimensions
-that would count as answering each question. Then revise the prompt so Q contains explicit answer
-requirements and C records requirement-level coverage. Run the paired 10–20-trajectory A/Q/C pilot,
-audit over-rationalization, and freeze the codebook before batch annotation. Treat the completed ACR
-corpus as an independent normative input `N`; do not modify it to fit empirical A/Q/C annotations.
+The immediate next task is **Task 3: create a patient-level development/final-test split from the
+full Mode-A corpus and build the first formal A/Q/C codebook inside the development partition**. Use
+an initial approximately 24-trajectory maximum-variation sample, then expand with fresh development
+batches until the codebook is qualitatively saturated. Next, check it on a separate development
+sample, revise if needed, and use another fresh development sample for re-checking. Revise the prompt
+so Q contains explicit answer requirements and C records requirement-level coverage. Only after the
+codebook is frozen should the larger development corpus be annotated for pattern discovery and the
+untouched final-test patients be opened for final validation. Treat the completed ACR corpus as an
+independent normative input `N`; do not modify it to fit empirical A/Q/C annotations.
