@@ -1,5 +1,10 @@
 # Track B first-cycle open-coding memos
 
+> Historical note: the 16-trajectory/48-step material below documents the preliminary prototype.
+> Formal full-corpus discovery now uses 48 development trajectories and 136 steps; see
+> `README.md`, `audit_records.json`, and the three `*_v1.json` contracts. The formal layer is
+> lexically stable but not yet qualitatively saturated or frozen.
+
 ## Source boundary
 
 The coding source is the existing rubric-free, order-aware annotation corpus only. ACR v1.1 was not

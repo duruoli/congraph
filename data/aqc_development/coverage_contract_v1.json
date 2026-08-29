@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.0.0-draft",
+  "status": "formal first version for development review; not yet frozen for bulk annotation",
+  "definition": "Coverage is the requirement-level profile of all causally available evidence before the current order relative to the current question.",
+  "unit": "one entry per answer requirement declared by the current primary or secondary question",
+  "required_fields": {
+    "requirement_id": "must match an answer requirement declared in the linked question",
+    "status": [
+      "unaddressed",
+      "partially_addressed",
+      "sufficiently_addressed"
+    ],
+    "direction": [
+      "supports",
+      "refutes",
+      "mixed",
+      "no_direction"
+    ],
+    "supporting_evidence": "zero or more exact quotations from evidence visible before the current order",
+    "reason": "brief explanation of why the cited evidence gives this status and direction"
+  },
+  "aggregate": {
+    "allowed": [
+      "unanswered",
+      "partially_answered",
+      "sufficiently_answered"
+    ],
+    "rule": "The aggregate is optional shorthand and never replaces requirement entries. Sufficiently answered normally requires every decision-critical requirement to be sufficiently addressed; document any exception."
+  },
+  "decision_rules": [
+    "Evaluate all evidence visible before the current order, not only the most recent study.",
+    "A requirement is unaddressed when no visible evidence actually examines that dimension.",
+    "A requirement is partially addressed when relevant evidence exists but is limited, incomplete, conflicting, indirect, or does not cover the full target.",
+    "A requirement is sufficiently addressed when the available evidence adequately covers the dimension for the current decision, whether its direction supports or refutes the question.",
+    "A valid negative can be sufficiently addressed with direction=refutes.",
+    "Nonvisualization, nondiagnostic examination, and not-assessed anatomy are not valid negatives and normally leave the corresponding requirement unaddressed or partially addressed.",
+    "Study adequacy, test-question capability, result status, and aggregate coverage are separate judgments and must not be inferred from one another without an explicit link.",
+    "Coverage is question-relative: one study may sufficiently address one requirement while leaving another requirement unaddressed."
+  ],
+  "separate_relations": {
+    "study_adequacy": [
+      "diagnostic",
+      "limited_but_diagnostic",
+      "nondiagnostic",
+      "unknown",
+      "not_applicable"
+    ],
+    "test_question_capability": [
+      "capable",
+      "partially_capable",
+      "not_capable",
+      "uncertain",
+      "not_applicable"
+    ],
+    "result_status": [
+      "positive",
+      "negative",
+      "indeterminate",
+      "not_assessed",
+      "unknown",
+      "not_applicable"
+    ]
+  },
+  "boundary_examples": [
+    {
+      "case": "A technically diagnostic pelvic ultrasound evaluates the ovary but not the appendix.",
+      "decision": "study_adequacy=diagnostic; ovarian requirement may be sufficiently_addressed; appendix target_visualization_or_assessment remains unaddressed; appendix result_status=not_assessed."
+    },
+    {
+      "case": "The appendix is adequately visualized and no inflammatory abnormality is present.",
+      "decision": "target visualization and presence/absence may be sufficiently_addressed with direction=refutes and result_status=negative."
+    },
+    {
+      "case": "The appendix is not visualized because of bowel gas or body habitus.",
+      "decision": "study_adequacy is limited or nondiagnostic for that target; result_status is indeterminate or not_assessed; do not mark the disease excluded."
+    },
+    {
+      "case": "One scan shows inflammation while later clinical and laboratory evidence weakens that interpretation.",
+      "decision": "Preserve the requirement-level evidence with direction=mixed; do not force a single support/refute label for the whole question."
+    }
+  ],
+  "machine_contract_example": {
+    "question_id": "current-primary-question",
+    "requirements": [
+      {
+        "requirement_id": "target_visualization_or_assessment",
+        "status": "partially_addressed",
+        "direction": "no_direction",
+        "supporting_evidence": [
+          "Prior imaging: appendix was not visualized"
+        ],
+        "reason": "The target was sought but not adequately assessed."
+      },
+      {
+        "requirement_id": "presence_or_absence",
+        "status": "unaddressed",
+        "direction": "no_direction",
+        "supporting_evidence": [],
+        "reason": "No valid positive or negative assessment of the appendix is available."
+      }
+    ],
+    "aggregate": "unanswered",
+    "aggregate_reason": "The decision-critical presence/absence requirement remains open."
+  }
+}

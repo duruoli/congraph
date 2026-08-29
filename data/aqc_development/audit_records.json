@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "development-only first-layer codebook audit",
+  "sample": {
+    "patients": 48,
+    "steps": 137,
+    "batches": {
+      "initial_24": {"patients": 24, "steps": 83},
+      "saturation_check_1": {"patients": 12, "steps": 31},
+      "saturation_check_2": {"patients": 12, "steps": 23}
+    }
+  },
+  "paired_view_audit": {
+    "steps_with_any_candidate_added_after_schema_light_view": 129,
+    "steps_without_candidate_addition_after_schema_light_view": 8,
+    "interpretation": "The old field scaffold materially changes candidate recovery in most steps. Types recurring in both views are stronger evidence; schema-only candidates remain provisional until independent direct-chart review.",
+    "causal_boundary": "Both views use ex-ante text only. ACR, verification, deviation, current-result, later-event, and final-diagnosis fields were excluded."
+  },
+  "other_unclear_audit": {
+    "lexical_other_assignments": 0,
+    "lexical_unclear_assumption_assignments": 0,
+    "lexical_unclear_question_assignments": 1,
+    "interpretation": "Zero residual assignments is not evidence that the residual categories are unnecessary. The deterministic rules can overassign familiar types and cannot adjudicate semantic ambiguity.",
+    "required_action": "Retain other and unclear in every contract; manually review weakly supported, multi-purpose, and unsupported-order cases in the independent framework check."
+  },
+  "boundary_cases": [
+    {
+      "case": "Known disease with uncertain cause",
+      "decision": "Create separate disease_or_finding_identity and etiology_or_mechanism propositions with independent statuses."
+    },
+    {
+      "case": "Broad source search versus named competing diagnosis",
+      "decision": "Use syndrome_or_source_frame/source_localization for an undifferentiated search; use alternative_source only for a supported competing frame."
+    },
+    {
+      "case": "Severity/course versus complication",
+      "decision": "Extent or interval change remains severity_or_extent; a distinct adverse entity is complication, and both can coexist."
+    },
+    {
+      "case": "Device failure versus post-procedural complication",
+      "decision": "Device position/function is intervention_or_device_state; leak, infection, hemorrhage, or injury is complication."
+    },
+    {
+      "case": "Valid negative versus nonvisualization",
+      "decision": "Only an adequate assessment can provide a negative answer. Nonvisualized, nondiagnostic, and not assessed remain separate."
+    }
+  ],
+  "over_rationalization_risks": [
+    "The actual order was visible to the original annotator and may make intent look more coherent than the chart supports.",
+    "Appropriateness and action-role wording can import modality-centered explanations into a question that should be decision-centered.",
+    "Lexical matches can turn mentions of a complication or device into a top-level question even when it is only background context.",
+    "A broad differential can be overcompressed into one source-localization question or overexpanded into many unsupported secondary questions.",
+    "The old information_gap and expected_finding fields can induce requirement labels that do not emerge from reasoning-only text."
+  ],
+  "adjudication_rules": [
+    "Prefer the smallest evidence-supported atomic proposition and question.",
+    "Require exact pre-order quotations for every proposition, question, and coverage entry.",
+    "Mark support weak or unclear when the order, rather than visible evidence, supplies most of the rationale.",
+    "Preserve an unsupported residual and an alternative reconstruction instead of forcing agreement.",
+    "Promote an other cluster only after it recurs in fresh development cases and has a stable inclusion/exclusion boundary."
+  ],
+  "freeze_status": "not_frozen",
+  "exposure_override": {
+    "disease": "appendicitis",
+    "hadm_id": 20123918,
+    "action": "moved from final_test to development without replacement after source-schema inspection",
+    "effect": "final test now contains 58 untouched patients (19.8% of corpus); the exposed patient appears only in a development saturation batch"
+  },
+  "freeze_blockers": [
+    "independent direct-chart versus recode framework check has not been completed",
+    "schema-only candidates have not been manually adjudicated",
+    "inter-rater or clinician review has not been performed",
+    "requirement-level coverage has a contract but has not yet been independently annotated on a fresh development batch"
+  ]
+}

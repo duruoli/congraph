@@ -21,6 +21,9 @@ OUT_DIR = ROOT / "data" / "aqc_development"
 SPLIT_SALT = "congraph-aqc-track-b-split-v1"
 SAMPLE_SALT = "congraph-aqc-track-b-codebook-v1"
 DISEASES = ("appendicitis", "cholecystitis", "diverticulitis", "pancreatitis")
+EXPOSED_DEVELOPMENT_OVERRIDES = {
+    ("appendicitis", 20123918): "opened for source-schema inspection; removed from final test",
+}
 ALLOWED_EX_ANTE_FIELDS = (
     "differential", "other_hypothesis", "information_gap", "expected_finding",
     "action_role", "appropriateness", "appropriateness_reason", "grounding", "reasoning",
@@ -42,7 +45,7 @@ def write_json(path: Path, value: Any) -> None:
 def eligible_records() -> list[dict[str, Any]]:
     records = []
     for path in sorted(SOURCE_DIR.glob("*.json")):
-        if path.name == "manifest.json":
+        if path.name == "manifest.json" or path.name.startswith("._"):
             continue
         data = read_json(path)
         if not isinstance(data, dict) or not {"disease", "hadm_id", "steps"}.issubset(data):
@@ -64,13 +67,21 @@ def make_split(records: list[dict[str, Any]]) -> dict[str, Any]:
         group.sort(key=lambda row: (row["split_hash"], row["hadm_id"]))
         n_test = round(len(group) * 0.20)
         for index, row in enumerate(group):
-            is_test = index < n_test
+            override_reason = EXPOSED_DEVELOPMENT_OVERRIDES.get((disease, row["hadm_id"]))
+            # Never replace an exposed test patient with a development patient: all development
+            # records have already been structurally profiled. A slightly smaller untouched test
+            # set is safer than promoting a previously opened record.
+            is_test = index < n_test and override_reason is None
             patients.append({
                 **row, "partition": "final_test" if is_test else "development",
                 "annotation_access": (
                     "metadata_only_until_framework_and_models_frozen"
-                    if is_test else "development_allowed"
+                    if is_test else (
+                        "development_allowed_after_exposure_override"
+                        if override_reason else "development_allowed"
+                    )
                 ),
+                **({"development_override_reason": override_reason} if override_reason else {}),
             })
     summary = {}
     for partition in ("development", "final_test"):
@@ -86,12 +97,20 @@ def make_split(records: list[dict[str, Any]]) -> dict[str, Any]:
         }
     return {
         "schema_version": "1.0.0", "created_from": "results/annotation_experiment/full/*.json",
-        "eligibility_rule": "object with disease, hadm_id, steps; manifest.json excluded",
+        "eligibility_rule": (
+            "object with disease, hadm_id, steps; manifest.json and AppleDouble ._* metadata "
+            "files excluded"
+        ),
         "algorithm": (
             "within disease sort SHA-256(salt|disease|hadm_id); assign Python round(0.20*n) "
-            "lowest hashes to final_test, remainder to development"
+            "lowest hashes to final_test, remainder to development; any explicitly recorded "
+            "exposure override is moved to development without replacement"
         ),
         "hash_salt": SPLIT_SALT,
+        "exposed_development_overrides": [
+            {"disease": disease, "hadm_id": hadm_id, "reason": reason}
+            for (disease, hadm_id), reason in sorted(EXPOSED_DEVELOPMENT_OVERRIDES.items())
+        ],
         "unit": "patient trajectory; all steps inherit the patient partition",
         "final_test_policy": (
             "only identity, disease, source path, and step-count metadata are recorded; annotation "
@@ -197,8 +216,8 @@ def greedy_batch(candidates: list[dict[str, Any]], per_disease: int,
 
 
 TYPE_RULES = (
-    ("intervention_or_device_state", r"stent|drain|catheter|post[- ]?(?:ercp|operative|procedure)|patency|position"),
-    ("complication", r"abscess|perforat|necrosis|collection|hemorrhag|infection|fistula|leak|obstruction"),
+    ("intervention_or_device_state", r"stent|drain|catheter|post[- ]?(?:ercp|operative|procedure)|patency|(?:device|tube).{0,40}(?:position|integrity|function)|(?:position|integrity|function).{0,40}(?:stent|drain|catheter|device|tube)"),
+    ("complication", r"abscess|perforat|necrosis|collection|hemorrhag|infection|fistula|leak"),
     ("severity_extent_or_course", r"severity|extent|progress|worsen|improv|evolution|response|burden|stage"),
     ("etiology_or_mechanism", r"etiolog|cause|biliary|stone|sludge|mechanism|obstruct"),
     ("alternative_source", r"alternative|other source|gynec|ovarian|urinary|renal|bowel|crohn|malignan|pneumonia"),
@@ -206,7 +225,7 @@ TYPE_RULES = (
     ("disease_or_finding_identity", r"whether|rule (?:in|out)|confirm|diagnos|identity|represents|appendic|cholecyst|diverticul|pancreati"),
 )
 QUESTION_RULES = (
-    ("intervention_or_device_state", r"stent|drain|catheter|position|patency|decompress|post[- ]?procedure"),
+    ("intervention_or_device_state", r"stent|drain|catheter|patency|decompress|post[- ]?procedure|(?:device|tube).{0,40}(?:position|integrity|function)|(?:position|integrity|function).{0,40}(?:stent|drain|catheter|device|tube)"),
     ("complication", r"abscess|perforat|necrosis|collection|hemorrhag|infection|fistula|leak"),
     ("severity_extent_or_course", r"severity|extent|progress|worsen|improv|evolution|response|burden"),
     ("etiology_or_mechanism", r"etiolog|cause|biliary|stone|sludge|mechanism|obstruct"),
@@ -224,7 +243,7 @@ REQUIREMENT_RULES = (
     ("temporal_course_or_response", r"progress|worsen|improv|evolution|response|interval|change"),
     ("complication_presence_or_character", r"abscess|perforat|necrosis|collection|hemorrhag|infection|fistula|leak"),
     ("alternative_source_discrimination", r"alternative|other source|ovarian|urinary|renal|crohn|malignan|pneumonia"),
-    ("device_position_or_integrity", r"stent|drain|catheter|position|migration|integrity"),
+    ("device_position_or_integrity", r"stent|drain|catheter|(?:device|tube).{0,40}(?:position|migration|integrity)|(?:position|migration|integrity).{0,40}(?:stent|drain|catheter|device|tube)"),
     ("device_or_intervention_function", r"patency|decompress|function|effective|response.*(?:drain|stent|procedure)"),
 )
 
@@ -367,19 +386,34 @@ def main() -> None:
             "new_top_level_question_candidates": new["question"],
             "new_answer_requirement_candidates": new["requirements"],
             "material_schema_change": name == "initial_24",
-            "review_result": "codebook established" if name == "initial_24" else "no new top-level family; boundary wording/examples only",
+            "review_result": (
+                "first formal draft established from deterministic paired-view candidate coding"
+                if name == "initial_24" else
+                "no new lexical top-level family; this is not an independent qualitative review"
+            ),
         })
+    n_scaffold = sum(bool(row["view_comparison"]["possible_scaffold_induction"]) for row in rows)
     write_json(OUT_DIR / "saturation_audit.json", {
         "schema_version": "1.0.0-development",
         "scope": "top-level A/Q types and recurrent answer-requirement dimensions",
-        "rounds": rounds, "conclusion": "qualitatively_saturated_for_first_layer",
-        "basis": "two fresh non-overlapping 12-patient development batches caused no material top-level schema change",
+        "rounds": rounds, "conclusion": "lexically_stable_but_not_yet_qualitatively_saturated",
+        "basis": (
+            "two fresh non-overlapping 12-patient development batches produced no new candidates "
+            f"under the same deterministic lexical rules; {n_scaffold} of {len(rows)} steps gained "
+            "at least one candidate only after schema-light fields were exposed, so independent "
+            "review is required before a saturation or freeze claim"
+        ),
         "limits": [
             "lexical candidates require independent human/clinical framework review",
             "does not establish prevalence, correctness, inter-rater reliability, or final-test transport",
             "final-test annotation content remained excluded from discovery",
+            "absence of a new regex hit is not evidence that no new conceptual structure exists",
+            "paired-view scaffold dependence remains high and must be adjudicated",
         ],
-        "next_gate": "independent dual-route framework check on unused development patients; do not open final test",
+        "next_gate": (
+            "independent dual-route framework check and manual/clinical adjudication on fresh unused "
+            "development patients; do not open final test"
+        ),
     })
     print(f"wrote split for {len(records)} patients; coded {len(rows)} steps from 48 development trajectories")
 
