@@ -1,0 +1,496 @@
+{
+  "schema_version": "1.0.0-development",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 20427750,
+  "source_path": "results/annotation_experiment/full/cholecystitis_20427750.json",
+  "model": "anthropic/claude-sonnet-4.6",
+  "causal_boundary": "DIRECT=masked chart+order; RECODE=old ex-ante reconstruction+order; both exclude current result, later events, verification, deviation, ACR, and disease answer labels",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "direct_prompt_sha256": "c7c9c2ce6a142eb071fb37ba7c482010bb94cc7f027d31be31596e30dd8bcf21",
+      "recode_prompt_sha256": "3636636bb28d623fb423846448a69410b387df00ca3a076bb16731afd7612da8",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Patient has symptomatic cholelithiasis as the primary source of her acute RUQ/epigastric pain with radiation to the back",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "clinical syndrome",
+              "status": "suspected",
+              "evidence": [
+                "hx of recurrent symptomatic cholelithiasis with acute abdominal pain. Pain began at 0200, was epigastric in location then moved to the RUQ with radiation to the back",
+                "most tender in RUQ. ___ elicits pain but not inspiratory arrest"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Acute cholecystitis (rather than uncomplicated biliary colic) is a possible complication given the clinical presentation",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "disease complication",
+              "status": "suspected",
+              "evidence": [
+                "Pain began at 0200, was epigastric in location then moved to the RUQ with radiation to the back. Pain was associated with nausea, vomiting x3",
+                "White Blood Cells: 11.3 K/uL (ref 4.0-11.0); Neutrophils: 85.8 % (ref 50.0-70.0)"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Biliary obstruction (choledocholithiasis) is not currently supported by laboratory values",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "pathophysiologic mechanism",
+              "status": "challenged",
+              "evidence": [
+                "Bilirubin, Total: 0.5 mg/dL (ref 0.0-1.5)",
+                "Alkaline Phosphatase: 55.0 IU/L (ref 35.0-105.0); Alanine Aminotransferase (ALT): 40.0 IU/L"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Pancreatitis is unlikely as the cause of pain given normal lipase",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "disease identity",
+              "status": "excluded",
+              "evidence": [
+                "Lipase: 44.0 IU/L (ref 0.0-60.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Cardiopulmonary and free perforation causes of acute abdominal pain are excluded by chest radiograph",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "differential diagnosis",
+              "status": "excluded",
+              "evidence": [
+                "There is no focal consolidation, effusion, or pneumothorax. The cardiomediastinal silhouette is normal.",
+                "No free air below the right hemidiaphragm is seen."
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "First decision point; no prior imaging question to update.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "No prior imaging question exists."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; assumptions are established de novo from history, examination, and laboratory data."
+          },
+          "current_question": {
+            "primary": "Are gallstones present in the gallbladder, and is there sonographic evidence of acute cholecystitis or biliary obstruction?",
+            "target": "gallbladder, biliary tree, and hepatic parenchyma",
+            "type": "existence_or_identity",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Confirms cholelithiasis; if cholecystitis signs present, escalates management toward urgent cholecystectomy; if CBD dilation found, raises choledocholithiasis concern requiring further workup",
+            "negative_answer_changes": "Absence of stones or inflammation broadens differential and may redirect workup toward other RUQ pain etiologies",
+            "secondary_questions": [
+              "Is the common bile duct dilated, suggesting choledocholithiasis despite normal bilirubin?",
+              "Is there pericholecystic fluid, wall thickening, or sonographic Murphy sign indicating acute cholecystitis?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of gallbladder lumen, wall, and pericholecystic space",
+                "why_required": "Structural assessment is prerequisite for all downstream findings"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of gallstones or sludge",
+                "why_required": "Confirms or refutes the primary suspected diagnosis of cholelithiasis"
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Sonographic signs of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign)",
+                "why_required": "Distinguishes uncomplicated biliary colic from acute cholecystitis, which changes urgency of intervention"
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Common bile duct diameter and presence of ductal stones",
+                "why_required": "Normal LFTs do not exclude early choledocholithiasis; CBD dilation would alter management"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Hepatic parenchymal appearance for alternative hepatobiliary pathology",
+                "why_required": "Liver lesions or hepatitis pattern could represent an alternative or contributing source"
+              }
+            ],
+            "evidence": [
+              "hx of recurrent symptomatic cholelithiasis with acute abdominal pain. Pain began at 0200, was epigastric in location then moved to the RUQ",
+              "most tender in RUQ. ___ elicits pain but not inspiratory arrest. No rebound or guarding"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Chest radiograph does not image the gallbladder or biliary tree; no prior abdominal imaging available."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging of the gallbladder has been performed; clinical history suggests stones but does not confirm them."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "White Blood Cells: 11.3 K/uL; Neutrophils: 85.8%",
+                  "___ elicits pain but not inspiratory arrest. No rebound or guarding"
+                ],
+                "reason": "Mild leukocytosis with neutrophilia raises concern for inflammation, but absence of peritoneal signs and incomplete Murphy sign are non-specific; imaging needed to confirm."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "Bilirubin, Total: 0.5 mg/dL (ref 0.0-1.5)",
+                  "Alkaline Phosphatase: 55.0 IU/L (ref 35.0-105.0)"
+                ],
+                "reason": "Normal bilirubin and ALP make significant biliary obstruction less likely but do not exclude early or partial CBD obstruction; ductal imaging still required."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "No free air below the right hemidiaphragm is seen.",
+                  "Lipase: 44.0 IU/L (ref 0.0-60.0)"
+                ],
+                "reason": "Perforation and pancreatitis excluded; hepatic parenchymal pathology not yet assessed by imaging."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "Laboratory and chest radiograph narrow the differential but cannot confirm or characterize gallbladder pathology; direct biliary imaging is required."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Right upper quadrant ultrasound is the first-line modality for gallstone detection and acute cholecystitis assessment, providing real-time evaluation of gallbladder wall, lumen, pericholecystic space, and CBD diameter.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Ultrasound may be limited by body habitus or bowel gas; if non-diagnostic, further imaging (HIDA scan or MRCP) may be needed. The mild chest pain attributed to GERD is not addressed by this order."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The mild leukocytosis and neutrophilia combined with RUQ pain could represent early hepatitis or a hepatic abscess rather than primary gallbladder disease; the ultrasound could be ordered primarily to evaluate hepatic parenchyma with gallbladder assessment as secondary, though the known cholelithiasis history makes biliary disease the dominant frame."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Patient has symptomatic cholelithiasis as the primary source of her acute RUQ/epigastric pain with radiation to the back\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"hx of recurrent symptomatic cholelithiasis with acute abdominal pain. Pain began at 0200, was epigastric in location then moved to the RUQ with radiation to the back\",\n        \"most tender in RUQ. ___ elicits pain but not inspiratory arrest\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute cholecystitis (rather than uncomplicated biliary colic) is a possible complication given the clinical presentation\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Pain began at 0200, was epigastric in location then moved to the RUQ with radiation to the back. Pain was associated with nausea, vomiting x3\",\n        \"White Blood Cells: 11.3 K/uL (ref 4.0-11.0); Neutrophils: 85.8 % (ref 50.0-70.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Biliary obstruction (choledocholithiasis) is not currently supported by laboratory values\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic mechanism\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Bilirubin, Total: 0.5 mg/dL (ref 0.0-1.5)\",\n        \"Alkaline Phosphatase: 55.0 IU/L (ref 35.0-105.0); Alanine Aminotransferase (ALT): 40.0 IU/L\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Pancreatitis is unlikely as the cause of pain given normal lipase\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease identity\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"Lipase: 44.0 IU/L (ref 0.0-60.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Cardiopulmonary and free perforation causes of acute abdominal pain are excluded by chest radiograph\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"There is no focal consolidation, effusion, or pneumothorax. The cardiomediastinal silhouette is normal.\",\n        \"No free air below the right hemidiaphragm is seen.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"First decision point; no prior imaging question to update.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging question exists.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; assumptions are established de novo from history, examination, and laboratory data.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Are gallstones present in the gallbladder, and is there sonographic evidence of acute cholecystitis or biliary obstruction?\",\n    \"target\": \"gallbladder, biliary tree, and hepatic parenchyma\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirms cholelithiasis; if cholecystitis signs present, escalates management toward urgent cholecystectomy; if CBD dilation found, raises choledocholithiasis concern requiring further workup\",\n    \"negative_answer_changes\": \"Absence of stones or inflammation broadens differential and may redirect workup toward other RUQ pain etiologies\",\n    \"secondary_questions\": [\n      \"Is the common bile duct dilated, suggesting choledocholithiasis despite normal bilirubin?\",\n      \"Is there pericholecystic fluid, wall thickening, or sonographic Murphy sign indicating acute cholecystitis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of gallbladder lumen, wall, and pericholecystic space\",\n        \"why_required\": \"Structural assessment is prerequisite for all downstream findings\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones or sludge\",\n        \"why_required\": \"Confirms or refutes the primary suspected diagnosis of cholelithiasis\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Sonographic signs of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign)\",\n        \"why_required\": \"Distinguishes uncomplicated biliary colic from acute cholecystitis, which changes urgency of intervention\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Common bile duct diameter and presence of ductal stones\",\n        \"why_required\": \"Normal LFTs do not exclude early choledocholithiasis; CBD dilation would alter management\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Hepatic parenchymal appearance for alternative hepatobiliary pathology\",\n        \"why_required\": \"Liver lesions or hepatitis pattern could represent an alternative or contributing source\"\n      }\n    ],\n    \"evidence\": [\n      \"hx of recurrent symptomatic cholelithiasis with acute abdominal pain. Pain began at 0200, was epigastric in location then moved to the RUQ\",\n      \"most tender in RUQ. ___ elicits pain but not inspiratory arrest. No rebound or guarding\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Chest radiograph does not image the gallbladder or biliary tree; no prior abdominal imaging available.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging of the gallbladder has been performed; clinical history suggests stones but does not confirm them.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"White Blood Cells: 11.3 K/uL; Neutrophils: 85.8%\",\n          \"___ elicits pain but not inspiratory arrest. No rebound or guarding\"\n        ],\n        \"reason\": \"Mild leukocytosis with neutrophilia raises concern for inflammation, but absence of peritoneal signs and incomplete Murphy sign are non-specific; imaging needed to confirm.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Bilirubin, Total: 0.5 mg/dL (ref 0.0-1.5)\",\n          \"Alkaline Phosphatase: 55.0 IU/L (ref 35.0-105.0)\"\n        ],\n        \"reason\": \"Normal bilirubin and ALP make significant biliary obstruction less likely but do not exclude early or partial CBD obstruction; ductal imaging still required.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"No free air below the right hemidiaphragm is seen.\",\n          \"Lipase: 44.0 IU/L (ref 0.0-60.0)\"\n        ],\n        \"reason\": \"Perforation and pancreatitis excluded; hepatic parenchymal pathology not yet assessed by imaging.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Laboratory and chest radiograph narrow the differential but cannot confirm or characterize gallbladder pathology; direct biliary imaging is required.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant ultrasound is the first-line modality for gallstone detection and acute cholecystitis assessment, providing real-time evaluation of gallbladder wall, lumen, pericholecystic space, and CBD diameter.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Ultrasound may be limited by body habitus or bowel gas; if non-diagnostic, further imaging (HIDA scan or MRCP) may be needed. The mild chest pain attributed to GERD is not addressed by this order.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The mild leukocytosis and neutrophilia combined with RUQ pain could represent early hepatitis or a hepatic abscess rather than primary gallbladder disease; the ultrasound could be ordered primarily to evaluate hepatic parenchyma with gallbladder assessment as secondary, though the known cholelithiasis history makes biliary disease the dominant frame.\"\n}\n```",
+        "request_id": "gen-1788004824-mmea3R5NRvRNpFF6cRZP",
+        "usage": {
+          "completion_tokens": 2670,
+          "prompt_tokens": 3798,
+          "total_tokens": 6468,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.051444,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.051444,
+            "upstream_inference_prompt_cost": 0.011394,
+            "upstream_inference_completions_cost": 0.04005
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The patient has a known history of recurrent symptomatic cholelithiasis presenting with acute biliary-pattern pain (epigastric to RUQ with back radiation, nausea/vomiting).",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "clinical presentation",
+              "status": "established",
+              "evidence": [
+                "hx of recurrent symptomatic cholelithiasis with acute abdominal pain. Pain began at 0200, was epigastric in location then moved to the RUQ with radiation to the back.",
+                "most tender in RUQ"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Acute cholecystitis is the leading suspected diagnosis given positive Murphy's maneuver and mild leukocytosis with neutrophilia.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "working diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "___ elicits pain but not inspiratory arrest",
+                "White Blood Cells: 11.3 K/uL (ref 4.0-11.0) and Neutrophils: 85.8 % (ref 50.0-70.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Choledocholithiasis or common bile duct obstruction is a plausible alternative or co-existing diagnosis despite currently normal bilirubin and alkaline phosphatase.",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "differential diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "Bilirubin, Total: 0.5 mg/dL and Alkaline Phosphatase: 55.0 IU/L — currently normal but does not exclude early CBD obstruction",
+                "hx of recurrent symptomatic cholelithiasis"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Pancreatitis is less likely given normal lipase.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "differential diagnosis",
+              "status": "challenged",
+              "evidence": [
+                "Lipase: 44.0 IU/L (ref 0.0-60.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Hollow viscus perforation is excluded by chest X-ray showing no free air.",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "complication screening",
+              "status": "excluded",
+              "evidence": [
+                "No free air below the right hemidiaphragm is seen"
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior imaging order in this trajectory.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "First decision point; no prior order to compare."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are being established from the available clinical record."
+          },
+          "current_question": {
+            "primary": "Are gallstones, gallbladder wall thickening, pericholecystic fluid, sonographic Murphy's sign, or biliary duct dilation present, confirming acute cholecystitis or choledocholithiasis?",
+            "target": "gallbladder, biliary ducts, and gallstones",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Confirms biliary source; directs toward surgical or endoscopic intervention planning.",
+            "negative_answer_changes": "Reduces probability of cholecystitis/choledocholithiasis; broadens differential toward other RUQ or epigastric etiologies.",
+            "secondary_questions": [
+              "Is the common bile duct dilated, suggesting choledocholithiasis even with normal liver function tests?",
+              "Is there evidence of gallbladder perforation or emphysematous cholecystitis as a complication?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of the gallbladder and biliary tree",
+                "why_required": "Without adequate visualization, no finding can be confirmed or excluded."
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of gallstones or sludge in the gallbladder or CBD",
+                "why_required": "Gallstones are the primary suspected pathology driving the clinical presentation."
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Gallbladder wall thickness, pericholecystic fluid, and sonographic Murphy's sign",
+                "why_required": "These findings distinguish uncomplicated cholelithiasis from acute cholecystitis."
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Common bile duct diameter and presence of CBD stones",
+                "why_required": "CBD dilation or stones would indicate choledocholithiasis requiring different management."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Incidental findings in liver or adjacent structures that could explain symptoms",
+                "why_required": "A single-organ ultrasound may reveal alternative hepatic or periportal pathology."
+              }
+            ],
+            "evidence": [
+              "hx of recurrent symptomatic cholelithiasis with acute abdominal pain. Pain began at 0200, was epigastric in location then moved to the RUQ with radiation to the back.",
+              "___ elicits pain but not inspiratory arrest"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No ultrasound result is yet available; gallbladder has not been imaged in this encounter."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "History suggests prior cholelithiasis but current stone status in gallbladder or CBD is unknown."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "___ elicits pain but not inspiratory arrest",
+                  "White Blood Cells: 11.3 K/uL (ref 4.0-11.0) and Neutrophils: 85.8 % (ref 50.0-70.0)"
+                ],
+                "reason": "Clinical signs suggest inflammation but imaging confirmation of wall thickening and pericholecystic fluid is absent."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "Bilirubin, Total: 0.5 mg/dL and Alkaline Phosphatase: 55.0 IU/L — currently normal but does not exclude early CBD obstruction"
+                ],
+                "reason": "Normal LFTs reduce but do not exclude CBD obstruction; direct ductal imaging is still required."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "No free air below the right hemidiaphragm is seen",
+                  "Lipase: 44.0 IU/L (ref 0.0-60.0)"
+                ],
+                "reason": "Perforation and pancreatitis are largely excluded by prior data, but other hepatic or periportal sources remain unimaged."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "Pre-order clinical and laboratory data support a biliary source but cannot confirm or characterize gallbladder or CBD pathology; ultrasound result is required."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Abdominal ultrasound is the first-line modality for gallbladder and biliary tree evaluation, directly visualizing stones, wall thickening, pericholecystic fluid, sonographic Murphy's sign, and CBD diameter.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "If ultrasound is technically limited (e.g., bowel gas obscuring CBD), choledocholithiasis could remain unresolved and MRCP or EUS might be needed."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The order could alternatively reflect a broader abdominal pain workup in which the biliary system is one of several targets, with the clinician uncertain whether the pain is truly biliary versus hepatic or other RUQ origin; in this framing the assumption of cholecystitis as the leading diagnosis would be weakly rather than well supported."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has a known history of recurrent symptomatic cholelithiasis presenting with acute biliary-pattern pain (epigastric to RUQ with back radiation, nausea/vomiting).\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"hx of recurrent symptomatic cholelithiasis with acute abdominal pain. Pain began at 0200, was epigastric in location then moved to the RUQ with radiation to the back.\",\n        \"most tender in RUQ\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute cholecystitis is the leading suspected diagnosis given positive Murphy's maneuver and mild leukocytosis with neutrophilia.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"working diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"___ elicits pain but not inspiratory arrest\",\n        \"White Blood Cells: 11.3 K/uL (ref 4.0-11.0) and Neutrophils: 85.8 % (ref 50.0-70.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Choledocholithiasis or common bile duct obstruction is a plausible alternative or co-existing diagnosis despite currently normal bilirubin and alkaline phosphatase.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Bilirubin, Total: 0.5 mg/dL and Alkaline Phosphatase: 55.0 IU/L — currently normal but does not exclude early CBD obstruction\",\n        \"hx of recurrent symptomatic cholelithiasis\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Pancreatitis is less likely given normal lipase.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Lipase: 44.0 IU/L (ref 0.0-60.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Hollow viscus perforation is excluded by chest X-ray showing no free air.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication screening\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"No free air below the right hemidiaphragm is seen\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior imaging order in this trajectory.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior order to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are being established from the available clinical record.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Are gallstones, gallbladder wall thickening, pericholecystic fluid, sonographic Murphy's sign, or biliary duct dilation present, confirming acute cholecystitis or choledocholithiasis?\",\n    \"target\": \"gallbladder, biliary ducts, and gallstones\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirms biliary source; directs toward surgical or endoscopic intervention planning.\",\n    \"negative_answer_changes\": \"Reduces probability of cholecystitis/choledocholithiasis; broadens differential toward other RUQ or epigastric etiologies.\",\n    \"secondary_questions\": [\n      \"Is the common bile duct dilated, suggesting choledocholithiasis even with normal liver function tests?\",\n      \"Is there evidence of gallbladder perforation or emphysematous cholecystitis as a complication?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder and biliary tree\",\n        \"why_required\": \"Without adequate visualization, no finding can be confirmed or excluded.\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones or sludge in the gallbladder or CBD\",\n        \"why_required\": \"Gallstones are the primary suspected pathology driving the clinical presentation.\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Gallbladder wall thickness, pericholecystic fluid, and sonographic Murphy's sign\",\n        \"why_required\": \"These findings distinguish uncomplicated cholelithiasis from acute cholecystitis.\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Common bile duct diameter and presence of CBD stones\",\n        \"why_required\": \"CBD dilation or stones would indicate choledocholithiasis requiring different management.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Incidental findings in liver or adjacent structures that could explain symptoms\",\n        \"why_required\": \"A single-organ ultrasound may reveal alternative hepatic or periportal pathology.\"\n      }\n    ],\n    \"evidence\": [\n      \"hx of recurrent symptomatic cholelithiasis with acute abdominal pain. Pain began at 0200, was epigastric in location then moved to the RUQ with radiation to the back.\",\n      \"___ elicits pain but not inspiratory arrest\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No ultrasound result is yet available; gallbladder has not been imaged in this encounter.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"History suggests prior cholelithiasis but current stone status in gallbladder or CBD is unknown.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"___ elicits pain but not inspiratory arrest\",\n          \"White Blood Cells: 11.3 K/uL (ref 4.0-11.0) and Neutrophils: 85.8 % (ref 50.0-70.0)\"\n        ],\n        \"reason\": \"Clinical signs suggest inflammation but imaging confirmation of wall thickening and pericholecystic fluid is absent.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Bilirubin, Total: 0.5 mg/dL and Alkaline Phosphatase: 55.0 IU/L — currently normal but does not exclude early CBD obstruction\"\n        ],\n        \"reason\": \"Normal LFTs reduce but do not exclude CBD obstruction; direct ductal imaging is still required.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"No free air below the right hemidiaphragm is seen\",\n          \"Lipase: 44.0 IU/L (ref 0.0-60.0)\"\n        ],\n        \"reason\": \"Perforation and pancreatitis are largely excluded by prior data, but other hepatic or periportal sources remain unimaged.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Pre-order clinical and laboratory data support a biliary source but cannot confirm or characterize gallbladder or CBD pathology; ultrasound result is required.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Abdominal ultrasound is the first-line modality for gallbladder and biliary tree evaluation, directly visualizing stones, wall thickening, pericholecystic fluid, sonographic Murphy's sign, and CBD diameter.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"If ultrasound is technically limited (e.g., bowel gas obscuring CBD), choledocholithiasis could remain unresolved and MRCP or EUS might be needed.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The order could alternatively reflect a broader abdominal pain workup in which the biliary system is one of several targets, with the clinician uncertain whether the pain is truly biliary versus hepatic or other RUQ origin; in this framing the assumption of cholecystitis as the leading diagnosis would be weakly rather than well supported.\"\n}\n```",
+        "request_id": "gen-1788004865-o7ozBtyBY8pWase5EcVu",
+        "usage": {
+          "completion_tokens": 2543,
+          "prompt_tokens": 2693,
+          "total_tokens": 5236,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.046224,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.046224,
+            "upstream_inference_prompt_cost": 0.008079,
+            "upstream_inference_completions_cost": 0.038145
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.75,
+        "direct_assumption_types": [
+          "alternative_source",
+          "complication",
+          "syndrome_or_source_frame"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "complication",
+          "disease_or_finding_identity",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": false,
+        "direct_question_type": "existence_or_identity",
+        "recode_question_type": "source_localization",
+        "requirement_jaccard": 1.0,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "complication_presence_or_character",
+          "presence_or_absence",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "complication_presence_or_character",
+          "presence_or_absence",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": false,
+        "direct_aggregate_coverage": "partially_answered",
+        "recode_aggregate_coverage": "unanswered",
+        "transition_match": true
+      }
+    }
+  ]
+}

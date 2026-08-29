@@ -1,0 +1,492 @@
+{
+  "schema_version": "1.0.0-development",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 21252470,
+  "source_path": "results/annotation_experiment/full/diverticulitis_21252470.json",
+  "model": "anthropic/claude-sonnet-4.6",
+  "causal_boundary": "DIRECT=masked chart+order; RECODE=old ex-ante reconstruction+order; both exclude current result, later events, verification, deviation, ACR, and disease answer labels",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS W/O CONTRAST)",
+      "direct_prompt_sha256": "bc2d955b2bf0b28cae50eed8293f63ad66d65eadf208df7e28cb889fde0656d7",
+      "recode_prompt_sha256": "39782a2699d7c8b9df095d0237f194e246f0c29b0c8a6415e8c66614cd74c179",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Severe hyperkalemia (K 7.5 mEq/L) is present and poses immediate cardiac risk",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "laboratory/physiologic",
+              "status": "established",
+              "evidence": [
+                "Potassium: 7.5 mEq/L (ref 3.3-5.1)",
+                "Potassium, Whole Blood: 7.5 mEq/L (ref 3.5-5.3)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Acute or acute-on-chronic kidney injury is present, likely contributing to hyperkalemia and metabolic acidosis",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "organ system",
+              "status": "likely",
+              "evidence": [
+                "Creatinine: 2.0 mg/dL (ref 0.5-1.2)",
+                "Estimated GFR = 33 if non African-American"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "An intra-abdominal source (infectious, ischemic, or obstructive) is driving the leukocytosis and gastrointestinal symptoms",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "organ system",
+              "status": "suspected",
+              "evidence": [
+                "White Blood Cells: 26.9 K/uL (ref 4.0-11.0)",
+                "non-bloody diarrhea ___ times per day for the 5 days prior to his admission"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Hypotension (BP 94/48) may reflect sepsis or volume depletion from gastrointestinal losses",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "hemodynamic/systemic",
+              "status": "suspected",
+              "evidence": [
+                "94/48",
+                "non-bloody diarrhea ___ times per day for the 5 days prior to his admission"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Cardiac cause of presentation is less likely given negative troponin and absence of pulmonary edema on chest X-ray",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "organ system",
+              "status": "challenged",
+              "evidence": [
+                "Troponin T: <0.01",
+                "The pulmonary vascularity is not engorged. There is no focal consolidation. No pleural effusion"
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "First decision point; no prior question to update.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": ""
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are newly established from baseline workup."
+          },
+          "current_question": {
+            "primary": "Is there an intra-abdominal pathology (infection, ischemia, obstruction, or perforation) explaining the leukocytosis, diarrhea, hypotension, and abdominal tenderness?",
+            "target": "Abdomen and pelvis: bowel, mesentery, solid organs, retroperitoneum",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Directs targeted treatment (antibiotics, surgery, intervention) and explains multi-organ dysfunction",
+            "negative_answer_changes": "Shifts focus toward extra-abdominal causes of sepsis or non-infectious etiology of leukocytosis and renal failure",
+            "secondary_questions": [
+              "Is there evidence of bowel ischemia or perforation that would require emergent surgical consultation?",
+              "Are there findings explaining the acute kidney injury (e.g., hydronephrosis, renal infarct, or retroperitoneal process)?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of free air, free fluid, bowel wall thickening, or pericolonic fat stranding",
+                "why_required": "These findings confirm or exclude acute intra-abdominal pathology as the source of sepsis and leukocytosis"
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Localization of any abnormality to a specific bowel segment, organ, or compartment",
+                "why_required": "Localizing the source guides surgical vs. medical management"
+              },
+              {
+                "id": "finding_identity",
+                "other_proposed_dimension": "",
+                "dimension": "Characterization of any identified lesion (abscess, ischemia, obstruction, mass, perforation)",
+                "why_required": "Identity of the finding determines urgency and treatment pathway"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Assessment of kidneys and collecting system for obstructive or vascular cause of AKI",
+                "why_required": "Renal pathology could independently explain AKI and hyperkalemia and may require separate intervention"
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Extent of any inflammatory or ischemic process (localized vs. diffuse)",
+                "why_required": "Extent determines urgency of intervention and prognosis"
+              }
+            ],
+            "evidence": [
+              "White Blood Cells: 26.9 K/uL (ref 4.0-11.0)",
+              "mild abdominal discomfort that started while in the ED"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Chest X-ray does not assess the abdomen; no abdominal imaging has been performed yet"
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Physical exam provides only a vague left-sided tenderness; no imaging localization available"
+              },
+              {
+                "requirement_id": "finding_identity",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No abdominal imaging has been performed to characterize any lesion"
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "Creatinine: 2.0 mg/dL",
+                  "Urine Osmolality: 700.0 mOsm/kg"
+                ],
+                "reason": "Labs suggest intrinsic or pre-renal AKI but cannot exclude obstructive nephropathy without imaging"
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging data available to assess extent of any abdominal process"
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "No abdominal imaging has been performed; the primary question remains entirely open"
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Non-contrast CT abdomen/pelvis can detect free air, free fluid, bowel wall thickening, fat stranding, abscess, hydronephrosis, and renal infarct without contrast risk in a patient with AKI",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Without contrast, vascular causes of ischemia (mesenteric ischemia, renal infarct) may be undercharacterized; the choice of no contrast is likely driven by AKI but limits vascular assessment"
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The order could alternatively be driven primarily by the need to exclude obstructive uropathy as a reversible cause of AKI and hyperkalemia in a patient with a solitary kidney (prior kidney donor), with the abdominal symptoms being secondary motivation."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Severe hyperkalemia (K 7.5 mEq/L) is present and poses immediate cardiac risk\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"laboratory/physiologic\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Potassium: 7.5 mEq/L (ref 3.3-5.1)\",\n        \"Potassium, Whole Blood: 7.5 mEq/L (ref 3.5-5.3)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute or acute-on-chronic kidney injury is present, likely contributing to hyperkalemia and metabolic acidosis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Creatinine: 2.0 mg/dL (ref 0.5-1.2)\",\n        \"Estimated GFR = 33 if non African-American\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"An intra-abdominal source (infectious, ischemic, or obstructive) is driving the leukocytosis and gastrointestinal symptoms\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"White Blood Cells: 26.9 K/uL (ref 4.0-11.0)\",\n        \"non-bloody diarrhea ___ times per day for the 5 days prior to his admission\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Hypotension (BP 94/48) may reflect sepsis or volume depletion from gastrointestinal losses\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"hemodynamic/systemic\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"94/48\",\n        \"non-bloody diarrhea ___ times per day for the 5 days prior to his admission\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Cardiac cause of presentation is less likely given negative troponin and absence of pulmonary edema on chest X-ray\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Troponin T: <0.01\",\n        \"The pulmonary vascularity is not engorged. There is no focal consolidation. No pleural effusion\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"First decision point; no prior question to update.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are newly established from baseline workup.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an intra-abdominal pathology (infection, ischemia, obstruction, or perforation) explaining the leukocytosis, diarrhea, hypotension, and abdominal tenderness?\",\n    \"target\": \"Abdomen and pelvis: bowel, mesentery, solid organs, retroperitoneum\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Directs targeted treatment (antibiotics, surgery, intervention) and explains multi-organ dysfunction\",\n    \"negative_answer_changes\": \"Shifts focus toward extra-abdominal causes of sepsis or non-infectious etiology of leukocytosis and renal failure\",\n    \"secondary_questions\": [\n      \"Is there evidence of bowel ischemia or perforation that would require emergent surgical consultation?\",\n      \"Are there findings explaining the acute kidney injury (e.g., hydronephrosis, renal infarct, or retroperitoneal process)?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of free air, free fluid, bowel wall thickening, or pericolonic fat stranding\",\n        \"why_required\": \"These findings confirm or exclude acute intra-abdominal pathology as the source of sepsis and leukocytosis\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any abnormality to a specific bowel segment, organ, or compartment\",\n        \"why_required\": \"Localizing the source guides surgical vs. medical management\"\n      },\n      {\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of any identified lesion (abscess, ischemia, obstruction, mass, perforation)\",\n        \"why_required\": \"Identity of the finding determines urgency and treatment pathway\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assessment of kidneys and collecting system for obstructive or vascular cause of AKI\",\n        \"why_required\": \"Renal pathology could independently explain AKI and hyperkalemia and may require separate intervention\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of any inflammatory or ischemic process (localized vs. diffuse)\",\n        \"why_required\": \"Extent determines urgency of intervention and prognosis\"\n      }\n    ],\n    \"evidence\": [\n      \"White Blood Cells: 26.9 K/uL (ref 4.0-11.0)\",\n      \"mild abdominal discomfort that started while in the ED\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Chest X-ray does not assess the abdomen; no abdominal imaging has been performed yet\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Physical exam provides only a vague left-sided tenderness; no imaging localization available\"\n      },\n      {\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No abdominal imaging has been performed to characterize any lesion\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"Creatinine: 2.0 mg/dL\",\n          \"Urine Osmolality: 700.0 mOsm/kg\"\n        ],\n        \"reason\": \"Labs suggest intrinsic or pre-renal AKI but cannot exclude obstructive nephropathy without imaging\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging data available to assess extent of any abdominal process\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No abdominal imaging has been performed; the primary question remains entirely open\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Non-contrast CT abdomen/pelvis can detect free air, free fluid, bowel wall thickening, fat stranding, abscess, hydronephrosis, and renal infarct without contrast risk in a patient with AKI\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Without contrast, vascular causes of ischemia (mesenteric ischemia, renal infarct) may be undercharacterized; the choice of no contrast is likely driven by AKI but limits vascular assessment\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The order could alternatively be driven primarily by the need to exclude obstructive uropathy as a reversible cause of AKI and hyperkalemia in a patient with a solitary kidney (prior kidney donor), with the abdominal symptoms being secondary motivation.\"\n}\n```",
+        "request_id": "gen-1788005344-4f9ienwbl9OP93FyVpnI",
+        "usage": {
+          "completion_tokens": 2376,
+          "prompt_tokens": 3775,
+          "total_tokens": 6151,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.046965,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.046965,
+            "upstream_inference_prompt_cost": 0.011325,
+            "upstream_inference_completions_cost": 0.03564
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The patient has an intra-abdominal infectious or ischemic process driving hemodynamic instability and marked leukocytosis",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "clinical syndrome",
+              "status": "suspected",
+              "evidence": [
+                "BP 94/48",
+                "White Blood Cells: 26.9 K/uL (ref 4.0-11.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Chronic antibiotic exposure (Bactrim and clarithromycin) predisposes to C. difficile or resistant colitis as the etiology",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "pathophysiologic mechanism",
+              "status": "suspected",
+              "evidence": [
+                "MRSA infections on chronic Bactrim and clarithromycin",
+                "non-bloody diarrhea ___ times per day for the 5 days prior to his admission"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Left-sided abdominal tenderness localizes the process to the left colon (e.g., diverticulitis or left-sided colitis)",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "anatomic localization",
+              "status": "suspected",
+              "evidence": [
+                "Abdomen obese, soft, very mild left sided tenderness to deep palpation without any guarding",
+                "mild abdominal discomfort that started while in the ED"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Contrast is appropriately withheld due to CKD stage 3b",
+              "type": "intervention_or_device_state",
+              "other_proposed_type": "",
+              "level": "imaging protocol decision",
+              "status": "established",
+              "evidence": [
+                "Creatinine: 2.0 mg/dL (ref 0.5-1.2)",
+                "Estimated GFR = 33 if non African-American"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The severity of the septic picture (neutrophilia 93.1%, hypotension) suggests a process beyond simple infectious diarrhea",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "disease severity",
+              "status": "suspected",
+              "evidence": [
+                "Neutrophils: 93.1 % (ref 50.0-70.0)",
+                "Lymphocytes: 4.8 % (ref 18.0-42.0)"
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior order exists; this is the first decision point.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "No prior order to compare."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are newly established from the presenting clinical evidence."
+          },
+          "current_question": {
+            "primary": "Is there an identifiable intra-abdominal structural abnormality (colitis, diverticulitis, ischemic bowel, obstruction, or other) that explains the patient's septic physiology?",
+            "target": "intra-abdominal organs and bowel, with focus on colon",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Directs targeted medical or surgical management (e.g., antibiotics for diverticulitis, surgical consult for ischemia, C. diff testing for colitis pattern)",
+            "negative_answer_changes": "Redirects workup toward extra-abdominal sources of sepsis or non-structural causes of diarrhea and leukocytosis",
+            "secondary_questions": [
+              "Is there evidence of bowel ischemia (pneumatosis, portal venous gas, mesenteric vascular occlusion) requiring emergent intervention?",
+              "Is there free air or free fluid suggesting perforation or peritonitis?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of the entire colon and small bowel on non-contrast CT",
+                "why_required": "Non-contrast technique may limit bowel wall characterization; adequacy must be confirmed before conclusions are drawn."
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of bowel wall thickening, pericolonic fat stranding, or free fluid",
+                "why_required": "These are the primary CT findings that confirm or exclude an intra-abdominal inflammatory or ischemic process."
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Segment of bowel or organ involved",
+                "why_required": "Localization determines the differential (e.g., sigmoid diverticulitis vs. pancolitis vs. small bowel ischemia) and guides management."
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence of pneumatosis, portal venous gas, perforation, or abscess",
+                "why_required": "These complications alter urgency and management from medical to emergent surgical."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Identification of alternative intra-abdominal sources (e.g., appendicitis, cholecystitis, pancreatitis)",
+                "why_required": "The differential includes multiple intra-abdominal diagnoses; the scan must discriminate among them."
+              }
+            ],
+            "evidence": [
+              "BP 94/48",
+              "White Blood Cells: 26.9 K/uL (ref 4.0-11.0)",
+              "non-bloody diarrhea ___ times per day for the 5 days prior to his admission",
+              "Abdomen obese, soft, very mild left sided tenderness to deep palpation without any guarding"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "CT has been ordered but no result is available; adequacy of non-contrast technique for bowel assessment is unknown."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Clinical exam is soft with only mild tenderness; no imaging result yet to confirm or exclude bowel wall pathology."
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "very mild left sided tenderness to deep palpation"
+                ],
+                "reason": "Physical exam suggests left-sided involvement but is non-specific and insufficient for anatomic localization without imaging."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging result available; clinical exam shows no guarding, making perforation less likely but not excluded."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Pre-imaging differential remains broad; no result yet to discriminate among competing diagnoses."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "CT has been ordered but no result is available; all imaging-dependent requirements remain unaddressed."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Non-contrast CT abdomen/pelvis can visualize bowel wall thickening, fat stranding, free fluid, pneumatosis, and free air sufficient to localize or exclude most intra-abdominal structural causes of sepsis.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Non-contrast technique reduces sensitivity for vascular causes (e.g., mesenteric ischemia without pneumatosis) and may limit characterization of subtle mucosal disease; etiologic agent (e.g., C. difficile vs. ischemia) cannot be determined by CT alone."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The order could alternatively reflect concern primarily for bowel obstruction or ileus given the diarrhea and hemodynamic instability, with colitis as a secondary consideration — in which case the primary question would be patency and caliber of the bowel rather than wall inflammation. This framing is less supported given the antibiotic history and leukocytosis pattern but cannot be excluded."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an intra-abdominal infectious or ischemic process driving hemodynamic instability and marked leukocytosis\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"BP 94/48\",\n        \"White Blood Cells: 26.9 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Chronic antibiotic exposure (Bactrim and clarithromycin) predisposes to C. difficile or resistant colitis as the etiology\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"MRSA infections on chronic Bactrim and clarithromycin\",\n        \"non-bloody diarrhea ___ times per day for the 5 days prior to his admission\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Left-sided abdominal tenderness localizes the process to the left colon (e.g., diverticulitis or left-sided colitis)\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"anatomic localization\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Abdomen obese, soft, very mild left sided tenderness to deep palpation without any guarding\",\n        \"mild abdominal discomfort that started while in the ED\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Contrast is appropriately withheld due to CKD stage 3b\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"imaging protocol decision\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Creatinine: 2.0 mg/dL (ref 0.5-1.2)\",\n        \"Estimated GFR = 33 if non African-American\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The severity of the septic picture (neutrophilia 93.1%, hypotension) suggests a process beyond simple infectious diarrhea\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease severity\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Neutrophils: 93.1 % (ref 50.0-70.0)\",\n        \"Lymphocytes: 4.8 % (ref 18.0-42.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior order exists; this is the first decision point.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior order to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are newly established from the presenting clinical evidence.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an identifiable intra-abdominal structural abnormality (colitis, diverticulitis, ischemic bowel, obstruction, or other) that explains the patient's septic physiology?\",\n    \"target\": \"intra-abdominal organs and bowel, with focus on colon\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Directs targeted medical or surgical management (e.g., antibiotics for diverticulitis, surgical consult for ischemia, C. diff testing for colitis pattern)\",\n    \"negative_answer_changes\": \"Redirects workup toward extra-abdominal sources of sepsis or non-structural causes of diarrhea and leukocytosis\",\n    \"secondary_questions\": [\n      \"Is there evidence of bowel ischemia (pneumatosis, portal venous gas, mesenteric vascular occlusion) requiring emergent intervention?\",\n      \"Is there free air or free fluid suggesting perforation or peritonitis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the entire colon and small bowel on non-contrast CT\",\n        \"why_required\": \"Non-contrast technique may limit bowel wall characterization; adequacy must be confirmed before conclusions are drawn.\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of bowel wall thickening, pericolonic fat stranding, or free fluid\",\n        \"why_required\": \"These are the primary CT findings that confirm or exclude an intra-abdominal inflammatory or ischemic process.\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Segment of bowel or organ involved\",\n        \"why_required\": \"Localization determines the differential (e.g., sigmoid diverticulitis vs. pancolitis vs. small bowel ischemia) and guides management.\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence of pneumatosis, portal venous gas, perforation, or abscess\",\n        \"why_required\": \"These complications alter urgency and management from medical to emergent surgical.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification of alternative intra-abdominal sources (e.g., appendicitis, cholecystitis, pancreatitis)\",\n        \"why_required\": \"The differential includes multiple intra-abdominal diagnoses; the scan must discriminate among them.\"\n      }\n    ],\n    \"evidence\": [\n      \"BP 94/48\",\n      \"White Blood Cells: 26.9 K/uL (ref 4.0-11.0)\",\n      \"non-bloody diarrhea ___ times per day for the 5 days prior to his admission\",\n      \"Abdomen obese, soft, very mild left sided tenderness to deep palpation without any guarding\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"CT has been ordered but no result is available; adequacy of non-contrast technique for bowel assessment is unknown.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Clinical exam is soft with only mild tenderness; no imaging result yet to confirm or exclude bowel wall pathology.\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"very mild left sided tenderness to deep palpation\"\n        ],\n        \"reason\": \"Physical exam suggests left-sided involvement but is non-specific and insufficient for anatomic localization without imaging.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging result available; clinical exam shows no guarding, making perforation less likely but not excluded.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Pre-imaging differential remains broad; no result yet to discriminate among competing diagnoses.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"CT has been ordered but no result is available; all imaging-dependent requirements remain unaddressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Non-contrast CT abdomen/pelvis can visualize bowel wall thickening, fat stranding, free fluid, pneumatosis, and free air sufficient to localize or exclude most intra-abdominal structural causes of sepsis.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Non-contrast technique reduces sensitivity for vascular causes (e.g., mesenteric ischemia without pneumatosis) and may limit characterization of subtle mucosal disease; etiologic agent (e.g., C. difficile vs. ischemia) cannot be determined by CT alone.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The order could alternatively reflect concern primarily for bowel obstruction or ileus given the diarrhea and hemodynamic instability, with colitis as a secondary consideration — in which case the primary question would be patency and caliber of the bowel rather than wall inflammation. This framing is less supported given the antibiotic history and leukocytosis pattern but cannot be excluded.\"\n}\n```",
+        "request_id": "gen-1788005380-p7pyzRLg4UouIGdclNSr",
+        "usage": {
+          "completion_tokens": 2496,
+          "prompt_tokens": 2768,
+          "total_tokens": 5264,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.045744,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.045744,
+            "upstream_inference_prompt_cost": 0.008304,
+            "upstream_inference_completions_cost": 0.03744
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.6667,
+        "direct_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course",
+          "syndrome_or_source_frame"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "etiology_or_mechanism",
+          "intervention_or_device_state",
+          "severity_extent_or_course",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": true,
+        "direct_question_type": "source_localization",
+        "recode_question_type": "source_localization",
+        "requirement_jaccard": 0.4286,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "finding_identity",
+          "presence_or_absence",
+          "severity_or_extent"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "complication_presence_or_character",
+          "presence_or_absence",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "unanswered",
+        "recode_aggregate_coverage": "unanswered",
+        "transition_match": true
+      }
+    }
+  ]
+}

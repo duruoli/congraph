@@ -1,0 +1,987 @@
+{
+  "schema_version": "1.0.0-development",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 27824170,
+  "source_path": "results/annotation_experiment/full/pancreatitis_27824170.json",
+  "model": "anthropic/claude-sonnet-4.6",
+  "causal_boundary": "DIRECT=masked chart+order; RECODE=old ex-ante reconstruction+order; both exclude current result, later events, verification, deviation, ACR, and disease answer labels",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABDOMEN W/CONTRAST)",
+      "direct_prompt_sha256": "eadb921683a571a4a40fee4e4d455b9c5790411d03a481fce185e703c32f98a8",
+      "recode_prompt_sha256": "c31b849a8e942f7d9992ff7623f4ee19a660aa97ea48c5fac18a99976435f8a5",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Patient has duodenitis at D2/D3 with periduodenal stranding and free fluid, without free air, as characterized at OSH",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "organ/segment pathology",
+              "status": "established",
+              "evidence": [
+                "CT at OSH consistent inflammation of the duodenum at D2/D3 with assicated stranding and free fluid. There was no free air."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Microperforation of the duodenum is a possible but low-suspicion complication requiring exclusion",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "complication of known finding",
+              "status": "suspected",
+              "evidence": [
+                "Decision made to transfer to ___ and admit to surgery fro question microperforation. Per surgery, low suspicion for perforation"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "The etiology of duodenitis is unknown; infectious, inflammatory, or other causes have not yet been established",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "disease mechanism",
+              "status": "unclear",
+              "evidence": [
+                "D2, D3 duodenitis and periduodenal fluid. On ABX without improvement (? unasyn)."
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Patient has new-onset diabetes mellitus with markedly elevated HbA1c and glucose, likely type 1 or type 2 presenting acutely",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "systemic metabolic disease",
+              "status": "established",
+              "evidence": [
+                "Patient with no previous diagnosis of diabetes. In days preceding hospitalization endorses polyuria, polydipsia and polyphagia",
+                "% Hemoglobin A1c: 12.6 % (ref 4.8-5.9)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Severity and full extent of duodenal and periduodenal involvement have not been independently characterized at this institution",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "disease extent",
+              "status": "unclear",
+              "evidence": [
+                "CT at OSH consistent inflammation of the duodenum at D2/D3",
+                "D2, D3 duodenitis and periduodenal fluid. On ABX without improvement (? unasyn)."
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior imaging order in this system; chest X-ray showed no free air under diaphragm and no pneumothorax, partially addressing perforation concern.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "First decision point"
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; assumptions are established from baseline history, labs, OSH CT report, and chest X-ray."
+          },
+          "current_question": {
+            "primary": "What is the current extent, severity, and character of duodenal/periduodenal disease, and is there evidence of perforation, abscess, or alternative intra-abdominal pathology explaining the clinical picture?",
+            "target": "duodenum, periduodenal tissues, and intra-abdominal cavity",
+            "type": "severity_or_extent",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Confirms or refines duodenitis extent; identifies perforation, abscess, or alternative source; guides surgical vs. medical management and antibiotic choice",
+            "negative_answer_changes": "Absence of perforation or abscess supports continued conservative medical management; absence of alternative pathology consolidates duodenitis diagnosis",
+            "secondary_questions": [
+              "Is there an alternative intra-abdominal source (e.g., pancreatic, biliary, or vascular) contributing to the periduodenal inflammation?",
+              "Has the disease progressed or improved compared to the OSH CT?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Direct visualization of duodenal wall and periduodenal tissues with contrast",
+                "why_required": "OSH CT was performed at an outside institution; independent high-quality assessment is needed for management decisions at this center"
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of free air, contained perforation, or abscess",
+                "why_required": "Microperforation was the primary surgical concern prompting transfer; chest X-ray did not exclude contained or small perforation"
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Extent of periduodenal stranding, fluid, and wall thickening",
+                "why_required": "Severity guides NPO duration, antibiotic escalation, and need for procedural intervention"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Presence of alternative or contributing pathology (pancreatic, biliary, vascular, lymphoma)",
+                "why_required": "Elevated lipase and markedly elevated inflammatory markers raise possibility of pancreatitis or other process; etiology of duodenitis is unknown"
+              },
+              {
+                "id": "temporal_course_or_response",
+                "other_proposed_dimension": "",
+                "dimension": "Comparison to OSH CT to assess progression or improvement",
+                "why_required": "Patient on antibiotics without improvement; imaging change would inform whether current therapy is adequate"
+              }
+            ],
+            "evidence": [
+              "CT at OSH consistent inflammation of the duodenum at D2/D3 with assicated stranding and free fluid. There was no free air.",
+              "On ABX without improvement (? unasyn). D2, D3 duodenitis and periduodenal fluid."
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "CT at OSH consistent inflammation of the duodenum at D2/D3 with assicated stranding and free fluid."
+                ],
+                "reason": "OSH CT provides initial characterization but is not available for direct review at this institution; independent assessment is absent"
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "There was no free air.",
+                  "No evidence of free air is seen beneath the diaphragms."
+                ],
+                "reason": "Both OSH CT and chest X-ray exclude free air, but contained perforation or small abscess cannot be excluded without dedicated contrast CT"
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "C-Reactive Protein: 244.8 mg/L (ref 0.0-5.0)",
+                  "Sedimentation Rate: 97.0 mm/hr (ref 0.0-15.0)"
+                ],
+                "reason": "Labs confirm severe systemic inflammation but do not characterize anatomic extent; OSH CT description is limited"
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Lipase: 115.0 IU/L (ref 0.0-60.0)"
+                ],
+                "reason": "Mildly elevated lipase raises pancreatic involvement; no imaging at this institution has assessed pancreas, biliary tree, or vascular structures"
+              },
+              {
+                "requirement_id": "temporal_course_or_response",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No repeat imaging has been performed; clinical course suggests lack of improvement on antibiotics but imaging comparison is absent"
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "OSH CT and chest X-ray partially address perforation and duodenitis identity, but severity, alternative sources, and treatment response remain unaddressed at this institution"
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_answer": "Contrast-enhanced CT abdomen directly visualizes duodenal wall, periduodenal fat, free fluid/air, pancreas, biliary tree, and mesenteric structures, addressing all key requirements",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Etiology of duodenitis (infectious organism, IBD, ischemia, malignancy) may not be determinable by CT alone; endoscopy or biopsy may ultimately be required"
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The order could also reflect a protocol requirement to obtain in-house imaging before any invasive procedure (e.g., endoscopy or surgical exploration), rather than primarily reassessing perforation risk, given that surgery already deemed perforation unlikely."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Patient has duodenitis at D2/D3 with periduodenal stranding and free fluid, without free air, as characterized at OSH\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ/segment pathology\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"CT at OSH consistent inflammation of the duodenum at D2/D3 with assicated stranding and free fluid. There was no free air.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Microperforation of the duodenum is a possible but low-suspicion complication requiring exclusion\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication of known finding\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Decision made to transfer to ___ and admit to surgery fro question microperforation. Per surgery, low suspicion for perforation\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The etiology of duodenitis is unknown; infectious, inflammatory, or other causes have not yet been established\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease mechanism\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"D2, D3 duodenitis and periduodenal fluid. On ABX without improvement (? unasyn).\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Patient has new-onset diabetes mellitus with markedly elevated HbA1c and glucose, likely type 1 or type 2 presenting acutely\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"systemic metabolic disease\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Patient with no previous diagnosis of diabetes. In days preceding hospitalization endorses polyuria, polydipsia and polyphagia\",\n        \"% Hemoglobin A1c: 12.6 % (ref 4.8-5.9)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Severity and full extent of duodenal and periduodenal involvement have not been independently characterized at this institution\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease extent\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"CT at OSH consistent inflammation of the duodenum at D2/D3\",\n        \"D2, D3 duodenitis and periduodenal fluid. On ABX without improvement (? unasyn).\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior imaging order in this system; chest X-ray showed no free air under diaphragm and no pneumothorax, partially addressing perforation concern.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; assumptions are established from baseline history, labs, OSH CT report, and chest X-ray.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the current extent, severity, and character of duodenal/periduodenal disease, and is there evidence of perforation, abscess, or alternative intra-abdominal pathology explaining the clinical picture?\",\n    \"target\": \"duodenum, periduodenal tissues, and intra-abdominal cavity\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirms or refines duodenitis extent; identifies perforation, abscess, or alternative source; guides surgical vs. medical management and antibiotic choice\",\n    \"negative_answer_changes\": \"Absence of perforation or abscess supports continued conservative medical management; absence of alternative pathology consolidates duodenitis diagnosis\",\n    \"secondary_questions\": [\n      \"Is there an alternative intra-abdominal source (e.g., pancreatic, biliary, or vascular) contributing to the periduodenal inflammation?\",\n      \"Has the disease progressed or improved compared to the OSH CT?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Direct visualization of duodenal wall and periduodenal tissues with contrast\",\n        \"why_required\": \"OSH CT was performed at an outside institution; independent high-quality assessment is needed for management decisions at this center\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of free air, contained perforation, or abscess\",\n        \"why_required\": \"Microperforation was the primary surgical concern prompting transfer; chest X-ray did not exclude contained or small perforation\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of periduodenal stranding, fluid, and wall thickening\",\n        \"why_required\": \"Severity guides NPO duration, antibiotic escalation, and need for procedural intervention\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence of alternative or contributing pathology (pancreatic, biliary, vascular, lymphoma)\",\n        \"why_required\": \"Elevated lipase and markedly elevated inflammatory markers raise possibility of pancreatitis or other process; etiology of duodenitis is unknown\"\n      },\n      {\n        \"id\": \"temporal_course_or_response\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comparison to OSH CT to assess progression or improvement\",\n        \"why_required\": \"Patient on antibiotics without improvement; imaging change would inform whether current therapy is adequate\"\n      }\n    ],\n    \"evidence\": [\n      \"CT at OSH consistent inflammation of the duodenum at D2/D3 with assicated stranding and free fluid. There was no free air.\",\n      \"On ABX without improvement (? unasyn). D2, D3 duodenitis and periduodenal fluid.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"CT at OSH consistent inflammation of the duodenum at D2/D3 with assicated stranding and free fluid.\"\n        ],\n        \"reason\": \"OSH CT provides initial characterization but is not available for direct review at this institution; independent assessment is absent\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"There was no free air.\",\n          \"No evidence of free air is seen beneath the diaphragms.\"\n        ],\n        \"reason\": \"Both OSH CT and chest X-ray exclude free air, but contained perforation or small abscess cannot be excluded without dedicated contrast CT\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"C-Reactive Protein: 244.8 mg/L (ref 0.0-5.0)\",\n          \"Sedimentation Rate: 97.0 mm/hr (ref 0.0-15.0)\"\n        ],\n        \"reason\": \"Labs confirm severe systemic inflammation but do not characterize anatomic extent; OSH CT description is limited\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Lipase: 115.0 IU/L (ref 0.0-60.0)\"\n        ],\n        \"reason\": \"Mildly elevated lipase raises pancreatic involvement; no imaging at this institution has assessed pancreas, biliary tree, or vascular structures\"\n      },\n      {\n        \"requirement_id\": \"temporal_course_or_response\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No repeat imaging has been performed; clinical course suggests lack of improvement on antibiotics but imaging comparison is absent\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"OSH CT and chest X-ray partially address perforation and duodenitis identity, but severity, alternative sources, and treatment response remain unaddressed at this institution\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_answer\": \"Contrast-enhanced CT abdomen directly visualizes duodenal wall, periduodenal fat, free fluid/air, pancreas, biliary tree, and mesenteric structures, addressing all key requirements\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Etiology of duodenitis (infectious organism, IBD, ischemia, malignancy) may not be determinable by CT alone; endoscopy or biopsy may ultimately be required\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The order could also reflect a protocol requirement to obtain in-house imaging before any invasive procedure (e.g., endoscopy or surgical exploration), rather than primarily reassessing perforation risk, given that surgery already deemed perforation unlikely.\"\n}\n```",
+        "request_id": "gen-1788005942-92d9VTDCvqZsD3I5L5jp",
+        "usage": {
+          "completion_tokens": 2579,
+          "prompt_tokens": 4339,
+          "total_tokens": 6918,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.051702,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.051702,
+            "upstream_inference_prompt_cost": 0.013017,
+            "upstream_inference_completions_cost": 0.038685
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The patient has active duodenal inflammation at D2/D3 with periduodenal stranding and free fluid, as seen on outside CT.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "organ/segment finding",
+              "status": "established",
+              "evidence": [
+                "CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid. There was no free air."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "A microperforation at D2/D3 is suspected but unconfirmed, prompting transfer to surgery.",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "complication of duodenal disease",
+              "status": "suspected",
+              "evidence": [
+                "Decision made to transfer to ___ and admit to surgery for question microperforation."
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "The inflammatory process has not improved clinically despite antibiotic therapy, suggesting ongoing or worsening disease.",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "clinical course",
+              "status": "suspected",
+              "evidence": [
+                "On ABX without improvement (? unasyn)",
+                "C-Reactive Protein: 244.8 mg/L (ref 0.0-5.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Mildly elevated lipase raises the possibility of pancreatic or biliary ductal involvement contributing to the clinical picture.",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "adjacent organ/system",
+              "status": "suspected",
+              "evidence": [
+                "Lipase: 115.0 IU/L (ref 0.0-60.0)"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Outside CT imaging may not adequately characterize current disease extent for management decisions at this institution.",
+              "type": "other",
+              "other_proposed_type": "study_adequacy_for_local_management",
+              "level": "imaging adequacy",
+              "status": "suspected",
+              "evidence": [
+                "CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid."
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior order; this is the first decision point.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "No prior order to compare."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are initialized from available history, labs, and outside imaging."
+          },
+          "current_question": {
+            "primary": "Has the periduodenal inflammatory process evolved — specifically, is there now a contained perforation, abscess, or phlegmon — and is the pancreas or biliary system contributing to the elevated lipase and ongoing symptoms?",
+            "target": "periduodenal region, duodenum D2/D3, pancreas, biliary system",
+            "type": "severity_or_extent",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Identification of abscess, contained perforation, or pancreatic/biliary pathology would prompt surgical or interventional management or change in antibiotic strategy.",
+            "negative_answer_changes": "Absence of complication or pancreatic/biliary involvement would support continued medical management and further workup for alternative etiology.",
+            "secondary_questions": [
+              "Is there interval development of free air or free perforation not seen on outside CT?",
+              "Is there a biliary or pancreatic ductal abnormality explaining the elevated lipase and alkaline phosphatase?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of the duodenum D2/D3 and periduodenal soft tissues with IV contrast",
+                "why_required": "Required to assess the current state of inflammation and detect any new or evolving complication."
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of contained perforation, abscess, or phlegmon at D2/D3",
+                "why_required": "Directly determines whether surgical drainage or intervention is needed."
+              },
+              {
+                "id": "temporal_course_or_response",
+                "other_proposed_dimension": "",
+                "dimension": "Interval change in periduodenal stranding and fluid compared to outside CT",
+                "why_required": "Establishes whether disease is progressing, stable, or improving despite antibiotics."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Assessment of pancreatic parenchyma and biliary ductal system",
+                "why_required": "Elevated lipase and alkaline phosphatase raise the possibility of a contributing pancreatic or biliary process that would alter management."
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of free intraperitoneal air or fluid beyond the periduodenal region",
+                "why_required": "Free perforation would mandate urgent surgical intervention."
+              }
+            ],
+            "evidence": [
+              "CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid. There was no free air. Decision made to transfer to ___ and admit to surgery for question microperforation.",
+              "Lipase: 115.0 IU/L (ref 0.0-60.0)",
+              "On ABX without improvement (? unasyn)",
+              "C-Reactive Protein: 244.8 mg/L (ref 0.0-5.0)"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid."
+                ],
+                "reason": "Outside CT provides baseline visualization but was not performed at this institution and may not reflect current state."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Decision made to transfer to ___ and admit to surgery for question microperforation."
+                ],
+                "reason": "Outside CT did not confirm or exclude microperforation; current status unknown."
+              },
+              {
+                "requirement_id": "temporal_course_or_response",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "On ABX without improvement (? unasyn)"
+                ],
+                "reason": "Clinical non-improvement is noted but no repeat imaging has been performed to assess interval change."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Lipase: 115.0 IU/L (ref 0.0-60.0)"
+                ],
+                "reason": "Elevated lipase raises pancreatic/biliary concern but no dedicated imaging of these structures has been reported."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "No evidence of free air is seen beneath the diaphragms."
+                ],
+                "reason": "Outside CT showed no free air at that time, but current status after interval time and clinical deterioration is unknown."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "Outside CT provides a baseline but does not address interval change, complication development, or pancreatic/biliary contribution; current question is unanswered pending new imaging."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "CT abdomen with IV contrast can directly visualize periduodenal inflammation, detect abscess or contained perforation, assess for free air/fluid, and evaluate the pancreas and biliary system.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "The specific protocol (e.g., oral contrast, dedicated duodenal phase) is not specified; if duodenal lumen integrity is the primary concern, additional protocol considerations (e.g., water-soluble oral contrast) might be warranted but are not documented."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The order could alternatively reflect a primarily administrative/institutional requirement to obtain in-house imaging before any surgical or interventional planning, rather than a clinical suspicion of interval change — in which case the primary intent is baseline documentation at the receiving institution rather than reassessment of disease evolution."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has active duodenal inflammation at D2/D3 with periduodenal stranding and free fluid, as seen on outside CT.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ/segment finding\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid. There was no free air.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A microperforation at D2/D3 is suspected but unconfirmed, prompting transfer to surgery.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication of duodenal disease\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Decision made to transfer to ___ and admit to surgery for question microperforation.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The inflammatory process has not improved clinically despite antibiotic therapy, suggesting ongoing or worsening disease.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical course\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"On ABX without improvement (? unasyn)\",\n        \"C-Reactive Protein: 244.8 mg/L (ref 0.0-5.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Mildly elevated lipase raises the possibility of pancreatic or biliary ductal involvement contributing to the clinical picture.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"adjacent organ/system\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Lipase: 115.0 IU/L (ref 0.0-60.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Outside CT imaging may not adequately characterize current disease extent for management decisions at this institution.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"study_adequacy_for_local_management\",\n      \"level\": \"imaging adequacy\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior order; this is the first decision point.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior order to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are initialized from available history, labs, and outside imaging.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Has the periduodenal inflammatory process evolved — specifically, is there now a contained perforation, abscess, or phlegmon — and is the pancreas or biliary system contributing to the elevated lipase and ongoing symptoms?\",\n    \"target\": \"periduodenal region, duodenum D2/D3, pancreas, biliary system\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identification of abscess, contained perforation, or pancreatic/biliary pathology would prompt surgical or interventional management or change in antibiotic strategy.\",\n    \"negative_answer_changes\": \"Absence of complication or pancreatic/biliary involvement would support continued medical management and further workup for alternative etiology.\",\n    \"secondary_questions\": [\n      \"Is there interval development of free air or free perforation not seen on outside CT?\",\n      \"Is there a biliary or pancreatic ductal abnormality explaining the elevated lipase and alkaline phosphatase?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the duodenum D2/D3 and periduodenal soft tissues with IV contrast\",\n        \"why_required\": \"Required to assess the current state of inflammation and detect any new or evolving complication.\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of contained perforation, abscess, or phlegmon at D2/D3\",\n        \"why_required\": \"Directly determines whether surgical drainage or intervention is needed.\"\n      },\n      {\n        \"id\": \"temporal_course_or_response\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Interval change in periduodenal stranding and fluid compared to outside CT\",\n        \"why_required\": \"Establishes whether disease is progressing, stable, or improving despite antibiotics.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assessment of pancreatic parenchyma and biliary ductal system\",\n        \"why_required\": \"Elevated lipase and alkaline phosphatase raise the possibility of a contributing pancreatic or biliary process that would alter management.\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of free intraperitoneal air or fluid beyond the periduodenal region\",\n        \"why_required\": \"Free perforation would mandate urgent surgical intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid. There was no free air. Decision made to transfer to ___ and admit to surgery for question microperforation.\",\n      \"Lipase: 115.0 IU/L (ref 0.0-60.0)\",\n      \"On ABX without improvement (? unasyn)\",\n      \"C-Reactive Protein: 244.8 mg/L (ref 0.0-5.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid.\"\n        ],\n        \"reason\": \"Outside CT provides baseline visualization but was not performed at this institution and may not reflect current state.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Decision made to transfer to ___ and admit to surgery for question microperforation.\"\n        ],\n        \"reason\": \"Outside CT did not confirm or exclude microperforation; current status unknown.\"\n      },\n      {\n        \"requirement_id\": \"temporal_course_or_response\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"On ABX without improvement (? unasyn)\"\n        ],\n        \"reason\": \"Clinical non-improvement is noted but no repeat imaging has been performed to assess interval change.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Lipase: 115.0 IU/L (ref 0.0-60.0)\"\n        ],\n        \"reason\": \"Elevated lipase raises pancreatic/biliary concern but no dedicated imaging of these structures has been reported.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"No evidence of free air is seen beneath the diaphragms.\"\n        ],\n        \"reason\": \"Outside CT showed no free air at that time, but current status after interval time and clinical deterioration is unknown.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Outside CT provides a baseline but does not address interval change, complication development, or pancreatic/biliary contribution; current question is unanswered pending new imaging.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"CT abdomen with IV contrast can directly visualize periduodenal inflammation, detect abscess or contained perforation, assess for free air/fluid, and evaluate the pancreas and biliary system.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The specific protocol (e.g., oral contrast, dedicated duodenal phase) is not specified; if duodenal lumen integrity is the primary concern, additional protocol considerations (e.g., water-soluble oral contrast) might be warranted but are not documented.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The order could alternatively reflect a primarily administrative/institutional requirement to obtain in-house imaging before any surgical or interventional planning, rather than a clinical suspicion of interval change — in which case the primary intent is baseline documentation at the receiving institution rather than reassessment of disease evolution.\"\n}\n```",
+        "request_id": "gen-1788014129-v220NysIsyHAGIwx9FtG",
+        "usage": {
+          "completion_tokens": 2478,
+          "prompt_tokens": 2669,
+          "total_tokens": 5147,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.045177,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.045177,
+            "upstream_inference_prompt_cost": 0.008007,
+            "upstream_inference_completions_cost": 0.03717
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.5,
+        "direct_assumption_types": [
+          "complication",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "complication",
+          "disease_or_finding_identity",
+          "other",
+          "severity_extent_or_course"
+        ],
+        "question_type_match": true,
+        "direct_question_type": "severity_or_extent",
+        "recode_question_type": "severity_or_extent",
+        "requirement_jaccard": 0.6667,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "complication_presence_or_character",
+          "severity_or_extent",
+          "target_visualization_or_assessment",
+          "temporal_course_or_response"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "complication_presence_or_character",
+          "presence_or_absence",
+          "target_visualization_or_assessment",
+          "temporal_course_or_response"
+        ],
+        "aggregate_coverage_match": false,
+        "direct_aggregate_coverage": "partially_answered",
+        "recode_aggregate_coverage": "unanswered",
+        "transition_match": true
+      }
+    },
+    {
+      "step": 2,
+      "ordered": "MRCP Abdomen (MRCP (MR ABD W&W/OC))",
+      "direct_prompt_sha256": "afa642620044e424aadc5845aec75b77c716b3e9a9c81def478aa2db4db0c6e1",
+      "recode_prompt_sha256": "76ffb49c7a71388136df4bff47b9f80bcee5ea77e4cf8bc34c08ada49e2b172a",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "CT abdomen with contrast revealed pancreatic head edema with extensive peripancreatic stranding and periduodenal fluid, reframing the primary process as pancreatitis rather than isolated duodenitis",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "organ/segment pathology",
+              "status": "established",
+              "evidence": [
+                "There is swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas, with inflammatory change and fluid tracking along the second and third parts of the duodenum"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Biliary obstruction or choledocholithiasis is a possible etiology of pancreatitis given mild periductal common bile duct enhancement at the pancreatic head level",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "disease mechanism",
+              "status": "suspected",
+              "evidence": [
+                "The common bile duct shows mild periductal enhancement at the level of the head of the pancreas. No calcified gallstone is noted."
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "No free air or perforation is present intra-abdominally",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "complication of known finding",
+              "status": "excluded",
+              "evidence": [
+                "There is no evidence of free air.",
+                "No evidence of free air is seen beneath the diaphragms."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "A portacaval lymph node (20x9 mm) is present and unchanged from prior examination, likely reactive rather than malignant",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "incidental finding",
+              "status": "likely",
+              "evidence": [
+                "An area of soft tissue identical to the prior examination in the portacaval space measures 20 x 9 mm and is unchanged in size compared to the most recent prior examination and most likely represents a portacaval lymph node."
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "The biliary ductal anatomy and presence of choledocholithiasis or biliary stricture have not been adequately characterized by CT alone",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "disease extent",
+              "status": "unclear",
+              "evidence": [
+                "The common bile duct shows mild periductal enhancement at the level of the head of the pancreas. No calcified gallstone is noted. There is no intrahepatic bile duct dilation."
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "What is the current extent, severity, and character of duodenal/periduodenal disease, and is there evidence of perforation, abscess, or alternative intra-abdominal pathology explaining the clinical picture?",
+            "study_adequacy": "diagnostic",
+            "test_question_capability": "capable",
+            "result_status": "positive",
+            "effect_on_previous_question": "CT abdomen with contrast substantially answered the prior question: it confirmed pancreatic head edema with peripancreatic stranding as the dominant process, excluded free air/perforation, characterized periduodenal fluid as secondary to pancreatitis, and identified mild CBD periductal enhancement raising biliary etiology. Alternative source discrimination is now partially addressed but biliary ductal detail remains insufficient.",
+            "discordance": {
+              "label": "materially_discordant",
+              "evidence_stream_1": "CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid",
+              "evidence_stream_2": "There is swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas, with inflammatory change and fluid tracking along the second and third parts of the duodenum",
+              "reason": "OSH framed the process as primary duodenitis; in-house CT reframes it as pancreatitis with secondary duodenal involvement, materially changing the diagnostic and management trajectory."
+            }
+          },
+          "assumption_change": {
+            "label": "replace",
+            "changed_proposition": "The etiology of duodenitis is unknown; infectious, inflammatory, or other causes have not yet been established",
+            "reason": "CT abdomen reveals pancreatic head edema and peripancreatic stranding as the primary process with secondary duodenal involvement, and mild CBD periductal enhancement raises biliary etiology; the prior framing of isolated duodenitis of unknown cause is replaced by pancreatitis with possible biliary origin."
+          },
+          "current_question": {
+            "primary": "Is there choledocholithiasis, biliary stricture, or other biliary ductal pathology causing or contributing to pancreatitis, and what is the anatomy of the biliary and pancreatic ducts?",
+            "target": "common bile duct, intrahepatic bile ducts, pancreatic duct, biliary-pancreatic junction",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Identifies biliary obstruction as etiology, prompting ERCP or cholecystectomy planning and changing antibiotic/management strategy",
+            "negative_answer_changes": "Excludes biliary cause, directing workup toward other etiologies (autoimmune, metabolic, idiopathic) and avoiding unnecessary biliary intervention",
+            "secondary_questions": [
+              "Is there pancreatic ductal disruption, stricture, or anomaly (e.g., pancreas divisum) contributing to the pancreatitis?",
+              "Is there evidence of autoimmune pancreatitis (duct narrowing, capsule-like rim) given the patient's age and new-onset diabetes?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of choledocholithiasis or biliary ductal obstruction",
+                "why_required": "CT showed no calcified gallstone but mild CBD periductal enhancement; non-calcified stones and biliary sludge are not reliably excluded by CT"
+              },
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Direct visualization of common bile duct caliber, intrahepatic ducts, and pancreatic duct",
+                "why_required": "CT did not show intrahepatic dilation but periductal enhancement at pancreatic head warrants dedicated biliary/pancreatic duct assessment"
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Localization of any biliary or pancreatic ductal abnormality relative to the pancreatic head",
+                "why_required": "Pancreatic head edema may compress or involve the distal CBD; precise localization guides endoscopic vs. surgical approach"
+              },
+              {
+                "id": "etiologic_agent_or_mechanism",
+                "other_proposed_dimension": "",
+                "dimension": "Ductal morphology features suggesting autoimmune pancreatitis vs. obstructive vs. other etiology",
+                "why_required": "New-onset diabetes in a young male with pancreatitis raises autoimmune pancreatitis (IgG4-related), which has distinct ductal features and treatment implications"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Exclusion of pancreatic mass or periampullary lesion as underlying cause",
+                "why_required": "Portacaval lymph node and pancreatic head edema on CT do not exclude an underlying mass; MRCP soft tissue resolution can help discriminate"
+              }
+            ],
+            "evidence": [
+              "The common bile duct shows mild periductal enhancement at the level of the head of the pancreas. No calcified gallstone is noted. There is no intrahepatic bile duct dilation.",
+              "There is swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas"
+            ]
+          },
+          "question_continuity": "refined",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "No calcified gallstone is noted.",
+                  "The common bile duct shows mild periductal enhancement at the level of the head of the pancreas."
+                ],
+                "reason": "CT excludes calcified stones but cannot reliably detect non-calcified stones, sludge, or soft-tissue biliary obstruction; periductal enhancement raises concern not resolved by CT."
+              },
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "There is no intrahepatic bile duct dilation.",
+                  "The common bile duct shows mild periductal enhancement at the level of the head of the pancreas."
+                ],
+                "reason": "CT provides gross ductal assessment but lacks the resolution for pancreatic duct detail and subtle biliary pathology that MRCP provides."
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head"
+                ],
+                "reason": "CT localizes the process to the pancreatic head but does not delineate ductal anatomy precisely enough to guide intervention."
+              },
+              {
+                "requirement_id": "etiologic_agent_or_mechanism",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "CT cannot characterize ductal morphology features of autoimmune pancreatitis; no serologic or histologic data available yet."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "An area of soft tissue identical to the prior examination in the portacaval space measures 20 x 9 mm and is unchanged in size compared to the most recent prior examination and most likely represents a portacaval lymph node."
+                ],
+                "reason": "CT does not identify a discrete pancreatic mass but edema may obscure a small periampullary lesion; MRCP provides better soft-tissue characterization."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "CT has reframed the diagnosis as pancreatitis and excluded free air, but biliary ductal anatomy, choledocholithiasis, pancreatic duct morphology, and autoimmune vs. obstructive etiology remain insufficiently characterized."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "MRCP provides high-resolution non-invasive visualization of the biliary tree and pancreatic duct, detecting choledocholithiasis, ductal stricture, pancreas divisum, and autoimmune pancreatitis morphology without radiation or contrast nephrotoxicity.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "MRCP cannot sample tissue for IgG4 or culture, cannot perform therapeutic intervention (unlike ERCP), and may be limited by patient cooperation or motion artifact; functional biliary assessment is not provided."
+          },
+          "derived_transition": "advance",
+          "alternative_reconstruction": "The MRCP could alternatively reflect concern about the portacaval lymph node and pancreatic head soft-tissue abnormality seen on CT, with the primary intent being to exclude a periampullary or pancreatic head mass (e.g., lymphoma given the patient's age and markedly elevated inflammatory markers) rather than primarily characterizing biliary ductal anatomy."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"CT abdomen with contrast revealed pancreatic head edema with extensive peripancreatic stranding and periduodenal fluid, reframing the primary process as pancreatitis rather than isolated duodenitis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ/segment pathology\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"There is swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas, with inflammatory change and fluid tracking along the second and third parts of the duodenum\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary obstruction or choledocholithiasis is a possible etiology of pancreatitis given mild periductal common bile duct enhancement at the pancreatic head level\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"The common bile duct shows mild periductal enhancement at the level of the head of the pancreas. No calcified gallstone is noted.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"No free air or perforation is present intra-abdominally\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication of known finding\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"There is no evidence of free air.\",\n        \"No evidence of free air is seen beneath the diaphragms.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A portacaval lymph node (20x9 mm) is present and unchanged from prior examination, likely reactive rather than malignant\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"incidental finding\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"An area of soft tissue identical to the prior examination in the portacaval space measures 20 x 9 mm and is unchanged in size compared to the most recent prior examination and most likely represents a portacaval lymph node.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The biliary ductal anatomy and presence of choledocholithiasis or biliary stricture have not been adequately characterized by CT alone\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease extent\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"The common bile duct shows mild periductal enhancement at the level of the head of the pancreas. No calcified gallstone is noted. There is no intrahepatic bile duct dilation.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the current extent, severity, and character of duodenal/periduodenal disease, and is there evidence of perforation, abscess, or alternative intra-abdominal pathology explaining the clinical picture?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"CT abdomen with contrast substantially answered the prior question: it confirmed pancreatic head edema with peripancreatic stranding as the dominant process, excluded free air/perforation, characterized periduodenal fluid as secondary to pancreatitis, and identified mild CBD periductal enhancement raising biliary etiology. Alternative source discrimination is now partially addressed but biliary ductal detail remains insufficient.\",\n    \"discordance\": {\n      \"label\": \"materially_discordant\",\n      \"evidence_stream_1\": \"CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid\",\n      \"evidence_stream_2\": \"There is swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas, with inflammatory change and fluid tracking along the second and third parts of the duodenum\",\n      \"reason\": \"OSH framed the process as primary duodenitis; in-house CT reframes it as pancreatitis with secondary duodenal involvement, materially changing the diagnostic and management trajectory.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"replace\",\n    \"changed_proposition\": \"The etiology of duodenitis is unknown; infectious, inflammatory, or other causes have not yet been established\",\n    \"reason\": \"CT abdomen reveals pancreatic head edema and peripancreatic stranding as the primary process with secondary duodenal involvement, and mild CBD periductal enhancement raises biliary etiology; the prior framing of isolated duodenitis of unknown cause is replaced by pancreatitis with possible biliary origin.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there choledocholithiasis, biliary stricture, or other biliary ductal pathology causing or contributing to pancreatitis, and what is the anatomy of the biliary and pancreatic ducts?\",\n    \"target\": \"common bile duct, intrahepatic bile ducts, pancreatic duct, biliary-pancreatic junction\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifies biliary obstruction as etiology, prompting ERCP or cholecystectomy planning and changing antibiotic/management strategy\",\n    \"negative_answer_changes\": \"Excludes biliary cause, directing workup toward other etiologies (autoimmune, metabolic, idiopathic) and avoiding unnecessary biliary intervention\",\n    \"secondary_questions\": [\n      \"Is there pancreatic ductal disruption, stricture, or anomaly (e.g., pancreas divisum) contributing to the pancreatitis?\",\n      \"Is there evidence of autoimmune pancreatitis (duct narrowing, capsule-like rim) given the patient's age and new-onset diabetes?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of choledocholithiasis or biliary ductal obstruction\",\n        \"why_required\": \"CT showed no calcified gallstone but mild CBD periductal enhancement; non-calcified stones and biliary sludge are not reliably excluded by CT\"\n      },\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Direct visualization of common bile duct caliber, intrahepatic ducts, and pancreatic duct\",\n        \"why_required\": \"CT did not show intrahepatic dilation but periductal enhancement at pancreatic head warrants dedicated biliary/pancreatic duct assessment\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any biliary or pancreatic ductal abnormality relative to the pancreatic head\",\n        \"why_required\": \"Pancreatic head edema may compress or involve the distal CBD; precise localization guides endoscopic vs. surgical approach\"\n      },\n      {\n        \"id\": \"etiologic_agent_or_mechanism\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Ductal morphology features suggesting autoimmune pancreatitis vs. obstructive vs. other etiology\",\n        \"why_required\": \"New-onset diabetes in a young male with pancreatitis raises autoimmune pancreatitis (IgG4-related), which has distinct ductal features and treatment implications\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Exclusion of pancreatic mass or periampullary lesion as underlying cause\",\n        \"why_required\": \"Portacaval lymph node and pancreatic head edema on CT do not exclude an underlying mass; MRCP soft tissue resolution can help discriminate\"\n      }\n    ],\n    \"evidence\": [\n      \"The common bile duct shows mild periductal enhancement at the level of the head of the pancreas. No calcified gallstone is noted. There is no intrahepatic bile duct dilation.\",\n      \"There is swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"No calcified gallstone is noted.\",\n          \"The common bile duct shows mild periductal enhancement at the level of the head of the pancreas.\"\n        ],\n        \"reason\": \"CT excludes calcified stones but cannot reliably detect non-calcified stones, sludge, or soft-tissue biliary obstruction; periductal enhancement raises concern not resolved by CT.\"\n      },\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"There is no intrahepatic bile duct dilation.\",\n          \"The common bile duct shows mild periductal enhancement at the level of the head of the pancreas.\"\n        ],\n        \"reason\": \"CT provides gross ductal assessment but lacks the resolution for pancreatic duct detail and subtle biliary pathology that MRCP provides.\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head\"\n        ],\n        \"reason\": \"CT localizes the process to the pancreatic head but does not delineate ductal anatomy precisely enough to guide intervention.\"\n      },\n      {\n        \"requirement_id\": \"etiologic_agent_or_mechanism\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"CT cannot characterize ductal morphology features of autoimmune pancreatitis; no serologic or histologic data available yet.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"An area of soft tissue identical to the prior examination in the portacaval space measures 20 x 9 mm and is unchanged in size compared to the most recent prior examination and most likely represents a portacaval lymph node.\"\n        ],\n        \"reason\": \"CT does not identify a discrete pancreatic mass but edema may obscure a small periampullary lesion; MRCP provides better soft-tissue characterization.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"CT has reframed the diagnosis as pancreatitis and excluded free air, but biliary ductal anatomy, choledocholithiasis, pancreatic duct morphology, and autoimmune vs. obstructive etiology remain insufficiently characterized.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"MRCP provides high-resolution non-invasive visualization of the biliary tree and pancreatic duct, detecting choledocholithiasis, ductal stricture, pancreas divisum, and autoimmune pancreatitis morphology without radiation or contrast nephrotoxicity.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"MRCP cannot sample tissue for IgG4 or culture, cannot perform therapeutic intervention (unlike ERCP), and may be limited by patient cooperation or motion artifact; functional biliary assessment is not provided.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"The MRCP could alternatively reflect concern about the portacaval lymph node and pancreatic head soft-tissue abnormality seen on CT, with the primary intent being to exclude a periampullary or pancreatic head mass (e.g., lymphoma given the patient's age and markedly elevated inflammatory markers) rather than primarily characterizing biliary ductal anatomy.\"\n}\n```",
+        "request_id": "gen-1788014165-3LTaZQ4UptBz5yZLZXWJ",
+        "usage": {
+          "completion_tokens": 3118,
+          "prompt_tokens": 7031,
+          "total_tokens": 10149,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.067863,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.067863,
+            "upstream_inference_prompt_cost": 0.021093,
+            "upstream_inference_completions_cost": 0.04677
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The CT at this institution reframes the OSH 'duodenitis' as pancreatic head edema with extensive peripancreatic stranding, making acute pancreatitis the dominant diagnosis rather than isolated duodenitis.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "organ/segment finding",
+              "status": "likely",
+              "evidence": [
+                "swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas",
+                "CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The etiology of pancreatitis is unclear; biliary (choledocholithiasis, ampullary pathology) and pancreatic ductal causes remain unexcluded.",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "disease etiology",
+              "status": "suspected",
+              "evidence": [
+                "No calcified gallstone is noted. There is no intrahepatic bile duct dilation.",
+                "The common bile duct shows mild periductal enhancement at the level of the head of the pancreas"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The pancreatic duct and common bile duct integrity and caliber are not adequately assessed by CT, leaving ductal disruption, stricture, or choledocholithiasis unresolved.",
+              "type": "other",
+              "other_proposed_type": "study_adequacy_for_ductal_assessment",
+              "level": "imaging adequacy",
+              "status": "established",
+              "evidence": [
+                "The common bile duct shows mild periductal enhancement at the level of the head of the pancreas",
+                "No calcified gallstone is noted. There is no intrahepatic bile duct dilation."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "New-onset diabetes (HbA1c 12.6%) raises the possibility of an underlying pancreatic mass or chronic pancreatic process driving the acute presentation.",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "systemic/metabolic contributing factor",
+              "status": "suspected",
+              "evidence": [
+                "new-onset diabetes with HbA1c 12.6% raises the possibility of a pancreatic process"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "The inflammatory process is severe and ongoing, as evidenced by markedly elevated CRP and elevated lipase despite antibiotic therapy.",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "clinical course",
+              "status": "likely",
+              "evidence": [
+                "C-Reactive Protein: 244.8 mg/L (ref 0.0-5.0)",
+                "Lipase: 115.0 IU/L (ref 0.0-60.0)"
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "Has the periduodenal inflammatory process evolved — specifically, is there now a contained perforation, abscess, or phlegmon — and is the pancreas or biliary system contributing to the elevated lipase and ongoing symptoms?",
+            "study_adequacy": "limited_but_diagnostic",
+            "test_question_capability": "partially_capable",
+            "result_status": "positive",
+            "effect_on_previous_question": "CT abdomen reframed the primary diagnosis from duodenitis to pancreatic head edema with peripancreatic stranding, partially answering the pancreatic involvement sub-question; however, ductal anatomy (pancreatic duct, CBD for choledocholithiasis) remains unassessed, leaving etiology and ductal integrity unanswered.",
+            "discordance": {
+              "label": "materially_discordant",
+              "evidence_stream_1": "CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid",
+              "evidence_stream_2": "swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas",
+              "reason": "OSH read the primary pathology as duodenitis; in-house CT reframes it as pancreatic head edema with pancreatitis, a clinically important reinterpretation that changes the diagnostic and management trajectory."
+            }
+          },
+          "assumption_change": {
+            "label": "replace",
+            "changed_proposition": "Active duodenal inflammation at D2/D3 as the primary diagnosis is replaced by pancreatic head edema with peripancreatic stranding as the dominant finding; duodenal involvement is now understood as secondary inflammatory extension.",
+            "reason": "In-house CT demonstrates pancreatic head swelling and extensive peripancreatic stranding, reframing the OSH duodenitis interpretation as pancreatitis with secondary periduodenal extension."
+          },
+          "current_question": {
+            "primary": "Is there choledocholithiasis, common bile duct dilation, pancreatic duct dilation or disruption, or an ampullary lesion that explains the pancreatic head edema and periductal CBD enhancement seen on CT?",
+            "target": "common bile duct, pancreatic duct, ampulla of Vater, biliary tree",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Identification of choledocholithiasis, ampullary lesion, or ductal pathology would prompt ERCP or surgical intervention and define the etiology of pancreatitis.",
+            "negative_answer_changes": "Absence of biliary or ductal pathology would shift workup toward non-biliary etiologies (e.g., autoimmune, metabolic, or neoplastic) and support continued medical management.",
+            "secondary_questions": [
+              "Is there pancreatic duct disruption or stricture suggesting necrotizing pancreatitis or an underlying mass?",
+              "Is there an ampullary or periampullary lesion not visible on CT that could explain new-onset diabetes and pancreatitis?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of the common bile duct, pancreatic duct, and ampulla on MRCP sequences",
+                "why_required": "Required to assess ductal anatomy that CT cannot reliably depict."
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of choledocholithiasis or filling defect in the common bile duct",
+                "why_required": "Choledocholithiasis is a common and treatable cause of pancreatitis that CT may miss, especially non-calcified stones."
+              },
+              {
+                "id": "finding_identity",
+                "other_proposed_dimension": "",
+                "dimension": "Caliber and continuity of the pancreatic duct",
+                "why_required": "Ductal dilation or disruption would indicate severity, guide intervention, and raise concern for underlying mass or chronic pancreatitis."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of ampullary or periampullary lesion",
+                "why_required": "An ampullary mass could explain both pancreatitis and new-onset diabetes and would require different management."
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Degree of common bile duct dilation and intrahepatic ductal involvement",
+                "why_required": "Biliary dilation would support obstructive etiology and help quantify urgency of biliary decompression."
+              }
+            ],
+            "evidence": [
+              "The common bile duct shows mild periductal enhancement at the level of the head of the pancreas",
+              "No calcified gallstone is noted. There is no intrahepatic bile duct dilation.",
+              "swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas",
+              "Lipase: 115.0 IU/L (ref 0.0-60.0)"
+            ]
+          },
+          "question_continuity": "refined",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "The common bile duct shows mild periductal enhancement at the level of the head of the pancreas"
+                ],
+                "reason": "CT shows periductal enhancement but cannot adequately visualize ductal lumen, filling defects, or pancreatic duct continuity; MRCP sequences not yet performed."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "No calcified gallstone is noted. There is no intrahepatic bile duct dilation."
+                ],
+                "reason": "CT excludes calcified stones but cannot exclude non-calcified choledocholithiasis; partial refutation only."
+              },
+              {
+                "requirement_id": "finding_identity",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "CT does not report pancreatic duct caliber or continuity; this dimension is entirely unaddressed."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging has assessed the ampulla or periampullary region with sufficient resolution to exclude a lesion."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "There is no intrahepatic bile duct dilation."
+                ],
+                "reason": "CT shows no intrahepatic dilation, partially addressing biliary extent, but extrahepatic CBD caliber and distal CBD are not fully characterized."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "CT provides only partial and indirect evidence about ductal anatomy; the core question of biliary/ductal etiology remains unanswered prior to MRCP."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "MRCP directly visualizes the biliary tree and pancreatic duct in high resolution without radiation or contrast, and can detect choledocholithiasis, ductal dilation, disruption, stricture, and ampullary lesions.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "If an ampullary mass or pancreatic head mass is suspected, dedicated MRI with contrast sequences (not just MRCP) may be needed for full characterization; the protocol includes W&W/OC which partially addresses this, but the old reconstruction does not explicitly confirm contrast-enhanced sequences were obtained."
+          },
+          "derived_transition": "advance",
+          "alternative_reconstruction": "The MRCP could alternatively reflect concern primarily about pancreatic duct disruption in the setting of acute pancreatitis severity assessment (rather than biliary etiology), with the treating team already having low suspicion for choledocholithiasis given no intrahepatic dilation and no calcified stones on CT — in which case the primary intent is to exclude ductal disruption that would mandate endoscopic or surgical intervention rather than to identify a biliary cause."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The CT at this institution reframes the OSH 'duodenitis' as pancreatic head edema with extensive peripancreatic stranding, making acute pancreatitis the dominant diagnosis rather than isolated duodenitis.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ/segment finding\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas\",\n        \"CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The etiology of pancreatitis is unclear; biliary (choledocholithiasis, ampullary pathology) and pancreatic ductal causes remain unexcluded.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"No calcified gallstone is noted. There is no intrahepatic bile duct dilation.\",\n        \"The common bile duct shows mild periductal enhancement at the level of the head of the pancreas\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The pancreatic duct and common bile duct integrity and caliber are not adequately assessed by CT, leaving ductal disruption, stricture, or choledocholithiasis unresolved.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"study_adequacy_for_ductal_assessment\",\n      \"level\": \"imaging adequacy\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"The common bile duct shows mild periductal enhancement at the level of the head of the pancreas\",\n        \"No calcified gallstone is noted. There is no intrahepatic bile duct dilation.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"New-onset diabetes (HbA1c 12.6%) raises the possibility of an underlying pancreatic mass or chronic pancreatic process driving the acute presentation.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"systemic/metabolic contributing factor\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"new-onset diabetes with HbA1c 12.6% raises the possibility of a pancreatic process\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The inflammatory process is severe and ongoing, as evidenced by markedly elevated CRP and elevated lipase despite antibiotic therapy.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical course\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"C-Reactive Protein: 244.8 mg/L (ref 0.0-5.0)\",\n        \"Lipase: 115.0 IU/L (ref 0.0-60.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Has the periduodenal inflammatory process evolved — specifically, is there now a contained perforation, abscess, or phlegmon — and is the pancreas or biliary system contributing to the elevated lipase and ongoing symptoms?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"partially_capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"CT abdomen reframed the primary diagnosis from duodenitis to pancreatic head edema with peripancreatic stranding, partially answering the pancreatic involvement sub-question; however, ductal anatomy (pancreatic duct, CBD for choledocholithiasis) remains unassessed, leaving etiology and ductal integrity unanswered.\",\n    \"discordance\": {\n      \"label\": \"materially_discordant\",\n      \"evidence_stream_1\": \"CT at OSH consistent inflammation of the duodenum at D2/D3 with associated stranding and free fluid\",\n      \"evidence_stream_2\": \"swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas\",\n      \"reason\": \"OSH read the primary pathology as duodenitis; in-house CT reframes it as pancreatic head edema with pancreatitis, a clinically important reinterpretation that changes the diagnostic and management trajectory.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"replace\",\n    \"changed_proposition\": \"Active duodenal inflammation at D2/D3 as the primary diagnosis is replaced by pancreatic head edema with peripancreatic stranding as the dominant finding; duodenal involvement is now understood as secondary inflammatory extension.\",\n    \"reason\": \"In-house CT demonstrates pancreatic head swelling and extensive peripancreatic stranding, reframing the OSH duodenitis interpretation as pancreatitis with secondary periduodenal extension.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there choledocholithiasis, common bile duct dilation, pancreatic duct dilation or disruption, or an ampullary lesion that explains the pancreatic head edema and periductal CBD enhancement seen on CT?\",\n    \"target\": \"common bile duct, pancreatic duct, ampulla of Vater, biliary tree\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identification of choledocholithiasis, ampullary lesion, or ductal pathology would prompt ERCP or surgical intervention and define the etiology of pancreatitis.\",\n    \"negative_answer_changes\": \"Absence of biliary or ductal pathology would shift workup toward non-biliary etiologies (e.g., autoimmune, metabolic, or neoplastic) and support continued medical management.\",\n    \"secondary_questions\": [\n      \"Is there pancreatic duct disruption or stricture suggesting necrotizing pancreatitis or an underlying mass?\",\n      \"Is there an ampullary or periampullary lesion not visible on CT that could explain new-onset diabetes and pancreatitis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the common bile duct, pancreatic duct, and ampulla on MRCP sequences\",\n        \"why_required\": \"Required to assess ductal anatomy that CT cannot reliably depict.\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of choledocholithiasis or filling defect in the common bile duct\",\n        \"why_required\": \"Choledocholithiasis is a common and treatable cause of pancreatitis that CT may miss, especially non-calcified stones.\"\n      },\n      {\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Caliber and continuity of the pancreatic duct\",\n        \"why_required\": \"Ductal dilation or disruption would indicate severity, guide intervention, and raise concern for underlying mass or chronic pancreatitis.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of ampullary or periampullary lesion\",\n        \"why_required\": \"An ampullary mass could explain both pancreatitis and new-onset diabetes and would require different management.\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of common bile duct dilation and intrahepatic ductal involvement\",\n        \"why_required\": \"Biliary dilation would support obstructive etiology and help quantify urgency of biliary decompression.\"\n      }\n    ],\n    \"evidence\": [\n      \"The common bile duct shows mild periductal enhancement at the level of the head of the pancreas\",\n      \"No calcified gallstone is noted. There is no intrahepatic bile duct dilation.\",\n      \"swelling of the pancreatic head with slight decrease in attenuation of the pancreatic head, suggesting edema and extensive stranding surrounding the pancreas\",\n      \"Lipase: 115.0 IU/L (ref 0.0-60.0)\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"The common bile duct shows mild periductal enhancement at the level of the head of the pancreas\"\n        ],\n        \"reason\": \"CT shows periductal enhancement but cannot adequately visualize ductal lumen, filling defects, or pancreatic duct continuity; MRCP sequences not yet performed.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"No calcified gallstone is noted. There is no intrahepatic bile duct dilation.\"\n        ],\n        \"reason\": \"CT excludes calcified stones but cannot exclude non-calcified choledocholithiasis; partial refutation only.\"\n      },\n      {\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"CT does not report pancreatic duct caliber or continuity; this dimension is entirely unaddressed.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging has assessed the ampulla or periampullary region with sufficient resolution to exclude a lesion.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"There is no intrahepatic bile duct dilation.\"\n        ],\n        \"reason\": \"CT shows no intrahepatic dilation, partially addressing biliary extent, but extrahepatic CBD caliber and distal CBD are not fully characterized.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"CT provides only partial and indirect evidence about ductal anatomy; the core question of biliary/ductal etiology remains unanswered prior to MRCP.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"MRCP directly visualizes the biliary tree and pancreatic duct in high resolution without radiation or contrast, and can detect choledocholithiasis, ductal dilation, disruption, stricture, and ampullary lesions.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"If an ampullary mass or pancreatic head mass is suspected, dedicated MRI with contrast sequences (not just MRCP) may be needed for full characterization; the protocol includes W&W/OC which partially addresses this, but the old reconstruction does not explicitly confirm contrast-enhanced sequences were obtained.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"The MRCP could alternatively reflect concern primarily about pancreatic duct disruption in the setting of acute pancreatitis severity assessment (rather than biliary etiology), with the treating team already having low suspicion for choledocholithiasis given no intrahepatic dilation and no calcified stones on CT — in which case the primary intent is to exclude ductal disruption that would mandate endoscopic or surgical intervention rather than to identify a biliary cause.\"\n}\n```",
+        "request_id": "gen-1788014215-f163eYDP2b2EmaWng9kJ",
+        "usage": {
+          "completion_tokens": 3052,
+          "prompt_tokens": 4776,
+          "total_tokens": 7828,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.060108,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.060108,
+            "upstream_inference_prompt_cost": 0.014328,
+            "upstream_inference_completions_cost": 0.04578
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.6667,
+        "direct_assumption_types": [
+          "alternative_source",
+          "complication",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "other",
+          "severity_extent_or_course"
+        ],
+        "question_type_match": true,
+        "direct_question_type": "etiology_or_mechanism",
+        "recode_question_type": "etiology_or_mechanism",
+        "requirement_jaccard": 0.4286,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "etiologic_agent_or_mechanism",
+          "presence_or_absence",
+          "target_visualization_or_assessment"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "finding_identity",
+          "presence_or_absence",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": false,
+        "direct_aggregate_coverage": "partially_answered",
+        "recode_aggregate_coverage": "unanswered",
+        "transition_match": true
+      }
+    }
+  ]
+}

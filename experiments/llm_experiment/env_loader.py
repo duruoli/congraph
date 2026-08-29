@@ -13,7 +13,7 @@ def load_tinker_key() -> str:
     if os.environ.get("TINKER_API_KEY"):
         return os.environ["TINKER_API_KEY"]
     if _TINKER_ENV_FILE.exists():
-        for line in _TINKER_ENV_FILE.read_text().splitlines():
+        for line in _TINKER_ENV_FILE.read_text(encoding="utf-8").splitlines():
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
@@ -30,7 +30,7 @@ def load_openrouter_key() -> str:
     if os.environ.get("OPENROUTER_API_KEY"):
         return os.environ["OPENROUTER_API_KEY"]
     if _ENV_FILE.exists():
-        for line in _ENV_FILE.read_text().splitlines():
+        for line in _ENV_FILE.read_text(encoding="utf-8").splitlines():
             line = line.strip()
             if not line or line.startswith("#"):
                 continue

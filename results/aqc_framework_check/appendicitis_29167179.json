@@ -1,0 +1,937 @@
+{
+  "schema_version": "1.0.0-development",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 29167179,
+  "source_path": "results/annotation_experiment/full/appendicitis_29167179.json",
+  "model": "anthropic/claude-sonnet-4.6",
+  "causal_boundary": "DIRECT=masked chart+order; RECODE=old ex-ante reconstruction+order; both exclude current result, later events, verification, deviation, ACR, and disease answer labels",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "direct_prompt_sha256": "ae9a0b08cff68a38a00e9043ef49ef370fb1a176d4e6f4f6f9553015dd45fe27",
+      "recode_prompt_sha256": "b6079e1697a23271507701a8a39c55aa611241c7ede343e386badfcb74c4107e",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The patient has an acute intra-abdominal infectious or inflammatory process as the source of lower quadrant pain, fever, and leukocytosis with neutrophilia",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "clinical syndrome",
+              "status": "suspected",
+              "evidence": [
+                "3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1",
+                "Neutrophils: 89.7 % (ref 34.0-71.0); Absolute Neutrophil Count: 9.37 K/uL (ref 1.6-6.1)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Appendicitis is a leading diagnostic candidate given lower quadrant pain, fever, anorexia, and neutrophilia in a young patient",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "specific diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1",
+                "Absolute Neutrophil Count: 9.37 K/uL (ref 1.6-6.1); Immature Granulocytes: 0.3 %"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "A coagulopathy or bleeding disorder is not the underlying etiology given normal family history and near-normal hemoglobin",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "etiology exclusion",
+              "status": "excluded",
+              "evidence": [
+                "Family History: No history of bleeding disorders, coagulopathy",
+                "Hemoglobin: 15.7 g/dL (ref 13.7-17.5)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The patient may have a mild metabolic derangement (elevated anion gap, hyponatremia, low bicarbonate) consistent with early sepsis physiology or dehydration",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "physiologic severity",
+              "status": "suspected",
+              "evidence": [
+                "Anion Gap: 21.0 mEq/L (ref 8.0-20.0); Bicarbonate: 20.0 mEq/L (ref 22.0-32.0); Sodium: 131.0 mEq/L (ref 133.0-145.0)",
+                "Pulse: 102; O2 94%RA; Lactate: 1.9 mmol/L (ref 0.5-2.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "A urinary source of infection is unlikely given near-normal urinalysis (no nitrites, minimal WBC, no blood)",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "differential source",
+              "status": "challenged",
+              "evidence": [
+                "Nitrite: NEG.; WBC: 4.0 #/hpf (ref 0.0-5.0); Blood: NEG.",
+                "Bacteria: FEW.; Urine Appearance: Hazy"
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior imaging; this is the first decision point.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "No prior imaging to compare."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are newly established from history, exam, and labs."
+          },
+          "current_question": {
+            "primary": "Is there an identifiable intra-abdominal or pelvic structural cause for the acute lower quadrant pain, fever, and neutrophilia, and if so, what is its location, identity, and extent?",
+            "target": "Abdomen and pelvis including appendix, bowel, mesentery, solid organs, and pelvic structures",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Directs surgical or interventional management (e.g., appendectomy, drainage) or targeted medical therapy",
+            "negative_answer_changes": "Broadens differential toward non-structural causes (infectious enteritis, mesenteric adenitis, early sepsis without focal source) and may prompt further workup",
+            "secondary_questions": [
+              "Is there evidence of perforation, abscess, or other complication requiring urgent intervention?",
+              "Are there alternative pelvic or retroperitoneal findings that could explain the presentation?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Visualization of appendix, bowel loops, mesentery, and pelvic organs",
+                "why_required": "Structural source cannot be identified or excluded without direct visualization of relevant anatomy"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of appendicitis, colitis, diverticulitis, or other acute inflammatory process",
+                "why_required": "Confirms or excludes the leading diagnostic hypotheses driving the clinical concern"
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Precise anatomic location of any abnormality within the abdomen and pelvis",
+                "why_required": "Localization determines surgical approach and urgency"
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence of perforation, abscess, free air, or free fluid",
+                "why_required": "Complications alter management urgency and approach"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Identification of alternative sources such as mesenteric adenitis, ovarian pathology, or other pelvic disease",
+                "why_required": "Ensures the differential is not prematurely narrowed to appendicitis"
+              }
+            ],
+            "evidence": [
+              "3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1",
+              "Neutrophils: 89.7 %; Absolute Neutrophil Count: 9.37 K/uL; Anion Gap: 21.0 mEq/L"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging has been performed; anatomy is not yet visualized."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Labs raise suspicion but cannot confirm or exclude a structural lesion."
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Physical exam shows only mild generalized tenderness without focal localization."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging or surgical findings available to assess for perforation or abscess."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "Nitrite: NEG.; WBC: 4.0 #/hpf; Blood: NEG.",
+                  "Lipase: 18.0 IU/L (ref 0.0-60.0); ALT: 26.0; Bilirubin, Total: 0.8"
+                ],
+                "reason": "Labs reduce likelihood of urinary source and hepatobiliary/pancreatic cause, but pelvic and mesenteric alternatives remain unassessed."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "No imaging has been performed; the primary structural question is entirely unaddressed by available evidence."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis provides direct visualization of the appendix, bowel, mesentery, solid organs, and pelvic structures with high sensitivity for appendicitis, perforation, abscess, and alternative diagnoses.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "The elevated PTT/INR and lymphopenia are unexplained by the current framing and may represent an underlying process not yet captured in the primary question."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The presentation could alternatively be framed as a systemic infectious process (e.g., viral or atypical bacterial illness) given the lymphopenia, headache, chills, and mild coagulopathy (elevated PTT/INR), with abdominal pain as a secondary manifestation rather than a primary structural abdominal emergency. In this frame, CT is ordered to exclude a surgical abdomen before attributing symptoms to a systemic cause."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute intra-abdominal infectious or inflammatory process as the source of lower quadrant pain, fever, and leukocytosis with neutrophilia\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1\",\n        \"Neutrophils: 89.7 % (ref 34.0-71.0); Absolute Neutrophil Count: 9.37 K/uL (ref 1.6-6.1)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Appendicitis is a leading diagnostic candidate given lower quadrant pain, fever, anorexia, and neutrophilia in a young patient\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1\",\n        \"Absolute Neutrophil Count: 9.37 K/uL (ref 1.6-6.1); Immature Granulocytes: 0.3 %\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A coagulopathy or bleeding disorder is not the underlying etiology given normal family history and near-normal hemoglobin\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology exclusion\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"Family History: No history of bleeding disorders, coagulopathy\",\n        \"Hemoglobin: 15.7 g/dL (ref 13.7-17.5)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient may have a mild metabolic derangement (elevated anion gap, hyponatremia, low bicarbonate) consistent with early sepsis physiology or dehydration\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic severity\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Anion Gap: 21.0 mEq/L (ref 8.0-20.0); Bicarbonate: 20.0 mEq/L (ref 22.0-32.0); Sodium: 131.0 mEq/L (ref 133.0-145.0)\",\n        \"Pulse: 102; O2 94%RA; Lactate: 1.9 mmol/L (ref 0.5-2.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A urinary source of infection is unlikely given near-normal urinalysis (no nitrites, minimal WBC, no blood)\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential source\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Nitrite: NEG.; WBC: 4.0 #/hpf (ref 0.0-5.0); Blood: NEG.\",\n        \"Bacteria: FEW.; Urine Appearance: Hazy\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior imaging; this is the first decision point.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are newly established from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an identifiable intra-abdominal or pelvic structural cause for the acute lower quadrant pain, fever, and neutrophilia, and if so, what is its location, identity, and extent?\",\n    \"target\": \"Abdomen and pelvis including appendix, bowel, mesentery, solid organs, and pelvic structures\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Directs surgical or interventional management (e.g., appendectomy, drainage) or targeted medical therapy\",\n    \"negative_answer_changes\": \"Broadens differential toward non-structural causes (infectious enteritis, mesenteric adenitis, early sepsis without focal source) and may prompt further workup\",\n    \"secondary_questions\": [\n      \"Is there evidence of perforation, abscess, or other complication requiring urgent intervention?\",\n      \"Are there alternative pelvic or retroperitoneal findings that could explain the presentation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of appendix, bowel loops, mesentery, and pelvic organs\",\n        \"why_required\": \"Structural source cannot be identified or excluded without direct visualization of relevant anatomy\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of appendicitis, colitis, diverticulitis, or other acute inflammatory process\",\n        \"why_required\": \"Confirms or excludes the leading diagnostic hypotheses driving the clinical concern\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Precise anatomic location of any abnormality within the abdomen and pelvis\",\n        \"why_required\": \"Localization determines surgical approach and urgency\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence of perforation, abscess, free air, or free fluid\",\n        \"why_required\": \"Complications alter management urgency and approach\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification of alternative sources such as mesenteric adenitis, ovarian pathology, or other pelvic disease\",\n        \"why_required\": \"Ensures the differential is not prematurely narrowed to appendicitis\"\n      }\n    ],\n    \"evidence\": [\n      \"3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1\",\n      \"Neutrophils: 89.7 %; Absolute Neutrophil Count: 9.37 K/uL; Anion Gap: 21.0 mEq/L\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging has been performed; anatomy is not yet visualized.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Labs raise suspicion but cannot confirm or exclude a structural lesion.\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Physical exam shows only mild generalized tenderness without focal localization.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging or surgical findings available to assess for perforation or abscess.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Nitrite: NEG.; WBC: 4.0 #/hpf; Blood: NEG.\",\n          \"Lipase: 18.0 IU/L (ref 0.0-60.0); ALT: 26.0; Bilirubin, Total: 0.8\"\n        ],\n        \"reason\": \"Labs reduce likelihood of urinary source and hepatobiliary/pancreatic cause, but pelvic and mesenteric alternatives remain unassessed.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No imaging has been performed; the primary structural question is entirely unaddressed by available evidence.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis provides direct visualization of the appendix, bowel, mesentery, solid organs, and pelvic structures with high sensitivity for appendicitis, perforation, abscess, and alternative diagnoses.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The elevated PTT/INR and lymphopenia are unexplained by the current framing and may represent an underlying process not yet captured in the primary question.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The presentation could alternatively be framed as a systemic infectious process (e.g., viral or atypical bacterial illness) given the lymphopenia, headache, chills, and mild coagulopathy (elevated PTT/INR), with abdominal pain as a secondary manifestation rather than a primary structural abdominal emergency. In this frame, CT is ordered to exclude a surgical abdomen before attributing symptoms to a systemic cause.\"\n}\n```",
+        "request_id": "gen-1787994580-Rfa7ppFOhix0asMr63VU",
+        "usage": {
+          "completion_tokens": 2621,
+          "prompt_tokens": 3536,
+          "total_tokens": 6157,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.049923,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.049923,
+            "upstream_inference_prompt_cost": 0.010608,
+            "upstream_inference_completions_cost": 0.039315
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The patient has an active intra-abdominal inflammatory or infectious process driving 3 days of lower-quadrant pain, fever, and tachycardia.",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "clinical syndrome",
+              "status": "likely",
+              "evidence": [
+                "3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1",
+                "Pulse: 102"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "A significant bacterial or inflammatory process is present, as evidenced by marked neutrophilia and severe lymphopenia.",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "laboratory/pathophysiology",
+              "status": "likely",
+              "evidence": [
+                "Neutrophils: 89.7 % (ref 34.0-71.0)",
+                "Absolute Lymphocyte Count: 0.31 K/uL (ref 1.2-3.7)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Appendicitis is the leading single diagnosis given lower-quadrant pain and systemic inflammatory signs.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "3 day history of abdominal pain in lower quadrants",
+                "Absolute Neutrophil Count: 9.37 K/uL (ref 1.6-6.1)"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Pancreatitis is effectively excluded as the primary source.",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "excluded",
+              "evidence": [
+                "Lipase: 18.0 IU/L (ref 0.0-60.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The anatomic source of inflammation has not yet been localized; no prior imaging exists.",
+              "type": "other",
+              "other_proposed_type": "information_gap_state",
+              "level": "diagnostic workup",
+              "status": "established",
+              "evidence": [
+                "Imaging already resulted BEFORE this decision point: (none)"
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior order exists; this is the first decision point.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "No prior order to compare."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are initialized from available clinical evidence."
+          },
+          "current_question": {
+            "primary": "What is the anatomic source and identity of the intra-abdominal inflammatory process causing lower-quadrant pain, fever, and marked leukocytosis?",
+            "target": "abdomen and pelvis: appendix, colon, mesentery, pelvic organs",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Identifies a specific diagnosis (e.g., appendicitis, diverticulitis, abscess) and directs targeted management.",
+            "negative_answer_changes": "Absence of a discrete lesion shifts differential toward non-surgical causes and may prompt further workup.",
+            "secondary_questions": [
+              "Is there evidence of a complication such as perforation, abscess, or obstruction?",
+              "Are there alternative pelvic or gynecologic sources of inflammation?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of appendix, colon, mesentery, and pelvis",
+                "why_required": "The source cannot be identified without direct anatomic assessment of candidate structures."
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of an inflammatory or obstructive lesion",
+                "why_required": "Confirms or excludes a discrete pathologic process as the cause of the clinical syndrome."
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Specific anatomic location of any identified abnormality",
+                "why_required": "Localization determines which organ system is involved and guides surgical vs. medical management."
+              },
+              {
+                "id": "finding_identity",
+                "other_proposed_dimension": "",
+                "dimension": "Characterization of the finding (e.g., appendiceal dilation, pericolonic stranding, lymphadenopathy)",
+                "why_required": "Finding identity narrows the differential to a specific diagnosis."
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence of complications such as perforation, abscess, or free air",
+                "why_required": "Complications alter urgency and management pathway independent of primary diagnosis."
+              }
+            ],
+            "evidence": [
+              "3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1",
+              "Neutrophils: 89.7 % (ref 34.0-71.0)"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging has been performed; abdominal structures have not been visualized."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Clinical and lab findings raise suspicion but cannot confirm or exclude a discrete lesion."
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Mild generalized tenderness on exam does not localize the source."
+              },
+              {
+                "requirement_id": "finding_identity",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging or pathology data available to characterize a specific finding."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging to assess for perforation, abscess, or obstruction."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "All answer requirements remain unaddressed prior to imaging."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "CT abdomen and pelvis with contrast provides direct visualization of the appendix, colon, mesentery, and pelvis with high sensitivity for inflammatory lesions, abscesses, and complications.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "The specific diagnosis and whether a complication is present remain unknown until the result is available; the old reconstruction's probability estimates are inferential and not grounded in imaging data."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The order could alternatively reflect concern primarily for gynecologic pathology (e.g., tubo-ovarian abscess or ovarian torsion) in a female patient, with appendicitis as secondary concern, given that the 'other' category holds 43% probability and pelvic pathology is explicitly listed; in this frame the primary question would be alternative_source_discrimination rather than source_localization."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an active intra-abdominal inflammatory or infectious process driving 3 days of lower-quadrant pain, fever, and tachycardia.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1\",\n        \"Pulse: 102\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A significant bacterial or inflammatory process is present, as evidenced by marked neutrophilia and severe lymphopenia.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"laboratory/pathophysiology\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Neutrophils: 89.7 % (ref 34.0-71.0)\",\n        \"Absolute Lymphocyte Count: 0.31 K/uL (ref 1.2-3.7)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Appendicitis is the leading single diagnosis given lower-quadrant pain and systemic inflammatory signs.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"3 day history of abdominal pain in lower quadrants\",\n        \"Absolute Neutrophil Count: 9.37 K/uL (ref 1.6-6.1)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Pancreatitis is effectively excluded as the primary source.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"Lipase: 18.0 IU/L (ref 0.0-60.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The anatomic source of inflammation has not yet been localized; no prior imaging exists.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"information_gap_state\",\n      \"level\": \"diagnostic workup\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Imaging already resulted BEFORE this decision point: (none)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior order exists; this is the first decision point.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior order to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are initialized from available clinical evidence.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the anatomic source and identity of the intra-abdominal inflammatory process causing lower-quadrant pain, fever, and marked leukocytosis?\",\n    \"target\": \"abdomen and pelvis: appendix, colon, mesentery, pelvic organs\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifies a specific diagnosis (e.g., appendicitis, diverticulitis, abscess) and directs targeted management.\",\n    \"negative_answer_changes\": \"Absence of a discrete lesion shifts differential toward non-surgical causes and may prompt further workup.\",\n    \"secondary_questions\": [\n      \"Is there evidence of a complication such as perforation, abscess, or obstruction?\",\n      \"Are there alternative pelvic or gynecologic sources of inflammation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of appendix, colon, mesentery, and pelvis\",\n        \"why_required\": \"The source cannot be identified without direct anatomic assessment of candidate structures.\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of an inflammatory or obstructive lesion\",\n        \"why_required\": \"Confirms or excludes a discrete pathologic process as the cause of the clinical syndrome.\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Specific anatomic location of any identified abnormality\",\n        \"why_required\": \"Localization determines which organ system is involved and guides surgical vs. medical management.\"\n      },\n      {\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of the finding (e.g., appendiceal dilation, pericolonic stranding, lymphadenopathy)\",\n        \"why_required\": \"Finding identity narrows the differential to a specific diagnosis.\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence of complications such as perforation, abscess, or free air\",\n        \"why_required\": \"Complications alter urgency and management pathway independent of primary diagnosis.\"\n      }\n    ],\n    \"evidence\": [\n      \"3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1\",\n      \"Neutrophils: 89.7 % (ref 34.0-71.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging has been performed; abdominal structures have not been visualized.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Clinical and lab findings raise suspicion but cannot confirm or exclude a discrete lesion.\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Mild generalized tenderness on exam does not localize the source.\"\n      },\n      {\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging or pathology data available to characterize a specific finding.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging to assess for perforation, abscess, or obstruction.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All answer requirements remain unaddressed prior to imaging.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"CT abdomen and pelvis with contrast provides direct visualization of the appendix, colon, mesentery, and pelvis with high sensitivity for inflammatory lesions, abscesses, and complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The specific diagnosis and whether a complication is present remain unknown until the result is available; the old reconstruction's probability estimates are inferential and not grounded in imaging data.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The order could alternatively reflect concern primarily for gynecologic pathology (e.g., tubo-ovarian abscess or ovarian torsion) in a female patient, with appendicitis as secondary concern, given that the 'other' category holds 43% probability and pelvic pathology is explicitly listed; in this frame the primary question would be alternative_source_discrimination rather than source_localization.\"\n}\n```",
+        "request_id": "gen-1787994619-WuHuozLMphKFYVKX5CE7",
+        "usage": {
+          "completion_tokens": 2193,
+          "prompt_tokens": 2786,
+          "total_tokens": 4979,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.041253,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.041253,
+            "upstream_inference_prompt_cost": 0.008358,
+            "upstream_inference_completions_cost": 0.032895
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.5,
+        "direct_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "severity_extent_or_course",
+          "syndrome_or_source_frame"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "other",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": true,
+        "direct_question_type": "source_localization",
+        "recode_question_type": "source_localization",
+        "requirement_jaccard": 0.6667,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "complication_presence_or_character",
+          "presence_or_absence",
+          "target_visualization_or_assessment"
+        ],
+        "recode_requirements": [
+          "anatomic_localization",
+          "complication_presence_or_character",
+          "finding_identity",
+          "presence_or_absence",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "unanswered",
+        "recode_aggregate_coverage": "unanswered",
+        "transition_match": true
+      }
+    },
+    {
+      "step": 2,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "direct_prompt_sha256": "6c3390d4cf9bbb4017a6c57202b1ec23700c78a795968fbbefe9e40e69109335",
+      "recode_prompt_sha256": "6261ede2724c69700be3c2affbecf622c49a991c8b3aa5deffe582389cd4f2bb",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Acute appendicitis is the established cause of the patient's presentation, given CT demonstration of an 11 mm dilated, fluid-filled, hyperemic presacral appendix",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "specific diagnosis",
+              "status": "established",
+              "evidence": [
+                "Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa.",
+                "3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "A 1 cm hyperenhancing hepatic focus in the right lobe is incompletely characterized on the single-phase CT and requires further evaluation",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "incidental finding requiring characterization",
+              "status": "suspected",
+              "evidence": [
+                "There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized. It is in close proximity to both portal venous and hepatic venous branches.",
+                "Addition of impression point 3. was discussed by Dr. ___ with Dr. ___ at 16:30 on ___."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The hepatic focus may represent a benign vascular lesion (e.g., hemangioma or focal nodular hyperplasia) given its proximity to portal and hepatic venous branches and absence of other focal lesions",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology hypothesis",
+              "status": "suspected",
+              "evidence": [
+                "It is in close proximity to both portal venous and hepatic venous branches.",
+                "The liver demonstrates homogenous attenuation throughout. There is no evidence of other focal lesions."
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Appendicitis is complicated by small-volume free pelvic fluid but no perforation or abscess is identified on CT",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "complication assessment",
+              "status": "suspected",
+              "evidence": [
+                "There is a small amount of free fluid in the pelvis, tracking up the paracolic gutters.",
+                "Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The mild metabolic derangement (elevated anion gap, hyponatremia, low bicarbonate) is consistent with dehydration and early sepsis physiology from appendicitis rather than an independent systemic process",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "physiologic severity",
+              "status": "likely",
+              "evidence": [
+                "Anion Gap: 21.0 mEq/L (ref 8.0-20.0); Bicarbonate: 20.0 mEq/L (ref 22.0-32.0); Sodium: 131.0 mEq/L (ref 133.0-145.0)",
+                "Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa."
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "Is there an identifiable intra-abdominal or pelvic structural cause for the acute lower quadrant pain, fever, and neutrophilia, and if so, what is its location, identity, and extent?",
+            "study_adequacy": "diagnostic",
+            "test_question_capability": "capable",
+            "result_status": "positive",
+            "effect_on_previous_question": "CT fully answered the primary structural question by identifying acute appendicitis (11 mm dilated hyperemic appendix) with small-volume free pelvic fluid but no perforation or abscess; all five answer requirements are now addressed. An incidental hepatic focus was identified as incompletely characterized, generating a new subsidiary question.",
+            "discordance": {
+              "label": "concordant",
+              "evidence_stream_1": "Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa.",
+              "evidence_stream_2": "Neutrophils: 89.7 %; Absolute Neutrophil Count: 9.37 K/uL; 3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1",
+              "reason": "CT finding of appendicitis is fully concordant with the clinical and laboratory picture of acute lower quadrant inflammation."
+            }
+          },
+          "assumption_change": {
+            "label": "refine",
+            "changed_proposition": "Appendicitis is now established (not merely suspected) as the cause; a new incidental hepatic finding requiring characterization has been added.",
+            "reason": "CT result confirms appendicitis and introduces an incompletely characterized 1 cm hyperenhancing hepatic focus that was not anticipated in the prior assumption set."
+          },
+          "current_question": {
+            "primary": "What is the nature of the 1 cm hyperenhancing hepatic focus in the right lobe that was incompletely characterized on single-phase CT—specifically, is it a benign vascular lesion or a potentially significant finding requiring further management?",
+            "target": "1 cm hyperenhancing focus, right lobe of liver",
+            "type": "existence_or_identity",
+            "other_proposed_type": "",
+            "positive_answer_changes": "If a benign lesion (e.g., hemangioma) is confirmed, no further hepatic workup is needed and surgical planning for appendicitis proceeds without hepatic concern; if indeterminate or suspicious, additional cross-sectional imaging or follow-up is required.",
+            "negative_answer_changes": "If ultrasound is nondiagnostic or cannot characterize the lesion, MRI liver or multiphase CT would be the next step.",
+            "secondary_questions": [
+              "Is the lesion a simple vascular variant (e.g., focal fat sparing, arteriovenous malformation) given its proximity to portal and hepatic venous branches?",
+              "Does the lesion have sonographic features (e.g., echogenic, well-defined, posterior acoustic enhancement) consistent with hemangioma?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Direct sonographic visualization of the right hepatic lobe focus",
+                "why_required": "The lesion must be seen on ultrasound to attempt characterization; non-visualization would be uninformative."
+              },
+              {
+                "id": "finding_identity",
+                "other_proposed_dimension": "",
+                "dimension": "Sonographic characterization of lesion echogenicity, margins, and internal architecture",
+                "why_required": "Specific sonographic features (e.g., uniformly echogenic, well-circumscribed) can support or refute a benign diagnosis such as hemangioma."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Exclusion of biliary, vascular, or other hepatic pathology in the vicinity of the lesion",
+                "why_required": "The lesion's proximity to portal and hepatic venous branches raises the possibility of a vascular pseudolesion that ultrasound with Doppler can help clarify."
+              }
+            ],
+            "evidence": [
+              "There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized. It is in close proximity to both portal venous and hepatic venous branches.",
+              "Addition of impression point 3. was discussed by Dr. ___ with Dr. ___ at 16:30 on ___."
+            ]
+          },
+          "question_continuity": "new",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized.",
+                  "The liver demonstrates homogenous attenuation throughout."
+                ],
+                "reason": "CT identified the lesion but single-phase technique is insufficient for full characterization; ultrasound has not yet been performed."
+              },
+              {
+                "requirement_id": "finding_identity",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Single-phase CT cannot distinguish hemangioma from other hyperenhancing lesions; no sonographic data yet available."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "It is in close proximity to both portal venous and hepatic venous branches.",
+                  "There is no evidence of other focal lesions."
+                ],
+                "reason": "CT context suggests a vascular pseudolesion is plausible but Doppler assessment has not been performed."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "CT identified the hepatic focus but could not characterize it; ultrasound is ordered to attempt further characterization before the aggregate question can be answered."
+          },
+          "current_order_fit": {
+            "test_question_capability": "partially_capable",
+            "why_this_order_could_answer": "Liver ultrasound can assess echogenicity, margins, and vascularity of the hepatic focus and may confirm a classic hemangioma pattern or identify a vascular pseudolesion near the hepatic/portal veins, potentially resolving the incidental finding without further imaging.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Ultrasound has limited sensitivity for small isoechoic lesions and cannot provide the multiphase enhancement kinetics needed to definitively characterize atypical hyperenhancing foci; MRI liver may still be required if ultrasound is nondiagnostic."
+          },
+          "derived_transition": "advance",
+          "alternative_reconstruction": "The ultrasound could alternatively be framed as a pre-operative hepatobiliary screen ordered concurrently with surgical planning for appendicitis, intended to exclude biliary pathology (e.g., cholelithiasis, cholecystitis) that might complicate or co-exist with the acute presentation, with the hepatic focus characterization as a secondary benefit rather than the primary driver."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Acute appendicitis is the established cause of the patient's presentation, given CT demonstration of an 11 mm dilated, fluid-filled, hyperemic presacral appendix\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa.\",\n        \"3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A 1 cm hyperenhancing hepatic focus in the right lobe is incompletely characterized on the single-phase CT and requires further evaluation\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"incidental finding requiring characterization\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized. It is in close proximity to both portal venous and hepatic venous branches.\",\n        \"Addition of impression point 3. was discussed by Dr. ___ with Dr. ___ at 16:30 on ___.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The hepatic focus may represent a benign vascular lesion (e.g., hemangioma or focal nodular hyperplasia) given its proximity to portal and hepatic venous branches and absence of other focal lesions\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology hypothesis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"It is in close proximity to both portal venous and hepatic venous branches.\",\n        \"The liver demonstrates homogenous attenuation throughout. There is no evidence of other focal lesions.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Appendicitis is complicated by small-volume free pelvic fluid but no perforation or abscess is identified on CT\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication assessment\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"There is a small amount of free fluid in the pelvis, tracking up the paracolic gutters.\",\n        \"Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The mild metabolic derangement (elevated anion gap, hyponatremia, low bicarbonate) is consistent with dehydration and early sepsis physiology from appendicitis rather than an independent systemic process\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic severity\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Anion Gap: 21.0 mEq/L (ref 8.0-20.0); Bicarbonate: 20.0 mEq/L (ref 22.0-32.0); Sodium: 131.0 mEq/L (ref 133.0-145.0)\",\n        \"Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there an identifiable intra-abdominal or pelvic structural cause for the acute lower quadrant pain, fever, and neutrophilia, and if so, what is its location, identity, and extent?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"CT fully answered the primary structural question by identifying acute appendicitis (11 mm dilated hyperemic appendix) with small-volume free pelvic fluid but no perforation or abscess; all five answer requirements are now addressed. An incidental hepatic focus was identified as incompletely characterized, generating a new subsidiary question.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa.\",\n      \"evidence_stream_2\": \"Neutrophils: 89.7 %; Absolute Neutrophil Count: 9.37 K/uL; 3 day history of abdominal pain in lower quadrants. Associated with anorexia, fever, emesis x1\",\n      \"reason\": \"CT finding of appendicitis is fully concordant with the clinical and laboratory picture of acute lower quadrant inflammation.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Appendicitis is now established (not merely suspected) as the cause; a new incidental hepatic finding requiring characterization has been added.\",\n    \"reason\": \"CT result confirms appendicitis and introduces an incompletely characterized 1 cm hyperenhancing hepatic focus that was not anticipated in the prior assumption set.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the nature of the 1 cm hyperenhancing hepatic focus in the right lobe that was incompletely characterized on single-phase CT—specifically, is it a benign vascular lesion or a potentially significant finding requiring further management?\",\n    \"target\": \"1 cm hyperenhancing focus, right lobe of liver\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If a benign lesion (e.g., hemangioma) is confirmed, no further hepatic workup is needed and surgical planning for appendicitis proceeds without hepatic concern; if indeterminate or suspicious, additional cross-sectional imaging or follow-up is required.\",\n    \"negative_answer_changes\": \"If ultrasound is nondiagnostic or cannot characterize the lesion, MRI liver or multiphase CT would be the next step.\",\n    \"secondary_questions\": [\n      \"Is the lesion a simple vascular variant (e.g., focal fat sparing, arteriovenous malformation) given its proximity to portal and hepatic venous branches?\",\n      \"Does the lesion have sonographic features (e.g., echogenic, well-defined, posterior acoustic enhancement) consistent with hemangioma?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Direct sonographic visualization of the right hepatic lobe focus\",\n        \"why_required\": \"The lesion must be seen on ultrasound to attempt characterization; non-visualization would be uninformative.\"\n      },\n      {\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Sonographic characterization of lesion echogenicity, margins, and internal architecture\",\n        \"why_required\": \"Specific sonographic features (e.g., uniformly echogenic, well-circumscribed) can support or refute a benign diagnosis such as hemangioma.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Exclusion of biliary, vascular, or other hepatic pathology in the vicinity of the lesion\",\n        \"why_required\": \"The lesion's proximity to portal and hepatic venous branches raises the possibility of a vascular pseudolesion that ultrasound with Doppler can help clarify.\"\n      }\n    ],\n    \"evidence\": [\n      \"There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized. It is in close proximity to both portal venous and hepatic venous branches.\",\n      \"Addition of impression point 3. was discussed by Dr. ___ with Dr. ___ at 16:30 on ___.\"\n    ]\n  },\n  \"question_continuity\": \"new\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized.\",\n          \"The liver demonstrates homogenous attenuation throughout.\"\n        ],\n        \"reason\": \"CT identified the lesion but single-phase technique is insufficient for full characterization; ultrasound has not yet been performed.\"\n      },\n      {\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Single-phase CT cannot distinguish hemangioma from other hyperenhancing lesions; no sonographic data yet available.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"It is in close proximity to both portal venous and hepatic venous branches.\",\n          \"There is no evidence of other focal lesions.\"\n        ],\n        \"reason\": \"CT context suggests a vascular pseudolesion is plausible but Doppler assessment has not been performed.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"CT identified the hepatic focus but could not characterize it; ultrasound is ordered to attempt further characterization before the aggregate question can be answered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"partially_capable\",\n    \"why_this_order_could_answer\": \"Liver ultrasound can assess echogenicity, margins, and vascularity of the hepatic focus and may confirm a classic hemangioma pattern or identify a vascular pseudolesion near the hepatic/portal veins, potentially resolving the incidental finding without further imaging.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Ultrasound has limited sensitivity for small isoechoic lesions and cannot provide the multiphase enhancement kinetics needed to definitively characterize atypical hyperenhancing foci; MRI liver may still be required if ultrasound is nondiagnostic.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"The ultrasound could alternatively be framed as a pre-operative hepatobiliary screen ordered concurrently with surgical planning for appendicitis, intended to exclude biliary pathology (e.g., cholelithiasis, cholecystitis) that might complicate or co-exist with the acute presentation, with the hepatic focus characterization as a secondary benefit rather than the primary driver.\"\n}\n```",
+        "request_id": "gen-1787994650-CHOaFrCssZf6CvFWfONN",
+        "usage": {
+          "completion_tokens": 2743,
+          "prompt_tokens": 6478,
+          "total_tokens": 9221,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.060579,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.060579,
+            "upstream_inference_prompt_cost": 0.019434,
+            "upstream_inference_completions_cost": 0.041145
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The CT identified a 1 cm hyperenhancing focus in the right lobe of the liver that is incompletely characterized and in close proximity to portal venous and hepatic venous branches.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "imaging finding",
+              "status": "established",
+              "evidence": [
+                "Prior imaging CT: 'There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized.'",
+                "Prior imaging CT: 'It is in close proximity to both portal venous and hepatic venous branches.'"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Appendicitis has been identified as the primary diagnosis by CT, with a dilated hyperemic appendix measuring 11 mm.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "established",
+              "evidence": [
+                "Prior imaging CT: 'Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa.'"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The hepatic lesion is most likely a benign incidental finding (e.g., hemangioma), given normal liver function tests.",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "Labs: ALT 26 IU/L, AST 33 IU/L, ALP 54 IU/L, Total Bilirubin 0.8 mg/dL — liver function tests normal"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "The radiologist directly communicated the incompletely characterized hepatic finding to the treating physician, creating an explicit obligation to further characterize it.",
+              "type": "other",
+              "other_proposed_type": "communication_or_workflow_state",
+              "level": "diagnostic workup",
+              "status": "established",
+              "evidence": [
+                "Prior imaging CT NOTIFICATION: 'Addition of impression point 3. was discussed by Dr. ___ with Dr. ___ at 16:30 on ___.'"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Primary hepatic pathology as a cause of the presenting syndrome is unlikely given normal liver enzymes, but a concurrent structural lesion cannot be excluded.",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "Labs: ALT 26 IU/L, AST 33 IU/L, ALP 54 IU/L, Total Bilirubin 0.8 mg/dL — liver function tests normal"
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "What is the anatomic source and identity of the intra-abdominal inflammatory process causing lower-quadrant pain, fever, and marked leukocytosis?",
+            "study_adequacy": "diagnostic",
+            "test_question_capability": "capable",
+            "result_status": "positive",
+            "effect_on_previous_question": "CT identified a dilated hyperemic appendix consistent with appendicitis, sufficiently answering the primary source localization question; it also revealed an incompletely characterized hepatic lesion, opening a new secondary question.",
+            "discordance": {
+              "label": "concordant",
+              "evidence_stream_1": "Prior imaging CT: 'Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa.'",
+              "evidence_stream_2": "Absolute Neutrophil Count: 9.37 K/uL (ref 1.6-6.1)",
+              "reason": "CT finding of appendicitis is concordant with the clinical and laboratory picture of systemic inflammation."
+            }
+          },
+          "assumption_change": {
+            "label": "establish",
+            "changed_proposition": "Appendicitis is now established as the primary diagnosis by CT; a new incompletely characterized hepatic lesion has been identified, shifting the open question to lesion characterization.",
+            "reason": "CT result confirms appendicitis and introduces an incidental hepatic finding flagged by the radiologist, requiring further workup."
+          },
+          "current_question": {
+            "primary": "Is the 1 cm hyperenhancing hepatic focus a benign lesion (e.g., hemangioma) or a lesion requiring further management?",
+            "target": "right lobe of liver: 1 cm hyperenhancing focus",
+            "type": "existence_or_identity",
+            "other_proposed_type": "",
+            "positive_answer_changes": "If confidently characterized as benign (e.g., hemangioma), closes the incidental finding loop and allows surgical management of appendicitis to proceed without hepatic concern.",
+            "negative_answer_changes": "If indeterminate or suspicious, may require additional cross-sectional imaging (e.g., MRI liver) and could affect surgical planning.",
+            "secondary_questions": [
+              "Are there additional hepatic lesions not seen on CT?",
+              "Is there biliary or gallbladder pathology that could explain any component of the presentation?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate sonographic visualization of the right hepatic lobe at the site of the CT-identified lesion",
+                "why_required": "The lesion must be directly visualized to characterize it; non-visualization leaves the question open."
+              },
+              {
+                "id": "finding_identity",
+                "other_proposed_dimension": "",
+                "dimension": "Sonographic characterization of the lesion (echogenicity, margins, vascularity, cystic vs. solid features)",
+                "why_required": "Specific sonographic features distinguish hemangioma from cyst, metastasis, or other lesion types."
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of a discrete lesion corresponding to the CT hyperenhancing focus",
+                "why_required": "Confirmation that the lesion is real and not a CT artifact is required before characterization."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Discrimination between benign vascular lesion and potentially malignant or clinically significant hepatic pathology",
+                "why_required": "Management diverges substantially depending on whether the lesion is benign or requires further workup."
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence of biliary dilation, gallbladder pathology, or other hepatic complications",
+                "why_required": "A single-organ liver/gallbladder ultrasound may incidentally reveal biliary or gallbladder disease relevant to management."
+              }
+            ],
+            "evidence": [
+              "Prior imaging CT: 'There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized.'",
+              "Prior imaging CT NOTIFICATION: 'Addition of impression point 3. was discussed by Dr. ___ with Dr. ___ at 16:30 on ___.'"
+            ]
+          },
+          "question_continuity": "new",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "CT localized the lesion but ultrasound has not yet been performed; sonographic visualization is pending."
+              },
+              {
+                "requirement_id": "finding_identity",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "Prior imaging CT: 'There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized.'",
+                  "Labs: ALT 26 IU/L, AST 33 IU/L, ALP 54 IU/L, Total Bilirubin 0.8 mg/dL"
+                ],
+                "reason": "CT provides morphologic clue (hyperenhancing) and labs argue against hepatocellular disease, but lesion identity remains unresolved."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "Prior imaging CT: 'There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized.'"
+                ],
+                "reason": "CT confirms a real lesion exists; ultrasound is needed to corroborate and further define it."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No sonographic or additional cross-sectional data yet available to discriminate benign from malignant etiology."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Biliary and gallbladder structures have not been sonographically assessed."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "CT established lesion existence and location but left identity and clinical significance unresolved; ultrasound result is pending."
+          },
+          "current_order_fit": {
+            "test_question_capability": "partially_capable",
+            "why_this_order_could_answer": "Liver ultrasound can characterize echogenicity, margins, and vascularity of a hepatic lesion and often confidently diagnose hemangioma or simple cyst, directly addressing the CT-flagged incidental finding.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Ultrasound may be limited by lesion size (1 cm), body habitus, or operator factors; if indeterminate, MRI liver would be required. The old reconstruction's claim that this was ordered 'before the patient potentially goes to the operating room' is plausible but not directly grounded in the visible record."
+          },
+          "derived_transition": "advance",
+          "alternative_reconstruction": "The ultrasound could reflect a broader hepatobiliary survey prompted by the clinical picture (e.g., ruling out cholecystitis or biliary pathology as a contributor to the presentation) rather than being solely driven by the CT incidental finding; in this frame the primary question would be alternative_source_discrimination for right-upper-quadrant or biliary pathology, with the hepatic lesion characterization as secondary."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The CT identified a 1 cm hyperenhancing focus in the right lobe of the liver that is incompletely characterized and in close proximity to portal venous and hepatic venous branches.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"imaging finding\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Prior imaging CT: 'There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized.'\",\n        \"Prior imaging CT: 'It is in close proximity to both portal venous and hepatic venous branches.'\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Appendicitis has been identified as the primary diagnosis by CT, with a dilated hyperemic appendix measuring 11 mm.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Prior imaging CT: 'Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa.'\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The hepatic lesion is most likely a benign incidental finding (e.g., hemangioma), given normal liver function tests.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Labs: ALT 26 IU/L, AST 33 IU/L, ALP 54 IU/L, Total Bilirubin 0.8 mg/dL — liver function tests normal\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The radiologist directly communicated the incompletely characterized hepatic finding to the treating physician, creating an explicit obligation to further characterize it.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"communication_or_workflow_state\",\n      \"level\": \"diagnostic workup\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Prior imaging CT NOTIFICATION: 'Addition of impression point 3. was discussed by Dr. ___ with Dr. ___ at 16:30 on ___.'\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Primary hepatic pathology as a cause of the presenting syndrome is unlikely given normal liver enzymes, but a concurrent structural lesion cannot be excluded.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Labs: ALT 26 IU/L, AST 33 IU/L, ALP 54 IU/L, Total Bilirubin 0.8 mg/dL — liver function tests normal\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the anatomic source and identity of the intra-abdominal inflammatory process causing lower-quadrant pain, fever, and marked leukocytosis?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"CT identified a dilated hyperemic appendix consistent with appendicitis, sufficiently answering the primary source localization question; it also revealed an incompletely characterized hepatic lesion, opening a new secondary question.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"Prior imaging CT: 'Dilated, fluid-filled, hyperemic presacral appendix measures 11 mm with hyperemic mucosa.'\",\n      \"evidence_stream_2\": \"Absolute Neutrophil Count: 9.37 K/uL (ref 1.6-6.1)\",\n      \"reason\": \"CT finding of appendicitis is concordant with the clinical and laboratory picture of systemic inflammation.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"establish\",\n    \"changed_proposition\": \"Appendicitis is now established as the primary diagnosis by CT; a new incompletely characterized hepatic lesion has been identified, shifting the open question to lesion characterization.\",\n    \"reason\": \"CT result confirms appendicitis and introduces an incidental hepatic finding flagged by the radiologist, requiring further workup.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is the 1 cm hyperenhancing hepatic focus a benign lesion (e.g., hemangioma) or a lesion requiring further management?\",\n    \"target\": \"right lobe of liver: 1 cm hyperenhancing focus\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If confidently characterized as benign (e.g., hemangioma), closes the incidental finding loop and allows surgical management of appendicitis to proceed without hepatic concern.\",\n    \"negative_answer_changes\": \"If indeterminate or suspicious, may require additional cross-sectional imaging (e.g., MRI liver) and could affect surgical planning.\",\n    \"secondary_questions\": [\n      \"Are there additional hepatic lesions not seen on CT?\",\n      \"Is there biliary or gallbladder pathology that could explain any component of the presentation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate sonographic visualization of the right hepatic lobe at the site of the CT-identified lesion\",\n        \"why_required\": \"The lesion must be directly visualized to characterize it; non-visualization leaves the question open.\"\n      },\n      {\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Sonographic characterization of the lesion (echogenicity, margins, vascularity, cystic vs. solid features)\",\n        \"why_required\": \"Specific sonographic features distinguish hemangioma from cyst, metastasis, or other lesion types.\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of a discrete lesion corresponding to the CT hyperenhancing focus\",\n        \"why_required\": \"Confirmation that the lesion is real and not a CT artifact is required before characterization.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Discrimination between benign vascular lesion and potentially malignant or clinically significant hepatic pathology\",\n        \"why_required\": \"Management diverges substantially depending on whether the lesion is benign or requires further workup.\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence of biliary dilation, gallbladder pathology, or other hepatic complications\",\n        \"why_required\": \"A single-organ liver/gallbladder ultrasound may incidentally reveal biliary or gallbladder disease relevant to management.\"\n      }\n    ],\n    \"evidence\": [\n      \"Prior imaging CT: 'There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized.'\",\n      \"Prior imaging CT NOTIFICATION: 'Addition of impression point 3. was discussed by Dr. ___ with Dr. ___ at 16:30 on ___.'\"\n    ]\n  },\n  \"question_continuity\": \"new\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"CT localized the lesion but ultrasound has not yet been performed; sonographic visualization is pending.\"\n      },\n      {\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"Prior imaging CT: 'There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized.'\",\n          \"Labs: ALT 26 IU/L, AST 33 IU/L, ALP 54 IU/L, Total Bilirubin 0.8 mg/dL\"\n        ],\n        \"reason\": \"CT provides morphologic clue (hyperenhancing) and labs argue against hepatocellular disease, but lesion identity remains unresolved.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Prior imaging CT: 'There is a 1 cm hyperenhancing focus in the right lobe of the liver (02:20) which is incompletely characterized.'\"\n        ],\n        \"reason\": \"CT confirms a real lesion exists; ultrasound is needed to corroborate and further define it.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No sonographic or additional cross-sectional data yet available to discriminate benign from malignant etiology.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Biliary and gallbladder structures have not been sonographically assessed.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"CT established lesion existence and location but left identity and clinical significance unresolved; ultrasound result is pending.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"partially_capable\",\n    \"why_this_order_could_answer\": \"Liver ultrasound can characterize echogenicity, margins, and vascularity of a hepatic lesion and often confidently diagnose hemangioma or simple cyst, directly addressing the CT-flagged incidental finding.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Ultrasound may be limited by lesion size (1 cm), body habitus, or operator factors; if indeterminate, MRI liver would be required. The old reconstruction's claim that this was ordered 'before the patient potentially goes to the operating room' is plausible but not directly grounded in the visible record.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"The ultrasound could reflect a broader hepatobiliary survey prompted by the clinical picture (e.g., ruling out cholecystitis or biliary pathology as a contributor to the presentation) rather than being solely driven by the CT incidental finding; in this frame the primary question would be alternative_source_discrimination for right-upper-quadrant or biliary pathology, with the hepatic lesion characterization as secondary.\"\n}\n```",
+        "request_id": "gen-1787994694-fYiknnH0fLtAw7WdCakY",
+        "usage": {
+          "completion_tokens": 2828,
+          "prompt_tokens": 4343,
+          "total_tokens": 7171,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.055449,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.055449,
+            "upstream_inference_prompt_cost": 0.013029,
+            "upstream_inference_completions_cost": 0.04242
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.3333,
+        "direct_assumption_types": [
+          "complication",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "other"
+        ],
+        "question_type_match": true,
+        "direct_question_type": "existence_or_identity",
+        "recode_question_type": "existence_or_identity",
+        "requirement_jaccard": 0.6,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "finding_identity",
+          "target_visualization_or_assessment"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "complication_presence_or_character",
+          "finding_identity",
+          "presence_or_absence",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "partially_answered",
+        "recode_aggregate_coverage": "partially_answered",
+        "transition_match": true
+      }
+    }
+  ]
+}

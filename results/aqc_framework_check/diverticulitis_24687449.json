@@ -1,0 +1,497 @@
+{
+  "schema_version": "1.0.0-development",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 24687449,
+  "source_path": "results/annotation_experiment/full/diverticulitis_24687449.json",
+  "model": "anthropic/claude-sonnet-4.6",
+  "causal_boundary": "DIRECT=masked chart+order; RECODE=old ex-ante reconstruction+order; both exclude current result, later events, verification, deviation, ACR, and disease answer labels",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS W/O CONTRAST)",
+      "direct_prompt_sha256": "32d5001ef0040c888562744aa362380f830015d970837f8d7b0d2167d5e720e4",
+      "recode_prompt_sha256": "bd4db24b5d9810a568d509858885cc66031d4a0f5b406642e879872b8dd3a8db",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Patient has an occult intra-abdominal or retroperitoneal infectious source driving fever, leukocytosis, and elevated lactate at OSH",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "clinical syndrome",
+              "status": "suspected",
+              "evidence": [
+                "fever was 103.5 and labs were notable for lactate of 3.9, white count of 14.8 with 90% neutrophils",
+                "He began having LLQ aching pain that was ___ and did not worsen"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Post-laminectomy surgical site infection or deep spinal infection (e.g., epidural abscess, discitis) is a possible but not yet confirmed source",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "specific diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "recent T10-11, L2-5 laminectomies (___)",
+                "neurosurgery, who found no signs of infection at incision"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Left inguinal hernia mesh from prior repair is a potential nidus for infection or complication",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "specific anatomic structure",
+              "status": "suspected",
+              "evidence": [
+                "Left inguinal hernia repair with mesh (___)",
+                "LLQ aching pain"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Acute kidney injury is present on top of CKD, likely from sepsis or volume depletion",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "organ-level complication",
+              "status": "likely",
+              "evidence": [
+                "Creatinine: 3.6 mg/dL (ref 0.5-1.2)",
+                "eGFR is likely between 17 and 20 mL/min/1.73 m2"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Intra-abdominal pathology (e.g., colitis, diverticulitis, abscess, or ileus) is contributing to LLQ pain and constipation",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "organ-level diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "Mild tenderness in LLQ. No guarding or rebound tenderness.",
+                "Has been having constipation since the surgery, with one BM every ___ days"
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior imaging order exists; this is the first decision point.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": ""
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; assumptions are established de novo from history, exam, and labs."
+          },
+          "current_question": {
+            "primary": "Is there an intra-abdominal, pelvic, or retroperitoneal source of infection or pathology explaining fever, LLQ pain, and systemic inflammation?",
+            "target": "abdomen and pelvis including bowel, retroperitoneum, surgical mesh, and paraspinal soft tissues",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Directs targeted intervention (drainage, antibiotics, surgical consultation) and narrows differential",
+            "negative_answer_changes": "Shifts focus to spinal/epidural source or occult bacteremia; prompts MRI spine",
+            "secondary_questions": [
+              "Is there evidence of mesh-related complication (infection, seroma, or hernia recurrence) at the prior inguinal repair site?",
+              "Is there bowel obstruction, ileus, or colitis accounting for constipation and LLQ pain?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of abdominal and pelvic organs, retroperitoneum, and surgical sites",
+                "why_required": "Must confirm the scan covers the relevant anatomy before any finding can be interpreted"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of abscess, fluid collection, or inflammatory fat stranding",
+                "why_required": "Core question is whether an infectious focus exists in the abdomen or pelvis"
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Precise location of any abnormality relative to bowel, mesh, retroperitoneum, or spine",
+                "why_required": "Localization determines which specialist and intervention are needed"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Discrimination between bowel pathology (diverticulitis, colitis, obstruction) and non-bowel sources",
+                "why_required": "LLQ pain and constipation raise bowel-specific diagnoses that require separate management"
+              },
+              {
+                "id": "device_position_or_integrity",
+                "other_proposed_dimension": "",
+                "dimension": "Integrity and appearance of prior inguinal mesh",
+                "why_required": "Mesh infection is a plausible occult source given prior repair and current fever"
+              }
+            ],
+            "evidence": [
+              "fever was 103.5 and labs were notable for lactate of 3.9, white count of 14.8 with 90% neutrophils",
+              "Mild tenderness in LLQ. No guarding or rebound tenderness. Negative ___ sign. Negative psoas sign."
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No prior imaging; anatomy not yet assessed"
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Labs suggest systemic inflammation but cannot localize or confirm abdominal source"
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Physical exam provides only a broad region (LLQ) without structural detail"
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "Mild tenderness in LLQ. No guarding or rebound tenderness.",
+                  "Has been having constipation since the surgery"
+                ],
+                "reason": "Exam partially reduces likelihood of peritonitis but cannot distinguish diverticulitis, colitis, or obstruction"
+              },
+              {
+                "requirement_id": "device_position_or_integrity",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging of mesh site has been performed"
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "No prior imaging; clinical and lab data raise the question but cannot answer it"
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "CT abdomen/pelvis without contrast can visualize bowel, retroperitoneum, paraspinal soft tissues, and mesh site for abscess, inflammatory change, or obstruction; contrast omitted likely due to AKI (Cr 3.6)",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Without contrast, vascular and solid-organ pathology (e.g., hepatic or renal abscess) may be undercharacterized; deep spinal/epidural infection would require MRI spine for definitive assessment"
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The order could primarily target the VP shunt tract or paraspinal retroperitoneal extension of spinal infection rather than primary bowel pathology, given the recent multilevel laminectomy and high CRP; in this frame the abdomen/pelvis CT serves as a screen for retroperitoneal or psoas involvement before MRI spine is ordered."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Patient has an occult intra-abdominal or retroperitoneal infectious source driving fever, leukocytosis, and elevated lactate at OSH\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"fever was 103.5 and labs were notable for lactate of 3.9, white count of 14.8 with 90% neutrophils\",\n        \"He began having LLQ aching pain that was ___ and did not worsen\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Post-laminectomy surgical site infection or deep spinal infection (e.g., epidural abscess, discitis) is a possible but not yet confirmed source\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"recent T10-11, L2-5 laminectomies (___)\",\n        \"neurosurgery, who found no signs of infection at incision\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Left inguinal hernia mesh from prior repair is a potential nidus for infection or complication\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific anatomic structure\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Left inguinal hernia repair with mesh (___)\",\n        \"LLQ aching pain\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Acute kidney injury is present on top of CKD, likely from sepsis or volume depletion\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level complication\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Creatinine: 3.6 mg/dL (ref 0.5-1.2)\",\n        \"eGFR is likely between 17 and 20 mL/min/1.73 m2\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Intra-abdominal pathology (e.g., colitis, diverticulitis, abscess, or ileus) is contributing to LLQ pain and constipation\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Mild tenderness in LLQ. No guarding or rebound tenderness.\",\n        \"Has been having constipation since the surgery, with one BM every ___ days\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior imaging order exists; this is the first decision point.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; assumptions are established de novo from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an intra-abdominal, pelvic, or retroperitoneal source of infection or pathology explaining fever, LLQ pain, and systemic inflammation?\",\n    \"target\": \"abdomen and pelvis including bowel, retroperitoneum, surgical mesh, and paraspinal soft tissues\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Directs targeted intervention (drainage, antibiotics, surgical consultation) and narrows differential\",\n    \"negative_answer_changes\": \"Shifts focus to spinal/epidural source or occult bacteremia; prompts MRI spine\",\n    \"secondary_questions\": [\n      \"Is there evidence of mesh-related complication (infection, seroma, or hernia recurrence) at the prior inguinal repair site?\",\n      \"Is there bowel obstruction, ileus, or colitis accounting for constipation and LLQ pain?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of abdominal and pelvic organs, retroperitoneum, and surgical sites\",\n        \"why_required\": \"Must confirm the scan covers the relevant anatomy before any finding can be interpreted\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of abscess, fluid collection, or inflammatory fat stranding\",\n        \"why_required\": \"Core question is whether an infectious focus exists in the abdomen or pelvis\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Precise location of any abnormality relative to bowel, mesh, retroperitoneum, or spine\",\n        \"why_required\": \"Localization determines which specialist and intervention are needed\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Discrimination between bowel pathology (diverticulitis, colitis, obstruction) and non-bowel sources\",\n        \"why_required\": \"LLQ pain and constipation raise bowel-specific diagnoses that require separate management\"\n      },\n      {\n        \"id\": \"device_position_or_integrity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Integrity and appearance of prior inguinal mesh\",\n        \"why_required\": \"Mesh infection is a plausible occult source given prior repair and current fever\"\n      }\n    ],\n    \"evidence\": [\n      \"fever was 103.5 and labs were notable for lactate of 3.9, white count of 14.8 with 90% neutrophils\",\n      \"Mild tenderness in LLQ. No guarding or rebound tenderness. Negative ___ sign. Negative psoas sign.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No prior imaging; anatomy not yet assessed\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Labs suggest systemic inflammation but cannot localize or confirm abdominal source\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Physical exam provides only a broad region (LLQ) without structural detail\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"Mild tenderness in LLQ. No guarding or rebound tenderness.\",\n          \"Has been having constipation since the surgery\"\n        ],\n        \"reason\": \"Exam partially reduces likelihood of peritonitis but cannot distinguish diverticulitis, colitis, or obstruction\"\n      },\n      {\n        \"requirement_id\": \"device_position_or_integrity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging of mesh site has been performed\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No prior imaging; clinical and lab data raise the question but cannot answer it\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"CT abdomen/pelvis without contrast can visualize bowel, retroperitoneum, paraspinal soft tissues, and mesh site for abscess, inflammatory change, or obstruction; contrast omitted likely due to AKI (Cr 3.6)\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Without contrast, vascular and solid-organ pathology (e.g., hepatic or renal abscess) may be undercharacterized; deep spinal/epidural infection would require MRI spine for definitive assessment\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The order could primarily target the VP shunt tract or paraspinal retroperitoneal extension of spinal infection rather than primary bowel pathology, given the recent multilevel laminectomy and high CRP; in this frame the abdomen/pelvis CT serves as a screen for retroperitoneal or psoas involvement before MRI spine is ordered.\"\n}\n```",
+        "request_id": "gen-1788005270-35BXVsjXSK7HAps26Ej7",
+        "usage": {
+          "completion_tokens": 2387,
+          "prompt_tokens": 3969,
+          "total_tokens": 6356,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.047712,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.047712,
+            "upstream_inference_prompt_cost": 0.011907,
+            "upstream_inference_completions_cost": 0.035805
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The patient has an active intra-abdominal or retroperitoneal infectious/inflammatory process as the source of fever (103.5°F), markedly elevated CRP (159 mg/L), neutrophilia, and LLQ pain",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "clinical syndrome",
+              "status": "suspected",
+              "evidence": [
+                "fever was 103.5 and labs were notable for lactate of 3.9, white count of 14.8 with 90% neutrophils",
+                "C-Reactive Protein: 159.0 mg/L (ref 0.0-5.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Colonic diverticulitis is the leading intra-abdominal candidate given LLQ pain localization",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "Mild tenderness in LLQ. No guarding or rebound tenderness. Negative ___ sign. Negative psoas sign.",
+                "LLQ aching pain that was ___ and did not worsen"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Recent multilevel laminectomy creates a plausible retroperitoneal or psoas collection as an alternative or co-existing source of sepsis",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "diagnosis / complication",
+              "status": "suspected",
+              "evidence": [
+                "T10-11, L2-5 laminectomies (___)",
+                "Negative psoas sign."
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Contrast administration is contraindicated or high-risk given severely reduced renal function (creatinine 3.6, eGFR 17–20)",
+              "type": "intervention_or_device_state",
+              "other_proposed_type": "",
+              "level": "procedural safety",
+              "status": "established",
+              "evidence": [
+                "Creatinine: 3.6 mg/dL",
+                "estimated GFR...likely between 17 and 20 mL/min/1.73 m2"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Prior mesh inguinal hernia repair represents an additional potential source of occult intra-abdominal infection or complication",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "unclear",
+              "evidence": [
+                "Left inguinal hernia repair with mesh"
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior order exists; this is the first decision point.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "No prior order to compare."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are newly established from the clinical record."
+          },
+          "current_question": {
+            "primary": "Is there an identifiable intra-abdominal or retroperitoneal source (e.g., diverticulitis, abscess, colitis, post-surgical collection) explaining the fever, elevated inflammatory markers, and LLQ pain?",
+            "target": "abdomen and pelvis including colon, retroperitoneum, psoas, and surgical bed",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Directs targeted treatment (antibiotics, drainage, or surgical consultation) toward the identified source",
+            "negative_answer_changes": "Broadens differential toward non-abdominal sources or prompts additional imaging of the spinal surgical site",
+            "secondary_questions": [
+              "Is there evidence of retroperitoneal or psoas collection related to the recent laminectomy?",
+              "Is there a mesh-related complication at the prior inguinal hernia repair site?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of colon, retroperitoneum, psoas muscles, and surgical bed without contrast",
+                "why_required": "Non-contrast CT may have reduced sensitivity for subtle inflammatory changes; adequacy must be confirmed before conclusions are drawn"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of pericolonic fat stranding, wall thickening, or free air/fluid",
+                "why_required": "These findings confirm or exclude diverticulitis or colitis as the source"
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Localization of any abnormal fluid, gas, or soft-tissue density to a specific anatomic compartment",
+                "why_required": "Distinguishes intra-abdominal from retroperitoneal or pelvic source to guide management"
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of abscess, perforation, or contained collection",
+                "why_required": "Determines whether percutaneous drainage or urgent surgery is needed"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Assessment of psoas, paraspinal soft tissues, and mesh site for post-surgical or device-related infection",
+                "why_required": "Recent laminectomy and prior mesh repair are plausible alternative sources that must be evaluated simultaneously"
+              }
+            ],
+            "evidence": [
+              "fever was 103.5 and labs were notable for lactate of 3.9, white count of 14.8 with 90% neutrophils",
+              "Mild tenderness in LLQ. No guarding or rebound tenderness. Negative ___ sign. Negative psoas sign."
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Imaging already resulted: '(none)'"
+                ],
+                "reason": "No imaging has been performed; visualization is entirely unaddressed by pre-order evidence"
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Imaging already resulted: '(none)'"
+                ],
+                "reason": "Clinical exam and labs raise suspicion but cannot confirm or exclude specific bowel pathology"
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "Mild tenderness in LLQ.",
+                  "LLQ aching pain that was ___ and did not worsen"
+                ],
+                "reason": "Clinical localization to LLQ narrows the anatomic region but does not substitute for imaging-based localization"
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "No guarding or rebound tenderness."
+                ],
+                "reason": "Absence of peritoneal signs reduces but does not exclude perforation or abscess; imaging required"
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "T10-11, L2-5 laminectomies (___)",
+                  "Negative psoas sign."
+                ],
+                "reason": "Negative psoas sign is a weak clinical clue; retroperitoneal and mesh-site pathology cannot be excluded without imaging"
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "No imaging has been performed; clinical data provide partial anatomic localization only"
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "CT abdomen/pelvis without contrast can visualize pericolonic fat stranding, retroperitoneal collections, psoas abnormalities, and mesh-site changes sufficient to localize or exclude major intra-abdominal and retroperitoneal sources",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Non-contrast technique reduces sensitivity for subtle mucosal or vascular pathology (e.g., ischemic colitis, mesenteric ischemia); the decision to omit contrast is clinically justified but leaves a residual diagnostic gap for contrast-dependent findings"
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The order could alternatively reflect concern primarily for post-surgical spinal complication (retroperitoneal or epidural abscess) with LLQ pain as a referred or secondary symptom, making the retroperitoneum rather than the colon the primary target; in this framing diverticulitis is a secondary consideration rather than the leading hypothesis."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an active intra-abdominal or retroperitoneal infectious/inflammatory process as the source of fever (103.5°F), markedly elevated CRP (159 mg/L), neutrophilia, and LLQ pain\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"fever was 103.5 and labs were notable for lactate of 3.9, white count of 14.8 with 90% neutrophils\",\n        \"C-Reactive Protein: 159.0 mg/L (ref 0.0-5.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Colonic diverticulitis is the leading intra-abdominal candidate given LLQ pain localization\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Mild tenderness in LLQ. No guarding or rebound tenderness. Negative ___ sign. Negative psoas sign.\",\n        \"LLQ aching pain that was ___ and did not worsen\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Recent multilevel laminectomy creates a plausible retroperitoneal or psoas collection as an alternative or co-existing source of sepsis\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis / complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"T10-11, L2-5 laminectomies (___)\",\n        \"Negative psoas sign.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Contrast administration is contraindicated or high-risk given severely reduced renal function (creatinine 3.6, eGFR 17–20)\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"procedural safety\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Creatinine: 3.6 mg/dL\",\n        \"estimated GFR...likely between 17 and 20 mL/min/1.73 m2\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Prior mesh inguinal hernia repair represents an additional potential source of occult intra-abdominal infection or complication\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"Left inguinal hernia repair with mesh\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior order exists; this is the first decision point.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior order to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are newly established from the clinical record.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an identifiable intra-abdominal or retroperitoneal source (e.g., diverticulitis, abscess, colitis, post-surgical collection) explaining the fever, elevated inflammatory markers, and LLQ pain?\",\n    \"target\": \"abdomen and pelvis including colon, retroperitoneum, psoas, and surgical bed\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Directs targeted treatment (antibiotics, drainage, or surgical consultation) toward the identified source\",\n    \"negative_answer_changes\": \"Broadens differential toward non-abdominal sources or prompts additional imaging of the spinal surgical site\",\n    \"secondary_questions\": [\n      \"Is there evidence of retroperitoneal or psoas collection related to the recent laminectomy?\",\n      \"Is there a mesh-related complication at the prior inguinal hernia repair site?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of colon, retroperitoneum, psoas muscles, and surgical bed without contrast\",\n        \"why_required\": \"Non-contrast CT may have reduced sensitivity for subtle inflammatory changes; adequacy must be confirmed before conclusions are drawn\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of pericolonic fat stranding, wall thickening, or free air/fluid\",\n        \"why_required\": \"These findings confirm or exclude diverticulitis or colitis as the source\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any abnormal fluid, gas, or soft-tissue density to a specific anatomic compartment\",\n        \"why_required\": \"Distinguishes intra-abdominal from retroperitoneal or pelvic source to guide management\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of abscess, perforation, or contained collection\",\n        \"why_required\": \"Determines whether percutaneous drainage or urgent surgery is needed\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assessment of psoas, paraspinal soft tissues, and mesh site for post-surgical or device-related infection\",\n        \"why_required\": \"Recent laminectomy and prior mesh repair are plausible alternative sources that must be evaluated simultaneously\"\n      }\n    ],\n    \"evidence\": [\n      \"fever was 103.5 and labs were notable for lactate of 3.9, white count of 14.8 with 90% neutrophils\",\n      \"Mild tenderness in LLQ. No guarding or rebound tenderness. Negative ___ sign. Negative psoas sign.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging already resulted: '(none)'\"\n        ],\n        \"reason\": \"No imaging has been performed; visualization is entirely unaddressed by pre-order evidence\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging already resulted: '(none)'\"\n        ],\n        \"reason\": \"Clinical exam and labs raise suspicion but cannot confirm or exclude specific bowel pathology\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Mild tenderness in LLQ.\",\n          \"LLQ aching pain that was ___ and did not worsen\"\n        ],\n        \"reason\": \"Clinical localization to LLQ narrows the anatomic region but does not substitute for imaging-based localization\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No guarding or rebound tenderness.\"\n        ],\n        \"reason\": \"Absence of peritoneal signs reduces but does not exclude perforation or abscess; imaging required\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"T10-11, L2-5 laminectomies (___)\",\n          \"Negative psoas sign.\"\n        ],\n        \"reason\": \"Negative psoas sign is a weak clinical clue; retroperitoneal and mesh-site pathology cannot be excluded without imaging\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No imaging has been performed; clinical data provide partial anatomic localization only\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"CT abdomen/pelvis without contrast can visualize pericolonic fat stranding, retroperitoneal collections, psoas abnormalities, and mesh-site changes sufficient to localize or exclude major intra-abdominal and retroperitoneal sources\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Non-contrast technique reduces sensitivity for subtle mucosal or vascular pathology (e.g., ischemic colitis, mesenteric ischemia); the decision to omit contrast is clinically justified but leaves a residual diagnostic gap for contrast-dependent findings\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The order could alternatively reflect concern primarily for post-surgical spinal complication (retroperitoneal or epidural abscess) with LLQ pain as a referred or secondary symptom, making the retroperitoneum rather than the colon the primary target; in this framing diverticulitis is a secondary consideration rather than the leading hypothesis.\"\n}\n```",
+        "request_id": "gen-1788005309-9RGAa052oTFEQzMx77Ot",
+        "usage": {
+          "completion_tokens": 2526,
+          "prompt_tokens": 2771,
+          "total_tokens": 5297,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.046203,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.046203,
+            "upstream_inference_prompt_cost": 0.008313,
+            "upstream_inference_completions_cost": 0.03789
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.6,
+        "direct_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "severity_extent_or_course",
+          "syndrome_or_source_frame"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "intervention_or_device_state",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": true,
+        "direct_question_type": "source_localization",
+        "recode_question_type": "source_localization",
+        "requirement_jaccard": 0.6667,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "device_position_or_integrity",
+          "presence_or_absence",
+          "target_visualization_or_assessment"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "complication_presence_or_character",
+          "presence_or_absence",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "unanswered",
+        "recode_aggregate_coverage": "unanswered",
+        "transition_match": true
+      }
+    }
+  ]
+}

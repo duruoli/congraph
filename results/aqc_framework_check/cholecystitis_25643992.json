@@ -1,0 +1,989 @@
+{
+  "schema_version": "1.0.0-development",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 25643992,
+  "source_path": "results/annotation_experiment/full/cholecystitis_25643992.json",
+  "model": "anthropic/claude-sonnet-4.6",
+  "causal_boundary": "DIRECT=masked chart+order; RECODE=old ex-ante reconstruction+order; both exclude current result, later events, verification, deviation, ACR, and disease answer labels",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "direct_prompt_sha256": "220bf4121aace22edcea24fa3bf3513a827822e352d5c7f2d3e9f48e73d50739",
+      "recode_prompt_sha256": "49c8bd42a12d57ecb2bfa7e1a7a394a9717105456b5b0b24efb61f558c850f20",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Patient has biliary obstruction or hepatobiliary pathology as the source of RUQ pain and jaundice",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "organ system",
+              "status": "suspected",
+              "evidence": [
+                "Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5)",
+                "2 days of RUQ pain, worsening confusion, weakness and decreased po intake... new jaundice during the past 2 days"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "An infectious or inflammatory process is present, possibly cholecystitis or cholangitis",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "White Blood Cells: 21.8 K/uL (ref 4.0-11.0)",
+                "Neutrophils: 92.5 % (ref 50.0-70.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Predominantly indirect hyperbilirubinemia suggests hemolytic or pre-hepatic component rather than pure obstructive etiology",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "pathophysiology",
+              "status": "suspected",
+              "evidence": [
+                "Bilirubin, Direct: 0.6 mg/dL (ref 0.0-0.3)",
+                "Bilirubin, Indirect: 2.7 mg/dL"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Patient has a prior abdominal intervention (port placement) relevant to current presentation",
+              "type": "intervention_or_device_state",
+              "other_proposed_type": "",
+              "level": "procedural history",
+              "status": "established",
+              "evidence": [
+                "Wound: port incisions c/d/i, no erythema/induration",
+                "mildly tender to palpation around incisions"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Intracranial and pulmonary causes of acute deterioration are unlikely to be the primary driver",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "differential exclusion",
+              "status": "likely",
+              "evidence": [
+                "There is no intracranial hemorrhage. There is no evidence of large vascular territory infarction.",
+                "No focal consolidation, effusion, or pneumothorax is seen."
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior imaging decision point; chest X-ray and CT head results are available as baseline workup context only.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "First decision point."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are newly established from baseline workup."
+          },
+          "current_question": {
+            "primary": "Is there gallbladder or biliary tract pathology (e.g., cholelithiasis, cholecystitis, biliary dilation, or ductal obstruction) explaining RUQ pain, jaundice, and leukocytosis?",
+            "target": "gallbladder, biliary ducts, liver",
+            "type": "existence_or_identity",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Confirms hepatobiliary source; directs toward surgical or interventional management (e.g., cholecystectomy, ERCP)",
+            "negative_answer_changes": "Shifts differential toward hemolytic, hepatocellular, or other abdominal source; prompts further workup",
+            "secondary_questions": [
+              "Is there intrahepatic or extrahepatic biliary ductal dilation suggesting obstruction?",
+              "Is there evidence of pericholecystic fluid or wall thickening consistent with acute cholecystitis?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of gallbladder, bile ducts, and liver parenchyma",
+                "why_required": "Structural assessment is prerequisite to identifying any pathology"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of gallstones, sludge, or biliary obstruction",
+                "why_required": "Cholelithiasis/choledocholithiasis is the leading candidate for RUQ pain with jaundice and leukocytosis"
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Degree of biliary dilation and gallbladder wall changes",
+                "why_required": "Severity guides urgency and type of intervention"
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence of pericholecystic fluid, perforation signs, or hepatic abscess",
+                "why_required": "Complications alter management urgency significantly"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Liver parenchymal appearance to assess for hepatocellular disease or mass",
+                "why_required": "Indirect hyperbilirubinemia pattern raises possibility of non-obstructive hepatic etiology"
+              }
+            ],
+            "evidence": [
+              "Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5); Bilirubin, Direct: 0.6 mg/dL; Bilirubin, Indirect: 2.7 mg/dL",
+              "White Blood Cells: 21.8 K/uL (ref 4.0-11.0); 2 days of RUQ pain... new jaundice during the past 2 days"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No prior abdominal imaging available; chest X-ray and CT head do not assess hepatobiliary structures."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No abdominal imaging performed; labs suggest biliary dysfunction but cannot confirm structural cause."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Degree of biliary obstruction or inflammation cannot be assessed without imaging."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging data available to assess for perforation, abscess, or pericholecystic fluid."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "There is no intracranial hemorrhage.",
+                  "No focal consolidation, effusion, or pneumothorax is seen."
+                ],
+                "reason": "Intracranial and pulmonary sources excluded by prior imaging; hepatocellular vs. obstructive biliary etiology remains unresolved."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "Hepatobiliary structural question is entirely unaddressed by available imaging; labs raise suspicion but cannot localize or characterize the lesion."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Right upper quadrant ultrasound directly visualizes gallbladder, bile ducts, and liver parenchyma and is the first-line modality for suspected biliary pathology.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Predominantly indirect hyperbilirubinemia pattern is atypical for pure obstruction; ultrasound may not fully characterize hemolytic or hepatocellular contributions, and distal common bile duct visualization can be limited by bowel gas."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The leukocytosis and port incisions raise the possibility of a port-site or intra-abdominal infectious complication (e.g., abscess) rather than primary biliary disease; the ultrasound could be ordered to survey for fluid collections near the port sites, with biliary assessment as a secondary goal."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Patient has biliary obstruction or hepatobiliary pathology as the source of RUQ pain and jaundice\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5)\",\n        \"2 days of RUQ pain, worsening confusion, weakness and decreased po intake... new jaundice during the past 2 days\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"An infectious or inflammatory process is present, possibly cholecystitis or cholangitis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"White Blood Cells: 21.8 K/uL (ref 4.0-11.0)\",\n        \"Neutrophils: 92.5 % (ref 50.0-70.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Predominantly indirect hyperbilirubinemia suggests hemolytic or pre-hepatic component rather than pure obstructive etiology\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Bilirubin, Direct: 0.6 mg/dL (ref 0.0-0.3)\",\n        \"Bilirubin, Indirect: 2.7 mg/dL\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Patient has a prior abdominal intervention (port placement) relevant to current presentation\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"procedural history\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Wound: port incisions c/d/i, no erythema/induration\",\n        \"mildly tender to palpation around incisions\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Intracranial and pulmonary causes of acute deterioration are unlikely to be the primary driver\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential exclusion\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"There is no intracranial hemorrhage. There is no evidence of large vascular territory infarction.\",\n        \"No focal consolidation, effusion, or pneumothorax is seen.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior imaging decision point; chest X-ray and CT head results are available as baseline workup context only.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are newly established from baseline workup.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there gallbladder or biliary tract pathology (e.g., cholelithiasis, cholecystitis, biliary dilation, or ductal obstruction) explaining RUQ pain, jaundice, and leukocytosis?\",\n    \"target\": \"gallbladder, biliary ducts, liver\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirms hepatobiliary source; directs toward surgical or interventional management (e.g., cholecystectomy, ERCP)\",\n    \"negative_answer_changes\": \"Shifts differential toward hemolytic, hepatocellular, or other abdominal source; prompts further workup\",\n    \"secondary_questions\": [\n      \"Is there intrahepatic or extrahepatic biliary ductal dilation suggesting obstruction?\",\n      \"Is there evidence of pericholecystic fluid or wall thickening consistent with acute cholecystitis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of gallbladder, bile ducts, and liver parenchyma\",\n        \"why_required\": \"Structural assessment is prerequisite to identifying any pathology\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, sludge, or biliary obstruction\",\n        \"why_required\": \"Cholelithiasis/choledocholithiasis is the leading candidate for RUQ pain with jaundice and leukocytosis\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of biliary dilation and gallbladder wall changes\",\n        \"why_required\": \"Severity guides urgency and type of intervention\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence of pericholecystic fluid, perforation signs, or hepatic abscess\",\n        \"why_required\": \"Complications alter management urgency significantly\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Liver parenchymal appearance to assess for hepatocellular disease or mass\",\n        \"why_required\": \"Indirect hyperbilirubinemia pattern raises possibility of non-obstructive hepatic etiology\"\n      }\n    ],\n    \"evidence\": [\n      \"Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5); Bilirubin, Direct: 0.6 mg/dL; Bilirubin, Indirect: 2.7 mg/dL\",\n      \"White Blood Cells: 21.8 K/uL (ref 4.0-11.0); 2 days of RUQ pain... new jaundice during the past 2 days\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No prior abdominal imaging available; chest X-ray and CT head do not assess hepatobiliary structures.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No abdominal imaging performed; labs suggest biliary dysfunction but cannot confirm structural cause.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Degree of biliary obstruction or inflammation cannot be assessed without imaging.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging data available to assess for perforation, abscess, or pericholecystic fluid.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"There is no intracranial hemorrhage.\",\n          \"No focal consolidation, effusion, or pneumothorax is seen.\"\n        ],\n        \"reason\": \"Intracranial and pulmonary sources excluded by prior imaging; hepatocellular vs. obstructive biliary etiology remains unresolved.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Hepatobiliary structural question is entirely unaddressed by available imaging; labs raise suspicion but cannot localize or characterize the lesion.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant ultrasound directly visualizes gallbladder, bile ducts, and liver parenchyma and is the first-line modality for suspected biliary pathology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Predominantly indirect hyperbilirubinemia pattern is atypical for pure obstruction; ultrasound may not fully characterize hemolytic or hepatocellular contributions, and distal common bile duct visualization can be limited by bowel gas.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The leukocytosis and port incisions raise the possibility of a port-site or intra-abdominal infectious complication (e.g., abscess) rather than primary biliary disease; the ultrasound could be ordered to survey for fluid collections near the port sites, with biliary assessment as a secondary goal.\"\n}\n```",
+        "request_id": "gen-1788004481-PSjIN1pe4WTKmJ6HjrQ8",
+        "usage": {
+          "completion_tokens": 2472,
+          "prompt_tokens": 3912,
+          "total_tokens": 6384,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.048816,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.048816,
+            "upstream_inference_prompt_cost": 0.011736,
+            "upstream_inference_completions_cost": 0.03708
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The patient has active hepatobiliary pathology (gallbladder, biliary ductal, or hepatic parenchymal disease) as the source of RUQ pain and jaundice",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "organ system / anatomic region",
+              "status": "suspected",
+              "evidence": [
+                "2 days of RUQ pain, worsening confusion, weakness and decreased po intake",
+                "new jaundice during the past 2 days"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Hyperbilirubinemia is predominantly indirect (total 3.3, indirect 2.7), suggesting hemolytic or hepatocellular rather than obstructive etiology",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "biochemical / pathophysiologic",
+              "status": "suspected",
+              "evidence": [
+                "Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5)",
+                "Bilirubin, Indirect: 2.7 mg/dL"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The patient recently underwent a laparoscopic abdominal procedure, raising concern for post-procedural biliary complication",
+              "type": "intervention_or_device_state",
+              "other_proposed_type": "",
+              "level": "procedural history",
+              "status": "suspected",
+              "evidence": [
+                "mildly tender to palpation around incisions",
+                "port incisions c/d/i"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Leukocytosis with neutrophilia indicates an active inflammatory or infectious process",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "systemic inflammatory response",
+              "status": "likely",
+              "evidence": [
+                "White Blood Cells: 21.8 K/uL (ref 4.0-11.0)",
+                "Neutrophils: 92.5 % (ref 50.0-70.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Elevated urobilinogen with orange urine is consistent with increased bilirubin load reaching the gut, supporting hepatocellular or hemolytic rather than complete biliary obstruction",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "biochemical / pathophysiologic",
+              "status": "suspected",
+              "evidence": [
+                "Urobilinogen: >12. (ref 0.2-1.0)",
+                "Urine Color: ORANGE"
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior order exists; this is the first decision point.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "No prior order to compare."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are newly established from available clinical evidence."
+          },
+          "current_question": {
+            "primary": "Is there anatomically identifiable gallbladder, biliary ductal, or hepatic parenchymal pathology explaining the RUQ pain, jaundice, and leukocytosis?",
+            "target": "gallbladder, biliary tree, hepatic parenchyma",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Confirms hepatobiliary source; directs management toward specific pathology (e.g., cholecystitis, choledocholithiasis, hepatocellular disease, or post-procedural complication)",
+            "negative_answer_changes": "Shifts differential toward extrahepatic or systemic causes of indirect hyperbilirubinemia (hemolysis, hepatitis); prompts additional workup",
+            "secondary_questions": [
+              "Is there biliary ductal dilation suggesting obstruction despite the predominantly indirect bilirubin pattern?",
+              "Are there post-procedural changes in the gallbladder fossa consistent with prior cholecystectomy or biliary injury?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of gallbladder, common bile duct, and hepatic parenchyma",
+                "why_required": "Structural assessment is prerequisite to identifying any pathology"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of gallstones, wall thickening, pericholecystic fluid, or ductal dilation",
+                "why_required": "These findings distinguish cholecystitis, choledocholithiasis, and obstructive from non-obstructive etiologies"
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Localization of any abnormality to gallbladder, bile duct, or liver parenchyma",
+                "why_required": "Determines which organ system is the primary source and guides subsequent management"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Evidence for or against hepatocellular parenchymal disease as cause of indirect hyperbilirubinemia",
+                "why_required": "Indirect bilirubin predominance raises hepatocellular or hemolytic etiology that ultrasound can partially assess via echogenicity and liver size"
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Post-procedural complication such as bile leak, abscess, or biloma in the gallbladder fossa",
+                "why_required": "Port incisions suggest recent laparoscopic surgery; procedural complications must be excluded"
+              }
+            ],
+            "evidence": [
+              "2 days of RUQ pain, worsening confusion, weakness and decreased po intake",
+              "Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5)",
+              "White Blood Cells: 21.8 K/uL (ref 4.0-11.0)",
+              "port incisions c/d/i"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging result is yet available; visualization status is unknown pending ultrasound."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No structural imaging has been performed; gallstones, wall thickening, and ductal dilation are unassessed."
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Clinical and laboratory data suggest hepatobiliary region but cannot localize to a specific structure."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "Bilirubin, Indirect: 2.7 mg/dL",
+                  "Urobilinogen: >12. (ref 0.2-1.0)"
+                ],
+                "reason": "Biochemical pattern (predominantly indirect bilirubin, elevated urobilinogen) partially supports hepatocellular or hemolytic over purely obstructive etiology, but anatomic confirmation is absent."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "port incisions c/d/i"
+                ],
+                "reason": "Port incisions are noted as clean/dry/intact externally but no imaging has assessed for internal post-procedural complications."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "No imaging result is available; biochemical data partially inform etiology but anatomic source localization is entirely unaddressed."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Abdominal ultrasound (liver/gallbladder) directly visualizes the gallbladder, biliary tree, and hepatic parenchyma and can detect gallstones, wall thickening, ductal dilation, pericholecystic fluid, parenchymal echogenicity changes, and post-procedural fluid collections.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "The specific prior laparoscopic procedure is not confirmed (only inferred from port incisions), so the exact post-procedural anatomy is uncertain. Ultrasound may be limited by bowel gas or body habitus, and hepatocellular disease causing indirect hyperbilirubinemia may require additional serologic or cross-sectional imaging for full characterization."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The predominantly indirect hyperbilirubinemia with markedly elevated urobilinogen could reflect hemolysis rather than hepatobiliary structural disease; the ultrasound may be ordered primarily to exclude structural pathology before pursuing a hemolytic workup, rather than to confirm an expected hepatobiliary finding."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has active hepatobiliary pathology (gallbladder, biliary ductal, or hepatic parenchymal disease) as the source of RUQ pain and jaundice\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system / anatomic region\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"2 days of RUQ pain, worsening confusion, weakness and decreased po intake\",\n        \"new jaundice during the past 2 days\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Hyperbilirubinemia is predominantly indirect (total 3.3, indirect 2.7), suggesting hemolytic or hepatocellular rather than obstructive etiology\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"biochemical / pathophysiologic\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5)\",\n        \"Bilirubin, Indirect: 2.7 mg/dL\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient recently underwent a laparoscopic abdominal procedure, raising concern for post-procedural biliary complication\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"procedural history\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"mildly tender to palpation around incisions\",\n        \"port incisions c/d/i\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Leukocytosis with neutrophilia indicates an active inflammatory or infectious process\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"systemic inflammatory response\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"White Blood Cells: 21.8 K/uL (ref 4.0-11.0)\",\n        \"Neutrophils: 92.5 % (ref 50.0-70.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Elevated urobilinogen with orange urine is consistent with increased bilirubin load reaching the gut, supporting hepatocellular or hemolytic rather than complete biliary obstruction\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"biochemical / pathophysiologic\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Urobilinogen: >12. (ref 0.2-1.0)\",\n        \"Urine Color: ORANGE\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior order exists; this is the first decision point.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior order to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are newly established from available clinical evidence.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there anatomically identifiable gallbladder, biliary ductal, or hepatic parenchymal pathology explaining the RUQ pain, jaundice, and leukocytosis?\",\n    \"target\": \"gallbladder, biliary tree, hepatic parenchyma\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirms hepatobiliary source; directs management toward specific pathology (e.g., cholecystitis, choledocholithiasis, hepatocellular disease, or post-procedural complication)\",\n    \"negative_answer_changes\": \"Shifts differential toward extrahepatic or systemic causes of indirect hyperbilirubinemia (hemolysis, hepatitis); prompts additional workup\",\n    \"secondary_questions\": [\n      \"Is there biliary ductal dilation suggesting obstruction despite the predominantly indirect bilirubin pattern?\",\n      \"Are there post-procedural changes in the gallbladder fossa consistent with prior cholecystectomy or biliary injury?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of gallbladder, common bile duct, and hepatic parenchyma\",\n        \"why_required\": \"Structural assessment is prerequisite to identifying any pathology\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, wall thickening, pericholecystic fluid, or ductal dilation\",\n        \"why_required\": \"These findings distinguish cholecystitis, choledocholithiasis, and obstructive from non-obstructive etiologies\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any abnormality to gallbladder, bile duct, or liver parenchyma\",\n        \"why_required\": \"Determines which organ system is the primary source and guides subsequent management\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence for or against hepatocellular parenchymal disease as cause of indirect hyperbilirubinemia\",\n        \"why_required\": \"Indirect bilirubin predominance raises hepatocellular or hemolytic etiology that ultrasound can partially assess via echogenicity and liver size\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Post-procedural complication such as bile leak, abscess, or biloma in the gallbladder fossa\",\n        \"why_required\": \"Port incisions suggest recent laparoscopic surgery; procedural complications must be excluded\"\n      }\n    ],\n    \"evidence\": [\n      \"2 days of RUQ pain, worsening confusion, weakness and decreased po intake\",\n      \"Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5)\",\n      \"White Blood Cells: 21.8 K/uL (ref 4.0-11.0)\",\n      \"port incisions c/d/i\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging result is yet available; visualization status is unknown pending ultrasound.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No structural imaging has been performed; gallstones, wall thickening, and ductal dilation are unassessed.\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Clinical and laboratory data suggest hepatobiliary region but cannot localize to a specific structure.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"Bilirubin, Indirect: 2.7 mg/dL\",\n          \"Urobilinogen: >12. (ref 0.2-1.0)\"\n        ],\n        \"reason\": \"Biochemical pattern (predominantly indirect bilirubin, elevated urobilinogen) partially supports hepatocellular or hemolytic over purely obstructive etiology, but anatomic confirmation is absent.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"port incisions c/d/i\"\n        ],\n        \"reason\": \"Port incisions are noted as clean/dry/intact externally but no imaging has assessed for internal post-procedural complications.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No imaging result is available; biochemical data partially inform etiology but anatomic source localization is entirely unaddressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Abdominal ultrasound (liver/gallbladder) directly visualizes the gallbladder, biliary tree, and hepatic parenchyma and can detect gallstones, wall thickening, ductal dilation, pericholecystic fluid, parenchymal echogenicity changes, and post-procedural fluid collections.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The specific prior laparoscopic procedure is not confirmed (only inferred from port incisions), so the exact post-procedural anatomy is uncertain. Ultrasound may be limited by bowel gas or body habitus, and hepatocellular disease causing indirect hyperbilirubinemia may require additional serologic or cross-sectional imaging for full characterization.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The predominantly indirect hyperbilirubinemia with markedly elevated urobilinogen could reflect hemolysis rather than hepatobiliary structural disease; the ultrasound may be ordered primarily to exclude structural pathology before pursuing a hemolytic workup, rather than to confirm an expected hepatobiliary finding.\"\n}\n```",
+        "request_id": "gen-1788004518-VOhMODFjsUWn5qjN7NNE",
+        "usage": {
+          "completion_tokens": 2632,
+          "prompt_tokens": 2779,
+          "total_tokens": 5411,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.047817,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.047817,
+            "upstream_inference_prompt_cost": 0.008337,
+            "upstream_inference_completions_cost": 0.03948
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.5,
+        "direct_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "intervention_or_device_state",
+          "syndrome_or_source_frame"
+        ],
+        "recode_assumption_types": [
+          "etiology_or_mechanism",
+          "intervention_or_device_state",
+          "severity_extent_or_course",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": false,
+        "direct_question_type": "existence_or_identity",
+        "recode_question_type": "source_localization",
+        "requirement_jaccard": 0.6667,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "complication_presence_or_character",
+          "presence_or_absence",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "complication_presence_or_character",
+          "presence_or_absence",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "unanswered",
+        "recode_aggregate_coverage": "unanswered",
+        "transition_match": true
+      }
+    },
+    {
+      "step": 2,
+      "ordered": "MRCP Abdomen (MRCP (MR ABD W&W/OC))",
+      "direct_prompt_sha256": "c48bf41397c34bb48ab66e8f3daaa7bb2734c531b6fe9731b2a0865ad11472d0",
+      "recode_prompt_sha256": "3746b8e34343a993acc22f4b0556063044dc61951d2fc353318144eac9cd19f1",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Choledocholithiasis or biliary ductal obstruction is present and not fully characterized by ultrasound",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "Common bile duct measures up to 8 mm, though this can be normal in a patient of this age.",
+                "Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Gallstones are present but ultrasound did not confirm ductal stones or obstruction, leaving the biliary tree incompletely characterized",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "finding detail",
+              "status": "suspected",
+              "evidence": [
+                "The gallbladder appears distended and contains several mobile gallstones, though there is no sonographic ___ sign, gallbladder wall thickening, or pericholecystic fluid.",
+                "The pancreas appears grossly unremarkable, though the tail is obscured from view."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "An infectious or inflammatory biliary process (e.g., cholangitis) remains possible given leukocytosis and borderline CBD dilation",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "White Blood Cells: 21.8 K/uL (ref 4.0-11.0)",
+                "Neutrophils: 92.5 % (ref 50.0-70.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Predominantly indirect hyperbilirubinemia pattern is atypical for pure obstruction and may reflect a concurrent hemolytic or hepatocellular component",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "pathophysiology",
+              "status": "suspected",
+              "evidence": [
+                "Bilirubin, Direct: 0.6 mg/dL (ref 0.0-0.3)",
+                "Bilirubin, Indirect: 2.7 mg/dL"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Patient has a prior abdominal port placement relevant to current presentation",
+              "type": "intervention_or_device_state",
+              "other_proposed_type": "",
+              "level": "procedural history",
+              "status": "established",
+              "evidence": [
+                "Wound: port incisions c/d/i, no erythema/induration",
+                "mildly tender to palpation around incisions"
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "Is there gallbladder or biliary tract pathology (e.g., cholelithiasis, cholecystitis, biliary dilation, or ductal obstruction) explaining RUQ pain, jaundice, and leukocytosis?",
+            "study_adequacy": "limited_but_diagnostic",
+            "test_question_capability": "partially_capable",
+            "result_status": "indeterminate",
+            "effect_on_previous_question": "Ultrasound confirmed gallstones and a borderline CBD (8 mm) but found no wall thickening, pericholecystic fluid, or sonographic Murphy sign; pancreatic tail was obscured; ductal stones were not visualized. This partially addresses presence/absence of gallstones but leaves ductal obstruction, choledocholithiasis, and pancreatic pathology unresolved.",
+            "discordance": {
+              "label": "materially_discordant",
+              "evidence_stream_1": "Bilirubin, Total: 3.3 mg/dL with predominantly indirect fraction (2.7 mg/dL indirect vs 0.6 mg/dL direct)",
+              "evidence_stream_2": "There is no biliary ductal dilation... Common bile duct measures up to 8 mm, though this can be normal in a patient of this age.",
+              "reason": "Elevated bilirubin with predominantly indirect pattern is atypical for obstructive biliary disease, yet the CBD is borderline and gallstones are present; ultrasound cannot resolve whether ductal stones or a non-obstructive etiology explains the hyperbilirubinemia."
+            }
+          },
+          "assumption_change": {
+            "label": "refine",
+            "changed_proposition": "Choledocholithiasis or biliary ductal obstruction is present and not fully characterized by ultrasound",
+            "reason": "Ultrasound showed gallstones and borderline CBD without definitive obstruction signs; MRCP is ordered to resolve whether ductal stones or stricture are present, refining the obstruction hypothesis rather than confirming or excluding it."
+          },
+          "current_question": {
+            "primary": "Is there choledocholithiasis, biliary stricture, or other ductal pathology explaining the borderline CBD dilation, hyperbilirubinemia, and leukocytosis?",
+            "target": "common bile duct, intrahepatic ducts, pancreatic duct, gallbladder",
+            "type": "existence_or_identity",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Confirms obstructive biliary etiology; directs toward ERCP or surgical intervention",
+            "negative_answer_changes": "Shifts differential toward hemolytic, hepatocellular, or other non-obstructive cause; prompts hematologic or hepatic workup",
+            "secondary_questions": [
+              "Is there pancreatic ductal dilation or a pancreatic head mass contributing to biliary obstruction?",
+              "Is there intrahepatic biliary dilation or hepatic parenchymal abnormality suggesting hepatocellular disease?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "High-resolution visualization of the entire biliary tree including intrahepatic ducts, CBD, and pancreatic duct",
+                "why_required": "Ultrasound was limited by bowel gas and could not fully characterize the distal CBD or pancreatic tail"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of ductal stones, stricture, or filling defects",
+                "why_required": "Choledocholithiasis is the leading candidate for biliary obstruction and was not excluded by ultrasound"
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Level and location of any biliary obstruction",
+                "why_required": "Localization determines whether ERCP, percutaneous drainage, or surgery is most appropriate"
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Degree of ductal dilation and extent of biliary involvement",
+                "why_required": "Severity guides urgency of intervention and risk of cholangitis"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Pancreatic head and periampullary region assessment for mass or stricture",
+                "why_required": "Pancreatic tail was obscured on ultrasound; a periampullary mass could explain obstruction without visible stones"
+              }
+            ],
+            "evidence": [
+              "Common bile duct measures up to 8 mm, though this can be normal in a patient of this age.",
+              "The pancreas appears grossly unremarkable, though the tail is obscured from view."
+            ]
+          },
+          "question_continuity": "refined",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "The liver is normal in size and echotexture. There is no biliary ductal dilation.",
+                  "The pancreas appears grossly unremarkable, though the tail is obscured from view."
+                ],
+                "reason": "Ultrasound visualized proximal biliary tree and liver but pancreatic tail and distal CBD were not fully assessed."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "The gallbladder appears distended and contains several mobile gallstones",
+                  "There is no biliary ductal dilation."
+                ],
+                "reason": "Gallbladder stones confirmed; ductal stones neither confirmed nor excluded by ultrasound."
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No localization of obstruction level is possible from ultrasound given incomplete ductal visualization."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "Common bile duct measures up to 8 mm, though this can be normal in a patient of this age."
+                ],
+                "reason": "CBD diameter is borderline but intrahepatic dilation and full ductal extent are not characterized."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "The pancreas appears grossly unremarkable, though the tail is obscured from view.",
+                  "The liver is normal in size and echotexture."
+                ],
+                "reason": "Liver parenchyma appears normal; pancreatic head grossly unremarkable but tail not visualized, leaving periampullary mass incompletely excluded."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "Ultrasound confirmed gallstones and borderline CBD but could not characterize ductal stones, obstruction level, or pancreatic tail; the primary question of choledocholithiasis or ductal obstruction remains unresolved."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "MRCP provides high-resolution non-invasive imaging of the entire biliary tree and pancreatic duct, directly visualizing ductal stones, strictures, and periampullary pathology that ultrasound cannot reliably assess.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Predominantly indirect hyperbilirubinemia pattern remains unexplained by obstructive biliary disease alone; MRCP does not assess hemolytic causes, and the port-site history raises a low-probability alternative of intra-abdominal infectious complication not fully addressed by biliary-focused imaging."
+          },
+          "derived_transition": "remedy",
+          "alternative_reconstruction": "The borderline CBD on ultrasound combined with leukocytosis and jaundice could represent early cholangitis; MRCP may be ordered primarily to confirm ductal stones before proceeding directly to therapeutic ERCP, with biliary anatomy characterization as a prerequisite to intervention planning rather than purely diagnostic uncertainty resolution."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Choledocholithiasis or biliary ductal obstruction is present and not fully characterized by ultrasound\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Common bile duct measures up to 8 mm, though this can be normal in a patient of this age.\",\n        \"Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallstones are present but ultrasound did not confirm ductal stones or obstruction, leaving the biliary tree incompletely characterized\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"finding detail\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"The gallbladder appears distended and contains several mobile gallstones, though there is no sonographic ___ sign, gallbladder wall thickening, or pericholecystic fluid.\",\n        \"The pancreas appears grossly unremarkable, though the tail is obscured from view.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"An infectious or inflammatory biliary process (e.g., cholangitis) remains possible given leukocytosis and borderline CBD dilation\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"White Blood Cells: 21.8 K/uL (ref 4.0-11.0)\",\n        \"Neutrophils: 92.5 % (ref 50.0-70.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Predominantly indirect hyperbilirubinemia pattern is atypical for pure obstruction and may reflect a concurrent hemolytic or hepatocellular component\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Bilirubin, Direct: 0.6 mg/dL (ref 0.0-0.3)\",\n        \"Bilirubin, Indirect: 2.7 mg/dL\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Patient has a prior abdominal port placement relevant to current presentation\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"procedural history\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Wound: port incisions c/d/i, no erythema/induration\",\n        \"mildly tender to palpation around incisions\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there gallbladder or biliary tract pathology (e.g., cholelithiasis, cholecystitis, biliary dilation, or ductal obstruction) explaining RUQ pain, jaundice, and leukocytosis?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"partially_capable\",\n    \"result_status\": \"indeterminate\",\n    \"effect_on_previous_question\": \"Ultrasound confirmed gallstones and a borderline CBD (8 mm) but found no wall thickening, pericholecystic fluid, or sonographic Murphy sign; pancreatic tail was obscured; ductal stones were not visualized. This partially addresses presence/absence of gallstones but leaves ductal obstruction, choledocholithiasis, and pancreatic pathology unresolved.\",\n    \"discordance\": {\n      \"label\": \"materially_discordant\",\n      \"evidence_stream_1\": \"Bilirubin, Total: 3.3 mg/dL with predominantly indirect fraction (2.7 mg/dL indirect vs 0.6 mg/dL direct)\",\n      \"evidence_stream_2\": \"There is no biliary ductal dilation... Common bile duct measures up to 8 mm, though this can be normal in a patient of this age.\",\n      \"reason\": \"Elevated bilirubin with predominantly indirect pattern is atypical for obstructive biliary disease, yet the CBD is borderline and gallstones are present; ultrasound cannot resolve whether ductal stones or a non-obstructive etiology explains the hyperbilirubinemia.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Choledocholithiasis or biliary ductal obstruction is present and not fully characterized by ultrasound\",\n    \"reason\": \"Ultrasound showed gallstones and borderline CBD without definitive obstruction signs; MRCP is ordered to resolve whether ductal stones or stricture are present, refining the obstruction hypothesis rather than confirming or excluding it.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there choledocholithiasis, biliary stricture, or other ductal pathology explaining the borderline CBD dilation, hyperbilirubinemia, and leukocytosis?\",\n    \"target\": \"common bile duct, intrahepatic ducts, pancreatic duct, gallbladder\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirms obstructive biliary etiology; directs toward ERCP or surgical intervention\",\n    \"negative_answer_changes\": \"Shifts differential toward hemolytic, hepatocellular, or other non-obstructive cause; prompts hematologic or hepatic workup\",\n    \"secondary_questions\": [\n      \"Is there pancreatic ductal dilation or a pancreatic head mass contributing to biliary obstruction?\",\n      \"Is there intrahepatic biliary dilation or hepatic parenchymal abnormality suggesting hepatocellular disease?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"High-resolution visualization of the entire biliary tree including intrahepatic ducts, CBD, and pancreatic duct\",\n        \"why_required\": \"Ultrasound was limited by bowel gas and could not fully characterize the distal CBD or pancreatic tail\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of ductal stones, stricture, or filling defects\",\n        \"why_required\": \"Choledocholithiasis is the leading candidate for biliary obstruction and was not excluded by ultrasound\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Level and location of any biliary obstruction\",\n        \"why_required\": \"Localization determines whether ERCP, percutaneous drainage, or surgery is most appropriate\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of ductal dilation and extent of biliary involvement\",\n        \"why_required\": \"Severity guides urgency of intervention and risk of cholangitis\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Pancreatic head and periampullary region assessment for mass or stricture\",\n        \"why_required\": \"Pancreatic tail was obscured on ultrasound; a periampullary mass could explain obstruction without visible stones\"\n      }\n    ],\n    \"evidence\": [\n      \"Common bile duct measures up to 8 mm, though this can be normal in a patient of this age.\",\n      \"The pancreas appears grossly unremarkable, though the tail is obscured from view.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"The liver is normal in size and echotexture. There is no biliary ductal dilation.\",\n          \"The pancreas appears grossly unremarkable, though the tail is obscured from view.\"\n        ],\n        \"reason\": \"Ultrasound visualized proximal biliary tree and liver but pancreatic tail and distal CBD were not fully assessed.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"The gallbladder appears distended and contains several mobile gallstones\",\n          \"There is no biliary ductal dilation.\"\n        ],\n        \"reason\": \"Gallbladder stones confirmed; ductal stones neither confirmed nor excluded by ultrasound.\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No localization of obstruction level is possible from ultrasound given incomplete ductal visualization.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"Common bile duct measures up to 8 mm, though this can be normal in a patient of this age.\"\n        ],\n        \"reason\": \"CBD diameter is borderline but intrahepatic dilation and full ductal extent are not characterized.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"The pancreas appears grossly unremarkable, though the tail is obscured from view.\",\n          \"The liver is normal in size and echotexture.\"\n        ],\n        \"reason\": \"Liver parenchyma appears normal; pancreatic head grossly unremarkable but tail not visualized, leaving periampullary mass incompletely excluded.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Ultrasound confirmed gallstones and borderline CBD but could not characterize ductal stones, obstruction level, or pancreatic tail; the primary question of choledocholithiasis or ductal obstruction remains unresolved.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"MRCP provides high-resolution non-invasive imaging of the entire biliary tree and pancreatic duct, directly visualizing ductal stones, strictures, and periampullary pathology that ultrasound cannot reliably assess.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Predominantly indirect hyperbilirubinemia pattern remains unexplained by obstructive biliary disease alone; MRCP does not assess hemolytic causes, and the port-site history raises a low-probability alternative of intra-abdominal infectious complication not fully addressed by biliary-focused imaging.\"\n  },\n  \"derived_transition\": \"remedy\",\n  \"alternative_reconstruction\": \"The borderline CBD on ultrasound combined with leukocytosis and jaundice could represent early cholangitis; MRCP may be ordered primarily to confirm ductal stones before proceeding directly to therapeutic ERCP, with biliary anatomy characterization as a prerequisite to intervention planning rather than purely diagnostic uncertainty resolution.\"\n}\n```",
+        "request_id": "gen-1788004555-XznhdhsbVxCCj27OSMig",
+        "usage": {
+          "completion_tokens": 2950,
+          "prompt_tokens": 6185,
+          "total_tokens": 9135,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.062805,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.062805,
+            "upstream_inference_prompt_cost": 0.018555,
+            "upstream_inference_completions_cost": 0.04425
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The patient has active hepatobiliary pathology (biliary ductal obstruction or gallbladder disease) as the primary source of RUQ pain, jaundice, and leukocytosis",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "organ system / anatomic region",
+              "status": "suspected",
+              "evidence": [
+                "2 days of RUQ pain, worsening confusion, weakness and decreased po intake",
+                "new jaundice during the past 2 days"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "A common bile duct stone or biliary stricture is causing partial biliary obstruction, explaining the borderline dilated CBD and elevated direct bilirubin",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "ductal / structural",
+              "status": "suspected",
+              "evidence": [
+                "Common bile duct measures up to 8 mm, though this can be normal in a patient of this age",
+                "Bilirubin, Direct: 0.6 mg/dL (ref 0.0-0.3)"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "The pancreatic tail was not visualized on prior ultrasound, leaving a periampullary or pancreatic head lesion unexcluded as an alternative obstructive cause",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "anatomic region / adjacent structure",
+              "status": "suspected",
+              "evidence": [
+                "the tail is obscured from view",
+                "The gallbladder appears distended and contains several mobile gallstones"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Leukocytosis with neutrophilia indicates an active inflammatory or infectious process, raising concern for cholangitis",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "systemic inflammatory response",
+              "status": "likely",
+              "evidence": [
+                "White Blood Cells: 21.8 K/uL (ref 4.0-11.0)",
+                "Neutrophils: 92.5 % (ref 50.0-70.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The predominantly indirect hyperbilirubinemia with markedly elevated urobilinogen may reflect a hepatocellular or hemolytic component rather than pure biliary obstruction",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "biochemical / pathophysiologic",
+              "status": "suspected",
+              "evidence": [
+                "Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5)",
+                "Urobilinogen: >12. (ref 0.2-1.0)"
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "Is there anatomically identifiable gallbladder, biliary ductal, or hepatic parenchymal pathology explaining the RUQ pain, jaundice, and leukocytosis?",
+            "study_adequacy": "limited_but_diagnostic",
+            "test_question_capability": "partially_capable",
+            "result_status": "indeterminate",
+            "effect_on_previous_question": "The ultrasound confirmed gallstones and a borderline dilated CBD (8 mm) but could not visualize the pancreatic tail and could not exclude a CBD stone, leaving the primary obstructive question only partially answered; the hepatic parenchyma and gallbladder wall were assessed but ductal pathology remains unresolved.",
+            "discordance": {
+              "label": "materially_discordant",
+              "evidence_stream_1": "Bilirubin, Indirect: 2.7 mg/dL (predominantly indirect pattern suggesting hepatocellular or hemolytic etiology)",
+              "evidence_stream_2": "Common bile duct measures up to 8 mm; Bilirubin, Direct: 0.6 mg/dL (ref 0.0-0.3) (ductal dilation and elevated direct fraction suggesting obstructive component)",
+              "reason": "The bilirubin fractionation shows a predominantly indirect pattern inconsistent with pure biliary obstruction, yet the dilated CBD and elevated direct fraction suggest a concurrent obstructive component; these two streams cannot be reconciled by a single mechanism."
+            }
+          },
+          "assumption_change": {
+            "label": "refine",
+            "changed_proposition": "Biliary obstruction is now framed as partial or mixed rather than purely obstructive, given the discordant indirect-predominant bilirubin pattern alongside CBD dilation and elevated direct fraction; the prior assumption of hepatocellular/hemolytic etiology is retained but now coexists with a structural obstructive hypothesis.",
+            "reason": "Ultrasound result revealed gallstones, borderline CBD dilation, and an obscured pancreatic tail, adding structural evidence for obstruction while the biochemical pattern still supports a non-obstructive component."
+          },
+          "current_question": {
+            "primary": "Is there a stone, stricture, or mass in the common bile duct or periampullary region causing biliary obstruction, and is the pancreatic duct normal?",
+            "target": "common bile duct, intrahepatic ducts, pancreatic duct, periampullary region",
+            "type": "existence_or_identity",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Confirms obstructive biliary pathology; directs toward ERCP, surgical, or oncologic management depending on finding identity",
+            "negative_answer_changes": "Shifts differential toward hepatocellular or hemolytic cause of hyperbilirubinemia; prompts serologic hepatitis workup or hematologic evaluation",
+            "secondary_questions": [
+              "Is there pancreatic ductal dilation or a pancreatic head mass not visualized on ultrasound?",
+              "Are there intrahepatic ductal changes consistent with cholangitis or primary sclerosing cholangitis?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of the full common bile duct, intrahepatic ducts, and pancreatic duct",
+                "why_required": "Ultrasound was limited; complete ductal visualization is prerequisite to identifying or excluding obstructive pathology"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of filling defect, stricture, or mass in the biliary or pancreatic ductal system",
+                "why_required": "Directly answers whether choledocholithiasis, stricture, or periampullary lesion is present"
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Localization of any obstructive lesion to CBD, hepatic duct confluence, ampulla, or pancreatic head",
+                "why_required": "Determines the level of obstruction and guides the appropriate intervention"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Evidence for or against a pancreatic head or periampullary mass as the obstructive cause",
+                "why_required": "Pancreatic tail was obscured on ultrasound; pancreatic head and periampullary region must be assessed to exclude malignancy"
+              },
+              {
+                "id": "finding_identity",
+                "other_proposed_dimension": "",
+                "dimension": "Characterization of any ductal abnormality as stone, stricture, inflammatory change, or neoplasm",
+                "why_required": "Finding identity determines urgency and type of intervention (ERCP vs. surgery vs. oncologic workup)"
+              }
+            ],
+            "evidence": [
+              "Common bile duct measures up to 8 mm, though this can be normal in a patient of this age",
+              "the tail is obscured from view",
+              "Bilirubin, Direct: 0.6 mg/dL (ref 0.0-0.3)",
+              "The gallbladder appears distended and contains several mobile gallstones"
+            ]
+          },
+          "question_continuity": "refined",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "Common bile duct measures up to 8 mm, though this can be normal in a patient of this age",
+                  "the tail is obscured from view"
+                ],
+                "reason": "Ultrasound visualized the CBD and gallbladder but could not assess the pancreatic tail or definitively image the full distal CBD; visualization is incomplete."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "The gallbladder appears distended and contains several mobile gallstones",
+                  "Common bile duct measures up to 8 mm"
+                ],
+                "reason": "Gallstones are confirmed and CBD is borderline dilated, but no definitive filling defect or stone in the CBD was identified or excluded by ultrasound."
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No obstructive lesion has been localized to a specific ductal level; ultrasound findings are nonspecific."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "the tail is obscured from view"
+                ],
+                "reason": "Pancreatic tail was not visualized; pancreatic head and periampullary region were not adequately assessed on ultrasound."
+              },
+              {
+                "requirement_id": "finding_identity",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No ductal abnormality has been characterized; stone vs. stricture vs. mass remains entirely undetermined."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "Ultrasound confirmed gallstones and borderline CBD dilation but left the critical ductal question unanswered; MRCP is needed to address the unresolved requirements."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "MRCP provides high-resolution non-invasive imaging of the biliary and pancreatic ductal systems, capable of detecting CBD stones, strictures, ductal dilation, and periampullary masses without radiation or IV contrast.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "MRCP may have limited sensitivity for very small CBD stones (<3 mm) and cannot provide therapeutic intervention; if cholangitis is confirmed, ERCP may ultimately be required regardless of MRCP findings."
+          },
+          "derived_transition": "remedy",
+          "alternative_reconstruction": "The MRCP may have been ordered primarily to exclude cholangitis-level biliary obstruction before deciding on urgent ERCP, rather than to characterize a suspected stone; in this framing the question is severity/urgency of obstruction rather than identity of the obstructing lesion."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has active hepatobiliary pathology (biliary ductal obstruction or gallbladder disease) as the primary source of RUQ pain, jaundice, and leukocytosis\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system / anatomic region\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"2 days of RUQ pain, worsening confusion, weakness and decreased po intake\",\n        \"new jaundice during the past 2 days\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A common bile duct stone or biliary stricture is causing partial biliary obstruction, explaining the borderline dilated CBD and elevated direct bilirubin\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"ductal / structural\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Common bile duct measures up to 8 mm, though this can be normal in a patient of this age\",\n        \"Bilirubin, Direct: 0.6 mg/dL (ref 0.0-0.3)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The pancreatic tail was not visualized on prior ultrasound, leaving a periampullary or pancreatic head lesion unexcluded as an alternative obstructive cause\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"anatomic region / adjacent structure\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"the tail is obscured from view\",\n        \"The gallbladder appears distended and contains several mobile gallstones\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Leukocytosis with neutrophilia indicates an active inflammatory or infectious process, raising concern for cholangitis\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"systemic inflammatory response\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"White Blood Cells: 21.8 K/uL (ref 4.0-11.0)\",\n        \"Neutrophils: 92.5 % (ref 50.0-70.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The predominantly indirect hyperbilirubinemia with markedly elevated urobilinogen may reflect a hepatocellular or hemolytic component rather than pure biliary obstruction\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"biochemical / pathophysiologic\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Bilirubin, Total: 3.3 mg/dL (ref 0.0-1.5)\",\n        \"Urobilinogen: >12. (ref 0.2-1.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there anatomically identifiable gallbladder, biliary ductal, or hepatic parenchymal pathology explaining the RUQ pain, jaundice, and leukocytosis?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"partially_capable\",\n    \"result_status\": \"indeterminate\",\n    \"effect_on_previous_question\": \"The ultrasound confirmed gallstones and a borderline dilated CBD (8 mm) but could not visualize the pancreatic tail and could not exclude a CBD stone, leaving the primary obstructive question only partially answered; the hepatic parenchyma and gallbladder wall were assessed but ductal pathology remains unresolved.\",\n    \"discordance\": {\n      \"label\": \"materially_discordant\",\n      \"evidence_stream_1\": \"Bilirubin, Indirect: 2.7 mg/dL (predominantly indirect pattern suggesting hepatocellular or hemolytic etiology)\",\n      \"evidence_stream_2\": \"Common bile duct measures up to 8 mm; Bilirubin, Direct: 0.6 mg/dL (ref 0.0-0.3) (ductal dilation and elevated direct fraction suggesting obstructive component)\",\n      \"reason\": \"The bilirubin fractionation shows a predominantly indirect pattern inconsistent with pure biliary obstruction, yet the dilated CBD and elevated direct fraction suggest a concurrent obstructive component; these two streams cannot be reconciled by a single mechanism.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Biliary obstruction is now framed as partial or mixed rather than purely obstructive, given the discordant indirect-predominant bilirubin pattern alongside CBD dilation and elevated direct fraction; the prior assumption of hepatocellular/hemolytic etiology is retained but now coexists with a structural obstructive hypothesis.\",\n    \"reason\": \"Ultrasound result revealed gallstones, borderline CBD dilation, and an obscured pancreatic tail, adding structural evidence for obstruction while the biochemical pattern still supports a non-obstructive component.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a stone, stricture, or mass in the common bile duct or periampullary region causing biliary obstruction, and is the pancreatic duct normal?\",\n    \"target\": \"common bile duct, intrahepatic ducts, pancreatic duct, periampullary region\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirms obstructive biliary pathology; directs toward ERCP, surgical, or oncologic management depending on finding identity\",\n    \"negative_answer_changes\": \"Shifts differential toward hepatocellular or hemolytic cause of hyperbilirubinemia; prompts serologic hepatitis workup or hematologic evaluation\",\n    \"secondary_questions\": [\n      \"Is there pancreatic ductal dilation or a pancreatic head mass not visualized on ultrasound?\",\n      \"Are there intrahepatic ductal changes consistent with cholangitis or primary sclerosing cholangitis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the full common bile duct, intrahepatic ducts, and pancreatic duct\",\n        \"why_required\": \"Ultrasound was limited; complete ductal visualization is prerequisite to identifying or excluding obstructive pathology\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of filling defect, stricture, or mass in the biliary or pancreatic ductal system\",\n        \"why_required\": \"Directly answers whether choledocholithiasis, stricture, or periampullary lesion is present\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any obstructive lesion to CBD, hepatic duct confluence, ampulla, or pancreatic head\",\n        \"why_required\": \"Determines the level of obstruction and guides the appropriate intervention\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence for or against a pancreatic head or periampullary mass as the obstructive cause\",\n        \"why_required\": \"Pancreatic tail was obscured on ultrasound; pancreatic head and periampullary region must be assessed to exclude malignancy\"\n      },\n      {\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of any ductal abnormality as stone, stricture, inflammatory change, or neoplasm\",\n        \"why_required\": \"Finding identity determines urgency and type of intervention (ERCP vs. surgery vs. oncologic workup)\"\n      }\n    ],\n    \"evidence\": [\n      \"Common bile duct measures up to 8 mm, though this can be normal in a patient of this age\",\n      \"the tail is obscured from view\",\n      \"Bilirubin, Direct: 0.6 mg/dL (ref 0.0-0.3)\",\n      \"The gallbladder appears distended and contains several mobile gallstones\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"Common bile duct measures up to 8 mm, though this can be normal in a patient of this age\",\n          \"the tail is obscured from view\"\n        ],\n        \"reason\": \"Ultrasound visualized the CBD and gallbladder but could not assess the pancreatic tail or definitively image the full distal CBD; visualization is incomplete.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"The gallbladder appears distended and contains several mobile gallstones\",\n          \"Common bile duct measures up to 8 mm\"\n        ],\n        \"reason\": \"Gallstones are confirmed and CBD is borderline dilated, but no definitive filling defect or stone in the CBD was identified or excluded by ultrasound.\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No obstructive lesion has been localized to a specific ductal level; ultrasound findings are nonspecific.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"the tail is obscured from view\"\n        ],\n        \"reason\": \"Pancreatic tail was not visualized; pancreatic head and periampullary region were not adequately assessed on ultrasound.\"\n      },\n      {\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No ductal abnormality has been characterized; stone vs. stricture vs. mass remains entirely undetermined.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Ultrasound confirmed gallstones and borderline CBD dilation but left the critical ductal question unanswered; MRCP is needed to address the unresolved requirements.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"MRCP provides high-resolution non-invasive imaging of the biliary and pancreatic ductal systems, capable of detecting CBD stones, strictures, ductal dilation, and periampullary masses without radiation or IV contrast.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"MRCP may have limited sensitivity for very small CBD stones (<3 mm) and cannot provide therapeutic intervention; if cholangitis is confirmed, ERCP may ultimately be required regardless of MRCP findings.\"\n  },\n  \"derived_transition\": \"remedy\",\n  \"alternative_reconstruction\": \"The MRCP may have been ordered primarily to exclude cholangitis-level biliary obstruction before deciding on urgent ERCP, rather than to characterize a suspected stone; in this framing the question is severity/urgency of obstruction rather than identity of the obstructing lesion.\"\n}\n```",
+        "request_id": "gen-1788004599-s22gAtvoQeKXgThpnSKB",
+        "usage": {
+          "completion_tokens": 2998,
+          "prompt_tokens": 4970,
+          "total_tokens": 7968,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.05988,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.05988,
+            "upstream_inference_prompt_cost": 0.01491,
+            "upstream_inference_completions_cost": 0.04497
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.5,
+        "direct_assumption_types": [
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "intervention_or_device_state",
+          "severity_extent_or_course"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": true,
+        "direct_question_type": "existence_or_identity",
+        "recode_question_type": "existence_or_identity",
+        "requirement_jaccard": 0.6667,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "presence_or_absence",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "finding_identity",
+          "presence_or_absence",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "partially_answered",
+        "recode_aggregate_coverage": "partially_answered",
+        "transition_match": true
+      }
+    }
+  ]
+}

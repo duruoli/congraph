@@ -74,6 +74,8 @@ Hard rules:
 - Flag material discordance only with two quoted, clinically important evidence streams that the current assumption cannot comfortably explain.
 - First describe assumption and question changes. Derive a transition summary only afterward.
 - Use close only when the actual current action explicitly represents no further imaging; never infer stop merely because later events are hidden.
+- Be concise enough to finish the JSON: include at most 5 assumptions, 5 answer requirements,
+  2 evidence quotes per item, and 2 secondary questions. Keep explanations to one short sentence.
 - Output strict JSON only."""
 
 DIRECT_SYSTEM = COMMON_SYSTEM + """
@@ -91,6 +93,7 @@ def output_contract() -> dict[str, Any]:
         "assumptions": [{
             "proposition": "one atomic proposition",
             "type": f"one of: {' | '.join(ASSUMPTION_TYPES)}",
+            "other_proposed_type": "required free-text name when type=other; otherwise empty",
             "level": "clinical hierarchy level in plain language",
             "status": f"one of: {' | '.join(ASSUMPTION_STATUSES)}",
             "evidence": ["verbatim quote from visible input"],
@@ -119,11 +122,13 @@ def output_contract() -> dict[str, Any]:
             "primary": "decision-relevant unknown; do not restate the modality",
             "target": "anatomy, disease, finding, mechanism, complication, or intervention",
             "type": f"one of: {' | '.join(QUESTION_TYPES)}",
+            "other_proposed_type": "required free-text name when type=other; otherwise empty",
             "positive_answer_changes": "decision or assumption change",
             "negative_answer_changes": "decision or assumption change",
             "secondary_questions": ["optional question"],
             "answer_requirements": [{
                 "id": f"one of: {' | '.join(ANSWER_REQUIREMENT_TYPES)}",
+                "other_proposed_dimension": "required free-text name when id=other; otherwise empty",
                 "dimension": "what evidence dimension must be addressed",
                 "why_required": "why this dimension is necessary to answer the question",
             }],

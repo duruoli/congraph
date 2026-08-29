@@ -1,0 +1,1502 @@
+{
+  "schema_version": "1.0.0-development",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 25210798,
+  "source_path": "results/annotation_experiment/full/pancreatitis_25210798.json",
+  "model": "anthropic/claude-sonnet-4.6",
+  "causal_boundary": "DIRECT=masked chart+order; RECODE=old ex-ante reconstruction+order; both exclude current result, later events, verification, deviation, ACR, and disease answer labels",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "direct_prompt_sha256": "fca92811375183d3640b0e9b7bd64cdc898b940e0191c93ca85bdc9c62b7c316",
+      "recode_prompt_sha256": "0b535b3ba63ac0dbe7a96f8ae65a31f0fd5e2335435fa7266cdf44750b24fdfa",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Elevated lipase (489 IU/L) with epigastric pain and nausea/vomiting indicates acute pancreatitis as the primary syndrome.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "likely",
+              "evidence": [
+                "Lipase: 489.0 IU/L (ref 0.0-60.0)",
+                "acute worsening of epigastric pain... associated with intermittent nausea and vomiting"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Biliary etiology of pancreatitis is possible but not confirmed; prior RUQ US was negative for cholelithiasis.",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "challenged",
+              "evidence": [
+                "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis",
+                "Triglycerides: 177.0 mg/dL (ref 0.0-149.0)"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Elevated transaminases (ALT 154, AST 102, ALP 220) suggest hepatobiliary involvement concurrent with or causative of the pancreatic process.",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "organ-level finding",
+              "status": "suspected",
+              "evidence": [
+                "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+                "Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Severity and local complications of pancreatitis (necrosis, fluid collections, ductal obstruction) are unknown.",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "severity/complication",
+              "status": "unclear",
+              "evidence": [
+                "her pain worsened and she developed a fever to 102",
+                "Lipase: 489.0 IU/L (ref 0.0-60.0)"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Chest radiograph excludes free air and significant pulmonary complication at this time.",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "complication exclusion",
+              "status": "excluded",
+              "evidence": [
+                "No evidence of free air is seen beneath the diaphragm",
+                "There is no focal consolidation. No pleural effusion or pneumothorax is seen."
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "First decision point; no prior imaging question to update.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "No prior question exists."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are newly established from baseline history, labs, and chest radiograph."
+          },
+          "current_question": {
+            "primary": "What is the severity, extent, and etiology of the acute pancreatitis, and are there local or biliary complications?",
+            "target": "Pancreas, peripancreatic tissues, biliary tree, and liver",
+            "type": "severity_or_extent",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Identifies necrosis, fluid collections, biliary obstruction, or alternative abdominal pathology, directing intervention (e.g., ERCP, drainage, surgery).",
+            "negative_answer_changes": "Supports interstitial edematous pancreatitis without complication, guiding conservative management.",
+            "secondary_questions": [
+              "Is there biliary ductal dilation or choledocholithiasis explaining the transaminase elevation?",
+              "Is there an alternative abdominal source (e.g., diverticulitis given known diverticulosis) contributing to the presentation?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Direct visualization of pancreatic parenchyma and peripancreatic tissues",
+                "why_required": "Needed to assess for necrosis, edema, or fluid collections defining pancreatitis severity."
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Degree of pancreatic and peripancreatic inflammation or necrosis",
+                "why_required": "Determines management intensity and need for intervention."
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence of pseudocyst, abscess, vascular complication, or ductal disruption",
+                "why_required": "Complications alter prognosis and may require procedural intervention."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Biliary ductal dilation or obstructing stone to explain hepatobiliary enzyme elevation",
+                "why_required": "Choledocholithiasis would indicate urgent ERCP; prior RUQ US was negative for gallstones but did not assess CBD adequately."
+              },
+              {
+                "id": "etiologic_agent_or_mechanism",
+                "other_proposed_dimension": "",
+                "dimension": "Identification of a structural or obstructive cause of pancreatitis",
+                "why_required": "Etiology guides definitive management (e.g., cholecystectomy, ERCP, dietary modification)."
+              }
+            ],
+            "evidence": [
+              "Lipase: 489.0 IU/L (ref 0.0-60.0)",
+              "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+              "her pain worsened and she developed a fever to 102",
+              "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Chest radiograph does not visualize the pancreas; prior RUQ US result is not available in detail and predates current acute episode."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No cross-sectional abdominal imaging has been performed; labs suggest significant pancreatic injury but cannot quantify extent."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "No evidence of free air is seen beneath the diaphragm"
+                ],
+                "reason": "Chest radiograph excludes free air only; intra-abdominal fluid collections and necrosis remain unassessed."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis"
+                ],
+                "reason": "Prior RUQ US argued against gallstones but was performed before acute decompensation and may not have assessed the common bile duct adequately."
+              },
+              {
+                "requirement_id": "etiologic_agent_or_mechanism",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Triglycerides: 177.0 mg/dL (ref 0.0-149.0)"
+                ],
+                "reason": "Mildly elevated triglycerides raise hypertriglyceridemia as a contributor but structural/obstructive etiology remains uncharacterized without cross-sectional imaging."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "No abdominal cross-sectional imaging has been performed; the primary question of pancreatitis severity, complications, and etiology is entirely unaddressed by available imaging."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Contrast-enhanced CT abdomen/pelvis directly visualizes the pancreas and peripancreatic tissues for necrosis and fluid collections, assesses the biliary tree for ductal dilation, and surveys for alternative abdominal pathology including diverticulitis.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "CT may underestimate early necrosis within 48–72 hours of onset; choledocholithiasis detection is less sensitive than MRCP or EUS."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The elevated transaminases and ALP could frame the primary question as hepatobiliary obstruction (e.g., choledocholithiasis causing secondary pancreatitis), with CT ordered to evaluate the biliary tree and liver rather than pancreatitis severity per se; however, the markedly elevated lipase makes pancreatitis characterization the dominant driver."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Elevated lipase (489 IU/L) with epigastric pain and nausea/vomiting indicates acute pancreatitis as the primary syndrome.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Lipase: 489.0 IU/L (ref 0.0-60.0)\",\n        \"acute worsening of epigastric pain... associated with intermittent nausea and vomiting\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary etiology of pancreatitis is possible but not confirmed; prior RUQ US was negative for cholelithiasis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\",\n        \"Triglycerides: 177.0 mg/dL (ref 0.0-149.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Elevated transaminases (ALT 154, AST 102, ALP 220) suggest hepatobiliary involvement concurrent with or causative of the pancreatic process.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level finding\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n        \"Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Severity and local complications of pancreatitis (necrosis, fluid collections, ductal obstruction) are unknown.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity/complication\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"her pain worsened and she developed a fever to 102\",\n        \"Lipase: 489.0 IU/L (ref 0.0-60.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Chest radiograph excludes free air and significant pulmonary complication at this time.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication exclusion\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"No evidence of free air is seen beneath the diaphragm\",\n        \"There is no focal consolidation. No pleural effusion or pneumothorax is seen.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"First decision point; no prior imaging question to update.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior question exists.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are newly established from baseline history, labs, and chest radiograph.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the severity, extent, and etiology of the acute pancreatitis, and are there local or biliary complications?\",\n    \"target\": \"Pancreas, peripancreatic tissues, biliary tree, and liver\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifies necrosis, fluid collections, biliary obstruction, or alternative abdominal pathology, directing intervention (e.g., ERCP, drainage, surgery).\",\n    \"negative_answer_changes\": \"Supports interstitial edematous pancreatitis without complication, guiding conservative management.\",\n    \"secondary_questions\": [\n      \"Is there biliary ductal dilation or choledocholithiasis explaining the transaminase elevation?\",\n      \"Is there an alternative abdominal source (e.g., diverticulitis given known diverticulosis) contributing to the presentation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Direct visualization of pancreatic parenchyma and peripancreatic tissues\",\n        \"why_required\": \"Needed to assess for necrosis, edema, or fluid collections defining pancreatitis severity.\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of pancreatic and peripancreatic inflammation or necrosis\",\n        \"why_required\": \"Determines management intensity and need for intervention.\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence of pseudocyst, abscess, vascular complication, or ductal disruption\",\n        \"why_required\": \"Complications alter prognosis and may require procedural intervention.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Biliary ductal dilation or obstructing stone to explain hepatobiliary enzyme elevation\",\n        \"why_required\": \"Choledocholithiasis would indicate urgent ERCP; prior RUQ US was negative for gallstones but did not assess CBD adequately.\"\n      },\n      {\n        \"id\": \"etiologic_agent_or_mechanism\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification of a structural or obstructive cause of pancreatitis\",\n        \"why_required\": \"Etiology guides definitive management (e.g., cholecystectomy, ERCP, dietary modification).\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 489.0 IU/L (ref 0.0-60.0)\",\n      \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n      \"her pain worsened and she developed a fever to 102\",\n      \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Chest radiograph does not visualize the pancreas; prior RUQ US result is not available in detail and predates current acute episode.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No cross-sectional abdominal imaging has been performed; labs suggest significant pancreatic injury but cannot quantify extent.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No evidence of free air is seen beneath the diaphragm\"\n        ],\n        \"reason\": \"Chest radiograph excludes free air only; intra-abdominal fluid collections and necrosis remain unassessed.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\"\n        ],\n        \"reason\": \"Prior RUQ US argued against gallstones but was performed before acute decompensation and may not have assessed the common bile duct adequately.\"\n      },\n      {\n        \"requirement_id\": \"etiologic_agent_or_mechanism\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Triglycerides: 177.0 mg/dL (ref 0.0-149.0)\"\n        ],\n        \"reason\": \"Mildly elevated triglycerides raise hypertriglyceridemia as a contributor but structural/obstructive etiology remains uncharacterized without cross-sectional imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No abdominal cross-sectional imaging has been performed; the primary question of pancreatitis severity, complications, and etiology is entirely unaddressed by available imaging.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT abdomen/pelvis directly visualizes the pancreas and peripancreatic tissues for necrosis and fluid collections, assesses the biliary tree for ductal dilation, and surveys for alternative abdominal pathology including diverticulitis.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"CT may underestimate early necrosis within 48–72 hours of onset; choledocholithiasis detection is less sensitive than MRCP or EUS.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The elevated transaminases and ALP could frame the primary question as hepatobiliary obstruction (e.g., choledocholithiasis causing secondary pancreatitis), with CT ordered to evaluate the biliary tree and liver rather than pancreatitis severity per se; however, the markedly elevated lipase makes pancreatitis characterization the dominant driver.\"\n}\n```",
+        "request_id": "gen-1788005495-DIPu4zLv0WLZCXJpiddu",
+        "usage": {
+          "completion_tokens": 2617,
+          "prompt_tokens": 3719,
+          "total_tokens": 6336,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.050412,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.050412,
+            "upstream_inference_prompt_cost": 0.011157,
+            "upstream_inference_completions_cost": 0.039255
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Markedly elevated lipase (~8× ULN) with epigastric pain, nausea, and vomiting over 6 weeks indicates an active pancreatic process as the primary syndrome frame",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "organ-system / syndrome",
+              "status": "suspected",
+              "evidence": [
+                "Lipase: 489.0 IU/L (ref 0.0-60.0)",
+                "waxing and waning abdominal pain in the epigastrium over the past 6 weeks associated with intermittent nausea and vomiting"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Concurrent transaminase and alkaline phosphatase elevation suggests biliary or hepatic involvement alongside or instead of isolated pancreatitis",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "organ-system",
+              "status": "suspected",
+              "evidence": [
+                "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+                "Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Prior outpatient RUQ ultrasound was negative for cholelithiasis, making gallstone pancreatitis less likely but not excluded (small stones or choledocholithiasis may be missed on ultrasound)",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "challenged",
+              "evidence": [
+                "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis",
+                "Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "New fever to 102°F after a 6-week subacute course raises concern for an infectious or inflammatory complication (e.g., pancreatic necrosis/abscess, cholangitis, or complicated diverticulitis)",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "severity / complication",
+              "status": "suspected",
+              "evidence": [
+                "developed a fever to 102 ___ evening",
+                "PMHx: diverticulosis"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Mildly elevated triglycerides (177 mg/dL) are a possible but weak contributing etiology for pancreatitis",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "suspected",
+              "evidence": [
+                "Triglycerides: 177.0 mg/dL (ref 0.0-149.0)"
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior imaging order in this trajectory.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "First decision point; no prior order to update."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are newly established from available labs, history, and prior negative RUQ ultrasound."
+          },
+          "current_question": {
+            "primary": "What is the anatomic source and severity of the intra-abdominal process — specifically, is there pancreatic inflammation or necrosis, biliary ductal dilation, hepatic pathology, or another abdominal source (e.g., diverticular) explaining the elevated lipase, transaminases, fever, and 6-week course?",
+            "target": "pancreas, biliary tree, liver, and colon",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Confirms dominant diagnosis (e.g., pancreatitis with/without necrosis, cholangitis, diverticulitis) and directs specific management pathway",
+            "negative_answer_changes": "Absence of pancreatic, biliary, hepatic, or colonic findings would shift workup toward less common or occult intra-abdominal etiologies",
+            "secondary_questions": [
+              "Is there common bile duct dilation or choledocholithiasis that could explain the biliary enzyme pattern and serve as a precipitating cause?",
+              "Is there evidence of a complication (necrosis, abscess, perforation) accounting for the fever?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of pancreas, biliary tree, liver, and colon on contrast-enhanced CT",
+                "why_required": "Cross-sectional imaging is needed to assess organs not evaluable by labs or chest X-ray alone"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of pancreatic edema, necrosis, or peripancreatic fat stranding",
+                "why_required": "Confirms or refutes pancreatitis as the primary diagnosis and establishes severity"
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Extent of pancreatic and/or biliary involvement (e.g., necrosis percentage, ductal dilation degree)",
+                "why_required": "Severity determines management intensity and need for intervention"
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence of infectious or inflammatory complication (abscess, perforation, cholangitis, walled-off necrosis)",
+                "why_required": "Fever after 6-week course raises concern for a complication requiring urgent intervention"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Identification of alternative or concurrent abdominal pathology (hepatic lesion, diverticulitis, other)",
+                "why_required": "Known diverticulosis and transaminase elevation require exclusion of concurrent or alternative sources"
+              }
+            ],
+            "evidence": [
+              "Lipase: 489.0 IU/L (ref 0.0-60.0)",
+              "developed a fever to 102 ___ evening",
+              "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis",
+              "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Prior imaging: No evidence of free air is seen beneath the diaphragm"
+                ],
+                "reason": "Chest X-ray provides only indirect abdominal information; pancreas, biliary tree, and liver have not been cross-sectionally imaged"
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Lipase: 489.0 IU/L (ref 0.0-60.0)"
+                ],
+                "reason": "Elevated lipase is biochemically suggestive but does not confirm or characterize pancreatic morphology"
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging has assessed pancreatic or biliary anatomy; severity cannot be determined from labs alone"
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "developed a fever to 102 ___ evening"
+                ],
+                "reason": "Fever is a clinical flag but does not characterize the nature or location of any complication"
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis",
+                  "Prior imaging: No evidence of free air is seen beneath the diaphragm"
+                ],
+                "reason": "RUQ ultrasound partially excludes gallstone disease and chest X-ray excludes free air, but hepatic parenchyma, CBD, and colon remain unassessed"
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "Pre-CT evidence establishes biochemical concern but leaves all anatomic and severity questions open; only the gallstone etiology has been partially addressed."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Contrast-enhanced CT abdomen/pelvis can simultaneously assess pancreatic morphology and necrosis, biliary ductal dilation, hepatic parenchyma, and colonic pathology in a single acquisition.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "CT may underestimate early biliary stones (choledocholithiasis better seen on MRCP/EUS) and cannot characterize biliary microliths; the 6-week subacute/recurrent pattern raises the possibility of an underlying structural or neoplastic cause not fully addressed by a single acute CT."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The primary driver could be biliary rather than pancreatic: the transaminase and ALP pattern (ALT 154, ALP 220) with a subacute 6-week course and prior negative gallbladder ultrasound may reflect choledocholithiasis with intermittent biliary obstruction causing secondary enzyme spillover, with lipase elevation as a secondary phenomenon. Under this frame the CT is still appropriate but MRCP would be the more sensitive follow-on test for ductal stones."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Markedly elevated lipase (~8× ULN) with epigastric pain, nausea, and vomiting over 6 weeks indicates an active pancreatic process as the primary syndrome frame\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-system / syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Lipase: 489.0 IU/L (ref 0.0-60.0)\",\n        \"waxing and waning abdominal pain in the epigastrium over the past 6 weeks associated with intermittent nausea and vomiting\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Concurrent transaminase and alkaline phosphatase elevation suggests biliary or hepatic involvement alongside or instead of isolated pancreatitis\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-system\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n        \"Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Prior outpatient RUQ ultrasound was negative for cholelithiasis, making gallstone pancreatitis less likely but not excluded (small stones or choledocholithiasis may be missed on ultrasound)\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\",\n        \"Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"New fever to 102°F after a 6-week subacute course raises concern for an infectious or inflammatory complication (e.g., pancreatic necrosis/abscess, cholangitis, or complicated diverticulitis)\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity / complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"developed a fever to 102 ___ evening\",\n        \"PMHx: diverticulosis\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Mildly elevated triglycerides (177 mg/dL) are a possible but weak contributing etiology for pancreatitis\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Triglycerides: 177.0 mg/dL (ref 0.0-149.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior imaging order in this trajectory.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior order to update.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are newly established from available labs, history, and prior negative RUQ ultrasound.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the anatomic source and severity of the intra-abdominal process — specifically, is there pancreatic inflammation or necrosis, biliary ductal dilation, hepatic pathology, or another abdominal source (e.g., diverticular) explaining the elevated lipase, transaminases, fever, and 6-week course?\",\n    \"target\": \"pancreas, biliary tree, liver, and colon\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirms dominant diagnosis (e.g., pancreatitis with/without necrosis, cholangitis, diverticulitis) and directs specific management pathway\",\n    \"negative_answer_changes\": \"Absence of pancreatic, biliary, hepatic, or colonic findings would shift workup toward less common or occult intra-abdominal etiologies\",\n    \"secondary_questions\": [\n      \"Is there common bile duct dilation or choledocholithiasis that could explain the biliary enzyme pattern and serve as a precipitating cause?\",\n      \"Is there evidence of a complication (necrosis, abscess, perforation) accounting for the fever?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of pancreas, biliary tree, liver, and colon on contrast-enhanced CT\",\n        \"why_required\": \"Cross-sectional imaging is needed to assess organs not evaluable by labs or chest X-ray alone\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of pancreatic edema, necrosis, or peripancreatic fat stranding\",\n        \"why_required\": \"Confirms or refutes pancreatitis as the primary diagnosis and establishes severity\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of pancreatic and/or biliary involvement (e.g., necrosis percentage, ductal dilation degree)\",\n        \"why_required\": \"Severity determines management intensity and need for intervention\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence of infectious or inflammatory complication (abscess, perforation, cholangitis, walled-off necrosis)\",\n        \"why_required\": \"Fever after 6-week course raises concern for a complication requiring urgent intervention\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification of alternative or concurrent abdominal pathology (hepatic lesion, diverticulitis, other)\",\n        \"why_required\": \"Known diverticulosis and transaminase elevation require exclusion of concurrent or alternative sources\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 489.0 IU/L (ref 0.0-60.0)\",\n      \"developed a fever to 102 ___ evening\",\n      \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\",\n      \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Prior imaging: No evidence of free air is seen beneath the diaphragm\"\n        ],\n        \"reason\": \"Chest X-ray provides only indirect abdominal information; pancreas, biliary tree, and liver have not been cross-sectionally imaged\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Lipase: 489.0 IU/L (ref 0.0-60.0)\"\n        ],\n        \"reason\": \"Elevated lipase is biochemically suggestive but does not confirm or characterize pancreatic morphology\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging has assessed pancreatic or biliary anatomy; severity cannot be determined from labs alone\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"developed a fever to 102 ___ evening\"\n        ],\n        \"reason\": \"Fever is a clinical flag but does not characterize the nature or location of any complication\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\",\n          \"Prior imaging: No evidence of free air is seen beneath the diaphragm\"\n        ],\n        \"reason\": \"RUQ ultrasound partially excludes gallstone disease and chest X-ray excludes free air, but hepatic parenchyma, CBD, and colon remain unassessed\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Pre-CT evidence establishes biochemical concern but leaves all anatomic and severity questions open; only the gallstone etiology has been partially addressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT abdomen/pelvis can simultaneously assess pancreatic morphology and necrosis, biliary ductal dilation, hepatic parenchyma, and colonic pathology in a single acquisition.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"CT may underestimate early biliary stones (choledocholithiasis better seen on MRCP/EUS) and cannot characterize biliary microliths; the 6-week subacute/recurrent pattern raises the possibility of an underlying structural or neoplastic cause not fully addressed by a single acute CT.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The primary driver could be biliary rather than pancreatic: the transaminase and ALP pattern (ALT 154, ALP 220) with a subacute 6-week course and prior negative gallbladder ultrasound may reflect choledocholithiasis with intermittent biliary obstruction causing secondary enzyme spillover, with lipase elevation as a secondary phenomenon. Under this frame the CT is still appropriate but MRCP would be the more sensitive follow-on test for ductal stones.\"\n}\n```",
+        "request_id": "gen-1788005534-uljaQshvy1NBOkii4uqj",
+        "usage": {
+          "completion_tokens": 2798,
+          "prompt_tokens": 2759,
+          "total_tokens": 5557,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.050247,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.050247,
+            "upstream_inference_prompt_cost": 0.008277,
+            "upstream_inference_completions_cost": 0.04197
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.5,
+        "direct_assumption_types": [
+          "alternative_source",
+          "complication",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "complication",
+          "etiology_or_mechanism",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": false,
+        "direct_question_type": "severity_or_extent",
+        "recode_question_type": "source_localization",
+        "requirement_jaccard": 0.6667,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "complication_presence_or_character",
+          "etiologic_agent_or_mechanism",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "complication_presence_or_character",
+          "presence_or_absence",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "unanswered",
+        "recode_aggregate_coverage": "unanswered",
+        "transition_match": true
+      }
+    },
+    {
+      "step": 2,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "direct_prompt_sha256": "b1812ca31c0bd92900a46cb1102515165faf37bebb3347fd8a8cc16e536cce18",
+      "recode_prompt_sha256": "47b28a581efe136d2a69a274725a624299b81b012f5920a4f660aab8e7bf05ec",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Acute pancreatitis is the primary diagnosis based on markedly elevated lipase and compatible symptoms; CT confirms pancreas enhances normally without necrosis or peripancreatic fluid collections.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "established",
+              "evidence": [
+                "Lipase: 489.0 IU/L (ref 0.0-60.0)",
+                "The pancreas enhances normally."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Biliary etiology remains possible; CT showed no biliary ductal dilation and a normal-appearing gallbladder, but choledocholithiasis is not excluded by CT alone.",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "suspected",
+              "evidence": [
+                "No intrahepatic or extrahepatic biliary ductal dilation.",
+                "The gallbladder appears normal."
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Elevated transaminases (ALT 154, AST 102, ALP 220) with normal CT biliary tree suggest a hepatocellular or occult biliary process not fully explained by CT findings.",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "organ-level finding",
+              "status": "suspected",
+              "evidence": [
+                "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+                "There is mild hypodensity noted throughout the hepatic parenchyma compared to the spleen suggesting steatosis."
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "CT confirms interstitial edematous pancreatitis without necrosis, pseudocyst, abscess, or vascular complication, indicating mild severity.",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "severity/complication",
+              "status": "likely",
+              "evidence": [
+                "The pancreas enhances normally.",
+                "No free air or free fluid."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Gallstones or sludge in the gallbladder or common bile duct as a precipitant of pancreatitis remain unexcluded by CT and prior RUQ US.",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "unclear",
+              "evidence": [
+                "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis",
+                "The gallbladder appears normal."
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "What is the severity, extent, and etiology of the acute pancreatitis, and are there local or biliary complications?",
+            "study_adequacy": "diagnostic",
+            "test_question_capability": "partially_capable",
+            "result_status": "negative",
+            "effect_on_previous_question": "CT established interstitial edematous pancreatitis without necrosis or fluid collections (mild severity), excluded free air and diverticulitis, confirmed no biliary ductal dilation, and showed hepatic steatosis. However, CT cannot reliably detect choledocholithiasis or gallbladder sludge, leaving biliary etiology incompletely characterized despite the transaminase elevation.",
+            "discordance": {
+              "label": "concordant",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "CT findings are internally consistent with mild pancreatitis and no biliary obstruction; no material discordance identified."
+            }
+          },
+          "assumption_change": {
+            "label": "refine",
+            "changed_proposition": "Severity and local complications of pancreatitis are now characterized as mild/interstitial by CT; biliary etiology remains the key unresolved question driving the current ultrasound order.",
+            "reason": "CT showed normal pancreatic enhancement and no peripancreatic fluid, establishing mild disease, but did not exclude choledocholithiasis or gallbladder sludge as the precipitating etiology."
+          },
+          "current_question": {
+            "primary": "Is there choledocholithiasis, gallbladder sludge, or biliary pathology explaining the elevated transaminases and serving as the etiology of acute pancreatitis?",
+            "target": "Gallbladder, common bile duct, intrahepatic biliary tree",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Identifies biliary etiology, prompting ERCP or cholecystectomy planning.",
+            "negative_answer_changes": "Supports non-biliary etiology (e.g., hypertriglyceridemia, steatosis-related), guiding conservative or dietary management.",
+            "secondary_questions": [
+              "Is there gallbladder wall thickening or pericholecystic fluid suggesting acute cholecystitis as a concurrent process?",
+              "Does real-time ultrasound detect common bile duct dilation not apparent on CT?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Direct visualization of gallbladder lumen and wall for stones, sludge, or cholecystitis",
+                "why_required": "CT has low sensitivity for gallstones and sludge; ultrasound is the preferred modality for gallbladder evaluation."
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of choledocholithiasis or common bile duct dilation",
+                "why_required": "CBD stone would indicate urgent ERCP; CT showed no ductal dilation but cannot exclude small stones."
+              },
+              {
+                "id": "etiologic_agent_or_mechanism",
+                "other_proposed_dimension": "",
+                "dimension": "Identification of a biliary precipitant for pancreatitis",
+                "why_required": "Biliary etiology is the most common cause of acute pancreatitis and determines definitive management."
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Gallbladder wall thickening, pericholecystic fluid, or sonographic Murphy sign indicating acute cholecystitis",
+                "why_required": "Concurrent cholecystitis would alter urgency and surgical planning."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Hepatic parenchymal assessment to correlate with CT steatosis and transaminase elevation",
+                "why_required": "Ultrasound can characterize hepatic echogenicity and help distinguish steatosis from other hepatic pathology contributing to enzyme elevation."
+              }
+            ],
+            "evidence": [
+              "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+              "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis",
+              "No intrahepatic or extrahepatic biliary ductal dilation.",
+              "The gallbladder appears normal."
+            ]
+          },
+          "question_continuity": "refined",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "The gallbladder appears normal.",
+                  "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis"
+                ],
+                "reason": "CT showed a normal-appearing gallbladder but has low sensitivity for stones/sludge; prior RUQ US predates acute episode and may not reflect current state."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "No intrahepatic or extrahepatic biliary ductal dilation."
+                ],
+                "reason": "CT excluded ductal dilation but cannot reliably detect small CBD stones; dedicated ultrasound adds sensitivity for stones and sludge."
+              },
+              {
+                "requirement_id": "etiologic_agent_or_mechanism",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "Triglycerides: 177.0 mg/dL (ref 0.0-149.0)",
+                  "There is mild hypodensity noted throughout the hepatic parenchyma compared to the spleen suggesting steatosis."
+                ],
+                "reason": "Mildly elevated triglycerides and hepatic steatosis offer alternative etiologies, but biliary cause remains unexcluded without dedicated gallbladder ultrasound."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "CT described a normal gallbladder without detail on wall thickness or pericholecystic fluid; sonographic Murphy sign cannot be assessed by CT."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "There is mild hypodensity noted throughout the hepatic parenchyma compared to the spleen suggesting steatosis."
+                ],
+                "reason": "CT identified hepatic steatosis as a contributor to transaminase elevation, but ultrasound can further characterize hepatic echogenicity."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "CT addressed pancreatitis severity and excluded major biliary obstruction, but biliary etiology (stones, sludge) and acute cholecystitis remain incompletely evaluated, leaving the primary etiologic question unanswered."
+          },
+          "current_order_fit": {
+            "test_question_capability": "partially_capable",
+            "why_this_order_could_answer": "Dedicated gallbladder/liver ultrasound is the most sensitive modality for detecting gallstones, sludge, and acute cholecystitis, directly addressing the unresolved biliary etiology question after CT.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Ultrasound has limited sensitivity for choledocholithiasis in the distal CBD; if stones are suspected there, MRCP or EUS would be required. Ultrasound also cannot characterize pancreatic parenchyma adequately in this setting."
+          },
+          "derived_transition": "adjudicate",
+          "alternative_reconstruction": "The order could alternatively reflect a protocol-driven repeat biliary ultrasound to re-evaluate the gallbladder in the acute inpatient setting (given the prior outpatient negative US), rather than a targeted response to CT findings, with the intent to detect interval development of sludge or stones that may have been absent or missed on the outpatient study."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Acute pancreatitis is the primary diagnosis based on markedly elevated lipase and compatible symptoms; CT confirms pancreas enhances normally without necrosis or peripancreatic fluid collections.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 489.0 IU/L (ref 0.0-60.0)\",\n        \"The pancreas enhances normally.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary etiology remains possible; CT showed no biliary ductal dilation and a normal-appearing gallbladder, but choledocholithiasis is not excluded by CT alone.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"No intrahepatic or extrahepatic biliary ductal dilation.\",\n        \"The gallbladder appears normal.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Elevated transaminases (ALT 154, AST 102, ALP 220) with normal CT biliary tree suggest a hepatocellular or occult biliary process not fully explained by CT findings.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level finding\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n        \"There is mild hypodensity noted throughout the hepatic parenchyma compared to the spleen suggesting steatosis.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"CT confirms interstitial edematous pancreatitis without necrosis, pseudocyst, abscess, or vascular complication, indicating mild severity.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity/complication\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"The pancreas enhances normally.\",\n        \"No free air or free fluid.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallstones or sludge in the gallbladder or common bile duct as a precipitant of pancreatitis remain unexcluded by CT and prior RUQ US.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\",\n        \"The gallbladder appears normal.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the severity, extent, and etiology of the acute pancreatitis, and are there local or biliary complications?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"partially_capable\",\n    \"result_status\": \"negative\",\n    \"effect_on_previous_question\": \"CT established interstitial edematous pancreatitis without necrosis or fluid collections (mild severity), excluded free air and diverticulitis, confirmed no biliary ductal dilation, and showed hepatic steatosis. However, CT cannot reliably detect choledocholithiasis or gallbladder sludge, leaving biliary etiology incompletely characterized despite the transaminase elevation.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"CT findings are internally consistent with mild pancreatitis and no biliary obstruction; no material discordance identified.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Severity and local complications of pancreatitis are now characterized as mild/interstitial by CT; biliary etiology remains the key unresolved question driving the current ultrasound order.\",\n    \"reason\": \"CT showed normal pancreatic enhancement and no peripancreatic fluid, establishing mild disease, but did not exclude choledocholithiasis or gallbladder sludge as the precipitating etiology.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there choledocholithiasis, gallbladder sludge, or biliary pathology explaining the elevated transaminases and serving as the etiology of acute pancreatitis?\",\n    \"target\": \"Gallbladder, common bile duct, intrahepatic biliary tree\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifies biliary etiology, prompting ERCP or cholecystectomy planning.\",\n    \"negative_answer_changes\": \"Supports non-biliary etiology (e.g., hypertriglyceridemia, steatosis-related), guiding conservative or dietary management.\",\n    \"secondary_questions\": [\n      \"Is there gallbladder wall thickening or pericholecystic fluid suggesting acute cholecystitis as a concurrent process?\",\n      \"Does real-time ultrasound detect common bile duct dilation not apparent on CT?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Direct visualization of gallbladder lumen and wall for stones, sludge, or cholecystitis\",\n        \"why_required\": \"CT has low sensitivity for gallstones and sludge; ultrasound is the preferred modality for gallbladder evaluation.\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of choledocholithiasis or common bile duct dilation\",\n        \"why_required\": \"CBD stone would indicate urgent ERCP; CT showed no ductal dilation but cannot exclude small stones.\"\n      },\n      {\n        \"id\": \"etiologic_agent_or_mechanism\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification of a biliary precipitant for pancreatitis\",\n        \"why_required\": \"Biliary etiology is the most common cause of acute pancreatitis and determines definitive management.\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Gallbladder wall thickening, pericholecystic fluid, or sonographic Murphy sign indicating acute cholecystitis\",\n        \"why_required\": \"Concurrent cholecystitis would alter urgency and surgical planning.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Hepatic parenchymal assessment to correlate with CT steatosis and transaminase elevation\",\n        \"why_required\": \"Ultrasound can characterize hepatic echogenicity and help distinguish steatosis from other hepatic pathology contributing to enzyme elevation.\"\n      }\n    ],\n    \"evidence\": [\n      \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n      \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\",\n      \"No intrahepatic or extrahepatic biliary ductal dilation.\",\n      \"The gallbladder appears normal.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"The gallbladder appears normal.\",\n          \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\"\n        ],\n        \"reason\": \"CT showed a normal-appearing gallbladder but has low sensitivity for stones/sludge; prior RUQ US predates acute episode and may not reflect current state.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"No intrahepatic or extrahepatic biliary ductal dilation.\"\n        ],\n        \"reason\": \"CT excluded ductal dilation but cannot reliably detect small CBD stones; dedicated ultrasound adds sensitivity for stones and sludge.\"\n      },\n      {\n        \"requirement_id\": \"etiologic_agent_or_mechanism\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"Triglycerides: 177.0 mg/dL (ref 0.0-149.0)\",\n          \"There is mild hypodensity noted throughout the hepatic parenchyma compared to the spleen suggesting steatosis.\"\n        ],\n        \"reason\": \"Mildly elevated triglycerides and hepatic steatosis offer alternative etiologies, but biliary cause remains unexcluded without dedicated gallbladder ultrasound.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"CT described a normal gallbladder without detail on wall thickness or pericholecystic fluid; sonographic Murphy sign cannot be assessed by CT.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"There is mild hypodensity noted throughout the hepatic parenchyma compared to the spleen suggesting steatosis.\"\n        ],\n        \"reason\": \"CT identified hepatic steatosis as a contributor to transaminase elevation, but ultrasound can further characterize hepatic echogenicity.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"CT addressed pancreatitis severity and excluded major biliary obstruction, but biliary etiology (stones, sludge) and acute cholecystitis remain incompletely evaluated, leaving the primary etiologic question unanswered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"partially_capable\",\n    \"why_this_order_could_answer\": \"Dedicated gallbladder/liver ultrasound is the most sensitive modality for detecting gallstones, sludge, and acute cholecystitis, directly addressing the unresolved biliary etiology question after CT.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Ultrasound has limited sensitivity for choledocholithiasis in the distal CBD; if stones are suspected there, MRCP or EUS would be required. Ultrasound also cannot characterize pancreatic parenchyma adequately in this setting.\"\n  },\n  \"derived_transition\": \"adjudicate\",\n  \"alternative_reconstruction\": \"The order could alternatively reflect a protocol-driven repeat biliary ultrasound to re-evaluate the gallbladder in the acute inpatient setting (given the prior outpatient negative US), rather than a targeted response to CT findings, with the intent to detect interval development of sludge or stones that may have been absent or missed on the outpatient study.\"\n}\n```",
+        "request_id": "gen-1788005574-kS4jTGBNYt2irY0MaftI",
+        "usage": {
+          "completion_tokens": 2925,
+          "prompt_tokens": 6587,
+          "total_tokens": 9512,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.063636,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.063636,
+            "upstream_inference_prompt_cost": 0.019761,
+            "upstream_inference_completions_cost": 0.043875
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Markedly elevated lipase (~8× ULN) with epigastric pain, nausea, and vomiting over 6 weeks indicates an active pancreatic process as the primary syndrome frame",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "organ-system / syndrome",
+              "status": "suspected",
+              "evidence": [
+                "Lipase: 489.0 IU/L (ref 0.0-60.0)",
+                "waxing and waning abdominal pain in the epigastrium over the past 6 weeks associated with intermittent nausea and vomiting"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Concurrent transaminase and alkaline phosphatase elevation suggests biliary or hepatic involvement alongside or instead of isolated pancreatitis",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "organ-system",
+              "status": "suspected",
+              "evidence": [
+                "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+                "Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "CT abdomen showed no biliary ductal dilation and a normal-appearing gallbladder, but CT has limited sensitivity for gallstones and biliary sludge compared with ultrasound",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "challenged",
+              "evidence": [
+                "CT ABDOMEN: 'The gallbladder appears normal. No intrahepatic or extrahepatic biliary ductal dilation.'",
+                "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "A periampullary duodenal diverticulum noted on CT may be associated with biliary dysfunction or sphincter of Oddi dysfunction contributing to the enzyme pattern",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "suspected",
+              "evidence": [
+                "CT ABDOMEN: 'There is a periampullary duodenal diverticulum incidentally noted.'",
+                "Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "New fever to 102°F after a 6-week subacute course raises concern for an infectious or inflammatory complication (e.g., cholangitis, pancreatic abscess, or complicated diverticulitis)",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "severity / complication",
+              "status": "suspected",
+              "evidence": [
+                "developed a fever to 102 ___ evening",
+                "PMHx: diverticulosis"
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "What is the anatomic source and severity of the intra-abdominal process — specifically, is there pancreatic inflammation or necrosis, biliary ductal dilation, hepatic pathology, or another abdominal source explaining the elevated lipase, transaminases, fever, and 6-week course?",
+            "study_adequacy": "diagnostic",
+            "test_question_capability": "partially_capable",
+            "result_status": "unknown",
+            "effect_on_previous_question": "CT abdomen partially answered the prior question by excluding biliary ductal dilation, showing a normal gallbladder, and identifying a periampullary diverticulum; however, CT has limited sensitivity for gallstones and biliary sludge, leaving the biliary etiology incompletely characterized. The result is now available as context but does not fully close the biliary source question.",
+            "discordance": {
+              "label": "materially_discordant",
+              "evidence_stream_1": "CT ABDOMEN: 'The gallbladder appears normal. No intrahepatic or extrahepatic biliary ductal dilation.'",
+              "evidence_stream_2": "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0); Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)",
+              "reason": "CT shows no biliary dilation or gallbladder abnormality, yet the hepatocellular and cholestatic enzyme pattern persists, creating a gap that the CT result alone cannot explain."
+            }
+          },
+          "assumption_change": {
+            "label": "refine",
+            "changed_proposition": "CT abdomen showed no biliary ductal dilation and a normal-appearing gallbladder, but CT has limited sensitivity for gallstones and biliary sludge compared with ultrasound",
+            "reason": "CT result now available narrows the differential by excluding gross ductal dilation but does not exclude microlithiasis or sludge; the persistent enzyme elevation sustains the biliary etiology hypothesis and motivates dedicated ultrasound."
+          },
+          "current_question": {
+            "primary": "Is there gallbladder pathology (gallstones, sludge, wall thickening, pericholecystic fluid) or common bile duct dilation not detected on CT that could explain the biliary enzyme pattern and serve as the etiology for pancreatitis?",
+            "target": "gallbladder, common bile duct, biliary tree",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Identifies a biliary etiology (gallstone pancreatitis, cholecystitis, choledocholithiasis) directing cholecystectomy, ERCP, or urgent biliary intervention",
+            "negative_answer_changes": "Excludes gallbladder and CBD pathology, shifting focus toward non-biliary etiologies (periampullary diverticulum, sphincter of Oddi dysfunction, hypertriglyceridemia, or occult neoplasm) and prompting MRCP or EUS",
+            "secondary_questions": [
+              "Is there evidence of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign) that would require urgent surgical or interventional management?",
+              "Does the common bile duct diameter on ultrasound suggest choledocholithiasis not visible on CT?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate real-time visualization of gallbladder lumen, wall, and common bile duct on ultrasound",
+                "why_required": "Ultrasound is the primary modality for gallbladder stone and sludge detection; adequate views are prerequisite to any conclusion"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of gallstones, biliary sludge, or gallbladder wall thickening/pericholecystic fluid",
+                "why_required": "Directly addresses whether a biliary source exists that CT may have missed"
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Common bile duct diameter measurement",
+                "why_required": "CBD dilation would suggest choledocholithiasis or distal obstruction even if stones are not directly visualized"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Exclusion of acute cholecystitis as a concurrent or primary diagnosis",
+                "why_required": "Fever and RUQ enzyme elevation raise concern for cholecystitis requiring urgent management distinct from pancreatitis alone"
+              },
+              {
+                "id": "etiologic_agent_or_mechanism",
+                "other_proposed_dimension": "",
+                "dimension": "Correlation of ultrasound findings with the hepatocellular and cholestatic enzyme pattern to identify a unifying biliary mechanism",
+                "why_required": "A mechanistic link between any ultrasound finding and the enzyme pattern is needed to confirm biliary etiology rather than coincidental finding"
+              }
+            ],
+            "evidence": [
+              "CT ABDOMEN: 'The gallbladder appears normal. No intrahepatic or extrahepatic biliary ductal dilation.'",
+              "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+              "Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)",
+              "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis"
+            ]
+          },
+          "question_continuity": "refined",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "CT ABDOMEN: 'The gallbladder appears normal. No intrahepatic or extrahepatic biliary ductal dilation.'",
+                  "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis"
+                ],
+                "reason": "CT and prior outpatient RUQ US both assessed the gallbladder without identifying gross pathology, but neither provides the real-time sensitivity of a dedicated inpatient ultrasound for sludge and microlithiasis."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis",
+                  "CT ABDOMEN: 'The gallbladder appears normal.'"
+                ],
+                "reason": "Prior studies argue against gross gallstones but do not exclude sludge or microlithiasis; clinical picture has evolved since the outpatient ultrasound."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "CT ABDOMEN: 'No intrahepatic or extrahepatic biliary ductal dilation.'"
+                ],
+                "reason": "CT excluded gross CBD dilation, but ultrasound provides more sensitive real-time measurement of CBD diameter."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "CT ABDOMEN: 'The gallbladder appears normal.'",
+                  "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis"
+                ],
+                "reason": "Prior imaging argues against cholecystitis but was obtained before the current febrile presentation; acute cholecystitis cannot be excluded without current imaging."
+              },
+              {
+                "requirement_id": "etiologic_agent_or_mechanism",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+                  "Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)"
+                ],
+                "reason": "No imaging finding has yet been linked mechanistically to the persistent enzyme elevation; the biliary etiology remains unconfirmed."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "Prior CT and outpatient ultrasound partially address biliary anatomy but leave sludge, microlithiasis, acute cholecystitis, and the mechanistic link to enzyme elevation unresolved, particularly given the new fever and evolving clinical picture."
+          },
+          "current_order_fit": {
+            "test_question_capability": "partially_capable",
+            "why_this_order_could_answer": "Dedicated liver/gallbladder ultrasound provides superior real-time sensitivity for gallstones, sludge, gallbladder wall thickening, pericholecystic fluid, and CBD diameter compared with CT, directly addressing the residual biliary etiology question.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "Ultrasound cannot assess the pancreas, periampullary region, or distal CBD reliably; if ultrasound is again negative, MRCP or EUS would be needed to evaluate for choledocholithiasis, sphincter of Oddi dysfunction, or periampullary pathology."
+          },
+          "derived_transition": "adjudicate",
+          "alternative_reconstruction": "The ordering clinician may be primarily concerned with excluding acute cholecystitis as the source of the new fever rather than re-investigating gallstone pancreatitis etiology — under this frame the ultrasound is a complication-directed study (fever + RUQ enzyme elevation = rule out cholecystitis) rather than an etiology-directed one, and a negative result would be more reassuring about the acute surgical question than about the underlying pancreatitis mechanism."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Markedly elevated lipase (~8× ULN) with epigastric pain, nausea, and vomiting over 6 weeks indicates an active pancreatic process as the primary syndrome frame\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-system / syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Lipase: 489.0 IU/L (ref 0.0-60.0)\",\n        \"waxing and waning abdominal pain in the epigastrium over the past 6 weeks associated with intermittent nausea and vomiting\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Concurrent transaminase and alkaline phosphatase elevation suggests biliary or hepatic involvement alongside or instead of isolated pancreatitis\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-system\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n        \"Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"CT abdomen showed no biliary ductal dilation and a normal-appearing gallbladder, but CT has limited sensitivity for gallstones and biliary sludge compared with ultrasound\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"CT ABDOMEN: 'The gallbladder appears normal. No intrahepatic or extrahepatic biliary ductal dilation.'\",\n        \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"A periampullary duodenal diverticulum noted on CT may be associated with biliary dysfunction or sphincter of Oddi dysfunction contributing to the enzyme pattern\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"CT ABDOMEN: 'There is a periampullary duodenal diverticulum incidentally noted.'\",\n        \"Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"New fever to 102°F after a 6-week subacute course raises concern for an infectious or inflammatory complication (e.g., cholangitis, pancreatic abscess, or complicated diverticulitis)\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity / complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"developed a fever to 102 ___ evening\",\n        \"PMHx: diverticulosis\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the anatomic source and severity of the intra-abdominal process — specifically, is there pancreatic inflammation or necrosis, biliary ductal dilation, hepatic pathology, or another abdominal source explaining the elevated lipase, transaminases, fever, and 6-week course?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"partially_capable\",\n    \"result_status\": \"unknown\",\n    \"effect_on_previous_question\": \"CT abdomen partially answered the prior question by excluding biliary ductal dilation, showing a normal gallbladder, and identifying a periampullary diverticulum; however, CT has limited sensitivity for gallstones and biliary sludge, leaving the biliary etiology incompletely characterized. The result is now available as context but does not fully close the biliary source question.\",\n    \"discordance\": {\n      \"label\": \"materially_discordant\",\n      \"evidence_stream_1\": \"CT ABDOMEN: 'The gallbladder appears normal. No intrahepatic or extrahepatic biliary ductal dilation.'\",\n      \"evidence_stream_2\": \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0); Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)\",\n      \"reason\": \"CT shows no biliary dilation or gallbladder abnormality, yet the hepatocellular and cholestatic enzyme pattern persists, creating a gap that the CT result alone cannot explain.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"CT abdomen showed no biliary ductal dilation and a normal-appearing gallbladder, but CT has limited sensitivity for gallstones and biliary sludge compared with ultrasound\",\n    \"reason\": \"CT result now available narrows the differential by excluding gross ductal dilation but does not exclude microlithiasis or sludge; the persistent enzyme elevation sustains the biliary etiology hypothesis and motivates dedicated ultrasound.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there gallbladder pathology (gallstones, sludge, wall thickening, pericholecystic fluid) or common bile duct dilation not detected on CT that could explain the biliary enzyme pattern and serve as the etiology for pancreatitis?\",\n    \"target\": \"gallbladder, common bile duct, biliary tree\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifies a biliary etiology (gallstone pancreatitis, cholecystitis, choledocholithiasis) directing cholecystectomy, ERCP, or urgent biliary intervention\",\n    \"negative_answer_changes\": \"Excludes gallbladder and CBD pathology, shifting focus toward non-biliary etiologies (periampullary diverticulum, sphincter of Oddi dysfunction, hypertriglyceridemia, or occult neoplasm) and prompting MRCP or EUS\",\n    \"secondary_questions\": [\n      \"Is there evidence of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign) that would require urgent surgical or interventional management?\",\n      \"Does the common bile duct diameter on ultrasound suggest choledocholithiasis not visible on CT?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate real-time visualization of gallbladder lumen, wall, and common bile duct on ultrasound\",\n        \"why_required\": \"Ultrasound is the primary modality for gallbladder stone and sludge detection; adequate views are prerequisite to any conclusion\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, biliary sludge, or gallbladder wall thickening/pericholecystic fluid\",\n        \"why_required\": \"Directly addresses whether a biliary source exists that CT may have missed\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Common bile duct diameter measurement\",\n        \"why_required\": \"CBD dilation would suggest choledocholithiasis or distal obstruction even if stones are not directly visualized\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Exclusion of acute cholecystitis as a concurrent or primary diagnosis\",\n        \"why_required\": \"Fever and RUQ enzyme elevation raise concern for cholecystitis requiring urgent management distinct from pancreatitis alone\"\n      },\n      {\n        \"id\": \"etiologic_agent_or_mechanism\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Correlation of ultrasound findings with the hepatocellular and cholestatic enzyme pattern to identify a unifying biliary mechanism\",\n        \"why_required\": \"A mechanistic link between any ultrasound finding and the enzyme pattern is needed to confirm biliary etiology rather than coincidental finding\"\n      }\n    ],\n    \"evidence\": [\n      \"CT ABDOMEN: 'The gallbladder appears normal. No intrahepatic or extrahepatic biliary ductal dilation.'\",\n      \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n      \"Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)\",\n      \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: 'The gallbladder appears normal. No intrahepatic or extrahepatic biliary ductal dilation.'\",\n          \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\"\n        ],\n        \"reason\": \"CT and prior outpatient RUQ US both assessed the gallbladder without identifying gross pathology, but neither provides the real-time sensitivity of a dedicated inpatient ultrasound for sludge and microlithiasis.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\",\n          \"CT ABDOMEN: 'The gallbladder appears normal.'\"\n        ],\n        \"reason\": \"Prior studies argue against gross gallstones but do not exclude sludge or microlithiasis; clinical picture has evolved since the outpatient ultrasound.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: 'No intrahepatic or extrahepatic biliary ductal dilation.'\"\n        ],\n        \"reason\": \"CT excluded gross CBD dilation, but ultrasound provides more sensitive real-time measurement of CBD diameter.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: 'The gallbladder appears normal.'\",\n          \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\"\n        ],\n        \"reason\": \"Prior imaging argues against cholecystitis but was obtained before the current febrile presentation; acute cholecystitis cannot be excluded without current imaging.\"\n      },\n      {\n        \"requirement_id\": \"etiologic_agent_or_mechanism\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n          \"Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)\"\n        ],\n        \"reason\": \"No imaging finding has yet been linked mechanistically to the persistent enzyme elevation; the biliary etiology remains unconfirmed.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Prior CT and outpatient ultrasound partially address biliary anatomy but leave sludge, microlithiasis, acute cholecystitis, and the mechanistic link to enzyme elevation unresolved, particularly given the new fever and evolving clinical picture.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"partially_capable\",\n    \"why_this_order_could_answer\": \"Dedicated liver/gallbladder ultrasound provides superior real-time sensitivity for gallstones, sludge, gallbladder wall thickening, pericholecystic fluid, and CBD diameter compared with CT, directly addressing the residual biliary etiology question.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Ultrasound cannot assess the pancreas, periampullary region, or distal CBD reliably; if ultrasound is again negative, MRCP or EUS would be needed to evaluate for choledocholithiasis, sphincter of Oddi dysfunction, or periampullary pathology.\"\n  },\n  \"derived_transition\": \"adjudicate\",\n  \"alternative_reconstruction\": \"The ordering clinician may be primarily concerned with excluding acute cholecystitis as the source of the new fever rather than re-investigating gallstone pancreatitis etiology — under this frame the ultrasound is a complication-directed study (fever + RUQ enzyme elevation = rule out cholecystitis) rather than an etiology-directed one, and a negative result would be more reassuring about the acute surgical question than about the underlying pancreatitis mechanism.\"\n}\n```",
+        "request_id": "gen-1788005618-Guc1ynE244atCRMgAm5q",
+        "usage": {
+          "completion_tokens": 3441,
+          "prompt_tokens": 5176,
+          "total_tokens": 8617,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.067143,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.067143,
+            "upstream_inference_prompt_cost": 0.015528,
+            "upstream_inference_completions_cost": 0.051615
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.3333,
+        "direct_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "complication",
+          "etiology_or_mechanism",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": true,
+        "direct_question_type": "etiology_or_mechanism",
+        "recode_question_type": "etiology_or_mechanism",
+        "requirement_jaccard": 0.6667,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "complication_presence_or_character",
+          "etiologic_agent_or_mechanism",
+          "presence_or_absence",
+          "target_visualization_or_assessment"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "etiologic_agent_or_mechanism",
+          "presence_or_absence",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "partially_answered",
+        "recode_aggregate_coverage": "partially_answered",
+        "transition_match": true
+      }
+    },
+    {
+      "step": 3,
+      "ordered": "MRCP Abdomen (MRCP W/O CONTRAST)",
+      "direct_prompt_sha256": "d9800a2a74dd134dfdfbddc9f7887ed2ff76980abb1ba2a84beea74609883851",
+      "recode_prompt_sha256": "6d060c4deb7f5d17134f206109c0341d1eb5b6f2336057ffce405834da21b8c9",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Acute pancreatitis is established as the primary diagnosis based on markedly elevated lipase and CT confirming normal pancreatic enhancement without necrosis or peripancreatic fluid collections.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "established",
+              "evidence": [
+                "Lipase: 489.0 IU/L (ref 0.0-60.0)",
+                "The pancreas enhances normally."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Biliary etiology (choledocholithiasis or gallbladder sludge) remains the leading suspected precipitant of pancreatitis; ultrasound detected a gallstone and polyp but did not demonstrate CBD dilation or acute cholecystitis, leaving a CBD stone unexcluded.",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "suspected",
+              "evidence": [
+                "A gallstone measures approximately 0.4 cm.",
+                "There is no intrahepatic biliary dilation."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Choledocholithiasis in the distal common bile duct is not excluded by ultrasound or CT, as both modalities have limited sensitivity for small distal CBD stones.",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "suspected",
+              "evidence": [
+                "CHD: 4 mm",
+                "No intrahepatic or extrahepatic biliary ductal dilation."
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Elevated transaminases (ALT 154, AST 102, ALP 220) with a confirmed gallstone and normal CBD caliber suggest a passed or impacted stone as the biliary precipitant rather than hepatocellular disease alone.",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "organ-level finding",
+              "status": "suspected",
+              "evidence": [
+                "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+                "A gallstone measures approximately 0.4 cm."
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Pancreatitis severity is mild/interstitial; no necrosis, pseudocyst, abscess, or vascular complication has been identified on CT or ultrasound.",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "severity/complication",
+              "status": "established",
+              "evidence": [
+                "The pancreas enhances normally.",
+                "No free air or free fluid."
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "Is there choledocholithiasis, gallbladder sludge, or biliary pathology explaining the elevated transaminases and serving as the etiology of acute pancreatitis?",
+            "study_adequacy": "limited_but_diagnostic",
+            "test_question_capability": "partially_capable",
+            "result_status": "positive",
+            "effect_on_previous_question": "Ultrasound confirmed a gallstone (0.4 cm) and gallbladder polyp, establishing cholelithiasis as present and upgrading biliary etiology from possible to suspected. No acute cholecystitis was identified. CBD measured 4 mm (not dilated) and no intrahepatic biliary dilation was seen. However, ultrasound cannot reliably visualize the distal CBD, so choledocholithiasis remains unexcluded despite normal duct caliber. The hepatic parenchyma was diffusely echogenic, consistent with CT steatosis. The primary etiologic question is partially answered but distal CBD stone status is unresolved.",
+            "discordance": {
+              "label": "concordant",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "Ultrasound findings (gallstone present, no CBD dilation, no cholecystitis) are internally consistent with CT findings and do not create material discordance."
+            }
+          },
+          "assumption_change": {
+            "label": "refine",
+            "changed_proposition": "Biliary etiology is now more strongly suspected given confirmed gallstone on ultrasound; the key unresolved question narrows to whether a stone is present in the distal CBD, which neither CT nor ultrasound can reliably exclude.",
+            "reason": "Ultrasound confirmed cholelithiasis (previously negative on outpatient US), elevating biliary etiology probability, but distal CBD visualization was limited and duct caliber alone does not exclude a passed or impacted stone."
+          },
+          "current_question": {
+            "primary": "Is there a stone or obstruction in the common bile duct or biliary tree that explains the transaminase elevation and serves as the precipitant of acute pancreatitis?",
+            "target": "Common bile duct, intrahepatic biliary tree, pancreatic duct, ampulla of Vater",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Confirms biliary etiology, prompts urgent ERCP for stone extraction and planning for interval cholecystectomy.",
+            "negative_answer_changes": "Excludes choledocholithiasis, supports non-obstructive biliary or alternative etiology (hypertriglyceridemia, steatosis), guides conservative management without ERCP.",
+            "secondary_questions": [
+              "Is there pancreatic ductal dilation or a periampullary lesion contributing to pancreatitis?",
+              "Does MRCP reveal biliary sludge or microlithiasis not detectable by ultrasound?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of choledocholithiasis or filling defect in the common bile duct",
+                "why_required": "CBD stone is the key unresolved etiology; neither CT nor ultrasound reliably excludes distal CBD stones."
+              },
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Direct visualization of the entire biliary tree including distal CBD and ampullary region",
+                "why_required": "Distal CBD is poorly seen on ultrasound due to bowel gas; MRCP provides non-invasive high-resolution biliary tree mapping."
+              },
+              {
+                "id": "etiologic_agent_or_mechanism",
+                "other_proposed_dimension": "",
+                "dimension": "Identification of biliary sludge, microlithiasis, or stricture as a precipitant",
+                "why_required": "Small stones or sludge may have passed or be present without causing ductal dilation, and MRCP can detect these when ultrasound cannot."
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Pancreatic ductal dilation or disruption suggesting ductal involvement",
+                "why_required": "MRCP can assess the pancreatic duct for dilation or stricture that may indicate a more complex etiology or complication."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Periampullary or pancreatic head lesion as an alternative structural cause",
+                "why_required": "A periampullary diverticulum was noted on CT; MRCP can assess for associated biliary or ductal pathology and exclude a mass lesion."
+              }
+            ],
+            "evidence": [
+              "A gallstone measures approximately 0.4 cm.",
+              "CHD: 4 mm",
+              "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+              "There is a periampullary duodenal diverticulum incidentally noted."
+            ]
+          },
+          "question_continuity": "refined",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "CHD: 4 mm",
+                  "No intrahepatic or extrahepatic biliary ductal dilation."
+                ],
+                "reason": "Normal CBD caliber on both CT and ultrasound argues against significant obstruction, but small or recently passed stones can exist without ductal dilation; distal CBD not directly visualized."
+              },
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "There is no intrahepatic biliary dilation.",
+                  "The imaged portion of the pancreas appears within normal limits, without masses or pancreatic ductal dilation, with portions of the pancreatic tail obscured by overlying bowel gas."
+                ],
+                "reason": "Ultrasound visualized proximal biliary tree and gallbladder but distal CBD and ampullary region were not adequately assessed; pancreatic tail also obscured."
+              },
+              {
+                "requirement_id": "etiologic_agent_or_mechanism",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "A gallstone measures approximately 0.4 cm.",
+                  "Triglycerides: 177.0 mg/dL (ref 0.0-149.0)"
+                ],
+                "reason": "Gallstone confirmed as a potential biliary precipitant; mildly elevated triglycerides offer an alternative etiology; sludge and microlithiasis not assessed."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "The imaged portion of the pancreas appears within normal limits, without masses or pancreatic ductal dilation"
+                ],
+                "reason": "Ultrasound showed no pancreatic ductal dilation in the imaged portions, but pancreatic tail was obscured; MRCP provides more complete pancreatic duct assessment."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Periampullary diverticulum noted on CT but its relationship to biliary or ductal pathology has not been assessed; no dedicated ampullary or pancreatic head evaluation has been performed."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "Gallstone confirmed and CBD caliber normal, but distal CBD stone, biliary sludge, microlithiasis, and ampullary pathology remain unexcluded, leaving the primary etiologic question incompletely answered."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "MRCP provides high-resolution non-invasive imaging of the entire biliary tree including distal CBD and ampullary region, and can detect stones, sludge, strictures, and pancreatic ductal pathology that are beyond the sensitivity of CT and ultrasound.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "MRCP without contrast cannot assess pancreatic parenchymal enhancement or vascular complications; if a stone is found, ERCP would still be required for therapeutic intervention. Functional biliary assessment (e.g., sphincter of Oddi dysfunction) is not addressed by MRCP."
+          },
+          "derived_transition": "adjudicate",
+          "alternative_reconstruction": "The MRCP order could alternatively reflect concern about the periampullary duodenal diverticulum noted on CT as a structural contributor to biliary stasis or recurrent pancreatitis, with the intent to characterize its relationship to the ampulla and biliary tree rather than primarily to exclude choledocholithiasis."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Acute pancreatitis is established as the primary diagnosis based on markedly elevated lipase and CT confirming normal pancreatic enhancement without necrosis or peripancreatic fluid collections.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 489.0 IU/L (ref 0.0-60.0)\",\n        \"The pancreas enhances normally.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary etiology (choledocholithiasis or gallbladder sludge) remains the leading suspected precipitant of pancreatitis; ultrasound detected a gallstone and polyp but did not demonstrate CBD dilation or acute cholecystitis, leaving a CBD stone unexcluded.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"A gallstone measures approximately 0.4 cm.\",\n        \"There is no intrahepatic biliary dilation.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Choledocholithiasis in the distal common bile duct is not excluded by ultrasound or CT, as both modalities have limited sensitivity for small distal CBD stones.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"CHD: 4 mm\",\n        \"No intrahepatic or extrahepatic biliary ductal dilation.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Elevated transaminases (ALT 154, AST 102, ALP 220) with a confirmed gallstone and normal CBD caliber suggest a passed or impacted stone as the biliary precipitant rather than hepatocellular disease alone.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level finding\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n        \"A gallstone measures approximately 0.4 cm.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Pancreatitis severity is mild/interstitial; no necrosis, pseudocyst, abscess, or vascular complication has been identified on CT or ultrasound.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity/complication\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"The pancreas enhances normally.\",\n        \"No free air or free fluid.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there choledocholithiasis, gallbladder sludge, or biliary pathology explaining the elevated transaminases and serving as the etiology of acute pancreatitis?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"partially_capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"Ultrasound confirmed a gallstone (0.4 cm) and gallbladder polyp, establishing cholelithiasis as present and upgrading biliary etiology from possible to suspected. No acute cholecystitis was identified. CBD measured 4 mm (not dilated) and no intrahepatic biliary dilation was seen. However, ultrasound cannot reliably visualize the distal CBD, so choledocholithiasis remains unexcluded despite normal duct caliber. The hepatic parenchyma was diffusely echogenic, consistent with CT steatosis. The primary etiologic question is partially answered but distal CBD stone status is unresolved.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"Ultrasound findings (gallstone present, no CBD dilation, no cholecystitis) are internally consistent with CT findings and do not create material discordance.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Biliary etiology is now more strongly suspected given confirmed gallstone on ultrasound; the key unresolved question narrows to whether a stone is present in the distal CBD, which neither CT nor ultrasound can reliably exclude.\",\n    \"reason\": \"Ultrasound confirmed cholelithiasis (previously negative on outpatient US), elevating biliary etiology probability, but distal CBD visualization was limited and duct caliber alone does not exclude a passed or impacted stone.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a stone or obstruction in the common bile duct or biliary tree that explains the transaminase elevation and serves as the precipitant of acute pancreatitis?\",\n    \"target\": \"Common bile duct, intrahepatic biliary tree, pancreatic duct, ampulla of Vater\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirms biliary etiology, prompts urgent ERCP for stone extraction and planning for interval cholecystectomy.\",\n    \"negative_answer_changes\": \"Excludes choledocholithiasis, supports non-obstructive biliary or alternative etiology (hypertriglyceridemia, steatosis), guides conservative management without ERCP.\",\n    \"secondary_questions\": [\n      \"Is there pancreatic ductal dilation or a periampullary lesion contributing to pancreatitis?\",\n      \"Does MRCP reveal biliary sludge or microlithiasis not detectable by ultrasound?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of choledocholithiasis or filling defect in the common bile duct\",\n        \"why_required\": \"CBD stone is the key unresolved etiology; neither CT nor ultrasound reliably excludes distal CBD stones.\"\n      },\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Direct visualization of the entire biliary tree including distal CBD and ampullary region\",\n        \"why_required\": \"Distal CBD is poorly seen on ultrasound due to bowel gas; MRCP provides non-invasive high-resolution biliary tree mapping.\"\n      },\n      {\n        \"id\": \"etiologic_agent_or_mechanism\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification of biliary sludge, microlithiasis, or stricture as a precipitant\",\n        \"why_required\": \"Small stones or sludge may have passed or be present without causing ductal dilation, and MRCP can detect these when ultrasound cannot.\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Pancreatic ductal dilation or disruption suggesting ductal involvement\",\n        \"why_required\": \"MRCP can assess the pancreatic duct for dilation or stricture that may indicate a more complex etiology or complication.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Periampullary or pancreatic head lesion as an alternative structural cause\",\n        \"why_required\": \"A periampullary diverticulum was noted on CT; MRCP can assess for associated biliary or ductal pathology and exclude a mass lesion.\"\n      }\n    ],\n    \"evidence\": [\n      \"A gallstone measures approximately 0.4 cm.\",\n      \"CHD: 4 mm\",\n      \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n      \"There is a periampullary duodenal diverticulum incidentally noted.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CHD: 4 mm\",\n          \"No intrahepatic or extrahepatic biliary ductal dilation.\"\n        ],\n        \"reason\": \"Normal CBD caliber on both CT and ultrasound argues against significant obstruction, but small or recently passed stones can exist without ductal dilation; distal CBD not directly visualized.\"\n      },\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"There is no intrahepatic biliary dilation.\",\n          \"The imaged portion of the pancreas appears within normal limits, without masses or pancreatic ductal dilation, with portions of the pancreatic tail obscured by overlying bowel gas.\"\n        ],\n        \"reason\": \"Ultrasound visualized proximal biliary tree and gallbladder but distal CBD and ampullary region were not adequately assessed; pancreatic tail also obscured.\"\n      },\n      {\n        \"requirement_id\": \"etiologic_agent_or_mechanism\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"A gallstone measures approximately 0.4 cm.\",\n          \"Triglycerides: 177.0 mg/dL (ref 0.0-149.0)\"\n        ],\n        \"reason\": \"Gallstone confirmed as a potential biliary precipitant; mildly elevated triglycerides offer an alternative etiology; sludge and microlithiasis not assessed.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"The imaged portion of the pancreas appears within normal limits, without masses or pancreatic ductal dilation\"\n        ],\n        \"reason\": \"Ultrasound showed no pancreatic ductal dilation in the imaged portions, but pancreatic tail was obscured; MRCP provides more complete pancreatic duct assessment.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Periampullary diverticulum noted on CT but its relationship to biliary or ductal pathology has not been assessed; no dedicated ampullary or pancreatic head evaluation has been performed.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Gallstone confirmed and CBD caliber normal, but distal CBD stone, biliary sludge, microlithiasis, and ampullary pathology remain unexcluded, leaving the primary etiologic question incompletely answered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"MRCP provides high-resolution non-invasive imaging of the entire biliary tree including distal CBD and ampullary region, and can detect stones, sludge, strictures, and pancreatic ductal pathology that are beyond the sensitivity of CT and ultrasound.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"MRCP without contrast cannot assess pancreatic parenchymal enhancement or vascular complications; if a stone is found, ERCP would still be required for therapeutic intervention. Functional biliary assessment (e.g., sphincter of Oddi dysfunction) is not addressed by MRCP.\"\n  },\n  \"derived_transition\": \"adjudicate\",\n  \"alternative_reconstruction\": \"The MRCP order could alternatively reflect concern about the periampullary duodenal diverticulum noted on CT as a structural contributor to biliary stasis or recurrent pancreatitis, with the intent to characterize its relationship to the ampulla and biliary tree rather than primarily to exclude choledocholithiasis.\"\n}\n```",
+        "request_id": "gen-1788005670-iKFjV7FmTfjcvh6KVkpt",
+        "usage": {
+          "completion_tokens": 3145,
+          "prompt_tokens": 7208,
+          "total_tokens": 10353,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.068799,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.068799,
+            "upstream_inference_prompt_cost": 0.021624,
+            "upstream_inference_completions_cost": 0.047175
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Markedly elevated lipase (~8× ULN) with epigastric pain, nausea, and vomiting over 6 weeks indicates an active pancreatic process as the primary syndrome frame",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "organ-system / syndrome",
+              "status": "suspected",
+              "evidence": [
+                "Lipase: 489.0 IU/L (ref 0.0-60.0)",
+                "waxing and waning abdominal pain in the epigastrium over the past 6 weeks associated with intermittent nausea and vomiting"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Concurrent transaminase and alkaline phosphatase elevation suggests biliary or hepatic involvement alongside or instead of isolated pancreatitis",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "organ-system",
+              "status": "suspected",
+              "evidence": [
+                "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+                "Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Repeat ultrasound identified a 0.4 cm gallstone with a 4 mm common hepatic duct and no acute cholecystitis, partially addressing the biliary etiology question but not excluding choledocholithiasis or ampullary pathology",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "suspected",
+              "evidence": [
+                "A gallstone measures approximately 0.4 cm. There is no evidence of acute cholecystitis. CHD: 4 mm.",
+                "CT ABDOMEN: 'No intrahepatic or extrahepatic biliary ductal dilation. The gallbladder appears normal.'"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "A periampullary duodenal diverticulum noted on CT may be associated with biliary dysfunction or sphincter of Oddi dysfunction contributing to the enzyme pattern",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "suspected",
+              "evidence": [
+                "CT ABDOMEN: 'There is a periampullary duodenal diverticulum incidentally noted.'",
+                "Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "CT and ultrasound have limited sensitivity for small CBD stones and subtle pancreatic or biliary ductal pathology, leaving choledocholithiasis and ampullary lesions incompletely excluded",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "suspected",
+              "evidence": [
+                "A gallstone measures approximately 0.4 cm. There is no evidence of acute cholecystitis. CHD: 4 mm.",
+                "outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis"
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "Is there gallbladder pathology (gallstones, sludge, wall thickening, pericholecystic fluid) or common bile duct dilation not detected on CT that could explain the biliary enzyme pattern and serve as the etiology for pancreatitis?",
+            "study_adequacy": "diagnostic",
+            "test_question_capability": "partially_capable",
+            "result_status": "positive",
+            "effect_on_previous_question": "Repeat ultrasound identified a 0.4 cm gallstone and measured CHD at 4 mm without acute cholecystitis, confirming gallstone presence missed on prior outpatient ultrasound and CT, but the non-dilated duct does not exclude a passed or impacted small CBD stone; the biliary etiology question is advanced but not closed.",
+            "discordance": {
+              "label": "concordant",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "Ultrasound finding of a gallstone is consistent with the cholestatic enzyme pattern and the clinical suspicion for biliary pancreatitis; no material discordance between the two streams."
+            }
+          },
+          "assumption_change": {
+            "label": "refine",
+            "changed_proposition": "Repeat ultrasound identified a 0.4 cm gallstone with a 4 mm common hepatic duct and no acute cholecystitis, partially addressing the biliary etiology question but not excluding choledocholithiasis or ampullary pathology",
+            "reason": "Ultrasound result confirms gallstone presence (upgrading prior negative outpatient US) but the non-dilated duct and absence of direct CBD stone visualization leave choledocholithiasis and ampullary pathology unresolved, motivating MRCP."
+          },
+          "current_question": {
+            "primary": "Is there a common bile duct stone, ampullary lesion, or pancreatic ductal abnormality that explains the persistent enzyme elevation and recurrent pancreatitis, not detectable by CT or ultrasound?",
+            "target": "common bile duct, ampulla of Vater, pancreatic duct, biliary tree",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Identifies choledocholithiasis or ampullary/ductal pathology directing ERCP, sphincterotomy, or surgical planning",
+            "negative_answer_changes": "Excludes CBD stone and ductal pathology, shifting focus to non-obstructive biliary etiology (gallstone pancreatitis without current obstruction, sphincter of Oddi dysfunction, or periampullary diverticulum effect) and supporting cholecystectomy without ERCP",
+            "secondary_questions": [
+              "Is there pancreatic ductal dilation or disruption suggesting chronic pancreatitis or a ductal complication not visible on CT?",
+              "Does the periampullary diverticulum show any associated biliary or ductal distortion that could explain the enzyme pattern?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate MRCP visualization of the common bile duct, pancreatic duct, and ampullary region",
+                "why_required": "Diagnostic quality ductal imaging is prerequisite to any conclusion about CBD stones or ductal pathology"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of filling defects in the common bile duct consistent with choledocholithiasis",
+                "why_required": "Directly addresses the primary unresolved etiology question that CT and ultrasound could not exclude"
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Localization of any obstruction or narrowing to the level of the ampulla, distal CBD, or intrahepatic ducts",
+                "why_required": "Determines whether pathology is at the ampullary level (relevant to periampullary diverticulum) versus more proximal"
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Degree of pancreatic ductal dilation or irregularity",
+                "why_required": "Ductal dilation or disruption would indicate chronic pancreatitis or a complication not visible on prior imaging"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Exclusion of ampullary lesion or periampullary mass as an alternative structural cause",
+                "why_required": "Periampullary diverticulum on CT raises concern for associated ampullary pathology that could cause partial obstruction without frank ductal dilation"
+              }
+            ],
+            "evidence": [
+              "A gallstone measures approximately 0.4 cm. There is no evidence of acute cholecystitis. CHD: 4 mm.",
+              "CT ABDOMEN: 'There is a periampullary duodenal diverticulum incidentally noted.'",
+              "Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)",
+              "Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)"
+            ]
+          },
+          "question_continuity": "refined",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "CT ABDOMEN: 'No intrahepatic or extrahepatic biliary ductal dilation.'",
+                  "CHD: 4 mm."
+                ],
+                "reason": "CT and ultrasound assessed the biliary tree at a gross level but neither provides the ductal resolution of MRCP for the distal CBD and ampullary region."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "CHD: 4 mm.",
+                  "CT ABDOMEN: 'No intrahepatic or extrahepatic biliary ductal dilation.'"
+                ],
+                "reason": "Non-dilated duct argues against large CBD stone but does not exclude small or impacted stones; ultrasound did not directly visualize the distal CBD."
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "CT ABDOMEN: 'There is a periampullary duodenal diverticulum incidentally noted.'"
+                ],
+                "reason": "No prior study has localized any obstruction or narrowing to the ampullary level; CT identified the diverticulum but did not characterize ductal anatomy at that level."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "CT ABDOMEN: 'No intrahepatic or extrahepatic biliary ductal dilation. The pancreas enhances normally.'"
+                ],
+                "reason": "CT excluded gross pancreatic ductal dilation and necrosis but lacks sensitivity for subtle ductal irregularity or early chronic changes."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "CT ABDOMEN: 'There is a periampullary duodenal diverticulum incidentally noted.'"
+                ],
+                "reason": "No prior study has characterized the ampulla itself or excluded an ampullary lesion; the periampullary diverticulum was noted incidentally without further ductal assessment."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "Prior CT and ultrasound exclude gross biliary dilation and acute cholecystitis and confirm a gallstone, but the distal CBD, ampullary region, and pancreatic duct remain inadequately characterized, leaving the primary etiology question unresolved."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "MRCP without contrast provides high-resolution fluid-sensitive ductal imaging of the biliary tree and pancreatic duct, directly visualizing CBD filling defects, ampullary anatomy, and ductal caliber changes that CT and ultrasound cannot reliably detect.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "MRCP without contrast cannot characterize ampullary mucosal lesions or provide tissue diagnosis; if MRCP shows a filling defect or ampullary abnormality, ERCP or EUS would be needed for intervention or biopsy."
+          },
+          "derived_transition": "advance",
+          "alternative_reconstruction": "The ordering clinician may be primarily motivated by the periampullary diverticulum on CT rather than the gallstone — under this frame MRCP is a structural survey to determine whether the diverticulum is distorting the ampulla or causing sphincter dysfunction, and the gallstone is considered an incidental finding insufficient to explain the cholestatic pattern alone; a negative MRCP under this frame would prompt EUS or sphincter of Oddi manometry rather than cholecystectomy."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Markedly elevated lipase (~8× ULN) with epigastric pain, nausea, and vomiting over 6 weeks indicates an active pancreatic process as the primary syndrome frame\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-system / syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Lipase: 489.0 IU/L (ref 0.0-60.0)\",\n        \"waxing and waning abdominal pain in the epigastrium over the past 6 weeks associated with intermittent nausea and vomiting\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Concurrent transaminase and alkaline phosphatase elevation suggests biliary or hepatic involvement alongside or instead of isolated pancreatitis\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-system\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n        \"Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Repeat ultrasound identified a 0.4 cm gallstone with a 4 mm common hepatic duct and no acute cholecystitis, partially addressing the biliary etiology question but not excluding choledocholithiasis or ampullary pathology\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"A gallstone measures approximately 0.4 cm. There is no evidence of acute cholecystitis. CHD: 4 mm.\",\n        \"CT ABDOMEN: 'No intrahepatic or extrahepatic biliary ductal dilation. The gallbladder appears normal.'\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A periampullary duodenal diverticulum noted on CT may be associated with biliary dysfunction or sphincter of Oddi dysfunction contributing to the enzyme pattern\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"CT ABDOMEN: 'There is a periampullary duodenal diverticulum incidentally noted.'\",\n        \"Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"CT and ultrasound have limited sensitivity for small CBD stones and subtle pancreatic or biliary ductal pathology, leaving choledocholithiasis and ampullary lesions incompletely excluded\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"A gallstone measures approximately 0.4 cm. There is no evidence of acute cholecystitis. CHD: 4 mm.\",\n        \"outpatient RUQ US which was negative for any acute findings or evidence of cholelithiasis\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there gallbladder pathology (gallstones, sludge, wall thickening, pericholecystic fluid) or common bile duct dilation not detected on CT that could explain the biliary enzyme pattern and serve as the etiology for pancreatitis?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"partially_capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"Repeat ultrasound identified a 0.4 cm gallstone and measured CHD at 4 mm without acute cholecystitis, confirming gallstone presence missed on prior outpatient ultrasound and CT, but the non-dilated duct does not exclude a passed or impacted small CBD stone; the biliary etiology question is advanced but not closed.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"Ultrasound finding of a gallstone is consistent with the cholestatic enzyme pattern and the clinical suspicion for biliary pancreatitis; no material discordance between the two streams.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Repeat ultrasound identified a 0.4 cm gallstone with a 4 mm common hepatic duct and no acute cholecystitis, partially addressing the biliary etiology question but not excluding choledocholithiasis or ampullary pathology\",\n    \"reason\": \"Ultrasound result confirms gallstone presence (upgrading prior negative outpatient US) but the non-dilated duct and absence of direct CBD stone visualization leave choledocholithiasis and ampullary pathology unresolved, motivating MRCP.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a common bile duct stone, ampullary lesion, or pancreatic ductal abnormality that explains the persistent enzyme elevation and recurrent pancreatitis, not detectable by CT or ultrasound?\",\n    \"target\": \"common bile duct, ampulla of Vater, pancreatic duct, biliary tree\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifies choledocholithiasis or ampullary/ductal pathology directing ERCP, sphincterotomy, or surgical planning\",\n    \"negative_answer_changes\": \"Excludes CBD stone and ductal pathology, shifting focus to non-obstructive biliary etiology (gallstone pancreatitis without current obstruction, sphincter of Oddi dysfunction, or periampullary diverticulum effect) and supporting cholecystectomy without ERCP\",\n    \"secondary_questions\": [\n      \"Is there pancreatic ductal dilation or disruption suggesting chronic pancreatitis or a ductal complication not visible on CT?\",\n      \"Does the periampullary diverticulum show any associated biliary or ductal distortion that could explain the enzyme pattern?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate MRCP visualization of the common bile duct, pancreatic duct, and ampullary region\",\n        \"why_required\": \"Diagnostic quality ductal imaging is prerequisite to any conclusion about CBD stones or ductal pathology\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of filling defects in the common bile duct consistent with choledocholithiasis\",\n        \"why_required\": \"Directly addresses the primary unresolved etiology question that CT and ultrasound could not exclude\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any obstruction or narrowing to the level of the ampulla, distal CBD, or intrahepatic ducts\",\n        \"why_required\": \"Determines whether pathology is at the ampullary level (relevant to periampullary diverticulum) versus more proximal\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of pancreatic ductal dilation or irregularity\",\n        \"why_required\": \"Ductal dilation or disruption would indicate chronic pancreatitis or a complication not visible on prior imaging\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Exclusion of ampullary lesion or periampullary mass as an alternative structural cause\",\n        \"why_required\": \"Periampullary diverticulum on CT raises concern for associated ampullary pathology that could cause partial obstruction without frank ductal dilation\"\n      }\n    ],\n    \"evidence\": [\n      \"A gallstone measures approximately 0.4 cm. There is no evidence of acute cholecystitis. CHD: 4 mm.\",\n      \"CT ABDOMEN: 'There is a periampullary duodenal diverticulum incidentally noted.'\",\n      \"Alanine Aminotransferase (ALT): 154.0 IU/L (ref 0.0-40.0)\",\n      \"Alkaline Phosphatase: 220.0 IU/L (ref 35.0-105.0)\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: 'No intrahepatic or extrahepatic biliary ductal dilation.'\",\n          \"CHD: 4 mm.\"\n        ],\n        \"reason\": \"CT and ultrasound assessed the biliary tree at a gross level but neither provides the ductal resolution of MRCP for the distal CBD and ampullary region.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CHD: 4 mm.\",\n          \"CT ABDOMEN: 'No intrahepatic or extrahepatic biliary ductal dilation.'\"\n        ],\n        \"reason\": \"Non-dilated duct argues against large CBD stone but does not exclude small or impacted stones; ultrasound did not directly visualize the distal CBD.\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: 'There is a periampullary duodenal diverticulum incidentally noted.'\"\n        ],\n        \"reason\": \"No prior study has localized any obstruction or narrowing to the ampullary level; CT identified the diverticulum but did not characterize ductal anatomy at that level.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: 'No intrahepatic or extrahepatic biliary ductal dilation. The pancreas enhances normally.'\"\n        ],\n        \"reason\": \"CT excluded gross pancreatic ductal dilation and necrosis but lacks sensitivity for subtle ductal irregularity or early chronic changes.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: 'There is a periampullary duodenal diverticulum incidentally noted.'\"\n        ],\n        \"reason\": \"No prior study has characterized the ampulla itself or excluded an ampullary lesion; the periampullary diverticulum was noted incidentally without further ductal assessment.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Prior CT and ultrasound exclude gross biliary dilation and acute cholecystitis and confirm a gallstone, but the distal CBD, ampullary region, and pancreatic duct remain inadequately characterized, leaving the primary etiology question unresolved.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"MRCP without contrast provides high-resolution fluid-sensitive ductal imaging of the biliary tree and pancreatic duct, directly visualizing CBD filling defects, ampullary anatomy, and ductal caliber changes that CT and ultrasound cannot reliably detect.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"MRCP without contrast cannot characterize ampullary mucosal lesions or provide tissue diagnosis; if MRCP shows a filling defect or ampullary abnormality, ERCP or EUS would be needed for intervention or biopsy.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"The ordering clinician may be primarily motivated by the periampullary diverticulum on CT rather than the gallstone — under this frame MRCP is a structural survey to determine whether the diverticulum is distorting the ampulla or causing sphincter dysfunction, and the gallstone is considered an incidental finding insufficient to explain the cholestatic pattern alone; a negative MRCP under this frame would prompt EUS or sphincter of Oddi manometry rather than cholecystectomy.\"\n}\n```",
+        "request_id": "gen-1788005719-2gN10sPkj8k9s07arzWV",
+        "usage": {
+          "completion_tokens": 3311,
+          "prompt_tokens": 5782,
+          "total_tokens": 9093,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.067011,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.067011,
+            "upstream_inference_prompt_cost": 0.017346,
+            "upstream_inference_completions_cost": 0.049665
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.4,
+        "direct_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "etiology_or_mechanism",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": true,
+        "direct_question_type": "etiology_or_mechanism",
+        "recode_question_type": "etiology_or_mechanism",
+        "requirement_jaccard": 0.4286,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "complication_presence_or_character",
+          "etiologic_agent_or_mechanism",
+          "presence_or_absence",
+          "target_visualization_or_assessment"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "presence_or_absence",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "partially_answered",
+        "recode_aggregate_coverage": "partially_answered",
+        "transition_match": false
+      }
+    }
+  ]
+}

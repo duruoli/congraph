@@ -1,0 +1,975 @@
+{
+  "schema_version": "1.0.0-development",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 20279299,
+  "source_path": "results/annotation_experiment/full/appendicitis_20279299.json",
+  "model": "anthropic/claude-sonnet-4.6",
+  "causal_boundary": "DIRECT=masked chart+order; RECODE=old ex-ante reconstruction+order; both exclude current result, later events, verification, deviation, ACR, and disease answer labels",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "direct_prompt_sha256": "60ea7d69d36478d0fa94fcaa23ff7b2d2737d4b90872a333bbca77ea941856d4",
+      "recode_prompt_sha256": "ae4d3bd7c9e162a4d836913073751d1851e386fc0f6b3d333f510f1a3c094745",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Patient has an acute intra-abdominal process localized to the right lower quadrant as the source of pain, leukocytosis, and systemic signs",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "clinical syndrome",
+              "status": "suspected",
+              "evidence": [
+                "RLQ pain, which is fairly persistent",
+                "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Appendicitis is the leading diagnostic candidate given RLQ pain and leukocytosis in a young male",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "one day of RLQ pain",
+                "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "A travel-related infectious or parasitic etiology (e.g., amebic abscess, enteric infection) is an alternative given recent international travel",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "suspected",
+              "evidence": [
+                "He travels frequently for work and just returned from ___ 5 days ago",
+                "Atypical Lymphocytes: 10.0 % (ref 0.0-0.0)"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Patient has multi-organ dysfunction (AKI, hyponatremia, thrombocytopenia, elevated bilirubin, borderline lactate) suggesting a systemic or severe infectious process",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "severity",
+              "status": "suspected",
+              "evidence": [
+                "Creatinine: 1.8 mg/dL (ref 0.5-1.2)",
+                "Platelet Count: 122.0 K/uL (ref 150.0-440.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Urinary tract pathology (nephrolithiasis, pyelonephritis) is a secondary alternative source given urinary frequency and hematuria on UA",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "differential diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "He does note some frequency with urination",
+                "RBC: 3.0 #/hpf (ref 0.0-2.0)"
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior imaging; this is the first decision point.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "No prior imaging to compare."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are newly established from history, exam, and labs."
+          },
+          "current_question": {
+            "primary": "Is there an identifiable intra-abdominal or pelvic structural abnormality (e.g., appendicitis, abscess, mass, or other pathology) explaining the RLQ pain, leukocytosis, and systemic derangements?",
+            "target": "abdomen and pelvis including appendix, bowel, liver, kidneys, and lymph nodes",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Directs surgical, interventional, or targeted medical management based on identified pathology",
+            "negative_answer_changes": "Shifts workup toward systemic/infectious etiology (e.g., malaria, viral illness) or extra-abdominal source",
+            "secondary_questions": [
+              "Are there complications such as perforation, abscess, or free fluid that would change urgency of intervention?",
+              "Is there evidence of a hepatic or splenic lesion consistent with travel-related infection (e.g., amebic abscess)?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Visualization of appendix, bowel, liver, spleen, kidneys, and retroperitoneum",
+                "why_required": "Structural source of RLQ pain and systemic illness must be identified or excluded"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of appendicitis, abscess, or mass",
+                "why_required": "Primary diagnostic candidates must be confirmed or excluded to guide management"
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence of perforation, free air, free fluid, or peritonitis",
+                "why_required": "Complications alter urgency and type of intervention"
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Hepatic, splenic, or retroperitoneal findings suggesting travel-related infection",
+                "why_required": "Atypical lymphocytes, thrombocytopenia, and travel history raise concern for parasitic or viral etiology"
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Extent of inflammatory change or organomegaly",
+                "why_required": "Multi-organ lab derangements suggest potentially severe or disseminated process requiring extent assessment"
+              }
+            ],
+            "evidence": [
+              "RLQ pain, which is fairly persistent",
+              "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging has been performed; anatomy is not yet visualized."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Labs raise suspicion but cannot confirm or exclude structural pathology."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Exam is soft without guarding but imaging is required to detect occult complications."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Atypical Lymphocytes: 10.0 %",
+                  "He travels frequently for work and just returned from ___ 5 days ago"
+                ],
+                "reason": "Labs suggest possible systemic/infectious process but imaging is needed to identify organ-level findings."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Creatinine: 1.8 mg/dL",
+                  "Platelet Count: 122.0 K/uL"
+                ],
+                "reason": "Lab derangements suggest severity but anatomic extent requires imaging."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "No prior imaging; all structural requirements remain unaddressed by available evidence."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Contrast-enhanced CT abdomen and pelvis provides comprehensive visualization of appendix, bowel, solid organs, lymph nodes, and retroperitoneum, addressing all structural requirements including complications and alternative sources.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "CT cannot reliably identify parasitic organisms, viral etiologies (e.g., malaria), or early mucosal-only bowel infection; microbiologic workup remains separately needed."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The multi-organ lab derangements (thrombocytopenia, hyponatremia, AKI, atypical lymphocytes, elevated bilirubin) in a frequent traveler could frame the primary question as systemic febrile illness (e.g., malaria, dengue, typhoid) with RLQ pain as a secondary feature; CT would then serve to exclude abdominal complications of systemic infection rather than to diagnose appendicitis."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Patient has an acute intra-abdominal process localized to the right lower quadrant as the source of pain, leukocytosis, and systemic signs\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"RLQ pain, which is fairly persistent\",\n        \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Appendicitis is the leading diagnostic candidate given RLQ pain and leukocytosis in a young male\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"one day of RLQ pain\",\n        \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A travel-related infectious or parasitic etiology (e.g., amebic abscess, enteric infection) is an alternative given recent international travel\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"He travels frequently for work and just returned from ___ 5 days ago\",\n        \"Atypical Lymphocytes: 10.0 % (ref 0.0-0.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Patient has multi-organ dysfunction (AKI, hyponatremia, thrombocytopenia, elevated bilirubin, borderline lactate) suggesting a systemic or severe infectious process\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Creatinine: 1.8 mg/dL (ref 0.5-1.2)\",\n        \"Platelet Count: 122.0 K/uL (ref 150.0-440.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Urinary tract pathology (nephrolithiasis, pyelonephritis) is a secondary alternative source given urinary frequency and hematuria on UA\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"He does note some frequency with urination\",\n        \"RBC: 3.0 #/hpf (ref 0.0-2.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior imaging; this is the first decision point.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are newly established from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an identifiable intra-abdominal or pelvic structural abnormality (e.g., appendicitis, abscess, mass, or other pathology) explaining the RLQ pain, leukocytosis, and systemic derangements?\",\n    \"target\": \"abdomen and pelvis including appendix, bowel, liver, kidneys, and lymph nodes\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Directs surgical, interventional, or targeted medical management based on identified pathology\",\n    \"negative_answer_changes\": \"Shifts workup toward systemic/infectious etiology (e.g., malaria, viral illness) or extra-abdominal source\",\n    \"secondary_questions\": [\n      \"Are there complications such as perforation, abscess, or free fluid that would change urgency of intervention?\",\n      \"Is there evidence of a hepatic or splenic lesion consistent with travel-related infection (e.g., amebic abscess)?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of appendix, bowel, liver, spleen, kidneys, and retroperitoneum\",\n        \"why_required\": \"Structural source of RLQ pain and systemic illness must be identified or excluded\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of appendicitis, abscess, or mass\",\n        \"why_required\": \"Primary diagnostic candidates must be confirmed or excluded to guide management\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence of perforation, free air, free fluid, or peritonitis\",\n        \"why_required\": \"Complications alter urgency and type of intervention\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Hepatic, splenic, or retroperitoneal findings suggesting travel-related infection\",\n        \"why_required\": \"Atypical lymphocytes, thrombocytopenia, and travel history raise concern for parasitic or viral etiology\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of inflammatory change or organomegaly\",\n        \"why_required\": \"Multi-organ lab derangements suggest potentially severe or disseminated process requiring extent assessment\"\n      }\n    ],\n    \"evidence\": [\n      \"RLQ pain, which is fairly persistent\",\n      \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging has been performed; anatomy is not yet visualized.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Labs raise suspicion but cannot confirm or exclude structural pathology.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Exam is soft without guarding but imaging is required to detect occult complications.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Atypical Lymphocytes: 10.0 %\",\n          \"He travels frequently for work and just returned from ___ 5 days ago\"\n        ],\n        \"reason\": \"Labs suggest possible systemic/infectious process but imaging is needed to identify organ-level findings.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Creatinine: 1.8 mg/dL\",\n          \"Platelet Count: 122.0 K/uL\"\n        ],\n        \"reason\": \"Lab derangements suggest severity but anatomic extent requires imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No prior imaging; all structural requirements remain unaddressed by available evidence.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT abdomen and pelvis provides comprehensive visualization of appendix, bowel, solid organs, lymph nodes, and retroperitoneum, addressing all structural requirements including complications and alternative sources.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"CT cannot reliably identify parasitic organisms, viral etiologies (e.g., malaria), or early mucosal-only bowel infection; microbiologic workup remains separately needed.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The multi-organ lab derangements (thrombocytopenia, hyponatremia, AKI, atypical lymphocytes, elevated bilirubin) in a frequent traveler could frame the primary question as systemic febrile illness (e.g., malaria, dengue, typhoid) with RLQ pain as a secondary feature; CT would then serve to exclude abdominal complications of systemic infection rather than to diagnose appendicitis.\"\n}\n```",
+        "request_id": "gen-1787996363-qPrBhaicujjbp2dWSoZW",
+        "usage": {
+          "completion_tokens": 2439,
+          "prompt_tokens": 3570,
+          "total_tokens": 6009,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.047295,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.047295,
+            "upstream_inference_prompt_cost": 0.01071,
+            "upstream_inference_completions_cost": 0.036585
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The patient has an acute abdominal process with RLQ pain as the dominant localizing symptom, but a soft non-tender exam creates uncertainty about a surgical versus systemic/infectious source.",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "clinical presentation",
+              "status": "suspected",
+              "evidence": [
+                "'4days of nausea, vomiting and one day of RLQ pain'",
+                "'Soft, non-tender, no rebound or guarding, JPx2'"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "A travel-related infectious or parasitic process (e.g., amebic liver abscess, enteric fever) is a plausible etiology given recent international travel and systemic laboratory derangements.",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiologic hypothesis",
+              "status": "suspected",
+              "evidence": [
+                "'travels frequently for work and just returned from ___ 5 days ago'",
+                "'Atypical Lymphocytes: 10.0 % (ref 0.0-0.0)'"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Appendicitis remains a candidate diagnosis despite the soft abdomen, given RLQ pain and leukocytosis.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "diagnostic hypothesis",
+              "status": "suspected",
+              "evidence": [
+                "'4days of nausea, vomiting and one day of RLQ pain'",
+                "'White Blood Cells: 18.2 K/uL (ref 4.0-11.0)'"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "The constellation of thrombocytopenia, atypical lymphocytes, hyponatremia, elevated anion gap, elevated bilirubin/ALT, and AKI indicates a systemic process beyond a localized surgical abdomen.",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "systemic severity",
+              "status": "suspected",
+              "evidence": [
+                "'Platelet Count: 122.0 K/uL (ref 150.0-440.0)'",
+                "'Sodium: 127.0 mEq/L (ref 133.0-145.0)'"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Hepatic or splenic pathology (e.g., abscess, hepatitis) is a plausible alternative source given mildly elevated bilirubin and ALT in a traveler.",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "anatomic alternative",
+              "status": "suspected",
+              "evidence": [
+                "'Bilirubin, Total: 2.0 mg/dL (ref 0.0-1.5)'",
+                "'Alanine Aminotransferase (ALT): 58.0 IU/L (ref 0.0-40.0)'"
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior order exists; this is the first decision point.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "No prior order to compare."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are initialized from history, exam, and labs."
+          },
+          "current_question": {
+            "primary": "Is there an identifiable anatomic source — appendiceal, hepatic, splenic, mesenteric, colonic, or other — that explains the RLQ pain and systemic laboratory derangements in this traveler?",
+            "target": "appendix, liver, spleen, mesenteric nodes, colon, and retroperitoneum",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Identifies a surgical target (e.g., appendicitis, abscess) or redirects workup toward a specific infectious/systemic etiology.",
+            "negative_answer_changes": "Absence of surgical or focal infectious finding shifts probability toward a non-anatomic systemic process and prompts infectious disease workup.",
+            "secondary_questions": [
+              "Is there hepatic or splenic abscess formation consistent with a travel-related parasitic infection?",
+              "Is there mesenteric lymphadenopathy or colitis suggesting an enteric infectious process?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of appendix, liver, spleen, mesenteric nodes, and colon",
+                "why_required": "Cannot localize or exclude a source without direct anatomic assessment of candidate structures."
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of appendiceal dilation, periappendiceal fat stranding, or perforation",
+                "why_required": "Appendicitis is the leading surgical hypothesis and must be confirmed or excluded."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of hepatic/splenic abscess, focal hepatic lesion, or splenomegaly",
+                "why_required": "Travel-related hepatic abscess is a competing hypothesis supported by elevated bilirubin and ALT."
+              },
+              {
+                "id": "finding_identity",
+                "other_proposed_dimension": "",
+                "dimension": "Characterization of any identified lesion or lymphadenopathy to narrow etiology",
+                "why_required": "Distinguishing abscess from tumor from lymphadenopathy changes management direction."
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Extent of any inflammatory or infectious process (localized vs. diffuse)",
+                "why_required": "Severity determines urgency of surgical versus medical intervention."
+              }
+            ],
+            "evidence": [
+              "'4days of nausea, vomiting and one day of RLQ pain'",
+              "'travels frequently for work and just returned from ___ 5 days ago'",
+              "'White Blood Cells: 18.2 K/uL (ref 4.0-11.0)'",
+              "'Bilirubin, Total: 2.0 mg/dL (ref 0.0-1.5)'"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging has been performed; anatomic structures have not been assessed."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Appendiceal status is unknown; physical exam was soft and non-tender, which is inconclusive."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Labs raise hepatic concern but cannot discriminate abscess from hepatitis or other pathology without imaging."
+              },
+              {
+                "requirement_id": "finding_identity",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging data available to characterize any lesion."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Systemic labs suggest severity but anatomic extent is entirely unknown without imaging."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "All anatomic requirements are unaddressed prior to CT; labs and history raise hypotheses but cannot answer the localization question."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "CT abdomen and pelvis with contrast can simultaneously assess the appendix, liver, spleen, mesenteric nodes, and colon, addressing all five answer requirements in a single study.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "CT cannot identify a specific microbiologic or parasitic etiology (e.g., malaria, enteric fever) and may not fully explain the degree of systemic metabolic derangement if the process is primarily hematologic or infectious without focal anatomic findings."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The order could reflect a narrower intent focused primarily on excluding appendicitis, with the travel-related and systemic hypotheses considered secondary. Under this account, the broad metabolic derangements are attributed to a systemic response to appendicitis rather than an independent infectious process, making the CT a targeted rather than broad-search study. This is less supported given the degree of laboratory abnormality and the discordant soft abdomen."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal process with RLQ pain as the dominant localizing symptom, but a soft non-tender exam creates uncertainty about a surgical versus systemic/infectious source.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"'4days of nausea, vomiting and one day of RLQ pain'\",\n        \"'Soft, non-tender, no rebound or guarding, JPx2'\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A travel-related infectious or parasitic process (e.g., amebic liver abscess, enteric fever) is a plausible etiology given recent international travel and systemic laboratory derangements.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic hypothesis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"'travels frequently for work and just returned from ___ 5 days ago'\",\n        \"'Atypical Lymphocytes: 10.0 % (ref 0.0-0.0)'\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Appendicitis remains a candidate diagnosis despite the soft abdomen, given RLQ pain and leukocytosis.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnostic hypothesis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"'4days of nausea, vomiting and one day of RLQ pain'\",\n        \"'White Blood Cells: 18.2 K/uL (ref 4.0-11.0)'\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The constellation of thrombocytopenia, atypical lymphocytes, hyponatremia, elevated anion gap, elevated bilirubin/ALT, and AKI indicates a systemic process beyond a localized surgical abdomen.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"systemic severity\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"'Platelet Count: 122.0 K/uL (ref 150.0-440.0)'\",\n        \"'Sodium: 127.0 mEq/L (ref 133.0-145.0)'\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Hepatic or splenic pathology (e.g., abscess, hepatitis) is a plausible alternative source given mildly elevated bilirubin and ALT in a traveler.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"anatomic alternative\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"'Bilirubin, Total: 2.0 mg/dL (ref 0.0-1.5)'\",\n        \"'Alanine Aminotransferase (ALT): 58.0 IU/L (ref 0.0-40.0)'\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior order exists; this is the first decision point.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior order to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are initialized from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an identifiable anatomic source — appendiceal, hepatic, splenic, mesenteric, colonic, or other — that explains the RLQ pain and systemic laboratory derangements in this traveler?\",\n    \"target\": \"appendix, liver, spleen, mesenteric nodes, colon, and retroperitoneum\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifies a surgical target (e.g., appendicitis, abscess) or redirects workup toward a specific infectious/systemic etiology.\",\n    \"negative_answer_changes\": \"Absence of surgical or focal infectious finding shifts probability toward a non-anatomic systemic process and prompts infectious disease workup.\",\n    \"secondary_questions\": [\n      \"Is there hepatic or splenic abscess formation consistent with a travel-related parasitic infection?\",\n      \"Is there mesenteric lymphadenopathy or colitis suggesting an enteric infectious process?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of appendix, liver, spleen, mesenteric nodes, and colon\",\n        \"why_required\": \"Cannot localize or exclude a source without direct anatomic assessment of candidate structures.\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of appendiceal dilation, periappendiceal fat stranding, or perforation\",\n        \"why_required\": \"Appendicitis is the leading surgical hypothesis and must be confirmed or excluded.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of hepatic/splenic abscess, focal hepatic lesion, or splenomegaly\",\n        \"why_required\": \"Travel-related hepatic abscess is a competing hypothesis supported by elevated bilirubin and ALT.\"\n      },\n      {\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of any identified lesion or lymphadenopathy to narrow etiology\",\n        \"why_required\": \"Distinguishing abscess from tumor from lymphadenopathy changes management direction.\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of any inflammatory or infectious process (localized vs. diffuse)\",\n        \"why_required\": \"Severity determines urgency of surgical versus medical intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"'4days of nausea, vomiting and one day of RLQ pain'\",\n      \"'travels frequently for work and just returned from ___ 5 days ago'\",\n      \"'White Blood Cells: 18.2 K/uL (ref 4.0-11.0)'\",\n      \"'Bilirubin, Total: 2.0 mg/dL (ref 0.0-1.5)'\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging has been performed; anatomic structures have not been assessed.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Appendiceal status is unknown; physical exam was soft and non-tender, which is inconclusive.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Labs raise hepatic concern but cannot discriminate abscess from hepatitis or other pathology without imaging.\"\n      },\n      {\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging data available to characterize any lesion.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Systemic labs suggest severity but anatomic extent is entirely unknown without imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All anatomic requirements are unaddressed prior to CT; labs and history raise hypotheses but cannot answer the localization question.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"CT abdomen and pelvis with contrast can simultaneously assess the appendix, liver, spleen, mesenteric nodes, and colon, addressing all five answer requirements in a single study.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"CT cannot identify a specific microbiologic or parasitic etiology (e.g., malaria, enteric fever) and may not fully explain the degree of systemic metabolic derangement if the process is primarily hematologic or infectious without focal anatomic findings.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The order could reflect a narrower intent focused primarily on excluding appendicitis, with the travel-related and systemic hypotheses considered secondary. Under this account, the broad metabolic derangements are attributed to a systemic response to appendicitis rather than an independent infectious process, making the CT a targeted rather than broad-search study. This is less supported given the degree of laboratory abnormality and the discordant soft abdomen.\"\n}\n```",
+        "request_id": "gen-1787996399-M0nvSVf9zxPef7yBfYPr",
+        "usage": {
+          "completion_tokens": 2527,
+          "prompt_tokens": 2966,
+          "total_tokens": 5493,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.046803,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.046803,
+            "upstream_inference_prompt_cost": 0.008898,
+            "upstream_inference_completions_cost": 0.037905
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 1.0,
+        "direct_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course",
+          "syndrome_or_source_frame"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": true,
+        "direct_question_type": "source_localization",
+        "recode_question_type": "source_localization",
+        "requirement_jaccard": 0.6667,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "complication_presence_or_character",
+          "presence_or_absence",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "finding_identity",
+          "presence_or_absence",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "unanswered",
+        "recode_aggregate_coverage": "unanswered",
+        "transition_match": true
+      }
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "direct_prompt_sha256": "03c749670b3416e3bd6e575c5267a056cd5cf35449187cea59b60d9bd14cc08d",
+      "recode_prompt_sha256": "f0235661881b9e4011977efab58a32747d0658309b56b9586fe1393c48cd5298",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Patient has a perforated appendicitis with periappendiceal abscess formation based on CT findings of extraluminal free air, air-fluid collections adjacent to a hyperemic appendix with appendicolith",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "diagnosis with complication",
+              "status": "established",
+              "evidence": [
+                "Adjacent to the proximal portion of the appendix there is extraluminal free air. A 2.5 x 1.2 cm (601b:36) collection which is predominately full of air is seen slightly anterior to the appendix.",
+                "A 0.5 x 0.5 cm (601b:36) appendicolith is seen at the base of the appendix. The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The periappendiceal process involves at least two distinct collections (2.5 x 1.2 cm and 5.7 x 2.6 cm) that may be in continuity, indicating a complex abscess requiring drainage or surgical management",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "severity",
+              "status": "established",
+              "evidence": [
+                "An additional 5.7 x 2.6 cm (2:63) air and fluid filled collection is seen slightly superior to the appendix and may be in continuation with the previously identified collection.",
+                "Secondary inflammation of the base of the cecum and ascending colon is present."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Travel-related infectious or parasitic etiology is now a less likely primary explanation given CT demonstrates classic perforated appendicitis without hepatic or splenic lesions",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "differential diagnosis",
+              "status": "challenged",
+              "evidence": [
+                "The liver is homogeneous in enhancement. No focal lesion identified.",
+                "The spleen is normal."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Multi-organ lab derangements (AKI, thrombocytopenia, hyponatremia, elevated bilirubin) likely reflect systemic response to perforation and sepsis rather than a primary systemic infectious disease",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "etiology",
+              "status": "suspected",
+              "evidence": [
+                "Creatinine: 1.8 mg/dL (ref 0.5-1.2)",
+                "Platelet Count: 122.0 K/uL (ref 150.0-440.0)"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Urinary tract pathology is effectively excluded as a primary source given no hydronephrosis, no calculi, and no renal lesions on CT",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "differential diagnosis",
+              "status": "excluded",
+              "evidence": [
+                "No hydronephrosis or hydroureter identified. No renal or proximal ureter calculi.",
+                "The bladder is well distended and normal."
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "Is there an identifiable intra-abdominal or pelvic structural abnormality (e.g., appendicitis, abscess, mass, or other pathology) explaining the RLQ pain, leukocytosis, and systemic derangements?",
+            "study_adequacy": "diagnostic",
+            "test_question_capability": "capable",
+            "result_status": "positive",
+            "effect_on_previous_question": "CT fully addressed all structural requirements: appendicitis with perforation and complex periappendiceal abscess confirmed; hepatic/splenic lesions excluded; urinary pathology excluded; extent of inflammation and complications characterized.",
+            "discordance": {
+              "label": "concordant",
+              "evidence_stream_1": "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)",
+              "evidence_stream_2": "The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter. Adjacent to the proximal portion of the appendix there is extraluminal free air.",
+              "reason": "Leukocytosis and RLQ pain are fully concordant with CT-confirmed perforated appendicitis."
+            }
+          },
+          "assumption_change": {
+            "label": "refine",
+            "changed_proposition": "Appendicitis is the leading diagnostic candidate — refined to established perforated appendicitis with complex periappendiceal abscess",
+            "reason": "CT demonstrates appendicolith, hyperemic dilated appendix, extraluminal free air, and two air-fluid collections, confirming perforation with abscess."
+          },
+          "current_question": {
+            "primary": "What is the precise anatomic extent, number, and character of the periappendiceal collections, and is there communication or additional undrained fluid that would guide interventional versus surgical management?",
+            "target": "periappendiceal abscess collections, appendix, cecum, and adjacent mesentery",
+            "type": "severity_or_extent",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Confirms complex multi-loculated or communicating abscess favoring IR drainage or operative intervention with washout",
+            "negative_answer_changes": "Single well-defined collection may support percutaneous drainage with interval appendectomy",
+            "secondary_questions": [
+              "Is there evidence of ongoing free perforation or diffuse peritonitis beyond the localized collections?",
+              "Are the mesenteric fluid pockets (3.3 x 3.4 cm and 2.4 x 1.8 cm) separate from the periappendiceal collections or contiguous?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Character and continuity of periappendiceal air-fluid collections",
+                "why_required": "Determines whether collections are amenable to percutaneous drainage or require operative management"
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Extent of free air, free fluid, and inflammatory change beyond the periappendiceal region",
+                "why_required": "Diffuse peritonitis or distant free air would mandate urgent surgery over interval management"
+              },
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Precise location and accessibility of collections for percutaneous drainage",
+                "why_required": "IR drainage planning requires knowledge of collection position relative to bowel and vessels"
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of additional undrained fluid pockets in the mesentery or pelvis",
+                "why_required": "Small pelvic free fluid and mesenteric pockets noted on CT may represent additional sites requiring drainage"
+              }
+            ],
+            "evidence": [
+              "An additional 5.7 x 2.6 cm (2:63) air and fluid filled collection is seen slightly superior to the appendix and may be in continuation with the previously identified collection.",
+              "3.3 x 3.4 cm and 2.4 x 1.8 cm (601b:30) pockets of fluid within the mesenteric leaves."
+            ]
+          },
+          "question_continuity": "refined",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "sufficiently_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "Adjacent to the proximal portion of the appendix there is extraluminal free air.",
+                  "A 2.5 x 1.2 cm collection which is predominately full of air is seen slightly anterior to the appendix."
+                ],
+                "reason": "CT confirms extraluminal free air and two periappendiceal air-fluid collections, establishing perforation with abscess."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "Secondary inflammation of the base of the cecum and ascending colon is present.",
+                  "Small amount of free pelvic fluid seen."
+                ],
+                "reason": "CT characterizes local extent but the relationship between mesenteric fluid pockets and the main collections remains incompletely defined."
+              },
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "sufficiently_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "A 5.7 x 2.6 cm (2:63) air and fluid filled collection is seen slightly superior to the appendix",
+                  "2.5 x 1.2 cm (601b:36) collection which is predominately full of air is seen slightly anterior to the appendix"
+                ],
+                "reason": "CT provides series and image coordinates for both collections, supporting drainage planning."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "3.3 x 3.4 cm and 2.4 x 1.8 cm (601b:30) pockets of fluid within the mesenteric leaves.",
+                  "Small amount of free pelvic fluid seen."
+                ],
+                "reason": "Additional fluid pockets are identified but their clinical significance and drainability are not fully characterized."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "CT confirms perforated appendicitis with complex abscess and characterizes the main collections, but continuity between collections and significance of mesenteric/pelvic fluid remain partially unresolved for definitive management planning."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Repeat or same-series contrast CT abdomen/pelvis with dedicated review of collection morphology and multiplanar reformats can define collection continuity, extent of free air, and drainage accessibility.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "The reason for ordering a second CT ABD & PELVIS WITH CONTRAST when the prior CT already demonstrated the findings is not explained by visible evidence; this may represent a repeat for surgical planning, IR guidance, or a protocol re-order rather than a new diagnostic question."
+          },
+          "derived_transition": "advance",
+          "alternative_reconstruction": "The second CT order may reflect concern that the prior CT was performed without oral contrast and the collections' relationship to bowel loops is uncertain, prompting a repeat study with oral contrast or dedicated delayed phase to better characterize the abscess boundaries before IR drainage planning."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Patient has a perforated appendicitis with periappendiceal abscess formation based on CT findings of extraluminal free air, air-fluid collections adjacent to a hyperemic appendix with appendicolith\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnosis with complication\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Adjacent to the proximal portion of the appendix there is extraluminal free air. A 2.5 x 1.2 cm (601b:36) collection which is predominately full of air is seen slightly anterior to the appendix.\",\n        \"A 0.5 x 0.5 cm (601b:36) appendicolith is seen at the base of the appendix. The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The periappendiceal process involves at least two distinct collections (2.5 x 1.2 cm and 5.7 x 2.6 cm) that may be in continuity, indicating a complex abscess requiring drainage or surgical management\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"An additional 5.7 x 2.6 cm (2:63) air and fluid filled collection is seen slightly superior to the appendix and may be in continuation with the previously identified collection.\",\n        \"Secondary inflammation of the base of the cecum and ascending colon is present.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Travel-related infectious or parasitic etiology is now a less likely primary explanation given CT demonstrates classic perforated appendicitis without hepatic or splenic lesions\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"The liver is homogeneous in enhancement. No focal lesion identified.\",\n        \"The spleen is normal.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Multi-organ lab derangements (AKI, thrombocytopenia, hyponatremia, elevated bilirubin) likely reflect systemic response to perforation and sepsis rather than a primary systemic infectious disease\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Creatinine: 1.8 mg/dL (ref 0.5-1.2)\",\n        \"Platelet Count: 122.0 K/uL (ref 150.0-440.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Urinary tract pathology is effectively excluded as a primary source given no hydronephrosis, no calculi, and no renal lesions on CT\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"No hydronephrosis or hydroureter identified. No renal or proximal ureter calculi.\",\n        \"The bladder is well distended and normal.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there an identifiable intra-abdominal or pelvic structural abnormality (e.g., appendicitis, abscess, mass, or other pathology) explaining the RLQ pain, leukocytosis, and systemic derangements?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"CT fully addressed all structural requirements: appendicitis with perforation and complex periappendiceal abscess confirmed; hepatic/splenic lesions excluded; urinary pathology excluded; extent of inflammation and complications characterized.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\",\n      \"evidence_stream_2\": \"The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter. Adjacent to the proximal portion of the appendix there is extraluminal free air.\",\n      \"reason\": \"Leukocytosis and RLQ pain are fully concordant with CT-confirmed perforated appendicitis.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Appendicitis is the leading diagnostic candidate — refined to established perforated appendicitis with complex periappendiceal abscess\",\n    \"reason\": \"CT demonstrates appendicolith, hyperemic dilated appendix, extraluminal free air, and two air-fluid collections, confirming perforation with abscess.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the precise anatomic extent, number, and character of the periappendiceal collections, and is there communication or additional undrained fluid that would guide interventional versus surgical management?\",\n    \"target\": \"periappendiceal abscess collections, appendix, cecum, and adjacent mesentery\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirms complex multi-loculated or communicating abscess favoring IR drainage or operative intervention with washout\",\n    \"negative_answer_changes\": \"Single well-defined collection may support percutaneous drainage with interval appendectomy\",\n    \"secondary_questions\": [\n      \"Is there evidence of ongoing free perforation or diffuse peritonitis beyond the localized collections?\",\n      \"Are the mesenteric fluid pockets (3.3 x 3.4 cm and 2.4 x 1.8 cm) separate from the periappendiceal collections or contiguous?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Character and continuity of periappendiceal air-fluid collections\",\n        \"why_required\": \"Determines whether collections are amenable to percutaneous drainage or require operative management\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of free air, free fluid, and inflammatory change beyond the periappendiceal region\",\n        \"why_required\": \"Diffuse peritonitis or distant free air would mandate urgent surgery over interval management\"\n      },\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Precise location and accessibility of collections for percutaneous drainage\",\n        \"why_required\": \"IR drainage planning requires knowledge of collection position relative to bowel and vessels\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of additional undrained fluid pockets in the mesentery or pelvis\",\n        \"why_required\": \"Small pelvic free fluid and mesenteric pockets noted on CT may represent additional sites requiring drainage\"\n      }\n    ],\n    \"evidence\": [\n      \"An additional 5.7 x 2.6 cm (2:63) air and fluid filled collection is seen slightly superior to the appendix and may be in continuation with the previously identified collection.\",\n      \"3.3 x 3.4 cm and 2.4 x 1.8 cm (601b:30) pockets of fluid within the mesenteric leaves.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Adjacent to the proximal portion of the appendix there is extraluminal free air.\",\n          \"A 2.5 x 1.2 cm collection which is predominately full of air is seen slightly anterior to the appendix.\"\n        ],\n        \"reason\": \"CT confirms extraluminal free air and two periappendiceal air-fluid collections, establishing perforation with abscess.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Secondary inflammation of the base of the cecum and ascending colon is present.\",\n          \"Small amount of free pelvic fluid seen.\"\n        ],\n        \"reason\": \"CT characterizes local extent but the relationship between mesenteric fluid pockets and the main collections remains incompletely defined.\"\n      },\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"A 5.7 x 2.6 cm (2:63) air and fluid filled collection is seen slightly superior to the appendix\",\n          \"2.5 x 1.2 cm (601b:36) collection which is predominately full of air is seen slightly anterior to the appendix\"\n        ],\n        \"reason\": \"CT provides series and image coordinates for both collections, supporting drainage planning.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"3.3 x 3.4 cm and 2.4 x 1.8 cm (601b:30) pockets of fluid within the mesenteric leaves.\",\n          \"Small amount of free pelvic fluid seen.\"\n        ],\n        \"reason\": \"Additional fluid pockets are identified but their clinical significance and drainability are not fully characterized.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"CT confirms perforated appendicitis with complex abscess and characterizes the main collections, but continuity between collections and significance of mesenteric/pelvic fluid remain partially unresolved for definitive management planning.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Repeat or same-series contrast CT abdomen/pelvis with dedicated review of collection morphology and multiplanar reformats can define collection continuity, extent of free air, and drainage accessibility.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The reason for ordering a second CT ABD & PELVIS WITH CONTRAST when the prior CT already demonstrated the findings is not explained by visible evidence; this may represent a repeat for surgical planning, IR guidance, or a protocol re-order rather than a new diagnostic question.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"The second CT order may reflect concern that the prior CT was performed without oral contrast and the collections' relationship to bowel loops is uncertain, prompting a repeat study with oral contrast or dedicated delayed phase to better characterize the abscess boundaries before IR drainage planning.\"\n}\n```",
+        "request_id": "gen-1787996435-jjp2XBeOQ3cohYwTXyFX",
+        "usage": {
+          "completion_tokens": 2828,
+          "prompt_tokens": 6495,
+          "total_tokens": 9323,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.061905,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.061905,
+            "upstream_inference_prompt_cost": 0.019485,
+            "upstream_inference_completions_cost": 0.04242
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The prior CT has established perforated appendicitis with two peri-appendiceal air-and-fluid collections and extraluminal free air.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "established diagnosis",
+              "status": "established",
+              "evidence": [
+                "'Adjacent to the proximal portion of the appendix there is extraluminal free air. A 2.5 x 1.2 cm collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm air and fluid filled collection is seen slightly superior to the appendix'",
+                "'A 0.5 x 0.5 cm appendicolith is seen at the base of the appendix. The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter'"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The peri-appendiceal collections may have changed in size or character over the interval since the first scan, which is the pivotal unknown driving management.",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "temporal course hypothesis",
+              "status": "suspected",
+              "evidence": [
+                "'An additional 5.7 x 2.6 cm air and fluid filled collection is seen slightly superior to the appendix'",
+                "'White Blood Cells: 18.2 K/uL (ref 4.0-11.0)'"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The soft, non-tender abdomen is discordant with the severity of CT findings, creating uncertainty about whether immediate surgery, IR drainage, or continued antibiotics is appropriate.",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "clinical-radiologic discordance",
+              "status": "suspected",
+              "evidence": [
+                "'Soft, non-tender, no rebound or guarding'",
+                "'Adjacent to the proximal portion of the appendix there is extraluminal free air'"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Elevated creatinine (1.8 mg/dL, eGFR ~44) poses a risk for contrast-induced nephropathy with repeat IV contrast administration.",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "procedural risk",
+              "status": "suspected",
+              "evidence": [
+                "'Creatinine: 1.8 mg/dL (ref 0.5-1.2)'",
+                "'Estimated GFR = 44 if non African-American'"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Borderline elevated lactate (2.1 mmol/L) suggests possible early physiologic compromise, but does not definitively indicate septic shock or mandate immediate operative intervention.",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "systemic severity",
+              "status": "suspected",
+              "evidence": [
+                "'Lactate: 2.1 mmol/L (ref 0.5-2.0)'",
+                "'Soft, non-tender, no rebound or guarding'"
+              ],
+              "support": "weakly_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": true,
+            "previous_question": "Is there an identifiable anatomic source — appendiceal, hepatic, splenic, mesenteric, colonic, or other — that explains the RLQ pain and systemic laboratory derangements in this traveler?",
+            "study_adequacy": "diagnostic",
+            "test_question_capability": "capable",
+            "result_status": "positive",
+            "effect_on_previous_question": "The prior CT answered the source-localization question definitively: perforated appendicitis with two peri-appendiceal collections and extraluminal free air was identified, collapsing the differential and excluding hepatic/splenic abscess and mesenteric lymphadenopathy as primary drivers. The travel-related and alternative-source hypotheses are now deprioritized.",
+            "discordance": {
+              "label": "materially_discordant",
+              "evidence_stream_1": "'Adjacent to the proximal portion of the appendix there is extraluminal free air... 5.7 x 2.6 cm air and fluid filled collection'",
+              "evidence_stream_2": "'Soft, non-tender, no rebound or guarding'",
+              "reason": "Imaging shows frank perforation with large collections, yet the abdomen is soft and non-tender — a clinically important discordance that prevents confident commitment to operative versus non-operative management."
+            }
+          },
+          "assumption_change": {
+            "label": "establish",
+            "changed_proposition": "The prior CT has established perforated appendicitis with two peri-appendiceal air-and-fluid collections and extraluminal free air.",
+            "reason": "The prior CT result, now visible as grounding evidence, converts appendicitis from a suspected hypothesis to an established diagnosis and reframes the clinical question from source localization to interval change assessment."
+          },
+          "current_question": {
+            "primary": "Have the peri-appendiceal collections changed in size or character since the prior CT, and is there evidence of worsening contamination or new collections that would favor urgent intervention over continued non-operative management?",
+            "target": "peri-appendiceal collections, extraluminal air, peritoneal cavity",
+            "type": "temporal_course_or_response",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Enlarging or new collections, or worsening free air, would favor urgent IR drainage or operative intervention.",
+            "negative_answer_changes": "Stable or decreasing collections would support continued antibiotics with or without elective interval appendectomy.",
+            "secondary_questions": [
+              "Is there evidence of new or worsening peritoneal contamination (e.g., free fluid, new loculations) beyond the two known collections?",
+              "Is the appendix itself amenable to percutaneous drainage based on collection morphology and accessibility?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "temporal_course_or_response",
+                "other_proposed_dimension": "",
+                "dimension": "Interval change in size and character of the two known peri-appendiceal collections compared to prior CT",
+                "why_required": "The management decision hinges on whether collections are enlarging, stable, or resolving since the prior scan."
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of new collections, new extraluminal air, or worsening peritoneal contamination",
+                "why_required": "New complications beyond the known findings would escalate urgency of intervention."
+              },
+              {
+                "id": "finding_identity",
+                "other_proposed_dimension": "",
+                "dimension": "Morphologic characterization of collections (simple fluid vs. complex/loculated vs. predominantly air) to assess drainability",
+                "why_required": "Collection character determines whether percutaneous drainage is technically feasible."
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Extent of peritoneal involvement — localized phlegmon versus free peritonitis",
+                "why_required": "Diffuse peritonitis would mandate operative management regardless of collection size."
+              },
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of the appendix and peri-appendiceal region for comparison",
+                "why_required": "Study adequacy is prerequisite; limited visualization would leave the interval-change question unanswered."
+              }
+            ],
+            "evidence": [
+              "'A 2.5 x 1.2 cm collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm air and fluid filled collection is seen slightly superior to the appendix'",
+              "'White Blood Cells: 18.2 K/uL (ref 4.0-11.0)'",
+              "'Lactate: 2.1 mmol/L (ref 0.5-2.0)'",
+              "'Soft, non-tender, no rebound or guarding'"
+            ]
+          },
+          "question_continuity": "new",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "temporal_course_or_response",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No repeat imaging has been performed; interval change cannot be assessed from prior CT alone."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "partially_addressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "'Adjacent to the proximal portion of the appendix there is extraluminal free air'"
+                ],
+                "reason": "Prior CT documents existing free air and collections but cannot speak to new or worsening complications since that scan."
+              },
+              {
+                "requirement_id": "finding_identity",
+                "status": "partially_addressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "'A 2.5 x 1.2 cm collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm air and fluid filled collection is seen slightly superior to the appendix'"
+                ],
+                "reason": "Prior CT characterizes collection composition at that time point, but current morphology and drainability require repeat imaging."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "partially_addressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "'Lactate: 2.1 mmol/L (ref 0.5-2.0)'",
+                  "'Soft, non-tender, no rebound or guarding'"
+                ],
+                "reason": "Labs and exam provide indirect severity signals but cannot characterize current peritoneal extent without repeat imaging."
+              },
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "Repeat CT has been ordered but not yet performed; current-state visualization is absent."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "Prior CT provides a baseline characterization of collections and confirms perforation, but all interval-change requirements remain unaddressed pending the repeat study."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Repeat CT abdomen and pelvis with contrast can directly compare collection size and character to the prior scan, identify new collections or free air, and assess peritoneal extent — addressing all five answer requirements.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "The elevated creatinine (1.8 mg/dL, eGFR ~44) raises a real contrast-risk concern that is not addressed in the visible record; the appropriateness of repeat IV contrast without documented risk mitigation remains an open question. Additionally, CT cannot provide microbiologic characterization of collection contents."
+          },
+          "derived_transition": "advance",
+          "alternative_reconstruction": "The repeat CT could reflect a narrower intent to confirm technical operability — specifically whether the larger collection (5.7×2.6 cm) is accessible for IR-guided drainage — rather than a broad interval-change assessment. Under this account, the clinical team has already decided on non-operative management and is using CT primarily to plan percutaneous drainage, with interval size change as secondary information. This is less supported because the discordant soft abdomen and borderline lactate suggest the operative-versus-non-operative decision has not yet been resolved."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The prior CT has established perforated appendicitis with two peri-appendiceal air-and-fluid collections and extraluminal free air.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"established diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"'Adjacent to the proximal portion of the appendix there is extraluminal free air. A 2.5 x 1.2 cm collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm air and fluid filled collection is seen slightly superior to the appendix'\",\n        \"'A 0.5 x 0.5 cm appendicolith is seen at the base of the appendix. The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter'\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The peri-appendiceal collections may have changed in size or character over the interval since the first scan, which is the pivotal unknown driving management.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"temporal course hypothesis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"'An additional 5.7 x 2.6 cm air and fluid filled collection is seen slightly superior to the appendix'\",\n        \"'White Blood Cells: 18.2 K/uL (ref 4.0-11.0)'\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The soft, non-tender abdomen is discordant with the severity of CT findings, creating uncertainty about whether immediate surgery, IR drainage, or continued antibiotics is appropriate.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical-radiologic discordance\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"'Soft, non-tender, no rebound or guarding'\",\n        \"'Adjacent to the proximal portion of the appendix there is extraluminal free air'\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Elevated creatinine (1.8 mg/dL, eGFR ~44) poses a risk for contrast-induced nephropathy with repeat IV contrast administration.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"procedural risk\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"'Creatinine: 1.8 mg/dL (ref 0.5-1.2)'\",\n        \"'Estimated GFR = 44 if non African-American'\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Borderline elevated lactate (2.1 mmol/L) suggests possible early physiologic compromise, but does not definitively indicate septic shock or mandate immediate operative intervention.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"systemic severity\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"'Lactate: 2.1 mmol/L (ref 0.5-2.0)'\",\n        \"'Soft, non-tender, no rebound or guarding'\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there an identifiable anatomic source — appendiceal, hepatic, splenic, mesenteric, colonic, or other — that explains the RLQ pain and systemic laboratory derangements in this traveler?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The prior CT answered the source-localization question definitively: perforated appendicitis with two peri-appendiceal collections and extraluminal free air was identified, collapsing the differential and excluding hepatic/splenic abscess and mesenteric lymphadenopathy as primary drivers. The travel-related and alternative-source hypotheses are now deprioritized.\",\n    \"discordance\": {\n      \"label\": \"materially_discordant\",\n      \"evidence_stream_1\": \"'Adjacent to the proximal portion of the appendix there is extraluminal free air... 5.7 x 2.6 cm air and fluid filled collection'\",\n      \"evidence_stream_2\": \"'Soft, non-tender, no rebound or guarding'\",\n      \"reason\": \"Imaging shows frank perforation with large collections, yet the abdomen is soft and non-tender — a clinically important discordance that prevents confident commitment to operative versus non-operative management.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"establish\",\n    \"changed_proposition\": \"The prior CT has established perforated appendicitis with two peri-appendiceal air-and-fluid collections and extraluminal free air.\",\n    \"reason\": \"The prior CT result, now visible as grounding evidence, converts appendicitis from a suspected hypothesis to an established diagnosis and reframes the clinical question from source localization to interval change assessment.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Have the peri-appendiceal collections changed in size or character since the prior CT, and is there evidence of worsening contamination or new collections that would favor urgent intervention over continued non-operative management?\",\n    \"target\": \"peri-appendiceal collections, extraluminal air, peritoneal cavity\",\n    \"type\": \"temporal_course_or_response\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Enlarging or new collections, or worsening free air, would favor urgent IR drainage or operative intervention.\",\n    \"negative_answer_changes\": \"Stable or decreasing collections would support continued antibiotics with or without elective interval appendectomy.\",\n    \"secondary_questions\": [\n      \"Is there evidence of new or worsening peritoneal contamination (e.g., free fluid, new loculations) beyond the two known collections?\",\n      \"Is the appendix itself amenable to percutaneous drainage based on collection morphology and accessibility?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"temporal_course_or_response\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Interval change in size and character of the two known peri-appendiceal collections compared to prior CT\",\n        \"why_required\": \"The management decision hinges on whether collections are enlarging, stable, or resolving since the prior scan.\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of new collections, new extraluminal air, or worsening peritoneal contamination\",\n        \"why_required\": \"New complications beyond the known findings would escalate urgency of intervention.\"\n      },\n      {\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Morphologic characterization of collections (simple fluid vs. complex/loculated vs. predominantly air) to assess drainability\",\n        \"why_required\": \"Collection character determines whether percutaneous drainage is technically feasible.\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of peritoneal involvement — localized phlegmon versus free peritonitis\",\n        \"why_required\": \"Diffuse peritonitis would mandate operative management regardless of collection size.\"\n      },\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the appendix and peri-appendiceal region for comparison\",\n        \"why_required\": \"Study adequacy is prerequisite; limited visualization would leave the interval-change question unanswered.\"\n      }\n    ],\n    \"evidence\": [\n      \"'A 2.5 x 1.2 cm collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm air and fluid filled collection is seen slightly superior to the appendix'\",\n      \"'White Blood Cells: 18.2 K/uL (ref 4.0-11.0)'\",\n      \"'Lactate: 2.1 mmol/L (ref 0.5-2.0)'\",\n      \"'Soft, non-tender, no rebound or guarding'\"\n    ]\n  },\n  \"question_continuity\": \"new\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"temporal_course_or_response\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No repeat imaging has been performed; interval change cannot be assessed from prior CT alone.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"'Adjacent to the proximal portion of the appendix there is extraluminal free air'\"\n        ],\n        \"reason\": \"Prior CT documents existing free air and collections but cannot speak to new or worsening complications since that scan.\"\n      },\n      {\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"'A 2.5 x 1.2 cm collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm air and fluid filled collection is seen slightly superior to the appendix'\"\n        ],\n        \"reason\": \"Prior CT characterizes collection composition at that time point, but current morphology and drainability require repeat imaging.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"'Lactate: 2.1 mmol/L (ref 0.5-2.0)'\",\n          \"'Soft, non-tender, no rebound or guarding'\"\n        ],\n        \"reason\": \"Labs and exam provide indirect severity signals but cannot characterize current peritoneal extent without repeat imaging.\"\n      },\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Repeat CT has been ordered but not yet performed; current-state visualization is absent.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Prior CT provides a baseline characterization of collections and confirms perforation, but all interval-change requirements remain unaddressed pending the repeat study.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Repeat CT abdomen and pelvis with contrast can directly compare collection size and character to the prior scan, identify new collections or free air, and assess peritoneal extent — addressing all five answer requirements.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The elevated creatinine (1.8 mg/dL, eGFR ~44) raises a real contrast-risk concern that is not addressed in the visible record; the appropriateness of repeat IV contrast without documented risk mitigation remains an open question. Additionally, CT cannot provide microbiologic characterization of collection contents.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"The repeat CT could reflect a narrower intent to confirm technical operability — specifically whether the larger collection (5.7×2.6 cm) is accessible for IR-guided drainage — rather than a broad interval-change assessment. Under this account, the clinical team has already decided on non-operative management and is using CT primarily to plan percutaneous drainage, with interval size change as secondary information. This is less supported because the discordant soft abdomen and borderline lactate suggest the operative-versus-non-operative decision has not yet been resolved.\"\n}\n```",
+        "request_id": "gen-1787996482-4kYGgdKA0YnpuQorYUSq",
+        "usage": {
+          "completion_tokens": 3046,
+          "prompt_tokens": 4888,
+          "total_tokens": 7934,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.060354,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.060354,
+            "upstream_inference_prompt_cost": 0.014664,
+            "upstream_inference_completions_cost": 0.04569
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [
+        "bad_question_type"
+      ],
+      "comparison": {
+        "assumption_type_jaccard": 0.3333,
+        "direct_assumption_types": [
+          "alternative_source",
+          "complication",
+          "etiology_or_mechanism",
+          "severity_extent_or_course"
+        ],
+        "recode_assumption_types": [
+          "complication",
+          "disease_or_finding_identity",
+          "severity_extent_or_course",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": false,
+        "direct_question_type": "severity_or_extent",
+        "recode_question_type": "temporal_course_or_response",
+        "requirement_jaccard": 0.2857,
+        "direct_requirements": [
+          "anatomic_localization",
+          "complication_presence_or_character",
+          "presence_or_absence",
+          "severity_or_extent"
+        ],
+        "recode_requirements": [
+          "complication_presence_or_character",
+          "finding_identity",
+          "severity_or_extent",
+          "target_visualization_or_assessment",
+          "temporal_course_or_response"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "partially_answered",
+        "recode_aggregate_coverage": "partially_answered",
+        "transition_match": true
+      }
+    }
+  ]
+}

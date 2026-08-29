@@ -1,0 +1,493 @@
+{
+  "schema_version": "1.0.0-development",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 28396688,
+  "source_path": "results/annotation_experiment/full/diverticulitis_28396688.json",
+  "model": "anthropic/claude-sonnet-4.6",
+  "causal_boundary": "DIRECT=masked chart+order; RECODE=old ex-ante reconstruction+order; both exclude current result, later events, verification, deviation, ACR, and disease answer labels",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "direct_prompt_sha256": "4cbce24e9ed5e68bb6b6c00d2cf148a4f52890a58592b8c2e3e9fe3d54b5455c",
+      "recode_prompt_sha256": "be4545b0598dbb61f61c14ca5bd956a638e94bedda1c3bbce2f7b44af60d73c1",
+      "direct": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "Free intraperitoneal air is present, indicating visceral perforation",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "radiologic finding",
+              "status": "likely",
+              "evidence": [
+                "Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm.",
+                "CXR showed free air, and he was transferred to ___ for further management."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The perforation source is most likely the gastrointestinal tract, with peptic ulcer disease (duodenal) as a leading etiology given remote history",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "disease etiology",
+              "status": "suspected",
+              "evidence": [
+                "he has a remote history of duodenal ulcer, treated with tegamet and symptoms improved.",
+                "crampy abdominal pain, diffuse, and had ___ episodes of nausea and vomiting"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Peritonitis is present as a complication of the perforation",
+              "type": "complication",
+              "other_proposed_type": "",
+              "level": "clinical severity",
+              "status": "suspected",
+              "evidence": [
+                "Abd: moderately firm, mildly distended, diffusely tender to palpation with guarding",
+                "febrile to ___ and c/o significant abdominal pain"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Colonic pathology (e.g., diverticular perforation or malignancy) is an alternative perforation source given age, no prior colonoscopy, and diarrheal prodrome",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "differential diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "he has never had a colonoscopy",
+                "had multiple (~7) loose bowel movements yesterday"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Systemic sepsis physiology is present given leukocytosis with left shift and fever",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "clinical severity",
+              "status": "likely",
+              "evidence": [
+                "Absolute Neutrophil Count: 16.03 K/uL (ref 1.6-6.1)",
+                "White Blood Cells: 17.7 K/uL (ref 4.0-10.0)"
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "First decision point; no prior imaging order in this schema.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": ""
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are newly established from baseline history, exam, labs, and CXR."
+          },
+          "current_question": {
+            "primary": "What is the anatomic site, cause, and extent of the visceral perforation, and is there associated abscess, free fluid, or other complication requiring urgent surgical planning?",
+            "target": "source and extent of gastrointestinal perforation with associated intra-abdominal complications",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Identifies perforation site (upper vs. lower GI), guides operative approach, and characterizes extent of contamination/abscess.",
+            "negative_answer_changes": "If no definitive perforation site identified, broadens differential and may prompt endoscopy or surgical exploration without imaging guidance.",
+            "secondary_questions": [
+              "Is there evidence of an underlying colonic mass or diverticular disease as the perforation source?",
+              "What is the volume and distribution of free fluid and free air, indicating severity of peritoneal contamination?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Precise anatomic site of perforation within the GI tract",
+                "why_required": "Determines operative approach and urgency; upper vs. lower GI perforation have different surgical strategies."
+              },
+              {
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence and volume of free intraperitoneal air and fluid",
+                "why_required": "Quantifies degree of peritoneal contamination and confirms the CXR finding with greater anatomic detail."
+              },
+              {
+                "id": "finding_identity",
+                "other_proposed_dimension": "",
+                "dimension": "Characterization of the perforation etiology (ulcer, diverticulitis, malignancy, etc.)",
+                "why_required": "Distinguishes between etiologies that alter both immediate management and long-term treatment planning."
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence of abscess, mesenteric fat stranding, or contained vs. free perforation",
+                "why_required": "Affects decision between immediate surgery, percutaneous drainage, or conservative management."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Exclusion of alternative intra-abdominal pathology as the source of free air",
+                "why_required": "Ensures no other process (e.g., pneumatosis, iatrogenic) is misattributed as perforation."
+              }
+            ],
+            "evidence": [
+              "Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm.",
+              "Abd: moderately firm, mildly distended, diffusely tender to palpation with guarding"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "CXR confirms free air but cannot localize the perforation site within the GI tract."
+              },
+              {
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm."
+                ],
+                "reason": "CXR confirms free air but does not quantify free fluid or characterize distribution of air."
+              },
+              {
+                "requirement_id": "finding_identity",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging has characterized the underlying lesion; history provides only indirect clues."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "CXR cannot assess for abscess, mesenteric stranding, or contained vs. free perforation."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No cross-sectional imaging available to exclude alternative sources of pneumoperitoneum."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "CXR confirms free air but leaves perforation site, etiology, extent, and complications entirely uncharacterized."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "Contrast-enhanced CT abdomen/pelvis can localize the perforation site, characterize the underlying lesion, quantify free air and fluid, and identify complications such as abscess or contained perforation.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "CT may not definitively identify the perforation etiology if the bowel wall is not well distended or if contrast extravasation is absent; surgical exploration may still be required for definitive diagnosis."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The order could alternatively reflect a need to exclude other acute abdominal catastrophes (e.g., mesenteric ischemia, appendicitis) that could coexist with or mimic perforation, given the diffuse abdominal pain and diarrheal prodrome without a clearly localizing history."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Free intraperitoneal air is present, indicating visceral perforation\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"radiologic finding\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm.\",\n        \"CXR showed free air, and he was transferred to ___ for further management.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The perforation source is most likely the gastrointestinal tract, with peptic ulcer disease (duodenal) as a leading etiology given remote history\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"he has a remote history of duodenal ulcer, treated with tegamet and symptoms improved.\",\n        \"crampy abdominal pain, diffuse, and had ___ episodes of nausea and vomiting\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Peritonitis is present as a complication of the perforation\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical severity\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Abd: moderately firm, mildly distended, diffusely tender to palpation with guarding\",\n        \"febrile to ___ and c/o significant abdominal pain\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Colonic pathology (e.g., diverticular perforation or malignancy) is an alternative perforation source given age, no prior colonoscopy, and diarrheal prodrome\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"he has never had a colonoscopy\",\n        \"had multiple (~7) loose bowel movements yesterday\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Systemic sepsis physiology is present given leukocytosis with left shift and fever\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical severity\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Absolute Neutrophil Count: 16.03 K/uL (ref 1.6-6.1)\",\n        \"White Blood Cells: 17.7 K/uL (ref 4.0-10.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"First decision point; no prior imaging order in this schema.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are newly established from baseline history, exam, labs, and CXR.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the anatomic site, cause, and extent of the visceral perforation, and is there associated abscess, free fluid, or other complication requiring urgent surgical planning?\",\n    \"target\": \"source and extent of gastrointestinal perforation with associated intra-abdominal complications\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifies perforation site (upper vs. lower GI), guides operative approach, and characterizes extent of contamination/abscess.\",\n    \"negative_answer_changes\": \"If no definitive perforation site identified, broadens differential and may prompt endoscopy or surgical exploration without imaging guidance.\",\n    \"secondary_questions\": [\n      \"Is there evidence of an underlying colonic mass or diverticular disease as the perforation source?\",\n      \"What is the volume and distribution of free fluid and free air, indicating severity of peritoneal contamination?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Precise anatomic site of perforation within the GI tract\",\n        \"why_required\": \"Determines operative approach and urgency; upper vs. lower GI perforation have different surgical strategies.\"\n      },\n      {\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and volume of free intraperitoneal air and fluid\",\n        \"why_required\": \"Quantifies degree of peritoneal contamination and confirms the CXR finding with greater anatomic detail.\"\n      },\n      {\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of the perforation etiology (ulcer, diverticulitis, malignancy, etc.)\",\n        \"why_required\": \"Distinguishes between etiologies that alter both immediate management and long-term treatment planning.\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence of abscess, mesenteric fat stranding, or contained vs. free perforation\",\n        \"why_required\": \"Affects decision between immediate surgery, percutaneous drainage, or conservative management.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Exclusion of alternative intra-abdominal pathology as the source of free air\",\n        \"why_required\": \"Ensures no other process (e.g., pneumatosis, iatrogenic) is misattributed as perforation.\"\n      }\n    ],\n    \"evidence\": [\n      \"Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm.\",\n      \"Abd: moderately firm, mildly distended, diffusely tender to palpation with guarding\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"CXR confirms free air but cannot localize the perforation site within the GI tract.\"\n      },\n      {\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm.\"\n        ],\n        \"reason\": \"CXR confirms free air but does not quantify free fluid or characterize distribution of air.\"\n      },\n      {\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging has characterized the underlying lesion; history provides only indirect clues.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"CXR cannot assess for abscess, mesenteric stranding, or contained vs. free perforation.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No cross-sectional imaging available to exclude alternative sources of pneumoperitoneum.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"CXR confirms free air but leaves perforation site, etiology, extent, and complications entirely uncharacterized.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT abdomen/pelvis can localize the perforation site, characterize the underlying lesion, quantify free air and fluid, and identify complications such as abscess or contained perforation.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"CT may not definitively identify the perforation etiology if the bowel wall is not well distended or if contrast extravasation is absent; surgical exploration may still be required for definitive diagnosis.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The order could alternatively reflect a need to exclude other acute abdominal catastrophes (e.g., mesenteric ischemia, appendicitis) that could coexist with or mimic perforation, given the diffuse abdominal pain and diarrheal prodrome without a clearly localizing history.\"\n}\n```",
+        "request_id": "gen-1788005200-551xHv3DIme7hFPcoRoD",
+        "usage": {
+          "completion_tokens": 2366,
+          "prompt_tokens": 3702,
+          "total_tokens": 6068,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.046596,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.046596,
+            "upstream_inference_prompt_cost": 0.011106,
+            "upstream_inference_completions_cost": 0.03549
+          }
+        }
+      },
+      "recode": {
+        "parsed": {
+          "assumptions": [
+            {
+              "proposition": "The patient has pneumoperitoneum (free intraperitoneal air) confirmed on chest radiograph.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "imaging finding",
+              "status": "established",
+              "evidence": [
+                "Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm",
+                "CXR showed free air, and he was transferred to ___ for further management"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The pneumoperitoneum is caused by a perforated viscus, with peptic ulcer perforation (duodenal) as the leading candidate given remote ulcer history.",
+              "type": "etiology_or_mechanism",
+              "other_proposed_type": "",
+              "level": "pathophysiologic mechanism",
+              "status": "suspected",
+              "evidence": [
+                "he has had a remote history of duodenal ulcer, treated with tegamet and symptoms improved",
+                "CXR showed free air, and he was transferred to ___ for further management"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "Colonic perforation (e.g., perforated diverticulitis or malignancy) is an alternative source of pneumoperitoneum that has not been excluded.",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "differential diagnosis",
+              "status": "suspected",
+              "evidence": [
+                "Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm"
+              ],
+              "support": "weakly_supported"
+            },
+            {
+              "proposition": "The patient has peritoneal signs and systemic inflammatory response consistent with significant peritoneal contamination.",
+              "type": "severity_extent_or_course",
+              "other_proposed_type": "",
+              "level": "clinical severity",
+              "status": "likely",
+              "evidence": [
+                "moderately firm, mildly distended, diffusely tender to palpation with guarding",
+                "White Blood Cells: 17.7 K/uL (ref 4.0-10.0)"
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "The perforation site, extent of peritoneal contamination, and presence of abscess or vascular compromise remain unlocalized and uncharacterized.",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "information gap",
+              "status": "unclear",
+              "evidence": [
+                "moderately firm, mildly distended, diffusely tender to palpation with guarding",
+                "Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm"
+              ],
+              "support": "well_supported"
+            }
+          ],
+          "previous_order_update": {
+            "applicable": false,
+            "previous_question": null,
+            "study_adequacy": "not_applicable",
+            "test_question_capability": "not_applicable",
+            "result_status": "not_applicable",
+            "effect_on_previous_question": "No prior order; this is the first decision point.",
+            "discordance": {
+              "label": "not_applicable",
+              "evidence_stream_1": "",
+              "evidence_stream_2": "",
+              "reason": "No prior order to compare."
+            }
+          },
+          "assumption_change": {
+            "label": "initial",
+            "changed_proposition": null,
+            "reason": "First decision point; all assumptions are initialized from available clinical and imaging evidence."
+          },
+          "current_question": {
+            "primary": "What is the site of visceral perforation, and what is the extent of peritoneal contamination, associated fluid collections, or vascular compromise?",
+            "target": "perforated viscus, peritoneal cavity, mesenteric vasculature",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Identifies perforation site and guides operative vs. non-operative management and surgical approach.",
+            "negative_answer_changes": "Failure to localize would leave surgical planning incomplete and may prompt alternative workup or empirical operative exploration.",
+            "secondary_questions": [
+              "Is there evidence of bowel ischemia or mesenteric vascular compromise that would alter urgency or operative strategy?",
+              "Are there associated abscess or contained collections amenable to percutaneous drainage rather than immediate surgery?"
+            ],
+            "answer_requirements": [
+              {
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Identification of the specific viscus and anatomic site of perforation",
+                "why_required": "Determines operative target and approach (e.g., duodenal patch vs. colonic resection)."
+              },
+              {
+                "id": "severity_or_extent",
+                "other_proposed_dimension": "",
+                "dimension": "Degree of free air, free fluid, and peritoneal contamination",
+                "why_required": "Quantifies severity and urgency of surgical intervention."
+              },
+              {
+                "id": "complication_presence_or_character",
+                "other_proposed_dimension": "",
+                "dimension": "Presence and character of abscess, contained perforation, or vascular compromise",
+                "why_required": "Distinguishes contained from free perforation and identifies complications altering management."
+              },
+              {
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Discrimination between upper GI (peptic ulcer) and lower GI (colonic) perforation sources",
+                "why_required": "Etiology determines surgical subspecialty involvement and operative plan."
+              },
+              {
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate visualization of the entire abdomen and pelvis including bowel wall integrity",
+                "why_required": "Ensures no secondary pathology or additional perforation site is missed."
+              }
+            ],
+            "evidence": [
+              "Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm",
+              "moderately firm, mildly distended, diffusely tender to palpation with guarding"
+            ]
+          },
+          "question_continuity": "initial",
+          "coverage": {
+            "requirements": [
+              {
+                "requirement_id": "anatomic_localization",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [
+                  "Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm"
+                ],
+                "reason": "CXR confirms free air but cannot localize the perforation site; CT has not yet been performed."
+              },
+              {
+                "requirement_id": "severity_or_extent",
+                "status": "partially_addressed",
+                "direction": "supports",
+                "supporting_evidence": [
+                  "moderately firm, mildly distended, diffusely tender to palpation with guarding",
+                  "White Blood Cells: 17.7 K/uL (ref 4.0-10.0)"
+                ],
+                "reason": "Clinical exam and labs suggest significant peritoneal involvement, but cross-sectional imaging is needed to quantify free fluid and air distribution."
+              },
+              {
+                "requirement_id": "complication_presence_or_character",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No imaging capable of characterizing abscess, contained perforation, or vascular compromise has been performed yet."
+              },
+              {
+                "requirement_id": "alternative_source_discrimination",
+                "status": "partially_addressed",
+                "direction": "mixed",
+                "supporting_evidence": [
+                  "he has had a remote history of duodenal ulcer, treated with tegamet and symptoms improved"
+                ],
+                "reason": "History raises peptic ulcer as a candidate but does not exclude colonic or other sources; CT is required for discrimination."
+              },
+              {
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "CT abdomen/pelvis with contrast has been ordered but not yet performed or reported."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "Pre-CT evidence establishes pneumoperitoneum and clinical severity but cannot localize the perforation or characterize complications; the ordered CT is required to address the primary question."
+          },
+          "current_order_fit": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "CT abdomen/pelvis with contrast can localize the perforation site, characterize free air and fluid distribution, identify abscess or ischemia, and discriminate upper from lower GI sources.",
+            "intent_support": "well_supported",
+            "unsupported_residual": "The old reconstruction assumes contrast will be safely administrable given the patient's clinical state; hemodynamic stability and renal function are not documented in the visible record."
+          },
+          "derived_transition": "initial",
+          "alternative_reconstruction": "The CT could alternatively be framed as existence/identity confirmation of pneumoperitoneum rather than source localization, if the treating team considered CXR findings equivocal and needed CT to first confirm free air before committing to operative planning — though the transfer narrative and peritoneal signs make this less likely."
+        },
+        "raw": "```json\n{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has pneumoperitoneum (free intraperitoneal air) confirmed on chest radiograph.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"imaging finding\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm\",\n        \"CXR showed free air, and he was transferred to ___ for further management\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The pneumoperitoneum is caused by a perforated viscus, with peptic ulcer perforation (duodenal) as the leading candidate given remote ulcer history.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"he has had a remote history of duodenal ulcer, treated with tegamet and symptoms improved\",\n        \"CXR showed free air, and he was transferred to ___ for further management\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Colonic perforation (e.g., perforated diverticulitis or malignancy) is an alternative source of pneumoperitoneum that has not been excluded.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient has peritoneal signs and systemic inflammatory response consistent with significant peritoneal contamination.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical severity\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"moderately firm, mildly distended, diffusely tender to palpation with guarding\",\n        \"White Blood Cells: 17.7 K/uL (ref 4.0-10.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The perforation site, extent of peritoneal contamination, and presence of abscess or vascular compromise remain unlocalized and uncharacterized.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"information gap\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"moderately firm, mildly distended, diffusely tender to palpation with guarding\",\n        \"Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"No prior order; this is the first decision point.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior order to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; all assumptions are initialized from available clinical and imaging evidence.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the site of visceral perforation, and what is the extent of peritoneal contamination, associated fluid collections, or vascular compromise?\",\n    \"target\": \"perforated viscus, peritoneal cavity, mesenteric vasculature\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifies perforation site and guides operative vs. non-operative management and surgical approach.\",\n    \"negative_answer_changes\": \"Failure to localize would leave surgical planning incomplete and may prompt alternative workup or empirical operative exploration.\",\n    \"secondary_questions\": [\n      \"Is there evidence of bowel ischemia or mesenteric vascular compromise that would alter urgency or operative strategy?\",\n      \"Are there associated abscess or contained collections amenable to percutaneous drainage rather than immediate surgery?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification of the specific viscus and anatomic site of perforation\",\n        \"why_required\": \"Determines operative target and approach (e.g., duodenal patch vs. colonic resection).\"\n      },\n      {\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of free air, free fluid, and peritoneal contamination\",\n        \"why_required\": \"Quantifies severity and urgency of surgical intervention.\"\n      },\n      {\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of abscess, contained perforation, or vascular compromise\",\n        \"why_required\": \"Distinguishes contained from free perforation and identifies complications altering management.\"\n      },\n      {\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Discrimination between upper GI (peptic ulcer) and lower GI (colonic) perforation sources\",\n        \"why_required\": \"Etiology determines surgical subspecialty involvement and operative plan.\"\n      },\n      {\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the entire abdomen and pelvis including bowel wall integrity\",\n        \"why_required\": \"Ensures no secondary pathology or additional perforation site is missed.\"\n      }\n    ],\n    \"evidence\": [\n      \"Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm\",\n      \"moderately firm, mildly distended, diffusely tender to palpation with guarding\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Crescent lucency in the right lower chest is re-demonstrated on lateral view concerning for air under the right hemidiaphragm\"\n        ],\n        \"reason\": \"CXR confirms free air but cannot localize the perforation site; CT has not yet been performed.\"\n      },\n      {\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"moderately firm, mildly distended, diffusely tender to palpation with guarding\",\n          \"White Blood Cells: 17.7 K/uL (ref 4.0-10.0)\"\n        ],\n        \"reason\": \"Clinical exam and labs suggest significant peritoneal involvement, but cross-sectional imaging is needed to quantify free fluid and air distribution.\"\n      },\n      {\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging capable of characterizing abscess, contained perforation, or vascular compromise has been performed yet.\"\n      },\n      {\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"he has had a remote history of duodenal ulcer, treated with tegamet and symptoms improved\"\n        ],\n        \"reason\": \"History raises peptic ulcer as a candidate but does not exclude colonic or other sources; CT is required for discrimination.\"\n      },\n      {\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"CT abdomen/pelvis with contrast has been ordered but not yet performed or reported.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Pre-CT evidence establishes pneumoperitoneum and clinical severity but cannot localize the perforation or characterize complications; the ordered CT is required to address the primary question.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"CT abdomen/pelvis with contrast can localize the perforation site, characterize free air and fluid distribution, identify abscess or ischemia, and discriminate upper from lower GI sources.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The old reconstruction assumes contrast will be safely administrable given the patient's clinical state; hemodynamic stability and renal function are not documented in the visible record.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The CT could alternatively be framed as existence/identity confirmation of pneumoperitoneum rather than source localization, if the treating team considered CXR findings equivocal and needed CT to first confirm free air before committing to operative planning — though the transfer narrative and peritoneal signs make this less likely.\"\n}\n```",
+        "request_id": "gen-1788005236-oF2wc86YT44ivT8FJ1m9",
+        "usage": {
+          "completion_tokens": 2451,
+          "prompt_tokens": 2599,
+          "total_tokens": 5050,
+          "completion_tokens_details": {
+            "accepted_prediction_tokens": null,
+            "audio_tokens": 0,
+            "reasoning_tokens": 0,
+            "rejected_prediction_tokens": null,
+            "text_tokens": null,
+            "image_tokens": 0
+          },
+          "compute_units": null,
+          "prompt_tokens_details": {
+            "audio_tokens": 0,
+            "cache_write_tokens": 0,
+            "cached_tokens": 0,
+            "image_tokens": null,
+            "text_tokens": null,
+            "video_tokens": 0
+          },
+          "cost": 0.044562,
+          "is_byok": false,
+          "cost_details": {
+            "upstream_inference_cost": 0.044562,
+            "upstream_inference_prompt_cost": 0.007797,
+            "upstream_inference_completions_cost": 0.036765
+          }
+        }
+      },
+      "direct_validation_errors": [],
+      "recode_validation_errors": [],
+      "comparison": {
+        "assumption_type_jaccard": 0.6667,
+        "direct_assumption_types": [
+          "alternative_source",
+          "complication",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course"
+        ],
+        "recode_assumption_types": [
+          "alternative_source",
+          "disease_or_finding_identity",
+          "etiology_or_mechanism",
+          "severity_extent_or_course",
+          "syndrome_or_source_frame"
+        ],
+        "question_type_match": true,
+        "direct_question_type": "source_localization",
+        "recode_question_type": "source_localization",
+        "requirement_jaccard": 0.4286,
+        "direct_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "complication_presence_or_character",
+          "finding_identity",
+          "presence_or_absence"
+        ],
+        "recode_requirements": [
+          "alternative_source_discrimination",
+          "anatomic_localization",
+          "complication_presence_or_character",
+          "severity_or_extent",
+          "target_visualization_or_assessment"
+        ],
+        "aggregate_coverage_match": true,
+        "direct_aggregate_coverage": "unanswered",
+        "recode_aggregate_coverage": "unanswered",
+        "transition_match": true
+      }
+    }
+  ]
+}

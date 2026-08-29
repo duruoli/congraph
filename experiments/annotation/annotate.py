@@ -114,7 +114,13 @@ def call_json(system: str, user: str, *, model: str, temperature: float,
     )
     msg = resp.choices[0].message.content or ""
     parsed = _parse(msg)
-    return {"parsed": parsed, "raw": msg}
+    usage = resp.usage.model_dump() if resp.usage is not None else None
+    return {
+        "parsed": parsed,
+        "raw": msg,
+        "request_id": resp.id,
+        "usage": usage,
+    }
 
 
 def _norm_diff(d: dict | None) -> dict[str, float]:
