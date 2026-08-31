@@ -1,4 +1,137 @@
-# 新对话任务 Prompt：建立第一版正式 A/Q/C 分类规则
+# A/Q/C Track B handoff：冻结 GPT-5.1 DIRECT 并启动 development 标注
+
+> 2026-08-31 状态：development split、codebook discovery、两轮 saturation check、
+> DIRECT/RECODE framework check 和 DIRECT 模型小样本 pilot 已完成。新对话不要重做 discovery、
+> framework check 或模型海选，也不要打开 final test；当前任务是冻结 GPT-5.1
+> DIRECT 工作流后，分批完成 development 标注。
+
+## 已完成状态
+
+- 正式语料：293位患者、542个决策步。
+- Development：235位患者、433步。
+- 未触碰的 final test：58位患者、109步。另有1位曾在检查数据结构时意外暴露，已移入
+  development，不得补回 final test。
+- Codebook discovery：初始24条轨迹/83步，加两轮各12条轨迹/31步和23步；总计48条轨迹、
+  137步。24条只是初始 open-coding 样本，不代表单独完成饱和验证。
+- 当前正式 development artifacts 位于 `data/aqc_development/`；本地验证已通过。
+- 独立 framework check：从未参与上述48条的 development 中抽取16位患者、28步；DIRECT
+  和 RECODE 使用同一模型 `anthropic/claude-sonnet-4.6`、同一A/Q/C输出契约，仅输入不同。
+- framework check 结果位于 `results/aqc_framework_check/`，汇总见
+  `results/aqc_framework_check/summary.json`。
+
+## DIRECT/RECODE framework check 的发现
+
+原始机械比较结果：
+
+- DIRECT结构有效27/28步；RECODE结构有效25/28步；
+- assumption-type平均Jaccard 0.5736；
+- question-type名称一致率0.6429；
+- answer-requirement type平均Jaccard 0.6412；
+- aggregate coverage一致率0.8214；
+- 旧规则把20/28步送入人工复核。
+
+逐步重新复核后，不应把这20步理解为20个真实临床冲突：
+
+- 14步的临床含义实质一致，可由更合理的自动规则处理；
+- 4步的检查目的相同，差异来自相邻类别边界，例如 existence/identity 与 source
+  localization、complication 与 severity/extent、remedy 与 advance；
+- 2步的差异会影响 coverage 或 test capability，DIRECT的判断更符合当前定义；
+- 没有一步显示两臂对检查目的存在完全不同且无法调和的理解。
+
+具体规则发现：
+
+1. `answer_requirements[]` 中同一个type可以重复，只要具体信息对象不同；不能只凭type相同
+   判为重复。
+2. `alternative_source_discrimination` 是 answer-requirement type；作为核心question时应
+   对应 `alternative_source`。
+3. `temporal_course_or_response` 暂时保留为必要时出现的answer requirement，而不是新增
+   核心question type。重复检查若不说明“与之前相比”就无法解释目的，应在问题正文、
+   requirement和continuity中明确时间关系。
+4. 核心question types描述“在问什么”，并非严格互斥；影像常同时回答存在、身份、来源、
+   范围和并发症。自动复核不能把名称不一致直接当作语义冲突。
+5. 真正需要升级人工复核的是：两臂关注完全不同的疾病/解剖目标；coverage结论不同；
+   test capability结论不同；或差异会改变对检查在诊疗轨迹中作用的理解。
+6. DIRECT偶尔比证据允许的程度更确定；不能预设DIRECT逐项都正确。RECODE适合发现这种
+   过度推断，但不适合作为主要数据层，因为它只能重整旧annotation已经保留的信息。
+
+当前方法学决定：**DIRECT作为主要经验标注层，RECODE作为敏感性分析和审计参照**。
+
+## DIRECT 模型 pilot 与选择
+
+从未参与48例 discovery 或16例 framework check的 development 中，用稳定hash选取
+6位患者、12个决策步，覆盖四种疾病、单/多步轨迹、repeat、modality switch、
+prior-study limitation、nonvisualization 和 post-intervention。样本见
+`data/aqc_direct/pilot_manifest.json`，结果见
+`results/aqc_direct/pilot/26ee973ad4d7/`；prompt hash 为
+`26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536`。
+
+后续模型决策只需关注：
+
+| 模型 | 有效步 | 调用 | 已记录费用 | 质量结论 |
+|---|---:|---:|---:|---|
+| `openai/gpt-5.1` | 12/12 | 12 | `$0.295309` | 更克制，能在重复检查中保留不确定性和真实 residual |
+| `anthropic/claude-sonnet-4.6` | 12/12 | 12 | `$0.653970` | 覆盖更完整，但倾向写满结构、把每个医嘱都判为 `well_supported` |
+
+人工逐步复核后，**选择 `openai/gpt-5.1` 作为 development DIRECT 主标注模型**。
+Sonnet 4.6 不作全量双标；它仅用于高风险步的定向复核，例如 `weakly_supported`、
+`unclear`、重试/验证失败、repeat、post-intervention、coverage 或 test-capability 冲突。
+
+这一决定不是因为字段名称一致率更高，而是 GPT-5.1 更少用无依据的确定性去合理化
+已观察到的检查。例如 pancreatitis 的第4步重复 CT，GPT-5.1 正确保留了“未见新的
+恶化触发证据”的 residual，而 Sonnet 仍将 intent 判为 `well_supported`。
+
+## 已记录费用
+
+最终保存的56次framework-check调用共花费 `$2.976552`：
+
+- DIRECT：28次，输入138,067 tokens，输出74,468 tokens，`$1.531221`；
+- RECODE：28次，输入102,377 tokens，输出75,880 tokens，`$1.445331`。
+
+这不包含最初防截断修正前、或网络中断时未留下usage对象的调用；账户总扣费应以
+OpenRouter账单为准。
+
+## 新对话的下一任务：冻结并分批完成 GPT-5.1 DIRECT development 标注
+
+1. 阅读本文件顶部、`aqc_annotation_design.md`、三个正式 codebook/contract、
+   `experiments/aqc/prompts.py`、`scripts/run_aqc_direct.py` 和上述 pilot 结果。不要重做模型比较。
+2. 在不改变已保存 pilot 输出的前提下，补强 validator：
+   - 首个决策步的 `question_continuity`、`assumption_change.label` 和
+     `derived_transition` 必须为 `initial`；
+   - 当问题要求新的时间点/变化时，旧影像不能单独使 coverage 成为
+     `sufficiently_answered`；
+   - `established`/`excluded` 必须有对应的强证据；
+   - 区分“患者文件存在”与“整条轨迹的所有步都验证成功”。
+3. 保持当前因果遮蔽：只给决策前病历、已出结果的旧影像、前一A/Q/C状态和
+   当前医嘱；不得输入当前结果、后续事件、verification、deviation、ACR或疾病答案标签。
+4. 运行本地验证和 dry run，记录最终 prompt hash、validator 版本、质量门槛和成本停止线。
+   如果 prompt 内容改变，不得沿用旧hash的pilot输出作为新版正式标注。
+5. 建议先用 GPT-5.1 跑一个可恢复的 development 批次，人工抽查20%--30%；上述高风险步
+   100%复核，必要时才调用 Sonnet。通过门槛后再扩大批次，不要一次启动235人。
+6. 每步保存 request id、所有 attempts、token usage、cost、model、prompt hash和validation结果；
+   每批结束后汇总有效步、重试、失败、费用和人工复核队列。
+7. pilot授权只覆盖已完成的6位患者模型比较。**在向 OpenRouter 发送任何新的
+   development 临床文本前，必须获得用户对新批次、OpenRouter、GPT-5.1 和 DIRECT 用途的
+   明确授权。**
+8. final test 58人/109步仍未打开；在pattern、prompt、validator、模型和统计方案冻结前，
+   不得读取其临床内容。
+
+## 这些DIRECT标注能支持什么研究结论
+
+DIRECT development标注可以用于：
+
+- 发现候选A/Q/C轨迹pattern；
+- 检查核心research ideas是否在经验材料中形成可观察、可重复的结构；
+- 修改pattern定义、codebook、prompt和分析方法；
+- 估计标注可靠性并形成预先规定的最终分析方案。
+
+但它们属于**发现与方法开发材料**，不能同时作为核心想法的无偏最终验证。正式验证应在
+pattern定义、prompt、模型、过滤规则和统计方案冻结后，使用仍未打开的58位final-test患者。
+如果根据development结果反复修改研究想法，最终论文中应明确区分探索性发现与held-out
+验证。
+
+---
+
+# 原始任务说明：建立第一版正式 A/Q/C 分类规则
 
 请在仓库 `congraph` 中继续完成 A/Q/C Track B 的第一层工作：**建立并审计第一版正式的
 A/Q/C 分类规则**。这一步的目标是把“标注尺子”制定清楚，不是现在就统计最终 pattern、

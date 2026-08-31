@@ -1,0 +1,652 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 20646985,
+  "source_path": "results/annotation_experiment/full/appendicitis_20646985.json",
+  "model": "openai/gpt-5-mini",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "650c16e821bb78c72b38b48416c386ae0d12d38dd2cbda9a489514b095e2ac90",
+      "attempts": [
+        {
+          "attempt": 1,
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "Acute appendicitis is the leading clinical suspicion for this patient's RLQ pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "clinical diagnostic suspicion based on history and exam",
+                  "status": "suspected",
+                  "evidence": [
+                    "soft but exquisitely tender in the RLQ, rebound tenderness on R and involuntary guarding on R, positive psoas sign",
+                    "White Blood Cells: 10.4 K/uL"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is not pregnant (pregnancy effectively excluded prior to imaging decision).",
+                  "type": "other",
+                  "other_proposed_type": "pregnancy_status",
+                  "level": "laboratory exclusion",
+                  "status": "established",
+                  "evidence": [
+                    "HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A primary gynecologic mass as the cause of RLQ pain is less likely based on ED pelvic exam.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "clinical alternative-source assessment",
+                  "status": "challenged",
+                  "evidence": [
+                    "pelvic exam preformed in ED, no adnexeal masses appreciated"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision point; assumptions are being established from presenting history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Is there imaging evidence of acute appendicitis or another acute intra-abdominal/ pelvic cause explaining the patient's RLQ pain?",
+                "target": "appendix and adjacent intra-abdominal/pelvic structures (to identify appendicitis, perforation/abscess, or alternative source)",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would support prompt surgical management (e.g., appendectomy) and localize complication if present (perforation/abscess).",
+                "negative_answer_changes": "Would redirect workup toward non-appendiceal causes (medical management, pelvic ultrasound for gynecologic causes, or observation) and potentially avoid surgery.",
+                "secondary_questions": [
+                  "Is there perforation, phlegmon, or abscess associated with an inflamed appendix?",
+                  "Is an alternative source present (e.g., ovarian/adnexal pathology or ureteral stone) that explains the RLQ pain?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of imaging findings diagnostic of acute appendicitis (appendiceal enlargement, wall enhancement, appendicolith, periappendiceal fat stranding).",
+                    "why_required": "Determines whether surgical diagnosis (appendicitis) is supported and directs urgent management."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of complications (perforation, abscess, phlegmon) if appendicitis is present.",
+                    "why_required": "Alters urgency and type of intervention (percutaneous drainage vs. operative management) and prognosis."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Identification or exclusion of alternative causes (adnexal mass/torsion, ovarian pathology, ureteral stone, diverticulitis) in the RLQ/pelvis.",
+                    "why_required": "If appendicitis is not identified, need to find other surgically or medically relevant causes explaining symptoms."
+                  }
+                ],
+                "evidence": [
+                  "soft but exquisitely tender in the RLQ, rebound tenderness on R and involuntary guarding on R, positive psoas sign",
+                  "HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "soft but exquisitely tender in the RLQ, rebound tenderness on R and involuntary guarding on R, positive psoas sign",
+                      "White Blood Cells: 10.4 K/uL"
+                    ],
+                    "reason": "Clinical exam and mild leukocytosis are suggestive of appendicitis but no imaging has been performed to visualize the appendix."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "T 97.6 HR 90 BP 123/64 RR 18 O2 100%"
+                    ],
+                    "reason": "No prior imaging or explicit clinical evidence (e.g., high fever, marked tachycardia, markedly elevated lactate) to assess perforation/abscess; therefore complications are unassessed."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "pelvic exam preformed in ED, no adnexeal masses appreciated",
+                      "HCG, Urine, Qualitative: NEGATIVE."
+                    ],
+                    "reason": "Pregnancy and gross adnexal mass were assessed and not found, reducing some gynecologic causes, but many alternative diagnoses (small adnexal lesions, torsion, ureteral stones) remain unassessed without imaging."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Clinical exam and labs support suspicion of appendicitis but imaging is required to confirm diagnosis, assess complications, and fully exclude alternative causes."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "CT abdomen/pelvis with contrast can visualize the appendix, periappendiceal inflammation, complications (abscess/perforation), and alternate abdominal/pelvic sources; pregnancy is excluded by negative urine HCG making CT appropriate.",
+                "intent_support": "well_supported",
+                "unsupported_residual": ""
+              },
+              "derived_transition": "adjudicate",
+              "alternative_reconstruction": "This order could alternatively be aimed primarily at excluding other intra-abdominal causes (e.g., ureteral stone, diverticulitis, or occult gynecologic pathology) rather than specifically confirming appendicitis; clinical notes emphasize RLQ pain but pelvic exam and pregnancy test suggest the team also intends to broadly image the pelvis."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Acute appendicitis is the leading clinical suspicion for this patient's RLQ pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical diagnostic suspicion based on history and exam\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"soft but exquisitely tender in the RLQ, rebound tenderness on R and involuntary guarding on R, positive psoas sign\",\n        \"White Blood Cells: 10.4 K/uL\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is not pregnant (pregnancy effectively excluded prior to imaging decision).\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"pregnancy_status\",\n      \"level\": \"laboratory exclusion\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A primary gynecologic mass as the cause of RLQ pain is less likely based on ED pelvic exam.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical alternative-source assessment\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"pelvic exam preformed in ED, no adnexeal masses appreciated\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision point; assumptions are being established from presenting history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there imaging evidence of acute appendicitis or another acute intra-abdominal/ pelvic cause explaining the patient's RLQ pain?\",\n    \"target\": \"appendix and adjacent intra-abdominal/pelvic structures (to identify appendicitis, perforation/abscess, or alternative source)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would support prompt surgical management (e.g., appendectomy) and localize complication if present (perforation/abscess).\",\n    \"negative_answer_changes\": \"Would redirect workup toward non-appendiceal causes (medical management, pelvic ultrasound for gynecologic causes, or observation) and potentially avoid surgery.\",\n    \"secondary_questions\": [\n      \"Is there perforation, phlegmon, or abscess associated with an inflamed appendix?\",\n      \"Is an alternative source present (e.g., ovarian/adnexal pathology or ureteral stone) that explains the RLQ pain?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of imaging findings diagnostic of acute appendicitis (appendiceal enlargement, wall enhancement, appendicolith, periappendiceal fat stranding).\",\n        \"why_required\": \"Determines whether surgical diagnosis (appendicitis) is supported and directs urgent management.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications (perforation, abscess, phlegmon) if appendicitis is present.\",\n        \"why_required\": \"Alters urgency and type of intervention (percutaneous drainage vs. operative management) and prognosis.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification or exclusion of alternative causes (adnexal mass/torsion, ovarian pathology, ureteral stone, diverticulitis) in the RLQ/pelvis.\",\n        \"why_required\": \"If appendicitis is not identified, need to find other surgically or medically relevant causes explaining symptoms.\"\n      }\n    ],\n    \"evidence\": [\n      \"soft but exquisitely tender in the RLQ, rebound tenderness on R and involuntary guarding on R, positive psoas sign\",\n      \"HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"soft but exquisitely tender in the RLQ, rebound tenderness on R and involuntary guarding on R, positive psoas sign\",\n          \"White Blood Cells: 10.4 K/uL\"\n        ],\n        \"reason\": \"Clinical exam and mild leukocytosis are suggestive of appendicitis but no imaging has been performed to visualize the appendix.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"T 97.6 HR 90 BP 123/64 RR 18 O2 100%\"\n        ],\n        \"reason\": \"No prior imaging or explicit clinical evidence (e.g., high fever, marked tachycardia, markedly elevated lactate) to assess perforation/abscess; therefore complications are unassessed.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"pelvic exam preformed in ED, no adnexeal masses appreciated\",\n          \"HCG, Urine, Qualitative: NEGATIVE.\"\n        ],\n        \"reason\": \"Pregnancy and gross adnexal mass were assessed and not found, reducing some gynecologic causes, but many alternative diagnoses (small adnexal lesions, torsion, ureteral stones) remain unassessed without imaging.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Clinical exam and labs support suspicion of appendicitis but imaging is required to confirm diagnosis, assess complications, and fully exclude alternative causes.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"CT abdomen/pelvis with contrast can visualize the appendix, periappendiceal inflammation, complications (abscess/perforation), and alternate abdominal/pelvic sources; pregnancy is excluded by negative urine HCG making CT appropriate.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"\"\n  },\n  \"derived_transition\": \"adjudicate\",\n  \"alternative_reconstruction\": \"This order could alternatively be aimed primarily at excluding other intra-abdominal causes (e.g., ureteral stone, diverticulitis, or occult gynecologic pathology) rather than specifically confirming appendicitis; clinical notes emphasize RLQ pain but pelvic exam and pregnancy test suggest the team also intends to broadly image the pelvis.\"\n}",
+            "request_id": "gen-1788151474-RgYFhgcxVNnlGW8d412Q",
+            "usage": {
+              "completion_tokens": 3284,
+              "prompt_tokens": 3192,
+              "total_tokens": 6476,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 1536,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.007366,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.007366,
+                "upstream_inference_prompt_cost": 0.000798,
+                "upstream_inference_completions_cost": 0.006568
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "Acute appendicitis is the leading clinical suspicion for this patient's RLQ pain.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "clinical diagnostic suspicion based on history and exam",
+            "status": "suspected",
+            "evidence": [
+              "soft but exquisitely tender in the RLQ, rebound tenderness on R and involuntary guarding on R, positive psoas sign",
+              "White Blood Cells: 10.4 K/uL"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is not pregnant (pregnancy effectively excluded prior to imaging decision).",
+            "type": "other",
+            "other_proposed_type": "pregnancy_status",
+            "level": "laboratory exclusion",
+            "status": "established",
+            "evidence": [
+              "HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A primary gynecologic mass as the cause of RLQ pain is less likely based on ED pelvic exam.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "clinical alternative-source assessment",
+            "status": "challenged",
+            "evidence": [
+              "pelvic exam preformed in ED, no adnexeal masses appreciated"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision point; assumptions are being established from presenting history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "Is there imaging evidence of acute appendicitis or another acute intra-abdominal/ pelvic cause explaining the patient's RLQ pain?",
+          "target": "appendix and adjacent intra-abdominal/pelvic structures (to identify appendicitis, perforation/abscess, or alternative source)",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would support prompt surgical management (e.g., appendectomy) and localize complication if present (perforation/abscess).",
+          "negative_answer_changes": "Would redirect workup toward non-appendiceal causes (medical management, pelvic ultrasound for gynecologic causes, or observation) and potentially avoid surgery.",
+          "secondary_questions": [
+            "Is there perforation, phlegmon, or abscess associated with an inflamed appendix?",
+            "Is an alternative source present (e.g., ovarian/adnexal pathology or ureteral stone) that explains the RLQ pain?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of imaging findings diagnostic of acute appendicitis (appendiceal enlargement, wall enhancement, appendicolith, periappendiceal fat stranding).",
+              "why_required": "Determines whether surgical diagnosis (appendicitis) is supported and directs urgent management."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of complications (perforation, abscess, phlegmon) if appendicitis is present.",
+              "why_required": "Alters urgency and type of intervention (percutaneous drainage vs. operative management) and prognosis."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Identification or exclusion of alternative causes (adnexal mass/torsion, ovarian pathology, ureteral stone, diverticulitis) in the RLQ/pelvis.",
+              "why_required": "If appendicitis is not identified, need to find other surgically or medically relevant causes explaining symptoms."
+            }
+          ],
+          "evidence": [
+            "soft but exquisitely tender in the RLQ, rebound tenderness on R and involuntary guarding on R, positive psoas sign",
+            "HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "soft but exquisitely tender in the RLQ, rebound tenderness on R and involuntary guarding on R, positive psoas sign",
+                "White Blood Cells: 10.4 K/uL"
+              ],
+              "reason": "Clinical exam and mild leukocytosis are suggestive of appendicitis but no imaging has been performed to visualize the appendix."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "T 97.6 HR 90 BP 123/64 RR 18 O2 100%"
+              ],
+              "reason": "No prior imaging or explicit clinical evidence (e.g., high fever, marked tachycardia, markedly elevated lactate) to assess perforation/abscess; therefore complications are unassessed."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "pelvic exam preformed in ED, no adnexeal masses appreciated",
+                "HCG, Urine, Qualitative: NEGATIVE."
+              ],
+              "reason": "Pregnancy and gross adnexal mass were assessed and not found, reducing some gynecologic causes, but many alternative diagnoses (small adnexal lesions, torsion, ureteral stones) remain unassessed without imaging."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Clinical exam and labs support suspicion of appendicitis but imaging is required to confirm diagnosis, assess complications, and fully exclude alternative causes."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "CT abdomen/pelvis with contrast can visualize the appendix, periappendiceal inflammation, complications (abscess/perforation), and alternate abdominal/pelvic sources; pregnancy is excluded by negative urine HCG making CT appropriate.",
+          "intent_support": "well_supported",
+          "unsupported_residual": ""
+        },
+        "derived_transition": "adjudicate",
+        "alternative_reconstruction": "This order could alternatively be aimed primarily at excluding other intra-abdominal causes (e.g., ureteral stone, diverticulitis, or occult gynecologic pathology) rather than specifically confirming appendicitis; clinical notes emphasize RLQ pain but pelvic exam and pregnancy test suggest the team also intends to broadly image the pelvis."
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)",
+      "request_prompt_sha256": "7d7099dfe4eb2bd745c2578db286fcf6daaf76640d1934a854deec5194b6674f",
+      "attempts": [
+        {
+          "attempt": 1,
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "Acute appendicitis is the leading clinical suspicion for this patient's RLQ pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "clinical diagnostic suspicion based on history and exam",
+                  "status": "suspected",
+                  "evidence": [
+                    "soft but exquisitely tender in the RLQ,  rebound tenderness on R and involuntary guarding on R, positive  psoas sign",
+                    "White Blood Cells: 10.4 K/uL"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is not pregnant (pregnancy effectively excluded prior to imaging decision).",
+                  "type": "other",
+                  "other_proposed_type": "pregnancy_status",
+                  "level": "laboratory exclusion",
+                  "status": "established",
+                  "evidence": [
+                    "HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "Acute appendicitis is the leading clinical suspicion for this patient's RLQ pain.",
+                "reason": "Prior CT provided only equivocal findings for early appendicitis (appendix up to 6 mm with ill-defined tip and mild surrounding fat stranding), so the diagnostic trajectory is being refined to also consider targeted pelvic evaluation."
+              },
+              "current_question": {
+                "primary": "Is there a pelvic (non-obstetric) gynecologic cause (adnexal mass, cyst, torsion, or significant pelvic free fluid) that explains the patient's RLQ pain?",
+                "target": "uterus, ovaries, adnexa and pelvic cul-de-sac (detect adnexal mass, torsion, hemorrhagic cyst, or free fluid)",
+                "type": "alternative_source",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would redirect management toward gynecologic surgical or interventional treatment and away from appendectomy.",
+                "negative_answer_changes": "Would increase confidence that pain is non-gynecologic (supporting appendicitis or other abdominal causes) and reduce need for gynecologic intervention.",
+                "secondary_questions": [
+                  "Is there sonographic free pelvic fluid that could indicate hemoperitoneum or ruptured adnexal cyst?",
+                  "Is there sonographic evidence to further assess the previously equivocal appendix (e.g., adjacent fluid/collection) even though ultrasound is limited for appendix in adults?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of adnexal/ovarian pathology (ovarian mass, cyst, torsion, hemorrhage) visible by pelvic ultrasound.",
+                    "why_required": "Identifies an alternative gynecologic source that would change management away from appendicitis."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of pelvic/free fluid in the cul-de-sac or pelvis.",
+                    "why_required": "Free fluid could indicate rupture, hemoperitoneum, or inflammatory/complicated process that alters urgency and intervention."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate sonographic visualization of both ovaries and adnexa (including Doppler flow assessment if torsion is suspected).",
+                    "why_required": "Ultrasound adequacy is required to reliably accept a negative pelvic study and to evaluate torsion."
+                  }
+                ],
+                "evidence": [
+                  "CT PELVIS WITH INTRAVENOUS CONTRAST: The uterus and adnexa appear within normal limits on this CT examination.",
+                  "pelvic exam preformed in ED, no adnexeal masses appreciated"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "The uterus and adnexa appear within normal limits on this CT examination.",
+                      "pelvic exam preformed in ED, no adnexeal masses appreciated"
+                    ],
+                    "reason": "CT and pelvic exam evaluated adnexa and were negative, reducing likelihood of a large adnexal mass, but small cysts or torsion and some adnexal pathology remain potentially occult to CT or exam."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "sufficiently_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "There is no appreciable pelvic free fluid.",
+                      "pelvic exam preformed in ED, no adnexeal masses appreciated"
+                    ],
+                    "reason": "CT explicitly reports no appreciable pelvic free fluid, which adequately argues against large-volume free fluid as the etiology."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      ""
+                    ],
+                    "reason": "No prior targeted pelvic ultrasound has been performed; CT visualization does not establish sonographic adequacy for Doppler or detailed ovarian assessment."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "CT and exam already reduced the likelihood of gross adnexal disease and free fluid, but sonographic assessment is needed to evaluate small adnexal lesions or torsion and to provide true targeted ovarian assessment."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Pelvic ultrasound (non-obstetric) is the preferred modality to detect ovarian/adnexal masses, cysts, hemorrhage, and torsion and to assess Doppler flow; it can therefore address the remaining uncertainty about a gynecologic source.",
+                "intent_support": "weakly_supported",
+                "unsupported_residual": "The order does not directly address the primary appendicitis question (CT remains the better test for appendicitis and its complications), and prior CT already visualized adnexa as normal, so the necessity of ultrasound is not strongly supported by available evidence."
+              },
+              "derived_transition": "reroute",
+              "alternative_reconstruction": "The ultrasound may have been ordered to obtain a radiation-free targeted evaluation of the pelvis because of concern for ovarian torsion despite a negative CT and pregnancy test; alternatively, it could be intended as a bedside/rapid assessment for free fluid or adnexal abnormality not well seen on CT."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Acute appendicitis is the leading clinical suspicion for this patient's RLQ pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical diagnostic suspicion based on history and exam\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"soft but exquisitely tender in the RLQ,  rebound tenderness on R and involuntary guarding on R, positive  psoas sign\",\n        \"White Blood Cells: 10.4 K/uL\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is not pregnant (pregnancy effectively excluded prior to imaging decision).\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"pregnancy_status\",\n      \"level\": \"laboratory exclusion\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Acute appendicitis is the leading clinical suspicion for this patient's RLQ pain.\",\n    \"reason\": \"Prior CT provided only equivocal findings for early appendicitis (appendix up to 6 mm with ill-defined tip and mild surrounding fat stranding), so the diagnostic trajectory is being refined to also consider targeted pelvic evaluation.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a pelvic (non-obstetric) gynecologic cause (adnexal mass, cyst, torsion, or significant pelvic free fluid) that explains the patient's RLQ pain?\",\n    \"target\": \"uterus, ovaries, adnexa and pelvic cul-de-sac (detect adnexal mass, torsion, hemorrhagic cyst, or free fluid)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would redirect management toward gynecologic surgical or interventional treatment and away from appendectomy.\",\n    \"negative_answer_changes\": \"Would increase confidence that pain is non-gynecologic (supporting appendicitis or other abdominal causes) and reduce need for gynecologic intervention.\",\n    \"secondary_questions\": [\n      \"Is there sonographic free pelvic fluid that could indicate hemoperitoneum or ruptured adnexal cyst?\",\n      \"Is there sonographic evidence to further assess the previously equivocal appendix (e.g., adjacent fluid/collection) even though ultrasound is limited for appendix in adults?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of adnexal/ovarian pathology (ovarian mass, cyst, torsion, hemorrhage) visible by pelvic ultrasound.\",\n        \"why_required\": \"Identifies an alternative gynecologic source that would change management away from appendicitis.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of pelvic/free fluid in the cul-de-sac or pelvis.\",\n        \"why_required\": \"Free fluid could indicate rupture, hemoperitoneum, or inflammatory/complicated process that alters urgency and intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate sonographic visualization of both ovaries and adnexa (including Doppler flow assessment if torsion is suspected).\",\n        \"why_required\": \"Ultrasound adequacy is required to reliably accept a negative pelvic study and to evaluate torsion.\"\n      }\n    ],\n    \"evidence\": [\n      \"CT PELVIS WITH INTRAVENOUS CONTRAST: The uterus and adnexa appear within normal limits on this CT examination.\",\n      \"pelvic exam preformed in ED, no adnexeal masses appreciated\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"The uterus and adnexa appear within normal limits on this CT examination.\",\n          \"pelvic exam preformed in ED, no adnexeal masses appreciated\"\n        ],\n        \"reason\": \"CT and pelvic exam evaluated adnexa and were negative, reducing likelihood of a large adnexal mass, but small cysts or torsion and some adnexal pathology remain potentially occult to CT or exam.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"There is no appreciable pelvic free fluid.\",\n          \"pelvic exam preformed in ED, no adnexeal masses appreciated\"\n        ],\n        \"reason\": \"CT explicitly reports no appreciable pelvic free fluid, which adequately argues against large-volume free fluid as the etiology.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\"\n        ],\n        \"reason\": \"No prior targeted pelvic ultrasound has been performed; CT visualization does not establish sonographic adequacy for Doppler or detailed ovarian assessment.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"CT and exam already reduced the likelihood of gross adnexal disease and free fluid, but sonographic assessment is needed to evaluate small adnexal lesions or torsion and to provide true targeted ovarian assessment.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Pelvic ultrasound (non-obstetric) is the preferred modality to detect ovarian/adnexal masses, cysts, hemorrhage, and torsion and to assess Doppler flow; it can therefore address the remaining uncertainty about a gynecologic source.\",\n    \"intent_support\": \"weakly_supported\",\n    \"unsupported_residual\": \"The order does not directly address the primary appendicitis question (CT remains the better test for appendicitis and its complications), and prior CT already visualized adnexa as normal, so the necessity of ultrasound is not strongly supported by available evidence.\"\n  },\n  \"derived_transition\": \"reroute\",\n  \"alternative_reconstruction\": \"The ultrasound may have been ordered to obtain a radiation-free targeted evaluation of the pelvis because of concern for ovarian torsion despite a negative CT and pregnancy test; alternatively, it could be intended as a bedside/rapid assessment for free fluid or adnexal abnormality not well seen on CT.\"\n}",
+            "request_id": "gen-1788151509-DHc1pizOnvH4cSBUQRu8",
+            "usage": {
+              "completion_tokens": 3469,
+              "prompt_tokens": 5163,
+              "total_tokens": 8632,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 1792,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.00822875,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.00822875,
+                "upstream_inference_prompt_cost": 0.00129075,
+                "upstream_inference_completions_cost": 0.006938
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "Acute appendicitis is the leading clinical suspicion for this patient's RLQ pain.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "clinical diagnostic suspicion based on history and exam",
+            "status": "suspected",
+            "evidence": [
+              "soft but exquisitely tender in the RLQ,  rebound tenderness on R and involuntary guarding on R, positive  psoas sign",
+              "White Blood Cells: 10.4 K/uL"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is not pregnant (pregnancy effectively excluded prior to imaging decision).",
+            "type": "other",
+            "other_proposed_type": "pregnancy_status",
+            "level": "laboratory exclusion",
+            "status": "established",
+            "evidence": [
+              "HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "Acute appendicitis is the leading clinical suspicion for this patient's RLQ pain.",
+          "reason": "Prior CT provided only equivocal findings for early appendicitis (appendix up to 6 mm with ill-defined tip and mild surrounding fat stranding), so the diagnostic trajectory is being refined to also consider targeted pelvic evaluation."
+        },
+        "current_question": {
+          "primary": "Is there a pelvic (non-obstetric) gynecologic cause (adnexal mass, cyst, torsion, or significant pelvic free fluid) that explains the patient's RLQ pain?",
+          "target": "uterus, ovaries, adnexa and pelvic cul-de-sac (detect adnexal mass, torsion, hemorrhagic cyst, or free fluid)",
+          "type": "alternative_source",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would redirect management toward gynecologic surgical or interventional treatment and away from appendectomy.",
+          "negative_answer_changes": "Would increase confidence that pain is non-gynecologic (supporting appendicitis or other abdominal causes) and reduce need for gynecologic intervention.",
+          "secondary_questions": [
+            "Is there sonographic free pelvic fluid that could indicate hemoperitoneum or ruptured adnexal cyst?",
+            "Is there sonographic evidence to further assess the previously equivocal appendix (e.g., adjacent fluid/collection) even though ultrasound is limited for appendix in adults?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of adnexal/ovarian pathology (ovarian mass, cyst, torsion, hemorrhage) visible by pelvic ultrasound.",
+              "why_required": "Identifies an alternative gynecologic source that would change management away from appendicitis."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of pelvic/free fluid in the cul-de-sac or pelvis.",
+              "why_required": "Free fluid could indicate rupture, hemoperitoneum, or inflammatory/complicated process that alters urgency and intervention."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate sonographic visualization of both ovaries and adnexa (including Doppler flow assessment if torsion is suspected).",
+              "why_required": "Ultrasound adequacy is required to reliably accept a negative pelvic study and to evaluate torsion."
+            }
+          ],
+          "evidence": [
+            "CT PELVIS WITH INTRAVENOUS CONTRAST: The uterus and adnexa appear within normal limits on this CT examination.",
+            "pelvic exam preformed in ED, no adnexeal masses appreciated"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "The uterus and adnexa appear within normal limits on this CT examination.",
+                "pelvic exam preformed in ED, no adnexeal masses appreciated"
+              ],
+              "reason": "CT and pelvic exam evaluated adnexa and were negative, reducing likelihood of a large adnexal mass, but small cysts or torsion and some adnexal pathology remain potentially occult to CT or exam."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "sufficiently_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "There is no appreciable pelvic free fluid.",
+                "pelvic exam preformed in ED, no adnexeal masses appreciated"
+              ],
+              "reason": "CT explicitly reports no appreciable pelvic free fluid, which adequately argues against large-volume free fluid as the etiology."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                ""
+              ],
+              "reason": "No prior targeted pelvic ultrasound has been performed; CT visualization does not establish sonographic adequacy for Doppler or detailed ovarian assessment."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "CT and exam already reduced the likelihood of gross adnexal disease and free fluid, but sonographic assessment is needed to evaluate small adnexal lesions or torsion and to provide true targeted ovarian assessment."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Pelvic ultrasound (non-obstetric) is the preferred modality to detect ovarian/adnexal masses, cysts, hemorrhage, and torsion and to assess Doppler flow; it can therefore address the remaining uncertainty about a gynecologic source.",
+          "intent_support": "weakly_supported",
+          "unsupported_residual": "The order does not directly address the primary appendicitis question (CT remains the better test for appendicitis and its complications), and prior CT already visualized adnexa as normal, so the necessity of ultrasound is not strongly supported by available evidence."
+        },
+        "derived_transition": "reroute",
+        "alternative_reconstruction": "The ultrasound may have been ordered to obtain a radiation-free targeted evaluation of the pelvis because of concern for ovarian torsion despite a negative CT and pregnancy test; alternatively, it could be intended as a bedside/rapid assessment for free fluid or adnexal abnormality not well seen on CT."
+      },
+      "validation_errors": []
+    }
+  ]
+}

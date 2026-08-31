@@ -55,28 +55,19 @@ COVERAGE_STATUSES = ["unaddressed", "partially_addressed", "sufficiently_address
 COVERAGE_DIRECTIONS = ["supports", "refutes", "mixed", "no_direction"]
 COVERAGE_AGGREGATES = ["unanswered", "partially_answered", "sufficiently_answered"]
 
-COMMON_SYSTEM = """You reconstruct a plausible imaging-decision trajectory from causally available evidence. This is empirical, order-aware knowledge discovery, not guideline scoring and not next-test prediction.
+COMMON_SYSTEM = """Reconstruct the A/Q/C state that best explains one observed imaging decision.
 
-At each decision point you see the actual imaging order, but never that order's result or later events. Use the order as a clue to intent only when the visible record supports it. Do not claim unique access to the treating physician's private thoughts. Preserve ambiguity and an unsupported residual instead of forcing every order into a clean rationale.
+Input boundary: use only the visible pre-order chart, resulted prior imaging, the carried prior A/Q/C state, and the actual current order. The current result and later events are absent. The order identifies a decision to explain; chart evidence determines how strongly its inferred intent is supported.
 
-Hard rules:
-- Maintain a coherent trajectory by using the supplied prior A/Q/C state, but revise it when the newly visible prior result warrants revision.
-- Represent assumptions as separate atomic propositions. Each proposition has its own type, level, and status; never give one certainty label to the entire step.
-- Separate disease existence from etiology, severity/course, complication, alternative source, and intervention/device state.
-- Separate study adequacy, test-question capability, result status, and aggregate question coverage.
-- A valid negative is informative. It is not the same as indeterminate, nonvisualized, or not assessed.
-- Coverage is relative to all evidence and the current question, not a property of one test.
-- For every question, enumerate the evidence dimensions required for an answer. These answer
-  requirements describe information, not a recommended modality or protocol.
-- Record coverage separately for every requirement. Never replace the requirement list with one
-  scalar label; keep study adequacy, test-question capability, result status, and aggregate
-  coverage distinct.
-- Flag material discordance only with two quoted, clinically important evidence streams that the current assumption cannot comfortably explain.
-- First describe assumption and question changes. Derive a transition summary only afterward.
-- Use close only when the actual current action explicitly represents no further imaging; never infer stop merely because later events are hidden.
-- Be concise enough to finish the JSON: include at most 5 assumptions, 5 answer requirements,
-  2 evidence quotes per item, and 2 secondary questions. Keep explanations to one short sentence.
-- Output strict JSON only."""
+Annotation rules:
+1. Assumptions are atomic propositions. Give each proposition its own type, level, status, exact evidence quote, and support. Use the minimum necessary set (usually 1-3; maximum 5). `established` and `excluded` require explicit or adequately decisive evidence; nonvisualization and limited/nondiagnostic assessment are not exclusion.
+2. The primary question is the central decision-relevant unknown, not the examination name. Question types describe what is being asked and may overlap semantically; choose the type most central to this order. `alternative_source_discrimination` is an answer-requirement type; a primary competing-source question uses question type `alternative_source`.
+3. Declare only information dimensions necessary to answer the question (usually 2-4; maximum 5). Each requirement has a unique `requirement_key` and a concrete target/object. A type may repeat for different objects. `temporal_course_or_response` is a requirement, not a question type; use it only when comparison, progression, stability, or response is part of the stated question.
+4. Coverage describes all evidence available before the current order. Provide exactly one coverage entry per declared requirement, matched by `requirement_key` and type. Keep study adequacy, test-question capability, result status, and aggregate coverage separate. An adequately assessed negative can sufficiently cover a requirement with direction `refutes`; nonvisualized, indeterminate, or not-assessed targets generally cannot.
+5. Carry the trajectory forward and revise it only when newly available prior evidence supports a change. Record material discordance only when two exact, clinically important evidence streams conflict. Derive the transition after the assumption and question updates. `close` requires an explicit no-further-imaging action.
+6. Preserve uncertainty. Put any portion of the observed order that the evidence does not explain in `unsupported_residual`; do not increase certainty merely to make the order appear rational.
+
+Return strict JSON. Use at most two evidence quotes per item, at most two secondary questions, and one short sentence for each explanation."""
 
 DIRECT_SYSTEM = COMMON_SYSTEM + """
 
@@ -127,9 +118,10 @@ def output_contract() -> dict[str, Any]:
             "negative_answer_changes": "decision or assumption change",
             "secondary_questions": ["optional question"],
             "answer_requirements": [{
+                "requirement_key": "short unique key within this step, e.g. req_1",
                 "id": f"one of: {' | '.join(ANSWER_REQUIREMENT_TYPES)}",
                 "other_proposed_dimension": "required free-text name when id=other; otherwise empty",
-                "dimension": "what evidence dimension must be addressed",
+                "dimension": "concrete target/object and information dimension that must be addressed",
                 "why_required": "why this dimension is necessary to answer the question",
             }],
             "evidence": ["verbatim quote from visible input"],
@@ -137,6 +129,7 @@ def output_contract() -> dict[str, Any]:
         "question_continuity": "initial | same | refined | new | reopened",
         "coverage": {
             "requirements": [{
+                "requirement_key": "must exactly match one declared answer_requirements requirement_key",
                 "requirement_id": f"one of: {' | '.join(ANSWER_REQUIREMENT_TYPES)}",
                 "status": f"one of: {' | '.join(COVERAGE_STATUSES)}",
                 "direction": f"one of: {' | '.join(COVERAGE_DIRECTIONS)}",

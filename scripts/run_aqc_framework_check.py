@@ -109,7 +109,7 @@ def load_masked_record(disease: str, hadm_id: int, frames: dict[str, pd.DataFram
     return build_record(disease, hadm_id, row.iloc[0], labmap)
 
 
-def validate_output(value: Any) -> list[str]:
+def validate_output(value: Any, *, is_first_step: bool = False) -> list[str]:
     errors: list[str] = []
     if not isinstance(value, dict):
         return ["not_a_json_object"]
@@ -117,6 +117,8 @@ def validate_output(value: Any) -> list[str]:
     if not isinstance(assumptions, list):
         errors.append("assumptions_not_list")
     else:
+        if len(assumptions) > 5:
+            errors.append("too_many_assumptions")
         for index, item in enumerate(assumptions):
             if not isinstance(item, dict):
                 errors.append(f"assumption_{index}_not_object")
@@ -127,6 +129,11 @@ def validate_output(value: Any) -> list[str]:
                 errors.append(f"assumption_{index}_bad_status")
             if item.get("support") not in {"well_supported", "weakly_supported", "unclear"}:
                 errors.append(f"assumption_{index}_bad_support")
+            evidence = item.get("evidence")
+            if not isinstance(evidence, list) or not evidence or len(evidence) > 2:
+                errors.append(f"assumption_{index}_bad_evidence_count")
+            if item.get("status") in {"established", "excluded"} and item.get("support") != "well_supported":
+                errors.append(f"assumption_{index}_strong_status_without_strong_support")
     question = value.get("current_question")
     if not isinstance(question, dict):
         errors.append("current_question_not_object")
@@ -137,31 +144,76 @@ def validate_output(value: Any) -> list[str]:
         requirements = question.get("answer_requirements")
         if not isinstance(requirements, list):
             errors.append("answer_requirements_not_list")
-            declared = []
+            declared: list[tuple[str, str]] = []
         else:
-            declared = [item.get("id") for item in requirements if isinstance(item, dict)]
-            if any(item not in prompts.ANSWER_REQUIREMENT_TYPES for item in declared):
-                errors.append("bad_answer_requirement")
-            if len(declared) != len(set(declared)):
-                errors.append("duplicate_answer_requirement")
+            if len(requirements) > 5:
+                errors.append("too_many_answer_requirements")
+            declared = []
+            for index, item in enumerate(requirements):
+                if not isinstance(item, dict):
+                    errors.append(f"answer_requirement_{index}_not_object")
+                    continue
+                requirement_key = item.get("requirement_key")
+                requirement_type = item.get("id")
+                if not isinstance(requirement_key, str) or not requirement_key.strip():
+                    errors.append(f"answer_requirement_{index}_bad_key")
+                if requirement_type not in prompts.ANSWER_REQUIREMENT_TYPES:
+                    errors.append(f"answer_requirement_{index}_bad_type")
+                if isinstance(requirement_key, str) and requirement_key.strip():
+                    declared.append((requirement_key, requirement_type))
+            declared_keys = [key for key, _ in declared]
+            if len(declared_keys) != len(set(declared_keys)):
+                errors.append("duplicate_answer_requirement_key")
+        secondary = question.get("secondary_questions")
+        if not isinstance(secondary, list) or len(secondary) > 2:
+            errors.append("bad_secondary_questions")
     coverage = value.get("coverage")
     if not isinstance(coverage, dict) or not isinstance(coverage.get("requirements"), list):
         errors.append("coverage_requirements_not_list")
     else:
-        covered = []
+        covered: list[tuple[str, str]] = []
         for index, item in enumerate(coverage["requirements"]):
             if not isinstance(item, dict):
                 errors.append(f"coverage_{index}_not_object")
                 continue
-            covered.append(item.get("requirement_id"))
+            requirement_key = item.get("requirement_key")
+            requirement_type = item.get("requirement_id")
+            if not isinstance(requirement_key, str) or not requirement_key.strip():
+                errors.append(f"coverage_{index}_bad_key")
+            if requirement_type not in prompts.ANSWER_REQUIREMENT_TYPES:
+                errors.append(f"coverage_{index}_bad_requirement_type")
+            if isinstance(requirement_key, str) and requirement_key.strip():
+                covered.append((requirement_key, requirement_type))
             if item.get("status") not in prompts.COVERAGE_STATUSES:
                 errors.append(f"coverage_{index}_bad_status")
             if item.get("direction") not in prompts.COVERAGE_DIRECTIONS:
                 errors.append(f"coverage_{index}_bad_direction")
-        if set(covered) != set(declared):
+            evidence = item.get("supporting_evidence")
+            if not isinstance(evidence, list) or len(evidence) > 2:
+                errors.append(f"coverage_{index}_bad_evidence_count")
+        covered_keys = [key for key, _ in covered]
+        if len(covered_keys) != len(set(covered_keys)):
+            errors.append("duplicate_coverage_requirement_key")
+        if covered != declared:
             errors.append("coverage_question_requirement_mismatch")
         if coverage.get("aggregate") not in prompts.COVERAGE_AGGREGATES:
             errors.append("bad_coverage_aggregate")
+        if coverage.get("aggregate") == "sufficiently_answered" and any(
+            item.get("status") != "sufficiently_addressed"
+            for item in coverage["requirements"] if isinstance(item, dict)
+        ):
+            errors.append("sufficient_aggregate_with_incomplete_requirement")
+    if is_first_step:
+        if value.get("question_continuity") != "initial":
+            errors.append("first_step_question_continuity_not_initial")
+        change = value.get("assumption_change")
+        if not isinstance(change, dict) or change.get("label") != "initial":
+            errors.append("first_step_assumption_change_not_initial")
+        if value.get("derived_transition") != "initial":
+            errors.append("first_step_derived_transition_not_initial")
+        previous = value.get("previous_order_update")
+        if not isinstance(previous, dict) or previous.get("applicable") is not False:
+            errors.append("first_step_previous_order_update_applicable")
     return errors
 
 
@@ -239,8 +291,8 @@ def run_patient(patient: dict[str, Any], *, model: str, frames: dict[str, pd.Dat
             "recode_prompt_sha256": sha256(recode_user),
             "direct": direct_call,
             "recode": recode_call,
-            "direct_validation_errors": validate_output(direct_value),
-            "recode_validation_errors": validate_output(recode_value),
+            "direct_validation_errors": validate_output(direct_value, is_first_step=int(dp["step"]) == 1),
+            "recode_validation_errors": validate_output(recode_value, is_first_step=int(dp["step"]) == 1),
             "comparison": compare_step(direct_value, recode_value),
         })
         direct_prior = direct_value

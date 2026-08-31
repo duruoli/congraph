@@ -1,0 +1,1244 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 21849575,
+  "source_path": "results/annotation_experiment/full/pancreatitis_21849575.json",
+  "model": "openai/gpt-5-mini",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "d3ed51200f92e881e742639409d122d864f905002646ded08112d6d9c1092906",
+      "attempts": [
+        {
+          "attempt": 1,
+          "call": {
+            "parsed": null,
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"presenting diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n        \"HPI: ...who now presents with several hours of non-radiating epigastric pain.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Recent biliary intervention / known gallbladder disease (percutaneous cholecystostomy tube recently removed; interval cholecystectomy planned)\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"recent procedural history relevant to biliary system\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"HPI: ...with recent admission for cholecystitis s/p percutaneous cholecystostomy who now presents...\",\n        \"HPI: ...the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned...\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A biliary (gallstone/obstructing stone or cholecystitis) source for the presentation is suspected\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"probable etiologic consideration for current illness\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Abdominal: Soft, tender to palpation ___ RUQ\",\n        \"AST: 611.0 IU/L; ALT: 514.0 IU/L\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging or A/Q/C to update\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; assumptions are established from presenting history and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is the patient's acute pancreatitis/pain due to acute biliary pathology (gallstones, obstructing common bile duct stone, or acute cholecystitis)?\",\n    \"target\": \"gallbladder and biliary tree (gallstones, gallbladder inflammation, common bile duct dilation/stone)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would prompt biliary-directed interventions (urgent ERCP if obstructing stone suspected) or expedited cholecystectomy/management for cholecystitis\",\n    \"negative_answer_changes\": \"Would favor non-biliary causes (medical management of pancreatitis without immediate biliary intervention) and reduce urgency of biliary procedures\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy)?\",\n      \"Is the common bile duct dilated or is there sonographic evidence of an obstructing CBD stone?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identify gallstones and sonographic signs of acute cholecystitis (gallbladder wall thickening, pericholecystic fluid, sonographic Murphy sign)\",\n        \"why_required\": \"Direct visualization of stones or cholecystitis would confirm a biliary source and change management toward biliary intervention/surgery\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assess common bile duct caliber and attempt to visualize CBD stone or dilation\",\n        \"why_required\": \"Detection of CBD dilation or stones localizes obstruction as the cause of pancreatitis and indicates need for ERCP/urgent decompression\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Distinguish biliary etiology from non-biliary causes of pancreatitis given labs and history\",\n        \"why_required\": \"Determining whether the pancreatitis is biliary affects triage, need for biliary procedures, and surgical timing\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n      \"HPI: ...percutaneous cholecystostomy tube was removed with interval cholecystectomy planned...\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Abdominal: Soft, tender to palpation ___ RUQ\",\n          \"HPI: ...percutaneous cholecystostomy tube was removed with interval cholecystectomy planned...\"\n        ],\n        \"reason\": \"RUQ tenderness and prior gallbladder disease make gallbladder pathology plausible, but no imaging has been performed to visualize stones or sonographic signs of cholecystitis.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"Bilirubin, Total: 0.5 mg/dL (ref 0.0-1.5)\",\n          \"AST: 611.0 IU/L; ALT: 514.0 IU/L\"\n        ],\n        \"reason\": \"Normal total bilirubin argues against persistent obstructive jaundice while very high transaminases can reflect transient biliary obstruction; without imaging CBD caliber cannot be confirmed or excluded.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n          \"HPI: ...recent admission for cholecystitis s/p percutaneous cholecystostomy...\"\n        ],\n        \"reason\": \"Severe pancreatitis plus recent biliary disease and RUQ findings make a biliary cause plausible, but imaging is needed to discriminate definit",
+            "request_id": "gen-1788150940-0H5oiPzWdpn9ZMmm9VH1",
+            "usage": {
+              "completion_tokens": 4000,
+              "prompt_tokens": 3225,
+              "total_tokens": 7225,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 2368,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.00880625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.00880625,
+                "upstream_inference_prompt_cost": 0.00080625,
+                "upstream_inference_completions_cost": 0.008
+              }
+            }
+          },
+          "validation_errors": [
+            "not_a_json_object"
+          ]
+        },
+        {
+          "attempt": 2,
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The presentation is acute pancreatitis",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "presenting diagnosis",
+                  "status": "established",
+                  "evidence": [
+                    "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+                    "HPI: ... now presents with several hours of non-radiating epigastric pain."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Patient has recent gallbladder disease requiring percutaneous cholecystostomy and planned cholecystectomy",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "recent procedure / surgical planning",
+                  "status": "established",
+                  "evidence": [
+                    "He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___ with Dr. ___.",
+                    "Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "no prior imaging or prior question to update",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "First decision point; assumptions are being established from presentation and history (marked lipase elevation and prior cholecystostomy)."
+              },
+              "current_question": {
+                "primary": "Is the acute pancreatitis caused by biliary (gallstone/obstructing bile duct) disease?",
+                "target": "gallbladder and biliary tree as the source (gallstones / choledocholithiasis causing obstruction)",
+                "type": "alternative_source",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would favor biliary-directed management (early cholecystectomy or ERCP if obstructing stone) and explain etiology of pancreatitis",
+                "negative_answer_changes": "Would shift workup/management away from urgent biliary intervention toward non-biliary causes and supportive management",
+                "secondary_questions": [
+                  "Is there sonographic evidence of acute cholecystitis?",
+                  "Is the common bile duct dilated or is choledocholithiasis suggested?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones in the gallbladder",
+                    "why_required": "Demonstrating gallstones supports gallstone pancreatitis as the proximate source and guides need for cholecystectomy"
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Common bile duct diameter and evidence of choledocholithiasis or obstruction",
+                    "why_required": "Detecting CBD dilation or stones would indicate an obstructing biliary source that may require ERCP"
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Sonographic signs of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign)",
+                    "why_required": "If present, acute cholecystitis would influence urgency of surgical/interventional management and explains RUQ tenderness"
+                  }
+                ],
+                "evidence": [
+                  "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+                  "He was recently seen ... the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___",
+                      "Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy"
+                    ],
+                    "reason": "History of prior cholecystostomy and planned cholecystectomy indicates prior significant gallbladder disease and increases prior probability of gallstones but no imaging yet to confirm current stones."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "anatomic_localization",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "Bilirubin, Total: 0.5 mg/dL (ref 0.0-1.5)",
+                      "Alkaline Phosphatase: 130.0 IU/L (ref 40.0-130.0)"
+                    ],
+                    "reason": "Normal total bilirubin and only borderline alkaline phosphatase argue against ongoing obstructive choledocholithiasis but without imaging an obstructing stone cannot be excluded."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "Abdominal: Soft, tender to palpation ___ RUQ",
+                      "Temp: 98.4 HR: 99 ... White Blood Cells: 10.9 K/uL"
+                    ],
+                    "reason": "RUQ tenderness and mild leukocytosis are compatible with cholecystitis but lack of fever and no imaging mean sonographic signs are unassessed."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "History and labs change pretest probability (support prior gallbladder disease, argue somewhat against obstructing CBD) but no prior imaging directly visualizes gallstones, CBD, or sonographic cholecystitis features."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant ultrasound can detect gallstones, gallbladder inflammation, and assess common bile duct caliber—key data to confirm or refute a biliary etiology for pancreatitis.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "Ultrasound may miss distal CBD stones and cannot definitively exclude choledocholithiasis; lab pattern (very high AST/ALT) could reflect hepatocellular injury not fully resolved by ultrasound alone."
+              },
+              "derived_transition": "adjudicate",
+              "alternative_reconstruction": "The order could alternatively be primarily aimed at evaluating the markedly elevated transaminases (AST 611, ALT 514) for hepatobiliary vs primary hepatic injury rather than explicitly to identify gallstone pancreatitis; RUQ ultrasound would help distinguish biliary obstruction from hepatocellular causes."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The presentation is acute pancreatitis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"presenting diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n        \"HPI: ... now presents with several hours of non-radiating epigastric pain.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Patient has recent gallbladder disease requiring percutaneous cholecystostomy and planned cholecystectomy\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"recent procedure / surgical planning\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___ with Dr. ___.\",\n        \"Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging or prior question to update\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First decision point; assumptions are being established from presentation and history (marked lipase elevation and prior cholecystostomy).\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is the acute pancreatitis caused by biliary (gallstone/obstructing bile duct) disease?\",\n    \"target\": \"gallbladder and biliary tree as the source (gallstones / choledocholithiasis causing obstruction)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would favor biliary-directed management (early cholecystectomy or ERCP if obstructing stone) and explain etiology of pancreatitis\",\n    \"negative_answer_changes\": \"Would shift workup/management away from urgent biliary intervention toward non-biliary causes and supportive management\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of acute cholecystitis?\",\n      \"Is the common bile duct dilated or is choledocholithiasis suggested?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones in the gallbladder\",\n        \"why_required\": \"Demonstrating gallstones supports gallstone pancreatitis as the proximate source and guides need for cholecystectomy\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Common bile duct diameter and evidence of choledocholithiasis or obstruction\",\n        \"why_required\": \"Detecting CBD dilation or stones would indicate an obstructing biliary source that may require ERCP\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Sonographic signs of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign)\",\n        \"why_required\": \"If present, acute cholecystitis would influence urgency of surgical/interventional management and explains RUQ tenderness\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n      \"He was recently seen ... the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___\",\n          \"Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy\"\n        ],\n        \"reason\": \"History of prior cholecystostomy and planned cholecystectomy indicates prior significant gallbladder disease and increases prior probability of gallstones but no imaging yet to confirm current stones.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Bilirubin, Total: 0.5 mg/dL (ref 0.0-1.5)\",\n          \"Alkaline Phosphatase: 130.0 IU/L (ref 40.0-130.0)\"\n        ],\n        \"reason\": \"Normal total bilirubin and only borderline alkaline phosphatase argue against ongoing obstructive choledocholithiasis but without imaging an obstructing stone cannot be excluded.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Abdominal: Soft, tender to palpation ___ RUQ\",\n          \"Temp: 98.4 HR: 99 ... White Blood Cells: 10.9 K/uL\"\n        ],\n        \"reason\": \"RUQ tenderness and mild leukocytosis are compatible with cholecystitis but lack of fever and no imaging mean sonographic signs are unassessed.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"History and labs change pretest probability (support prior gallbladder disease, argue somewhat against obstructing CBD) but no prior imaging directly visualizes gallstones, CBD, or sonographic cholecystitis features.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant ultrasound can detect gallstones, gallbladder inflammation, and assess common bile duct caliber—key data to confirm or refute a biliary etiology for pancreatitis.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Ultrasound may miss distal CBD stones and cannot definitively exclude choledocholithiasis; lab pattern (very high AST/ALT) could reflect hepatocellular injury not fully resolved by ultrasound alone.\"\n  },\n  \"derived_transition\": \"adjudicate\",\n  \"alternative_reconstruction\": \"The order could alternatively be primarily aimed at evaluating the markedly elevated transaminases (AST 611, ALT 514) for hepatobiliary vs primary hepatic injury rather than explicitly to identify gallstone pancreatitis; RUQ ultrasound would help distinguish biliary obstruction from hepatocellular causes.\"\n}",
+            "request_id": "gen-1788150988-QrvEZmq06QzTfU4cNvqN",
+            "usage": {
+              "completion_tokens": 3346,
+              "prompt_tokens": 3225,
+              "total_tokens": 6571,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 1600,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3072,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.00680705,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.00680705,
+                "upstream_inference_prompt_cost": 0.00011505,
+                "upstream_inference_completions_cost": 0.006692
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The presentation is acute pancreatitis",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "presenting diagnosis",
+            "status": "established",
+            "evidence": [
+              "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+              "HPI: ... now presents with several hours of non-radiating epigastric pain."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Patient has recent gallbladder disease requiring percutaneous cholecystostomy and planned cholecystectomy",
+            "type": "intervention_or_device_state",
+            "other_proposed_type": "",
+            "level": "recent procedure / surgical planning",
+            "status": "established",
+            "evidence": [
+              "He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___ with Dr. ___.",
+              "Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "no prior imaging or prior question to update",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "First decision point; assumptions are being established from presentation and history (marked lipase elevation and prior cholecystostomy)."
+        },
+        "current_question": {
+          "primary": "Is the acute pancreatitis caused by biliary (gallstone/obstructing bile duct) disease?",
+          "target": "gallbladder and biliary tree as the source (gallstones / choledocholithiasis causing obstruction)",
+          "type": "alternative_source",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would favor biliary-directed management (early cholecystectomy or ERCP if obstructing stone) and explain etiology of pancreatitis",
+          "negative_answer_changes": "Would shift workup/management away from urgent biliary intervention toward non-biliary causes and supportive management",
+          "secondary_questions": [
+            "Is there sonographic evidence of acute cholecystitis?",
+            "Is the common bile duct dilated or is choledocholithiasis suggested?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones in the gallbladder",
+              "why_required": "Demonstrating gallstones supports gallstone pancreatitis as the proximate source and guides need for cholecystectomy"
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Common bile duct diameter and evidence of choledocholithiasis or obstruction",
+              "why_required": "Detecting CBD dilation or stones would indicate an obstructing biliary source that may require ERCP"
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Sonographic signs of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign)",
+              "why_required": "If present, acute cholecystitis would influence urgency of surgical/interventional management and explains RUQ tenderness"
+            }
+          ],
+          "evidence": [
+            "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+            "He was recently seen ... the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___",
+                "Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy"
+              ],
+              "reason": "History of prior cholecystostomy and planned cholecystectomy indicates prior significant gallbladder disease and increases prior probability of gallstones but no imaging yet to confirm current stones."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "anatomic_localization",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "Bilirubin, Total: 0.5 mg/dL (ref 0.0-1.5)",
+                "Alkaline Phosphatase: 130.0 IU/L (ref 40.0-130.0)"
+              ],
+              "reason": "Normal total bilirubin and only borderline alkaline phosphatase argue against ongoing obstructive choledocholithiasis but without imaging an obstructing stone cannot be excluded."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "Abdominal: Soft, tender to palpation ___ RUQ",
+                "Temp: 98.4 HR: 99 ... White Blood Cells: 10.9 K/uL"
+              ],
+              "reason": "RUQ tenderness and mild leukocytosis are compatible with cholecystitis but lack of fever and no imaging mean sonographic signs are unassessed."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "History and labs change pretest probability (support prior gallbladder disease, argue somewhat against obstructing CBD) but no prior imaging directly visualizes gallstones, CBD, or sonographic cholecystitis features."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant ultrasound can detect gallstones, gallbladder inflammation, and assess common bile duct caliber—key data to confirm or refute a biliary etiology for pancreatitis.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "Ultrasound may miss distal CBD stones and cannot definitively exclude choledocholithiasis; lab pattern (very high AST/ALT) could reflect hepatocellular injury not fully resolved by ultrasound alone."
+        },
+        "derived_transition": "adjudicate",
+        "alternative_reconstruction": "The order could alternatively be primarily aimed at evaluating the markedly elevated transaminases (AST 611, ALT 514) for hepatobiliary vs primary hepatic injury rather than explicitly to identify gallstone pancreatitis; RUQ ultrasound would help distinguish biliary obstruction from hepatocellular causes."
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "acb253910a728c07829a649819ac52ed4732b5b823b1b55892e9b73df7779d5d",
+      "attempts": [
+        {
+          "attempt": 1,
+          "call": {
+            "parsed": null,
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The presentation is acute pancreatitis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"presenting diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n        \"HPI: ... now presents with several hours of non-radiating epigastric pain.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Patient has recent gallbladder disease treated with percutaneous cholecystostomy and planned cholecystectomy\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"recent procedure / surgical planning\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___ with Dr. ___.\",\n        \"Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Right upper quadrant ultrasound demonstrates pneumobilia, echogenic material in the gallbladder, gallbladder wall thickening, and positive sonographic Murphy\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"imaging finding\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"which on live scanning demonstrates suggestion of pneumobilia.\",\n        \"The gallbladder is status post recent drainage on ___, now mildly distended with shadowing echogenic material and demonstrates persistent wall thickening.  ___ sign is positive despite morphine therapy.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is the acute pancreatitis caused by biliary (gallstone/obstructing bile duct) disease?\",\n    \"study_adequacy\": \"partially_capable\",\n    \"test_question_capability\": \"partially_capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"RUQ ultrasound provided direct visual evidence of gallbladder echogenic material and sonographic signs of gallbladder inflammation (increasing likelihood of a biliary source) but did not show CBD obstruction and is limited for distal choledocholithiasis.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n      \"evidence_stream_2\": \"The gallbladder ... with shadowing echogenic material and demonstrates persistent wall thickening.\",\n      \"reason\": \"Laboratory diagnosis of pancreatitis and ultrasound evidence of gallbladder pathology are mutually consistent with possible gallstone-associated pancreatitis; no decisive conflicting data present.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Patient has recent gallbladder disease treated with percutaneous cholecystostomy and planned cholecystectomy\",\n    \"reason\": \"Prior ultrasound now documents residual gallbladder echogenic material, wall thickening, and sonographic Murphy, refining the prior general history of gallbladder disease into current imaging-confirmed gallbladder abnormality.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Are there imaging features of pancreatic severity or local complications (necrosis, fluid collections, hemorrhage, vascular involvement) that require change in management?\",\n    \"target\": \"pancreas and peripancreatic spaces for necrosis, fluid collections, hemorrhage, and vascular complications\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would prompt escalation of care and consideration of interventional drainage, surgery, or ICU-level management.\",\n    \"negative_answer_changes\": \"Would support continued conservative/supportive management without urgent invasive intervention.\",\n    \"secondary_questions\": [\n      \"Is there another acute intra-abdominal process (e.g., perforation, abscess, ischemia) explaining pain or lab abnormalities?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Pancreatic parenchymal enhancement and necrosis assessment\",\n        \"why_required\": \"Detecting nonenhancing pancreatic tissue (necrosis) changes prognosis and management.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, location, and character of peripancreatic fluid collections, hemorrhage, or vascular thrombosis/bleeding\",\n        \"why_required\": \"Local complications determine need for drainage, angiographic intervention, or surgery.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Other acute intra-abdominal pathology (e.g., perforation, ischemia, abscess, postoperative/cholecystostomy complication)\",\n        \"why_required\": \"CT can identify alternate or additional causes of acute abdomen that would change management.\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n      \"The gallbladder is status post recent drainage on ___, now mildly distended with shadowing echogenic material and demonstrates persistent wall thickening.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\"\n        ],\n        \"reason\": \"Laboratory confirms pancreatitis but no prior imaging assesses pancreatic enhancement or necrosis; ultrasound was focused on hepatobiliary structures and cannot evaluate pancreatic necrosis reliably.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"HPI: ... now presents with several hours of non-radiating epigastric pain.\"\n        ],\n        \"reason\": \"No prior imaging documents peripancreatic fluid collections, hemorrhage, or vascular complications; ultrasound is not adequate to assess these features.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"The gallbladder ... with shadowing echogenic material and demonstrates persistent wall thickening.\",\n          \"which on live scanning demonstrates suggestion of pneumobilia.\"\n        ],\n        \"reason\": \"RUQ ultrasound identifies gallbladder pathology that could explain pain and labs, partially addressing alternative-source questions, but it does not evaluate other intra-abdominal causes or surgical complications.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Labs and RUQ ultrasound establish pancreatitis and gallbladder abnormality but leave pancreatic severity and other intra-abdominal processes unassessed; CT could fill those gaps.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT abdomen/pelvis can identify pancreatic necrosis, characterize peripancreatic collections, detect hemorrhage or vascular complications, and reveal alternative abdominal pathology not seen on RUQ ultrasound.\",\n    \"intent_support\": \"weakly_supported\",\n    \"unsupported_residual\": \"CT is relatively poor for detecting small/isoattenuating gallstones and may miss choledocholithiasis compared with MRCP/US/ERCP; early CT (very soon after symptom onset) can undercall necrosis.\"\n  },\n  \"derived_transition\": \"adjudicate\",\n  \"alternative_reconstruction\": \"The CT may instead be intended primarily to search for an alternative acute intra-abdominal diagnosis (e.g., perforation, abscess, ischem",
+            "request_id": "gen-1788151036-LhI4iQBMUH02A0b04nlT",
+            "usage": {
+              "completion_tokens": 4000,
+              "prompt_tokens": 4857,
+              "total_tokens": 8857,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 2112,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1792,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.00881105,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.00881105,
+                "upstream_inference_prompt_cost": 0.00081105,
+                "upstream_inference_completions_cost": 0.008
+              }
+            }
+          },
+          "validation_errors": [
+            "not_a_json_object"
+          ]
+        },
+        {
+          "attempt": 2,
+          "call": {
+            "parsed": null,
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The presentation is acute pancreatitis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"presenting diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n        \"HPI: ... now presents with several hours of non-radiating epigastric pain.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Right upper quadrant imaging shows gallbladder inflammation with shadowing echogenic material and suggestion of pneumobilia\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"imaging finding from RUQ ultrasound\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"The gallbladder is status post recent drainage on ___, now mildly distended with shadowing echogenic material and demonstrates persistent wall thickening.\",\n        \"which on live scanning demonstrates suggestion of pneumobilia.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Patient recently underwent percutaneous cholecystostomy and had the tube removed with interval cholecystectomy planned\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"recent procedure / surgical planning\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___ with Dr. ___.\",\n        \"Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging or prior question to update\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Patient has gallbladder inflammation with echogenic material and possible pneumobilia (refines prior uncertainty about current gallbladder findings and presence of debris/stones).\",\n    \"reason\": \"RUQ ultrasound describes 'shadowing echogenic material' and 'suggestion of pneumobilia' and persistent wall thickening, providing direct imaging evidence of gallbladder pathology.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the severity/extent of the acute pancreatitis and are there local complications (necrosis, peripancreatic collections, abscess)?\",\n    \"target\": \"pancreas — necrosis, active inflammation, and peripancreatic fluid/collections\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identification of necrosis or infected collections would prompt escalated care (ICU, antibiotics, drainage/IR or surgical interventions) and change timing/approach to biliary procedures.\",\n    \"negative_answer_changes\": \"Absence of necrosis/collections would support ongoing conservative management and planned interval cholecystectomy rather than immediate invasive interventions.\",\n    \"secondary_questions\": [\n      \"Is there obstructing choledocholithiasis or bile duct obstruction explaining biliary pancreatitis?\",\n      \"Is the pneumobilia due to an emphysematous/infectious process or biliary-enteric communication that requires urgent intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Pancreatic necrosis, degree of enhancement (viable vs nonviable pancreas), and peripancreatic fluid/collections\",\n        \"why_required\": \"CT contrast imaging is needed to stage pancreatitis severity and detect complications that alter management and prognosis\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Common bile duct — dilation or obstructing intraductal stone (choledocholithiasis) and level of obstruction\",\n        \"why_required\": \"Identifying an obstructing ductal stone localizes a biliary source and indicates need for ERCP or urgent biliary intervention\"\n      },\n      {\n        \"requirement",
+            "request_id": "gen-1788151093-0WBQB6eYkF6YOlfsqDpC",
+            "usage": {
+              "completion_tokens": 4000,
+              "prompt_tokens": 4857,
+              "total_tokens": 8857,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 2880,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 4736,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.00814865,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.00814865,
+                "upstream_inference_prompt_cost": 0.00014865,
+                "upstream_inference_completions_cost": 0.008
+              }
+            }
+          },
+          "validation_errors": [
+            "not_a_json_object"
+          ]
+        },
+        {
+          "attempt": 3,
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The presentation is acute pancreatitis",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "presenting diagnosis",
+                  "status": "established",
+                  "evidence": [
+                    "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+                    "HPI: ... now presents with several hours of non-radiating epigastric pain."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Patient has recent gallbladder disease requiring percutaneous cholecystostomy and planned cholecystectomy",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "recent procedure / surgical planning",
+                  "status": "established",
+                  "evidence": [
+                    "He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___ with Dr. ___.",
+                    "Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Biliary (gallstone/choledocholithiasis) etiology for the pancreatitis is a leading consideration but not proven",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "suspected etiology",
+                  "status": "suspected",
+                  "evidence": [
+                    "Prior imaging 1: Ultrasound Abdomen ... The gallbladder is status post recent drainage ... now mildly distended with shadowing echogenic material and demonstrates persistent wall thickening.",
+                    "AST: 611.0 IU/L ... ALT: 514.0 IU/L"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "no prior imaging result update applied at this decision point",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "retain",
+                "changed_proposition": null,
+                "reason": "Existing assumptions (acute pancreatitis and prior cholecystostomy / gallbladder disease) remain supported by markedly elevated lipase, RUQ findings, and history; no new definitive evidence mandates changing them."
+              },
+              "current_question": {
+                "primary": "Are there CT-detectable pancreatic complications or anatomic findings (necrosis, infected/sterile collections, local complications) that would change management?",
+                "target": "pancreas and peripancreatic spaces (necrosis, collections, local complications)",
+                "type": "complication",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would prompt escalation of care (interventional drainage, altered antibiotics, ICU monitoring or surgical consultation) and inform prognosis.",
+                "negative_answer_changes": "Would support continued conservative/supportive management without immediate intervention for local pancreatic complications.",
+                "secondary_questions": [
+                  "Is there imaging evidence of biliary obstruction or an obstructing CBD stone on cross-sectional imaging?",
+                  "Is there an alternative intra-abdominal process (eg perforation, abscess, ischemia) explaining pain or transaminase elevation?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Assess pancreatic parenchyma for necrosis and degree of peripancreatic inflammation",
+                    "why_required": "Contrast CT best identifies necrosis and the extent of inflammatory change which determine need for intervention and prognosis"
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Detect and characterize fluid collections, walled-off necrosis, abscess, hemorrhage, or vascular complications",
+                    "why_required": "Complications change timing and type of interventions (drainage, surgery, angiography) and antibiotic use"
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evaluate biliary tree/CBD caliber and look for an obstructing stone or alternate abdominal pathology",
+                    "why_required": "Determining persistent biliary obstruction or an alternate surgical abdomen influences need for ERCP or other interventions"
+                  }
+                ],
+                "evidence": [
+                  "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+                  "Prior imaging 1: Ultrasound Abdomen ... The common duct measures 5 mm, ... The gallbladder is status post recent drainage ... with shadowing echogenic material and demonstrates persistent wall thickening."
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Lipase: 6870.0 IU/L (ref 0.0-60.0)"
+                    ],
+                    "reason": "Laboratory and clinical data establish pancreatitis but do not provide any assessment of necrosis or extent of peripancreatic inflammation; ultrasound cannot characterize pancreatic necrosis."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "HPI: ... now presents with several hours of non-radiating epigastric pain."
+                    ],
+                    "reason": "There is no prior cross-sectional imaging to detect collections, walled-off necrosis, abscess, hemorrhage, or vascular complications."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "anatomic_localization",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "Prior imaging 1: Ultrasound Abdomen ... The common duct measures 5 mm, more prominent as compared to ___.",
+                      "Bilirubin, Total: 0.5 mg/dL (ref 0.0-1.5)"
+                    ],
+                    "reason": "RUQ ultrasound measured a non-dilated CBD (5 mm) and labs show normal bilirubin, arguing against ongoing high-grade biliary obstruction, though ultrasound did not definitively exclude choledocholithiasis and prior gallbladder pathology increases pretest probability of gallstone-related disease."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Ultrasound and labs address biliary obstruction to some extent but leave pancreatic necrosis/collections and alternative intra-abdominal causes unassessed; CT would fill those gaps."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT reliably detects pancreatic necrosis, peripancreatic collections, and alternative intra-abdominal pathology; it can also assess CBD caliber and secondary signs of obstruction though it is less sensitive than ultrasound/ERCP for small stones.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "If the ordering intent was primarily to detect small/distal CBD stones to decide on ERCP, CT may be insensitive; the prior RUQ ultrasound already partially addressed biliary obstruction, so that specific intent is only partially explained."
+              },
+              "derived_transition": "adjudicate",
+              "alternative_reconstruction": "The CT could alternatively be ordered chiefly to evaluate markedly elevated transaminases/AST/ALT for hepatic or portal processes (eg ischemia, infarct, biliary leak, or mass) rather than solely to stage pancreatitis; cross-sectional imaging would help distinguish hepatocellular injury from biliary obstruction."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The presentation is acute pancreatitis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"presenting diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n        \"HPI: ... now presents with several hours of non-radiating epigastric pain.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Patient has recent gallbladder disease requiring percutaneous cholecystostomy and planned cholecystectomy\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"recent procedure / surgical planning\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___ with Dr. ___.\",\n        \"Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary (gallstone/choledocholithiasis) etiology for the pancreatitis is a leading consideration but not proven\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"suspected etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Prior imaging 1: Ultrasound Abdomen ... The gallbladder is status post recent drainage ... now mildly distended with shadowing echogenic material and demonstrates persistent wall thickening.\",\n        \"AST: 611.0 IU/L ... ALT: 514.0 IU/L\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging result update applied at this decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"retain\",\n    \"changed_proposition\": null,\n    \"reason\": \"Existing assumptions (acute pancreatitis and prior cholecystostomy / gallbladder disease) remain supported by markedly elevated lipase, RUQ findings, and history; no new definitive evidence mandates changing them.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Are there CT-detectable pancreatic complications or anatomic findings (necrosis, infected/sterile collections, local complications) that would change management?\",\n    \"target\": \"pancreas and peripancreatic spaces (necrosis, collections, local complications)\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would prompt escalation of care (interventional drainage, altered antibiotics, ICU monitoring or surgical consultation) and inform prognosis.\",\n    \"negative_answer_changes\": \"Would support continued conservative/supportive management without immediate intervention for local pancreatic complications.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of biliary obstruction or an obstructing CBD stone on cross-sectional imaging?\",\n      \"Is there an alternative intra-abdominal process (eg perforation, abscess, ischemia) explaining pain or transaminase elevation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assess pancreatic parenchyma for necrosis and degree of peripancreatic inflammation\",\n        \"why_required\": \"Contrast CT best identifies necrosis and the extent of inflammatory change which determine need for intervention and prognosis\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Detect and characterize fluid collections, walled-off necrosis, abscess, hemorrhage, or vascular complications\",\n        \"why_required\": \"Complications change timing and type of interventions (drainage, surgery, angiography) and antibiotic use\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evaluate biliary tree/CBD caliber and look for an obstructing stone or alternate abdominal pathology\",\n        \"why_required\": \"Determining persistent biliary obstruction or an alternate surgical abdomen influences need for ERCP or other interventions\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n      \"Prior imaging 1: Ultrasound Abdomen ... The common duct measures 5 mm, ... The gallbladder is status post recent drainage ... with shadowing echogenic material and demonstrates persistent wall thickening.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\"\n        ],\n        \"reason\": \"Laboratory and clinical data establish pancreatitis but do not provide any assessment of necrosis or extent of peripancreatic inflammation; ultrasound cannot characterize pancreatic necrosis.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"HPI: ... now presents with several hours of non-radiating epigastric pain.\"\n        ],\n        \"reason\": \"There is no prior cross-sectional imaging to detect collections, walled-off necrosis, abscess, hemorrhage, or vascular complications.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Prior imaging 1: Ultrasound Abdomen ... The common duct measures 5 mm, more prominent as compared to ___.\",\n          \"Bilirubin, Total: 0.5 mg/dL (ref 0.0-1.5)\"\n        ],\n        \"reason\": \"RUQ ultrasound measured a non-dilated CBD (5 mm) and labs show normal bilirubin, arguing against ongoing high-grade biliary obstruction, though ultrasound did not definitively exclude choledocholithiasis and prior gallbladder pathology increases pretest probability of gallstone-related disease.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Ultrasound and labs address biliary obstruction to some extent but leave pancreatic necrosis/collections and alternative intra-abdominal causes unassessed; CT would fill those gaps.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT reliably detects pancreatic necrosis, peripancreatic collections, and alternative intra-abdominal pathology; it can also assess CBD caliber and secondary signs of obstruction though it is less sensitive than ultrasound/ERCP for small stones.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"If the ordering intent was primarily to detect small/distal CBD stones to decide on ERCP, CT may be insensitive; the prior RUQ ultrasound already partially addressed biliary obstruction, so that specific intent is only partially explained.\"\n  },\n  \"derived_transition\": \"adjudicate\",\n  \"alternative_reconstruction\": \"The CT could alternatively be ordered chiefly to evaluate markedly elevated transaminases/AST/ALT for hepatic or portal processes (eg ischemia, infarct, biliary leak, or mass) rather than solely to stage pancreatitis; cross-sectional imaging would help distinguish hepatocellular injury from biliary obstruction.\"\n}",
+            "request_id": "gen-1788151210-B608ayn8ah4StmeFVTEz",
+            "usage": {
+              "completion_tokens": 3654,
+              "prompt_tokens": 4857,
+              "total_tokens": 8511,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 1792,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 4736,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.00745665,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.00745665,
+                "upstream_inference_prompt_cost": 0.00014865,
+                "upstream_inference_completions_cost": 0.007308
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The presentation is acute pancreatitis",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "presenting diagnosis",
+            "status": "established",
+            "evidence": [
+              "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+              "HPI: ... now presents with several hours of non-radiating epigastric pain."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Patient has recent gallbladder disease requiring percutaneous cholecystostomy and planned cholecystectomy",
+            "type": "intervention_or_device_state",
+            "other_proposed_type": "",
+            "level": "recent procedure / surgical planning",
+            "status": "established",
+            "evidence": [
+              "He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___ with Dr. ___.",
+              "Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Biliary (gallstone/choledocholithiasis) etiology for the pancreatitis is a leading consideration but not proven",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "suspected etiology",
+            "status": "suspected",
+            "evidence": [
+              "Prior imaging 1: Ultrasound Abdomen ... The gallbladder is status post recent drainage ... now mildly distended with shadowing echogenic material and demonstrates persistent wall thickening.",
+              "AST: 611.0 IU/L ... ALT: 514.0 IU/L"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "no prior imaging result update applied at this decision point",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "retain",
+          "changed_proposition": null,
+          "reason": "Existing assumptions (acute pancreatitis and prior cholecystostomy / gallbladder disease) remain supported by markedly elevated lipase, RUQ findings, and history; no new definitive evidence mandates changing them."
+        },
+        "current_question": {
+          "primary": "Are there CT-detectable pancreatic complications or anatomic findings (necrosis, infected/sterile collections, local complications) that would change management?",
+          "target": "pancreas and peripancreatic spaces (necrosis, collections, local complications)",
+          "type": "complication",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would prompt escalation of care (interventional drainage, altered antibiotics, ICU monitoring or surgical consultation) and inform prognosis.",
+          "negative_answer_changes": "Would support continued conservative/supportive management without immediate intervention for local pancreatic complications.",
+          "secondary_questions": [
+            "Is there imaging evidence of biliary obstruction or an obstructing CBD stone on cross-sectional imaging?",
+            "Is there an alternative intra-abdominal process (eg perforation, abscess, ischemia) explaining pain or transaminase elevation?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Assess pancreatic parenchyma for necrosis and degree of peripancreatic inflammation",
+              "why_required": "Contrast CT best identifies necrosis and the extent of inflammatory change which determine need for intervention and prognosis"
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Detect and characterize fluid collections, walled-off necrosis, abscess, hemorrhage, or vascular complications",
+              "why_required": "Complications change timing and type of interventions (drainage, surgery, angiography) and antibiotic use"
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Evaluate biliary tree/CBD caliber and look for an obstructing stone or alternate abdominal pathology",
+              "why_required": "Determining persistent biliary obstruction or an alternate surgical abdomen influences need for ERCP or other interventions"
+            }
+          ],
+          "evidence": [
+            "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+            "Prior imaging 1: Ultrasound Abdomen ... The common duct measures 5 mm, ... The gallbladder is status post recent drainage ... with shadowing echogenic material and demonstrates persistent wall thickening."
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Lipase: 6870.0 IU/L (ref 0.0-60.0)"
+              ],
+              "reason": "Laboratory and clinical data establish pancreatitis but do not provide any assessment of necrosis or extent of peripancreatic inflammation; ultrasound cannot characterize pancreatic necrosis."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "HPI: ... now presents with several hours of non-radiating epigastric pain."
+              ],
+              "reason": "There is no prior cross-sectional imaging to detect collections, walled-off necrosis, abscess, hemorrhage, or vascular complications."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "anatomic_localization",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "Prior imaging 1: Ultrasound Abdomen ... The common duct measures 5 mm, more prominent as compared to ___.",
+                "Bilirubin, Total: 0.5 mg/dL (ref 0.0-1.5)"
+              ],
+              "reason": "RUQ ultrasound measured a non-dilated CBD (5 mm) and labs show normal bilirubin, arguing against ongoing high-grade biliary obstruction, though ultrasound did not definitively exclude choledocholithiasis and prior gallbladder pathology increases pretest probability of gallstone-related disease."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Ultrasound and labs address biliary obstruction to some extent but leave pancreatic necrosis/collections and alternative intra-abdominal causes unassessed; CT would fill those gaps."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT reliably detects pancreatic necrosis, peripancreatic collections, and alternative intra-abdominal pathology; it can also assess CBD caliber and secondary signs of obstruction though it is less sensitive than ultrasound/ERCP for small stones.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "If the ordering intent was primarily to detect small/distal CBD stones to decide on ERCP, CT may be insensitive; the prior RUQ ultrasound already partially addressed biliary obstruction, so that specific intent is only partially explained."
+        },
+        "derived_transition": "adjudicate",
+        "alternative_reconstruction": "The CT could alternatively be ordered chiefly to evaluate markedly elevated transaminases/AST/ALT for hepatic or portal processes (eg ischemia, infarct, biliary leak, or mass) rather than solely to stage pancreatitis; cross-sectional imaging would help distinguish hepatocellular injury from biliary obstruction."
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 3,
+      "ordered": "MRI Abdomen (MRI ABDOMEN W/O & W/CONTRAST)",
+      "request_prompt_sha256": "b149fd3e5f605ec0e33de50a7f6c47702d0ee144d05e666674dd998eb9d0493d",
+      "attempts": [
+        {
+          "attempt": 1,
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The presentation is acute pancreatitis",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "presenting diagnosis",
+                  "status": "established",
+                  "evidence": [
+                    "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+                    "HPI: ... now presents with several hours of non-radiating epigastric pain."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Patient has recent gallbladder disease treated with percutaneous cholecystostomy and planned cholecystectomy",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "recent procedure / surgical planning",
+                  "status": "established",
+                  "evidence": [
+                    "Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy",
+                    "He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Biliary (gallstone/choledocholithiasis) etiology for the pancreatitis is a leading consideration but not proven",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "suspected etiology",
+                  "status": "suspected",
+                  "evidence": [
+                    "Prior imaging 1: Ultrasound Abdomen ... The common duct measures 5 mm, more prominent as compared to ___. The gallbladder is status post recent drainage ... with shadowing echogenic material and demonstrates persistent wall thickening.",
+                    "AST: 611.0 IU/L ... ALT: 514.0 IU/L"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "no prior imaging result update applied at this decision point",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "retain",
+                "changed_proposition": null,
+                "reason": "Existing assumptions (acute pancreatitis and recent cholecystostomy / gallbladder disease; biliary etiology suspected) remain supported by markedly elevated lipase, RUQ imaging, and history; no new definitive evidence mandates changing them."
+              },
+              "current_question": {
+                "primary": "Are there pancreatitis-related local complications (necrosis, infected or sterile collections, hemorrhage, vascular complications) or alternative intra‑abdominal processes that would change management?",
+                "target": "pancreas and peripancreatic spaces; vascular structures; biliary tree/adjacent organs",
+                "type": "complication",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would prompt escalation (drainage, angiographic/surgical intervention, targeted antibiotics, ICU care) or urgent biliary intervention if obstructing pathology is found.",
+                "negative_answer_changes": "Would support continued conservative/supportive management without immediate intervention for local pancreatic complications or vascular events.",
+                "secondary_questions": [
+                  "Is there imaging evidence of biliary obstruction or an obstructing CBD stone that would indicate ERCP?",
+                  "Is there an alternative surgical/infectious intra‑abdominal process (abscess, perforation, ischemia) explaining the presentation or transaminase elevation?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Assess pancreatic parenchyma enhancement for necrosis and quantify peripancreatic inflammatory change",
+                    "why_required": "Necrosis extent and inflammatory burden determine need for intervention, prognosis, and level of care."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Detect and characterize fluid collections, walled‑off necrosis, abscess, hemorrhage, pseudoaneurysm, or venous thrombosis",
+                    "why_required": "Presence and nature of collections or vascular complications changes timing/type of interventions (drainage, embolization, surgery)."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evaluate biliary tree/CBD caliber and look for obstructing stones or biliary dilatation and evaluate liver parenchyma for alternative causes of LFT elevation",
+                    "why_required": "Identifying persistent biliary obstruction or alternative hepatic pathology directs need for ERCP, surgical or hepatology intervention."
+                  }
+                ],
+                "evidence": [
+                  "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+                  "CT ABDOMEN: \"the pancreatic parenchyma enhances normally, without evidence of necrosis... There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... There is no pseudocyst... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\"",
+                  "Ultrasound Abdomen: \"The common duct measures 5 mm... The gallbladder is status post recent drainage... with shadowing echogenic material and demonstrates persistent wall thickening.\""
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "sufficiently_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "CT ABDOMEN: \"the pancreatic parenchyma enhances normally, without evidence of necrosis.\""
+                    ],
+                    "reason": "Contrast CT already demonstrates normal pancreatic enhancement without necrosis, effectively excluding established necrosis on current imaging."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "CT ABDOMEN: \"There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... There is no pseudocyst... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\""
+                    ],
+                    "reason": "CT documents peripancreatic inflammatory stranding and fluid but reports no necrosis, no pseudocyst, and no vascular thrombosis/pseudoaneurysm; however CT may be less sensitive than MRI for subtle early collections, fluid characterization, or small abscess/infected fluid, which MRI could better delineate."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "anatomic_localization",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "Ultrasound Abdomen: \"The common duct measures 5 mm...\"",
+                      "CT ABDOMEN: \"Trace pneumobilia... The gallbladder demonstrates persistent wall thickening... The common duct is somewhat prominent, measuring 5 mm. ... There is no intrahepatic biliary dilatation.\""
+                    ],
+                    "reason": "US and CT show only a mildly prominent (5 mm) CBD and no biliary dilatation with normal bilirubin, arguing against high‑grade obstruction, but neither study definitively excludes a small or transient obstructing CBD stone—MRCP sequences or targeted biliary MRI would be more sensitive for small intraductal stones or subtle ductal pathology."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "CT and ultrasound have addressed necrosis (absent) and documented inflammatory change and mild CBD prominence, but residual uncertainty remains about small/early collections, infected fluid, and small choledocholithiasis that MRI could clarify."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast MRI provides superior soft‑tissue contrast to further characterize peripancreatic fluid vs necrosis, detect small collections/abscess, evaluate vessels, and—if MRCP sequences are performed—better assess the biliary tree for small intraductal stones or ductal pathology.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "If the ordering intent was solely to find very small CBD stones to decide on ERCP, a dedicated MRCP or direct ERCP is optimal and the plain MRI order may be variably sensitive; also CT already excluded frank necrosis, so MRI may be redundant for that specific question unless there is new clinical deterioration not documented here."
+              },
+              "derived_transition": "adjudicate",
+              "alternative_reconstruction": "MRI could alternatively have been ordered primarily to evaluate markedly elevated transaminases (AST/ALT >500) for hepatic injury, ischemia, or biliary leak/complication rather than to restage pancreatitis; cross‑sectional MRI of the liver/biliary system can help distinguish hepatic causes of enzyme elevation when lab and US/CT are inconclusive."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The presentation is acute pancreatitis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"presenting diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n        \"HPI: ... now presents with several hours of non-radiating epigastric pain.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Patient has recent gallbladder disease treated with percutaneous cholecystostomy and planned cholecystectomy\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"recent procedure / surgical planning\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy\",\n        \"He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary (gallstone/choledocholithiasis) etiology for the pancreatitis is a leading consideration but not proven\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"suspected etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Prior imaging 1: Ultrasound Abdomen ... The common duct measures 5 mm, more prominent as compared to ___. The gallbladder is status post recent drainage ... with shadowing echogenic material and demonstrates persistent wall thickening.\",\n        \"AST: 611.0 IU/L ... ALT: 514.0 IU/L\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging result update applied at this decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"retain\",\n    \"changed_proposition\": null,\n    \"reason\": \"Existing assumptions (acute pancreatitis and recent cholecystostomy / gallbladder disease; biliary etiology suspected) remain supported by markedly elevated lipase, RUQ imaging, and history; no new definitive evidence mandates changing them.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Are there pancreatitis-related local complications (necrosis, infected or sterile collections, hemorrhage, vascular complications) or alternative intra‑abdominal processes that would change management?\",\n    \"target\": \"pancreas and peripancreatic spaces; vascular structures; biliary tree/adjacent organs\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would prompt escalation (drainage, angiographic/surgical intervention, targeted antibiotics, ICU care) or urgent biliary intervention if obstructing pathology is found.\",\n    \"negative_answer_changes\": \"Would support continued conservative/supportive management without immediate intervention for local pancreatic complications or vascular events.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of biliary obstruction or an obstructing CBD stone that would indicate ERCP?\",\n      \"Is there an alternative surgical/infectious intra‑abdominal process (abscess, perforation, ischemia) explaining the presentation or transaminase elevation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assess pancreatic parenchyma enhancement for necrosis and quantify peripancreatic inflammatory change\",\n        \"why_required\": \"Necrosis extent and inflammatory burden determine need for intervention, prognosis, and level of care.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Detect and characterize fluid collections, walled‑off necrosis, abscess, hemorrhage, pseudoaneurysm, or venous thrombosis\",\n        \"why_required\": \"Presence and nature of collections or vascular complications changes timing/type of interventions (drainage, embolization, surgery).\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evaluate biliary tree/CBD caliber and look for obstructing stones or biliary dilatation and evaluate liver parenchyma for alternative causes of LFT elevation\",\n        \"why_required\": \"Identifying persistent biliary obstruction or alternative hepatic pathology directs need for ERCP, surgical or hepatology intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n      \"CT ABDOMEN: \\\"the pancreatic parenchyma enhances normally, without evidence of necrosis... There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... There is no pseudocyst... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\\\"\",\n      \"Ultrasound Abdomen: \\\"The common duct measures 5 mm... The gallbladder is status post recent drainage... with shadowing echogenic material and demonstrates persistent wall thickening.\\\"\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: \\\"the pancreatic parenchyma enhances normally, without evidence of necrosis.\\\"\"\n        ],\n        \"reason\": \"Contrast CT already demonstrates normal pancreatic enhancement without necrosis, effectively excluding established necrosis on current imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: \\\"There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... There is no pseudocyst... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\\\"\"\n        ],\n        \"reason\": \"CT documents peripancreatic inflammatory stranding and fluid but reports no necrosis, no pseudocyst, and no vascular thrombosis/pseudoaneurysm; however CT may be less sensitive than MRI for subtle early collections, fluid characterization, or small abscess/infected fluid, which MRI could better delineate.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Ultrasound Abdomen: \\\"The common duct measures 5 mm...\\\"\",\n          \"CT ABDOMEN: \\\"Trace pneumobilia... The gallbladder demonstrates persistent wall thickening... The common duct is somewhat prominent, measuring 5 mm. ... There is no intrahepatic biliary dilatation.\\\"\"\n        ],\n        \"reason\": \"US and CT show only a mildly prominent (5 mm) CBD and no biliary dilatation with normal bilirubin, arguing against high‑grade obstruction, but neither study definitively excludes a small or transient obstructing CBD stone—MRCP sequences or targeted biliary MRI would be more sensitive for small intraductal stones or subtle ductal pathology.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"CT and ultrasound have addressed necrosis (absent) and documented inflammatory change and mild CBD prominence, but residual uncertainty remains about small/early collections, infected fluid, and small choledocholithiasis that MRI could clarify.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast MRI provides superior soft‑tissue contrast to further characterize peripancreatic fluid vs necrosis, detect small collections/abscess, evaluate vessels, and—if MRCP sequences are performed—better assess the biliary tree for small intraductal stones or ductal pathology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"If the ordering intent was solely to find very small CBD stones to decide on ERCP, a dedicated MRCP or direct ERCP is optimal and the plain MRI order may be variably sensitive; also CT already excluded frank necrosis, so MRI may be redundant for that specific question unless there is new clinical deterioration not documented here.\"\n  },\n  \"derived_transition\": \"adjudicate\",\n  \"alternative_reconstruction\": \"MRI could alternatively have been ordered primarily to evaluate markedly elevated transaminases (AST/ALT >500) for hepatic injury, ischemia, or biliary leak/complication rather than to restage pancreatitis; cross‑sectional MRI of the liver/biliary system can help distinguish hepatic causes of enzyme elevation when lab and US/CT are inconclusive.\"\n}",
+            "request_id": "gen-1788151276-D3uBg549g9vBZTUhPII8",
+            "usage": {
+              "completion_tokens": 3863,
+              "prompt_tokens": 5540,
+              "total_tokens": 9403,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 1728,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.009111,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.009111,
+                "upstream_inference_prompt_cost": 0.001385,
+                "upstream_inference_completions_cost": 0.007726
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The presentation is acute pancreatitis",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "presenting diagnosis",
+            "status": "established",
+            "evidence": [
+              "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+              "HPI: ... now presents with several hours of non-radiating epigastric pain."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Patient has recent gallbladder disease treated with percutaneous cholecystostomy and planned cholecystectomy",
+            "type": "intervention_or_device_state",
+            "other_proposed_type": "",
+            "level": "recent procedure / surgical planning",
+            "status": "established",
+            "evidence": [
+              "Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy",
+              "He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Biliary (gallstone/choledocholithiasis) etiology for the pancreatitis is a leading consideration but not proven",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "suspected etiology",
+            "status": "suspected",
+            "evidence": [
+              "Prior imaging 1: Ultrasound Abdomen ... The common duct measures 5 mm, more prominent as compared to ___. The gallbladder is status post recent drainage ... with shadowing echogenic material and demonstrates persistent wall thickening.",
+              "AST: 611.0 IU/L ... ALT: 514.0 IU/L"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "no prior imaging result update applied at this decision point",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "retain",
+          "changed_proposition": null,
+          "reason": "Existing assumptions (acute pancreatitis and recent cholecystostomy / gallbladder disease; biliary etiology suspected) remain supported by markedly elevated lipase, RUQ imaging, and history; no new definitive evidence mandates changing them."
+        },
+        "current_question": {
+          "primary": "Are there pancreatitis-related local complications (necrosis, infected or sterile collections, hemorrhage, vascular complications) or alternative intra‑abdominal processes that would change management?",
+          "target": "pancreas and peripancreatic spaces; vascular structures; biliary tree/adjacent organs",
+          "type": "complication",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would prompt escalation (drainage, angiographic/surgical intervention, targeted antibiotics, ICU care) or urgent biliary intervention if obstructing pathology is found.",
+          "negative_answer_changes": "Would support continued conservative/supportive management without immediate intervention for local pancreatic complications or vascular events.",
+          "secondary_questions": [
+            "Is there imaging evidence of biliary obstruction or an obstructing CBD stone that would indicate ERCP?",
+            "Is there an alternative surgical/infectious intra‑abdominal process (abscess, perforation, ischemia) explaining the presentation or transaminase elevation?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Assess pancreatic parenchyma enhancement for necrosis and quantify peripancreatic inflammatory change",
+              "why_required": "Necrosis extent and inflammatory burden determine need for intervention, prognosis, and level of care."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Detect and characterize fluid collections, walled‑off necrosis, abscess, hemorrhage, pseudoaneurysm, or venous thrombosis",
+              "why_required": "Presence and nature of collections or vascular complications changes timing/type of interventions (drainage, embolization, surgery)."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Evaluate biliary tree/CBD caliber and look for obstructing stones or biliary dilatation and evaluate liver parenchyma for alternative causes of LFT elevation",
+              "why_required": "Identifying persistent biliary obstruction or alternative hepatic pathology directs need for ERCP, surgical or hepatology intervention."
+            }
+          ],
+          "evidence": [
+            "Lipase: 6870.0 IU/L (ref 0.0-60.0)",
+            "CT ABDOMEN: \"the pancreatic parenchyma enhances normally, without evidence of necrosis... There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... There is no pseudocyst... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\"",
+            "Ultrasound Abdomen: \"The common duct measures 5 mm... The gallbladder is status post recent drainage... with shadowing echogenic material and demonstrates persistent wall thickening.\""
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "sufficiently_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "CT ABDOMEN: \"the pancreatic parenchyma enhances normally, without evidence of necrosis.\""
+              ],
+              "reason": "Contrast CT already demonstrates normal pancreatic enhancement without necrosis, effectively excluding established necrosis on current imaging."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "CT ABDOMEN: \"There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... There is no pseudocyst... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\""
+              ],
+              "reason": "CT documents peripancreatic inflammatory stranding and fluid but reports no necrosis, no pseudocyst, and no vascular thrombosis/pseudoaneurysm; however CT may be less sensitive than MRI for subtle early collections, fluid characterization, or small abscess/infected fluid, which MRI could better delineate."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "anatomic_localization",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "Ultrasound Abdomen: \"The common duct measures 5 mm...\"",
+                "CT ABDOMEN: \"Trace pneumobilia... The gallbladder demonstrates persistent wall thickening... The common duct is somewhat prominent, measuring 5 mm. ... There is no intrahepatic biliary dilatation.\""
+              ],
+              "reason": "US and CT show only a mildly prominent (5 mm) CBD and no biliary dilatation with normal bilirubin, arguing against high‑grade obstruction, but neither study definitively excludes a small or transient obstructing CBD stone—MRCP sequences or targeted biliary MRI would be more sensitive for small intraductal stones or subtle ductal pathology."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "CT and ultrasound have addressed necrosis (absent) and documented inflammatory change and mild CBD prominence, but residual uncertainty remains about small/early collections, infected fluid, and small choledocholithiasis that MRI could clarify."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast MRI provides superior soft‑tissue contrast to further characterize peripancreatic fluid vs necrosis, detect small collections/abscess, evaluate vessels, and—if MRCP sequences are performed—better assess the biliary tree for small intraductal stones or ductal pathology.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "If the ordering intent was solely to find very small CBD stones to decide on ERCP, a dedicated MRCP or direct ERCP is optimal and the plain MRI order may be variably sensitive; also CT already excluded frank necrosis, so MRI may be redundant for that specific question unless there is new clinical deterioration not documented here."
+        },
+        "derived_transition": "adjudicate",
+        "alternative_reconstruction": "MRI could alternatively have been ordered primarily to evaluate markedly elevated transaminases (AST/ALT >500) for hepatic injury, ischemia, or biliary leak/complication rather than to restage pancreatitis; cross‑sectional MRI of the liver/biliary system can help distinguish hepatic causes of enzyme elevation when lab and US/CT are inconclusive."
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 4,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "fbc545e1ae1b5de4c856d0eda37d16d9675fb9ab92034c92083409f26ca8e39d",
+      "attempts": [
+        {
+          "attempt": 1,
+          "call": {
+            "parsed": null,
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The presentation is acute pancreatitis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"presenting diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n        \"HPI: ... now presents with several hours of non-radiating epigastric pain.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Patient has recent gallbladder disease treated with percutaneous cholecystostomy and interval cholecystectomy planned\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"recent procedure / surgical planning\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Past Medical History: IDDM c/b retinopathy and neuropathy with recent admission for cholecystitis s/p percutaneous cholecystostomy\",\n        \"He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A recent contrast CT demonstrated marked peripancreatic inflammatory stranding and fluid but preserved pancreatic enhancement without necrosis and patent vessels\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"recent imaging characterization\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"CT ABDOMEN: \\\"the pancreatic parenchyma enhances normally, without evidence of necrosis... There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Are there pancreatitis-related local complications (necrosis, infected or sterile collections, hemorrhage, vascular complications) or alternative intra‑abdominal processes that would change management?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"indeterminate\",\n    \"effect_on_previous_question\": \"Prior CT effectively excluded pancreatic necrosis and gross vascular complications while documenting peripancreatic inflammatory fluid, narrowing but not eliminating uncertainty about small/early collections, infected fluid, or small choledocholithiasis.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"CT ABDOMEN: \\\"the pancreatic parenchyma enhances normally, without evidence of necrosis... There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process...\\\"\",\n      \"evidence_stream_2\": \"Ultrasound Abdomen: \\\"The common duct measures 5 mm... The gallbladder is status post recent drainage ... with shadowing echogenic material and demonstrates persistent wall thickening.\\\"\",\n      \"reason\": \"CT and ultrasound both document peripancreatic inflammation and only mild CBD prominence without biliary dilatation; imaging streams do not conflict materially.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"retain\",\n    \"changed_proposition\": null,\n    \"reason\": \"No new definitive evidence obligates changing the core assumptions (acute pancreatitis, recent cholecystostomy); prior imaging and labs continue to support them.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Has there been interval development or progression of pancreatitis‑related local complications or an alternative intra‑abdominal process that requires intervention?\",\n    \"target\": \"pancreas and peripancreatic spaces; adjacent vascular structures; biliary tree/adjacent organs\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would prompt escalation (drainage, angiographic/surgical intervention, targeted antibiotics, ICU care) or urgent biliary intervention if obstructing pathology is found.\",\n    \"negative_answer_changes\": \"Would support continued conservative/supportive management without immediate intervention for local pancreatic complications or vascular events.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of biliary obstruction or an obstructing CBD stone that would indicate ERCP?\",\n      \"Is there an alternative surgical/infectious intra‑abdominal process (abscess, perforation, ischemia) explaining symptoms or transaminase elevation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assess pancreatic parenchyma enhancement for necrosis and quantify peripancreatic inflammatory change\",\n        \"why_required\": \"Necrosis extent and inflammatory burden determine need for intervention, prognosis, and level of care.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Detect and characterize fluid collections, walled‑off necrosis, abscess, hemorrhage, pseudoaneurysm, or venous thrombosis\",\n        \"why_required\": \"Presence and nature of collections or vascular complications changes timing/type of interventions (drainage, embolization, surgery).\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evaluate biliary tree/CBD caliber and look for obstructing stones or biliary dilatation and evaluate liver parenchyma for alternative causes of LFT elevation\",\n        \"why_required\": \"Identifying persistent biliary obstruction or alternative hepatic pathology directs need for ERCP, surgical or hepatology intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n      \"CT ABDOMEN: \\\"the pancreatic parenchyma enhances normally, without evidence of necrosis... There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\\\"\"\n    ]\n  },\n  \"question_continuity\": \"same\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: \\\"the pancreatic parenchyma enhances normally, without evidence of necrosis.\\\"\"\n        ],\n        \"reason\": \"Contrast CT already demonstrates preserved pancreatic enhancement and explicitly reports no necrosis, effectively excluding established necrosis on current imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: \\\"There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... There is no pseudocyst... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\\\"\"\n        ],\n        \"reason\": \"CT documents inflammatory stranding and fluid but reports no pseudocyst, pseudoaneurysm, or thrombosis; subtle/small early collections, infected fluid, or evolving hemorrhage could still develop and might be better detected on interval imaging or different modalities.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Ultrasound Abdomen: \\\"The common duct measures 5 mm...\\\"\",\n          \"CT ABDOMEN: \\\"There is no intrahepatic biliary dilatation.\\\"\"\n        ],\n        \"reason\": \"US and CT show only mild CBD prominence (5 mm) without biliary dilatation and normal total bilirubin, arguing against high‑grade persistent obstruction but cannot definitively exclude a small/transient obstructing CBD stone—",
+            "request_id": "gen-1788151326-ePI3Y6aoWAfCoraXDBJH",
+            "usage": {
+              "completion_tokens": 4000,
+              "prompt_tokens": 6518,
+              "total_tokens": 10518,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 2112,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1792,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0092263,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0092263,
+                "upstream_inference_prompt_cost": 0.0012263,
+                "upstream_inference_completions_cost": 0.008
+              }
+            }
+          },
+          "validation_errors": [
+            "not_a_json_object"
+          ]
+        },
+        {
+          "attempt": 2,
+          "call": {
+            "parsed": null,
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The presentation is acute pancreatitis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"presenting diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n        \"HPI: ... now presents with several hours of non-radiating epigastric pain.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Patient has recent gallbladder disease treated with percutaneous cholecystostomy and planned cholecystectomy\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"recent procedure / surgical planning\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy\",\n        \"He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Prior contrast CT demonstrated no pancreatic necrosis\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"imaging assessment of pancreatic viability\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"CT ABDOMEN: \\\"the pancreatic parenchyma enhances normally, without evidence of necrosis.\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging result update applied at this decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"retain\",\n    \"changed_proposition\": null,\n    \"reason\": \"Existing assumptions (acute pancreatitis, recent cholecystostomy, prior CT showing no necrosis) remain supported by markedly elevated lipase, history, and the prior CT report; no new definitive evidence forces change.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Are there pancreatitis-related local complications or new intra‑abdominal processes now present that would require drainage, angiographic/surgical intervention, or urgent change in management?\",\n    \"target\": \"pancreas and peripancreatic spaces; vascular structures; biliary tree and adjacent intra‑abdominal organs\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identification of necrosis, infected collection, abscess, hemorrhage/pseudoaneurysm, thrombosis, perforation, or obstructing CBD stone would prompt escalation (drainage, embolization, ERCP, surgery, targeted antibiotics, ICU care).\",\n    \"negative_answer_changes\": \"Absence of these complications would support continued conservative/supportive management without urgent invasive intervention.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of biliary obstruction or an obstructing common bile duct stone that would indicate ERCP?\",\n      \"Is there an alternative surgical/infectious intra‑abdominal process (abscess, perforation, ischemia) explaining the presentation or transaminase elevation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assess pancreatic parenchyma enhancement to detect necrosis and quantify peripancreatic inflammatory change\",\n        \"why_required\": \"Necrosis extent and inflammatory burden determine need for intervention, prognosis, and level of care.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Detect and characterize peripancreatic fluid collections, walled‑off necrosis, abscess, hemorrhage/pseudoaneurysm, and venous thrombosis\",\n        \"why_required\": \"The presence and nature of collections or vascular complications changes timing/type of interventions (drainage, embolization, surgery).\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evaluate biliary tree and common bile duct caliber and look for obstructing stones or ductal dilatation\",\n        \"why_required\": \"Identifying persistent biliary obstruction or an obstructing CBD stone directs need for ERCP or surgical biliary intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n      \"CT ABDOMEN: \\\"There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... the pancreatic parenchyma enhances normally, without evidence of necrosis... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\\\"\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: \\\"the pancreatic parenchyma enhances normally, without evidence of necrosis.\\\"\"\n        ],\n        \"reason\": \"Prior contrast CT demonstrated normal pancreatic enhancement and explicitly excluded necrosis on the imaged study, adequately addressing presence of established necrosis at that time.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: \\\"There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... There is no pseudocyst... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\\\"\",\n          \"MRI ABDOMEN: \\\"induration of the peripancreatic fat with T1 hyperintense material in the small bowel mesentery ... consistent with hemorrhagic or proteinaceous fluid. No pseudocyst is seen at this time.\\\"\"\n        ],\n        \"reason\": \"Imaging documents significant inflammatory stranding and peripancreatic fluid but reports no pseudocyst, necrosis, pseudoaneurysm, or thrombosis; CT/MRI identify fluid but may be less sensitive for early infected collections or small vascular lesions that could evolve, leaving partial residual uncertainty.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Ultrasound Abdomen: \\\"The common duct measures 5 mm, more prominent as compared to ___. The gallbladder ... contains shadowing echogenic material and demonstrates persistent wall thickening.\\\"\",\n          \"CT ABDOMEN: \\\"The common duct is somewhat prominent, measuring 5 mm. ... There is no intrahepatic biliary dilatation.\\\"\"\n        ],\n        \"reason\": \"US and CT show only a mildly prominent (5 mm) CBD with no intrahepatic dilatation and normal bilirubin, arguing against high‑grade ongoing obstruction, but neither excludes a small or transient obstructing CBD stone—MRCP would be more sensitive for small intraductal stones.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Contrast CT and MRI/US have excluded necrosis and major vascular thrombosis/pseudoaneurysm and documented inflammatory fluid, but residual uncertainty remains about small/early infected collections, interval evolution, and small intraductal stones that could change management.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"partially_capable\",\n    \"why_this_order_could_answer\": \"Repeat contrast CT can identify interval development of necrosis, enlarging/complex collections, hemorrhage, bowel involvement, free air, or new vascular findings and document progression that would prompt intervention; however, CT is less sensitive than MRCP for small intraductal stones and MRI may better characterize hemorrhagic/proteinaceous fluid.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"If the ordering intent was primarily to detect very small CBD stones to decide on ERCP, dedicated MRCP or endoscopic evaluation is superior; also prior CT already excluded frank necrosis, so repeat CT is most justifiable for clinical change or interval worsening not documented here.\"\n  },\n  \"derived_transition\": \"adjudicate\",\n ",
+            "request_id": "gen-1788151385-YnMqzR2xnvCThs3jxuhC",
+            "usage": {
+              "completion_tokens": 4000,
+              "prompt_tokens": 6518,
+              "total_tokens": 10518,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 1984,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 6400,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0081895,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0081895,
+                "upstream_inference_prompt_cost": 0.0001895,
+                "upstream_inference_completions_cost": 0.008
+              }
+            }
+          },
+          "validation_errors": [
+            "not_a_json_object"
+          ]
+        },
+        {
+          "attempt": 3,
+          "call": {
+            "parsed": null,
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The presentation is acute pancreatitis\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"presenting diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n        \"HPI: ... now presents with several hours of non-radiating epigastric pain.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Patient has recent gallbladder disease treated with percutaneous cholecystostomy and interval cholecystectomy planned\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"recent procedure / surgical planning\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Past Medical History: ... recent admission for cholecystitis s/p percutaneous cholecystostomy\",\n        \"He was recently seen ___ ___  clinic on ___.  At the time he was feeling well and the percutaneous cholecystostomy tube was removed with interval cholecystectomy planned for ___.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Prior contrast CT demonstrated no pancreatic necrosis and no vascular pseudoaneurysm or thrombosis\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"imaging‑documented complication status\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"CT ABDOMEN: \\\"the pancreatic parenchyma enhances normally, without evidence of necrosis.\\\"\",\n        \"CT ABDOMEN: \\\"Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary etiology (obstructing CBD stone) is suspected but not proven\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"suspected etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Ultrasound Abdomen: \\\"The common duct measures 5 mm... The gallbladder is status post recent drainage... with shadowing echogenic material and demonstrates persistent wall thickening.\\\"\",\n        \"AST: 611.0 IU/L ... ALT: 514.0 IU/L\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging result update applied at this decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"retain\",\n    \"changed_proposition\": null,\n    \"reason\": \"No new results are available before this order that would alter the carried assumptions (acute pancreatitis, recent cholecystostomy, prior CT showing no necrosis).\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there interval development of pancreatitis‑related local complications (necrosis, infected/sterile fluid collection, hemorrhage, pseudoaneurysm, or venous thrombosis) or another intra‑abdominal process requiring intervention?\",\n    \"target\": \"pancreas and peripancreatic spaces; peripancreatic vessels; biliary tree/adjacent organs\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would prompt escalation of care or targeted intervention (drainage, angiographic embolization, surgery, ERCP, or antibiotics) and change level‑of‑care decisions.\",\n    \"negative_answer_changes\": \"Would support continued conservative/supportive inpatient management without urgent pancreatic or vascular intervention.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of biliary obstruction or an obstructing CBD stone that would indicate ERCP?\",\n      \"Is there an alternative surgical/infectious process (abscess, perforation, ischemia) explaining the presentation or markedly elevated transaminases?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assess pancreatic parenchymal enhancement to detect necrosis and quantify peripancreatic inflammatory change\",\n        \"why_required\": \"Necrosis extent and inflammatory burden determine need for intervention, prognosis, and level of care.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Detect and characterize fluid collections, abscess, hemorrhage, pseudoaneurysm, or venous thrombosis\",\n        \"why_required\": \"Presence and nature of collections or vascular complications changes timing/type of interventions (drainage, embolization, surgery).\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evaluate biliary tree/CBD caliber for obstructing stones and assess liver parenchyma for alternative causes of transaminase elevation\",\n        \"why_required\": \"Identifying persistent biliary obstruction or hepatic injury directs need for ERCP, hepatology consultation, or alternate management.\"\n      },\n      {\n        \"requirement_key\": \"req_4\",\n        \"id\": \"temporal_course_or_response\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Compare current abdominal findings to prior CT/MRI to document interval progression, stability, or improvement\",\n        \"why_required\": \"Interval change (new collections, growth, hemorrhage, or new vascular findings) is the key determinant for urgent intervention versus ongoing observation.\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 6870.0 IU/L (ref 0.0-60.0)\",\n      \"CT ABDOMEN: \\\"the pancreatic parenchyma enhances normally, without evidence of necrosis... There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\\\"\"\n    ]\n  },\n  \"question_continuity\": \"same\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: \\\"the pancreatic parenchyma enhances normally, without evidence of necrosis.\\\"\"\n        ],\n        \"reason\": \"Contrast CT already demonstrates normal pancreatic enhancement without necrosis, effectively excluding established necrosis on the prior imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"CT ABDOMEN: \\\"There is marked inflammatory stranding centered around the pancreas and fluid associated with this inflammatory process... There is no pseudocyst... Arterial and venous structures are patent. No pseudoaneurysm or thrombosis is apparent.\\\"\",\n          \"MRI ABDOMEN: \\\"induration of the peripancreatic fat with T1 hyperintense material... consistent with hemorrhagic or proteinaceous fluid. No pseudocyst is seen at this time. No pseudoaneurysm formation or venous thrombosis\\\"\"\n        ],\n        \"reason\": \"Prior CT and MRI document peripancreatic inflammatory stranding and fluid but report no collections requiring drainage, and no vascular complication; however subtle/early infected collections, interval hemorrhage, or small pseudoaneurysms can evolve and may be better assessed by fresh cross‑sectional imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"",
+            "request_id": "gen-1788151431-FlTK10UMF5k2dzuIH4jm",
+            "usage": {
+              "completion_tokens": 4000,
+              "prompt_tokens": 6518,
+              "total_tokens": 10518,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 2112,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 6400,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0081895,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0081895,
+                "upstream_inference_prompt_cost": 0.0001895,
+                "upstream_inference_completions_cost": 0.008
+              }
+            }
+          },
+          "validation_errors": [
+            "not_a_json_object"
+          ]
+        }
+      ],
+      "accepted": null,
+      "validation_errors": [
+        "not_a_json_object"
+      ]
+    }
+  ]
+}

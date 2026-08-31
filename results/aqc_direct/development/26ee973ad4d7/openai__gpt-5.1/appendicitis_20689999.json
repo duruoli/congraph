@@ -1,0 +1,971 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 20689999,
+  "source_path": "results/annotation_experiment/full/appendicitis_20689999.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL)",
+      "request_prompt_sha256": "82fe693edd1cca43a1e70e72d8d30822fdd94e231b66f42193359dd06334477e",
+      "attempts": [
+        {
+          "attempt": 1,
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute right lower quadrant pelvic/abdominal pain syndrome with systemic inflammatory response concerning for an intra-abdominal or pelvic source.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome level (constellation of symptoms and signs, not yet a specific disease)",
+                  "status": "likely",
+                  "evidence": [
+                    "“presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”",
+                    "White Blood Cells: 13.3 K/uL (ref 4.0-10.0)… Absolute Neutrophil Count: 11.18 K/uL (ref 1.6-6.1)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A gynecologic/pelvic pathology such as ovarian torsion, ovarian cyst/rupture, or tubo-ovarian abscess is a significant possible cause of this patient’s right lower quadrant pain and fever.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "disease/category level (class of gynecologic causes, not a single named disease)",
+                  "status": "suspected",
+                  "evidence": [
+                    "“otherwise healthy ___ student who presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”",
+                    "Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL) [order implies concern for pelvic/gynecologic source]"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Appendicitis or other gastrointestinal causes of RLQ pain remain in the differential and have not been excluded by examination or laboratory testing.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "disease/category level (possible GI source alternative to pelvic source)",
+                  "status": "suspected",
+                  "evidence": [
+                    "“presents with 1 week of intermittent RLQ abdominal pain… has had fevers”",
+                    "ABD: Soft, nondistended, nontender, no rebound or guarding… White Blood Cells: 13.3 K/uL (ref 4.0-10.0)"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_appessed",
+                "effect_on_previous_question": "no prior imaging or questions; this is the first decision point",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "no prior imaging or diagnostic evidence to compare"
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision point; assumptions are newly established from history, exam, labs, and the chosen order."
+              },
+              "current_question": {
+                "primary": "Is there a pelvic/gynecologic pathology responsible for this patient’s right lower quadrant pain and systemic inflammation?",
+                "target": "female pelvis (ovaries, uterus, adnexa, pelvic cul-de-sac)",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would establish a gynecologic source (e.g., torsion, cyst, abscess) and direct management toward gynecologic or surgical intervention rather than purely gastrointestinal workup.",
+                "negative_answer_changes": "Would make a pelvic gynecologic source less likely and increase focus on gastrointestinal causes such as appendicitis or other abdominal pathology.",
+                "secondary_questions": [
+                  "Where in the pelvis is any abnormality located (e.g., ovarian vs uterine vs adnexal vs extra-ovarian)?",
+                  "Is there sonographic evidence of complication such as torsion, abscess formation, or significant hemoperitoneum?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the uterus, ovaries, adnexa, and pelvic cul-de-sac.",
+                    "why_required": "Reliable assessment of pelvic gynecologic pathology requires that these structures be clearly seen on imaging."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of structural ovarian or adnexal abnormalities such as masses, cysts, torsion signs, or tubo-ovarian abscess.",
+                    "why_required": "Determining whether a gynecologic lesion exists is central to deciding if the pelvis is the source of symptoms."
+                  },
+                  {
+                    "requirement_key": "req_local",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Anatomic localization of any detected pelvic abnormality to a specific structure (e.g., right ovary vs left ovary vs uterus vs extra-ovarian adnexa).",
+                    "why_required": "Linking a lesion to the side and organ corresponding to the patient’s right lower quadrant pain informs causality and management."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of complications such as torsion (abnormal blood flow), abscess, or significant free fluid/hemoperitoneum.",
+                    "why_required": "Complications change urgency and type of intervention (e.g., emergent surgery versus observation or antibiotics)."
+                  }
+                ],
+                "evidence": [
+                  "“presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”",
+                  "Order: Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL)"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "No prior imaging of the pelvis is reported, so visualization of pelvic organs has not yet been assessed."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "ABD: Soft, nondistended, nontender, no rebound or guarding,  normoactive bowel sounds, no palpable masses"
+                    ],
+                    "reason": "Physical exam did not identify masses, but pelvic organs and adnexa cannot be definitively evaluated without imaging."
+                  },
+                  {
+                    "requirement_key": "req_local",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“1 week of intermittent RLQ abdominal pain”"
+                    ],
+                    "reason": "Pain is localized clinically to the RLQ, but there is no imaging to anatomically localize a specific pelvic lesion."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“has had fevers as high as ___ yesterday”",
+                      "White Blood Cells: 13.3 K/uL… Absolute Neutrophil Count: 11.18 K/uL"
+                    ],
+                    "reason": "Fever and leukocytosis suggest possible complicated disease, but there is no direct assessment for torsion, abscess, or hemoperitoneum yet."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before this order there is no imaging or other test that specifically evaluates pelvic structures, so all key dimensions of the pelvic-source question remain unaddressed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Transvaginal pelvic ultrasound is the standard first-line modality to visualize the uterus and ovaries, detect adnexal masses or abscesses, assess for torsion, and evaluate pelvic free fluid in a nonpregnant patient.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not explicitly state pelvic or gynecologic symptoms (e.g., vaginal discharge, menstrual history), so the exact weighting between gynecologic and gastrointestinal causes for ordering this specific modality remains partly inferential."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": "An alternative is that the primary concern was appendicitis or other RLQ GI pathology and the transvaginal pelvic ultrasound was ordered mainly to exclude gynecologic mimics before proceeding to CT abdomen/pelvis, framing the question as: 'Is there an alternative pelvic source explaining RLQ pain that would obviate or precede CT for suspected appendicitis?'"
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute right lower quadrant pelvic/abdominal pain syndrome with systemic inflammatory response concerning for an intra-abdominal or pelvic source.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome level (constellation of symptoms and signs, not yet a specific disease)\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”\",\n        \"White Blood Cells: 13.3 K/uL (ref 4.0-10.0)… Absolute Neutrophil Count: 11.18 K/uL (ref 1.6-6.1)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A gynecologic/pelvic pathology such as ovarian torsion, ovarian cyst/rupture, or tubo-ovarian abscess is a significant possible cause of this patient’s right lower quadrant pain and fever.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease/category level (class of gynecologic causes, not a single named disease)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“otherwise healthy ___ student who presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”\",\n        \"Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL) [order implies concern for pelvic/gynecologic source]\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Appendicitis or other gastrointestinal causes of RLQ pain remain in the differential and have not been excluded by examination or laboratory testing.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease/category level (possible GI source alternative to pelvic source)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“presents with 1 week of intermittent RLQ abdominal pain… has had fevers”\",\n        \"ABD: Soft, nondistended, nontender, no rebound or guarding… White Blood Cells: 13.3 K/uL (ref 4.0-10.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_appessed\",\n    \"effect_on_previous_question\": \"no prior imaging or questions; this is the first decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"no prior imaging or diagnostic evidence to compare\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision point; assumptions are newly established from history, exam, labs, and the chosen order.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a pelvic/gynecologic pathology responsible for this patient’s right lower quadrant pain and systemic inflammation?\",\n    \"target\": \"female pelvis (ovaries, uterus, adnexa, pelvic cul-de-sac)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would establish a gynecologic source (e.g., torsion, cyst, abscess) and direct management toward gynecologic or surgical intervention rather than purely gastrointestinal workup.\",\n    \"negative_answer_changes\": \"Would make a pelvic gynecologic source less likely and increase focus on gastrointestinal causes such as appendicitis or other abdominal pathology.\",\n    \"secondary_questions\": [\n      \"Where in the pelvis is any abnormality located (e.g., ovarian vs uterine vs adnexal vs extra-ovarian)?\",\n      \"Is there sonographic evidence of complication such as torsion, abscess formation, or significant hemoperitoneum?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the uterus, ovaries, adnexa, and pelvic cul-de-sac.\",\n        \"why_required\": \"Reliable assessment of pelvic gynecologic pathology requires that these structures be clearly seen on imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of structural ovarian or adnexal abnormalities such as masses, cysts, torsion signs, or tubo-ovarian abscess.\",\n        \"why_required\": \"Determining whether a gynecologic lesion exists is central to deciding if the pelvis is the source of symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_local\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Anatomic localization of any detected pelvic abnormality to a specific structure (e.g., right ovary vs left ovary vs uterus vs extra-ovarian adnexa).\",\n        \"why_required\": \"Linking a lesion to the side and organ corresponding to the patient’s right lower quadrant pain informs causality and management.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of complications such as torsion (abnormal blood flow), abscess, or significant free fluid/hemoperitoneum.\",\n        \"why_required\": \"Complications change urgency and type of intervention (e.g., emergent surgery versus observation or antibiotics).\"\n      }\n    ],\n    \"evidence\": [\n      \"“presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”\",\n      \"Order: Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No prior imaging of the pelvis is reported, so visualization of pelvic organs has not yet been assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"ABD: Soft, nondistended, nontender, no rebound or guarding,  normoactive bowel sounds, no palpable masses\"\n        ],\n        \"reason\": \"Physical exam did not identify masses, but pelvic organs and adnexa cannot be definitively evaluated without imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_local\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“1 week of intermittent RLQ abdominal pain”\"\n        ],\n        \"reason\": \"Pain is localized clinically to the RLQ, but there is no imaging to anatomically localize a specific pelvic lesion.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“has had fevers as high as ___ yesterday”\",\n          \"White Blood Cells: 13.3 K/uL… Absolute Neutrophil Count: 11.18 K/uL\"\n        ],\n        \"reason\": \"Fever and leukocytosis suggest possible complicated disease, but there is no direct assessment for torsion, abscess, or hemoperitoneum yet.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before this order there is no imaging or other test that specifically evaluates pelvic structures, so all key dimensions of the pelvic-source question remain unaddressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Transvaginal pelvic ultrasound is the standard first-line modality to visualize the uterus and ovaries, detect adnexal masses or abscesses, assess for torsion, and evaluate pelvic free fluid in a nonpregnant patient.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly state pelvic or gynecologic symptoms (e.g., vaginal discharge, menstrual history), so the exact weighting between gynecologic and gastrointestinal causes for ordering this specific modality remains partly inferential.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"An alternative is that the primary concern was appendicitis or other RLQ GI pathology and the transvaginal pelvic ultrasound was ordered mainly to exclude gynecologic mimics before proceeding to CT abdomen/pelvis, framing the question as: 'Is there an alternative pelvic source explaining RLQ pain that would obviate or precede CT for suspected appendicitis?'\"\n}",
+            "request_id": "gen-1788157017-H5AV6YCJ41DB5Qzr5YxP",
+            "usage": {
+              "completion_tokens": 2078,
+              "prompt_tokens": 3124,
+              "total_tokens": 5202,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.024685,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.024685,
+                "upstream_inference_prompt_cost": 0.003905,
+                "upstream_inference_completions_cost": 0.02078
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute right lower quadrant pelvic/abdominal pain syndrome with systemic inflammatory response concerning for an intra-abdominal or pelvic source.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome level (constellation of symptoms and signs, not yet a specific disease)",
+            "status": "likely",
+            "evidence": [
+              "“presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”",
+              "White Blood Cells: 13.3 K/uL (ref 4.0-10.0)… Absolute Neutrophil Count: 11.18 K/uL (ref 1.6-6.1)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A gynecologic/pelvic pathology such as ovarian torsion, ovarian cyst/rupture, or tubo-ovarian abscess is a significant possible cause of this patient’s right lower quadrant pain and fever.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "disease/category level (class of gynecologic causes, not a single named disease)",
+            "status": "suspected",
+            "evidence": [
+              "“otherwise healthy ___ student who presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”",
+              "Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL) [order implies concern for pelvic/gynecologic source]"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Appendicitis or other gastrointestinal causes of RLQ pain remain in the differential and have not been excluded by examination or laboratory testing.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "disease/category level (possible GI source alternative to pelvic source)",
+            "status": "suspected",
+            "evidence": [
+              "“presents with 1 week of intermittent RLQ abdominal pain… has had fevers”",
+              "ABD: Soft, nondistended, nontender, no rebound or guarding… White Blood Cells: 13.3 K/uL (ref 4.0-10.0)"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_appessed",
+          "effect_on_previous_question": "no prior imaging or questions; this is the first decision point",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "no prior imaging or diagnostic evidence to compare"
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision point; assumptions are newly established from history, exam, labs, and the chosen order."
+        },
+        "current_question": {
+          "primary": "Is there a pelvic/gynecologic pathology responsible for this patient’s right lower quadrant pain and systemic inflammation?",
+          "target": "female pelvis (ovaries, uterus, adnexa, pelvic cul-de-sac)",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would establish a gynecologic source (e.g., torsion, cyst, abscess) and direct management toward gynecologic or surgical intervention rather than purely gastrointestinal workup.",
+          "negative_answer_changes": "Would make a pelvic gynecologic source less likely and increase focus on gastrointestinal causes such as appendicitis or other abdominal pathology.",
+          "secondary_questions": [
+            "Where in the pelvis is any abnormality located (e.g., ovarian vs uterine vs adnexal vs extra-ovarian)?",
+            "Is there sonographic evidence of complication such as torsion, abscess formation, or significant hemoperitoneum?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the uterus, ovaries, adnexa, and pelvic cul-de-sac.",
+              "why_required": "Reliable assessment of pelvic gynecologic pathology requires that these structures be clearly seen on imaging."
+            },
+            {
+              "requirement_key": "req_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of structural ovarian or adnexal abnormalities such as masses, cysts, torsion signs, or tubo-ovarian abscess.",
+              "why_required": "Determining whether a gynecologic lesion exists is central to deciding if the pelvis is the source of symptoms."
+            },
+            {
+              "requirement_key": "req_local",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Anatomic localization of any detected pelvic abnormality to a specific structure (e.g., right ovary vs left ovary vs uterus vs extra-ovarian adnexa).",
+              "why_required": "Linking a lesion to the side and organ corresponding to the patient’s right lower quadrant pain informs causality and management."
+            },
+            {
+              "requirement_key": "req_comp",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence of complications such as torsion (abnormal blood flow), abscess, or significant free fluid/hemoperitoneum.",
+              "why_required": "Complications change urgency and type of intervention (e.g., emergent surgery versus observation or antibiotics)."
+            }
+          ],
+          "evidence": [
+            "“presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”",
+            "Order: Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL)"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "No prior imaging of the pelvis is reported, so visualization of pelvic organs has not yet been assessed."
+            },
+            {
+              "requirement_key": "req_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "ABD: Soft, nondistended, nontender, no rebound or guarding,  normoactive bowel sounds, no palpable masses"
+              ],
+              "reason": "Physical exam did not identify masses, but pelvic organs and adnexa cannot be definitively evaluated without imaging."
+            },
+            {
+              "requirement_key": "req_local",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“1 week of intermittent RLQ abdominal pain”"
+              ],
+              "reason": "Pain is localized clinically to the RLQ, but there is no imaging to anatomically localize a specific pelvic lesion."
+            },
+            {
+              "requirement_key": "req_comp",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“has had fevers as high as ___ yesterday”",
+                "White Blood Cells: 13.3 K/uL… Absolute Neutrophil Count: 11.18 K/uL"
+              ],
+              "reason": "Fever and leukocytosis suggest possible complicated disease, but there is no direct assessment for torsion, abscess, or hemoperitoneum yet."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Before this order there is no imaging or other test that specifically evaluates pelvic structures, so all key dimensions of the pelvic-source question remain unaddressed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Transvaginal pelvic ultrasound is the standard first-line modality to visualize the uterus and ovaries, detect adnexal masses or abscesses, assess for torsion, and evaluate pelvic free fluid in a nonpregnant patient.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not explicitly state pelvic or gynecologic symptoms (e.g., vaginal discharge, menstrual history), so the exact weighting between gynecologic and gastrointestinal causes for ordering this specific modality remains partly inferential."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": "An alternative is that the primary concern was appendicitis or other RLQ GI pathology and the transvaginal pelvic ultrasound was ordered mainly to exclude gynecologic mimics before proceeding to CT abdomen/pelvis, framing the question as: 'Is there an alternative pelvic source explaining RLQ pain that would obviate or precede CT for suspected appendicitis?'"
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "Ultrasound Abdomen (US APPENDIX)",
+      "request_prompt_sha256": "b854c5d157b16ea86bb2a0437e4a0763fdf0ebba0be678b4ba1c611dd1d145ab",
+      "attempts": [
+        {
+          "attempt": 1,
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "Appendicitis is an important possible cause of this patient’s right lower quadrant abdominal pain and systemic inflammatory findings.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "disease/category level (specific GI source within the RLQ pain syndrome)",
+                  "status": "suspected",
+                  "evidence": [
+                    "“presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”",
+                    "White Blood Cells: 13.3 K/uL (ref 4.0-10.0)… Absolute Neutrophil Count: 11.18 K/uL (ref 1.6-6.1)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there a pelvic/gynecologic pathology responsible for this patient’s right lower quadrant pain and systemic inflammation?",
+                "study_adequacy": "limited_but_diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "indeterminate",
+                "effect_on_previous_question": "The pelvic ultrasound adequately assessed the left ovary and uterus but did not visualize the right ovary; no definite gynecologic source was established, so a pelvic etiology remains unproven and the need to evaluate non-gynecologic RLQ causes such as appendicitis persists.",
+                "discordance": {
+                  "label": "indeterminate",
+                  "evidence_stream_1": "“The left ovary demonstrates normal grayscale appearance, size, and appropriate vascular waveforms.  The right ovary is not visualized.”",
+                  "evidence_stream_2": "“presents with 1 week of intermittent RLQ abdominal pain… has had fevers”",
+                  "reason": "Persistent clinical concern contrasts with incomplete visualization of the symptomatic-side ovary, but there is no direct contradictory finding excluding a pelvic source."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "Appendicitis or other gastrointestinal causes of RLQ pain remain in the differential and have not been excluded by examination or laboratory testing.",
+                "reason": "With pelvic ultrasound failing to show a definitive gynecologic explanation and the right ovary not visualized, attention shifts toward appendicitis as a leading non-gynecologic RLQ source needing targeted evaluation."
+              },
+              "current_question": {
+                "primary": "Is there sonographic evidence of acute appendicitis as the source of this patient’s right lower quadrant pain and inflammatory findings?",
+                "target": "vermiform appendix and adjacent right lower quadrant structures",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would establish appendicitis as the likely diagnosis, prompting surgical consultation and definitive management while deprioritizing alternative sources.",
+                "negative_answer_changes": "Would make appendicitis less likely, pushing consideration toward other gastrointestinal, pelvic, or functional causes and possibly further imaging such as CT.",
+                "secondary_questions": [
+                  "Is there periappendiceal inflammatory change or abscess formation indicating complicated appendicitis?",
+                  "Is the appendix visualized adequately enough to confidently include or exclude appendicitis?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis_app",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the appendix and surrounding right lower quadrant to permit assessment for appendicitis.",
+                    "why_required": "Appendicitis cannot be confidently diagnosed or excluded unless the appendix and periappendiceal region are well seen."
+                  },
+                  {
+                    "requirement_key": "req_pres_app",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of sonographic criteria of appendicitis such as a noncompressible enlarged tubular structure, wall thickening, or periappendiceal fat/inflammatory changes.",
+                    "why_required": "Identifying or not identifying these features is central to determining whether appendicitis is the source of symptoms."
+                  },
+                  {
+                    "requirement_key": "req_comp_app",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of appendicitis-related complications such as perforation, abscess, or significant periappendiceal fluid.",
+                    "why_required": "Complications influence urgency, need for surgery versus drainage, and overall management strategy."
+                  }
+                ],
+                "evidence": [
+                  "Actual current order: Ultrasound Abdomen (US APPENDIX)"
+                ]
+              },
+              "question_continuity": "rerouted",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis_app",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Prior imaging was limited to pelvic ultrasound: “PELVIS U.S., TRANSVAGINAL… The right ovary is not visualized.”"
+                    ],
+                    "reason": "No prior study specifically assessed visualization of the appendix or the RLQ bowel loops."
+                  },
+                  {
+                    "requirement_key": "req_pres_app",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No imaging of the appendix is reported before this order."
+                    ],
+                    "reason": "There is no pre-order imaging information about appendiceal size, compressibility, or periappendiceal changes."
+                  },
+                  {
+                    "requirement_key": "req_comp_app",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No CT or appendix-focused ultrasound has been performed to look for perforation or abscess."
+                    ],
+                    "reason": "Potential complications of appendicitis have not been directly evaluated by any prior imaging."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before the appendix ultrasound, none of the key dimensions needed to determine the presence or complexity of appendicitis had been imaged."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "An appendix-focused abdominal ultrasound is designed to visualize the appendix and detect features of acute appendicitis or its complications, particularly in young patients.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The record does not explicitly state that appendicitis became the leading diagnosis after the pelvic ultrasound, so the exact weighting between ruling in appendicitis versus continued search for any RLQ cause is partly inferred."
+              },
+              "derived_transition": "reroute",
+              "alternative_reconstruction": "The appendix ultrasound could alternatively be framed as part of a parallel workup of RLQ pain in a young female, where gynecologic and appendiceal causes are evaluated in tandem rather than sequentially, with the question being: 'Is there any imaging evidence of appendicitis that would prioritize surgical management even if a pelvic cause cannot yet be excluded?'"
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Appendicitis is an important possible cause of this patient’s right lower quadrant abdominal pain and systemic inflammatory findings.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease/category level (specific GI source within the RLQ pain syndrome)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”\",\n        \"White Blood Cells: 13.3 K/uL (ref 4.0-10.0)… Absolute Neutrophil Count: 11.18 K/uL (ref 1.6-6.1)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there a pelvic/gynecologic pathology responsible for this patient’s right lower quadrant pain and systemic inflammation?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"indeterminate\",\n    \"effect_on_previous_question\": \"The pelvic ultrasound adequately assessed the left ovary and uterus but did not visualize the right ovary; no definite gynecologic source was established, so a pelvic etiology remains unproven and the need to evaluate non-gynecologic RLQ causes such as appendicitis persists.\",\n    \"discordance\": {\n      \"label\": \"indeterminate\",\n      \"evidence_stream_1\": \"“The left ovary demonstrates normal grayscale appearance, size, and appropriate vascular waveforms.  The right ovary is not visualized.”\",\n      \"evidence_stream_2\": \"“presents with 1 week of intermittent RLQ abdominal pain… has had fevers”\",\n      \"reason\": \"Persistent clinical concern contrasts with incomplete visualization of the symptomatic-side ovary, but there is no direct contradictory finding excluding a pelvic source.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Appendicitis or other gastrointestinal causes of RLQ pain remain in the differential and have not been excluded by examination or laboratory testing.\",\n    \"reason\": \"With pelvic ultrasound failing to show a definitive gynecologic explanation and the right ovary not visualized, attention shifts toward appendicitis as a leading non-gynecologic RLQ source needing targeted evaluation.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there sonographic evidence of acute appendicitis as the source of this patient’s right lower quadrant pain and inflammatory findings?\",\n    \"target\": \"vermiform appendix and adjacent right lower quadrant structures\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would establish appendicitis as the likely diagnosis, prompting surgical consultation and definitive management while deprioritizing alternative sources.\",\n    \"negative_answer_changes\": \"Would make appendicitis less likely, pushing consideration toward other gastrointestinal, pelvic, or functional causes and possibly further imaging such as CT.\",\n    \"secondary_questions\": [\n      \"Is there periappendiceal inflammatory change or abscess formation indicating complicated appendicitis?\",\n      \"Is the appendix visualized adequately enough to confidently include or exclude appendicitis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis_app\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the appendix and surrounding right lower quadrant to permit assessment for appendicitis.\",\n        \"why_required\": \"Appendicitis cannot be confidently diagnosed or excluded unless the appendix and periappendiceal region are well seen.\"\n      },\n      {\n        \"requirement_key\": \"req_pres_app\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of sonographic criteria of appendicitis such as a noncompressible enlarged tubular structure, wall thickening, or periappendiceal fat/inflammatory changes.\",\n        \"why_required\": \"Identifying or not identifying these features is central to determining whether appendicitis is the source of symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_comp_app\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of appendicitis-related complications such as perforation, abscess, or significant periappendiceal fluid.\",\n        \"why_required\": \"Complications influence urgency, need for surgery versus drainage, and overall management strategy.\"\n      }\n    ],\n    \"evidence\": [\n      \"Actual current order: Ultrasound Abdomen (US APPENDIX)\"\n    ]\n  },\n  \"question_continuity\": \"rerouted\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis_app\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Prior imaging was limited to pelvic ultrasound: “PELVIS U.S., TRANSVAGINAL… The right ovary is not visualized.”\"\n        ],\n        \"reason\": \"No prior study specifically assessed visualization of the appendix or the RLQ bowel loops.\"\n      },\n      {\n        \"requirement_key\": \"req_pres_app\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No imaging of the appendix is reported before this order.\"\n        ],\n        \"reason\": \"There is no pre-order imaging information about appendiceal size, compressibility, or periappendiceal changes.\"\n      },\n      {\n        \"requirement_key\": \"req_comp_app\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No CT or appendix-focused ultrasound has been performed to look for perforation or abscess.\"\n        ],\n        \"reason\": \"Potential complications of appendicitis have not been directly evaluated by any prior imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before the appendix ultrasound, none of the key dimensions needed to determine the presence or complexity of appendicitis had been imaged.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"An appendix-focused abdominal ultrasound is designed to visualize the appendix and detect features of acute appendicitis or its complications, particularly in young patients.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The record does not explicitly state that appendicitis became the leading diagnosis after the pelvic ultrasound, so the exact weighting between ruling in appendicitis versus continued search for any RLQ cause is partly inferred.\"\n  },\n  \"derived_transition\": \"reroute\",\n  \"alternative_reconstruction\": \"The appendix ultrasound could alternatively be framed as part of a parallel workup of RLQ pain in a young female, where gynecologic and appendiceal causes are evaluated in tandem rather than sequentially, with the question being: 'Is there any imaging evidence of appendicitis that would prioritize surgical management even if a pelvic cause cannot yet be excluded?'\"\n}",
+            "request_id": "gen-1788157044-2NiaBy5lOh9jaLV8Llmj",
+            "usage": {
+              "completion_tokens": 1599,
+              "prompt_tokens": 5137,
+              "total_tokens": 6736,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1792,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02039525,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02039525,
+                "upstream_inference_prompt_cost": 0.00440525,
+                "upstream_inference_completions_cost": 0.01599
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "Appendicitis is an important possible cause of this patient’s right lower quadrant abdominal pain and systemic inflammatory findings.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "disease/category level (specific GI source within the RLQ pain syndrome)",
+            "status": "suspected",
+            "evidence": [
+              "“presents with 1 week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”",
+              "White Blood Cells: 13.3 K/uL (ref 4.0-10.0)… Absolute Neutrophil Count: 11.18 K/uL (ref 1.6-6.1)"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there a pelvic/gynecologic pathology responsible for this patient’s right lower quadrant pain and systemic inflammation?",
+          "study_adequacy": "limited_but_diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "indeterminate",
+          "effect_on_previous_question": "The pelvic ultrasound adequately assessed the left ovary and uterus but did not visualize the right ovary; no definite gynecologic source was established, so a pelvic etiology remains unproven and the need to evaluate non-gynecologic RLQ causes such as appendicitis persists.",
+          "discordance": {
+            "label": "indeterminate",
+            "evidence_stream_1": "“The left ovary demonstrates normal grayscale appearance, size, and appropriate vascular waveforms.  The right ovary is not visualized.”",
+            "evidence_stream_2": "“presents with 1 week of intermittent RLQ abdominal pain… has had fevers”",
+            "reason": "Persistent clinical concern contrasts with incomplete visualization of the symptomatic-side ovary, but there is no direct contradictory finding excluding a pelvic source."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "Appendicitis or other gastrointestinal causes of RLQ pain remain in the differential and have not been excluded by examination or laboratory testing.",
+          "reason": "With pelvic ultrasound failing to show a definitive gynecologic explanation and the right ovary not visualized, attention shifts toward appendicitis as a leading non-gynecologic RLQ source needing targeted evaluation."
+        },
+        "current_question": {
+          "primary": "Is there sonographic evidence of acute appendicitis as the source of this patient’s right lower quadrant pain and inflammatory findings?",
+          "target": "vermiform appendix and adjacent right lower quadrant structures",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would establish appendicitis as the likely diagnosis, prompting surgical consultation and definitive management while deprioritizing alternative sources.",
+          "negative_answer_changes": "Would make appendicitis less likely, pushing consideration toward other gastrointestinal, pelvic, or functional causes and possibly further imaging such as CT.",
+          "secondary_questions": [
+            "Is there periappendiceal inflammatory change or abscess formation indicating complicated appendicitis?",
+            "Is the appendix visualized adequately enough to confidently include or exclude appendicitis?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis_app",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the appendix and surrounding right lower quadrant to permit assessment for appendicitis.",
+              "why_required": "Appendicitis cannot be confidently diagnosed or excluded unless the appendix and periappendiceal region are well seen."
+            },
+            {
+              "requirement_key": "req_pres_app",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of sonographic criteria of appendicitis such as a noncompressible enlarged tubular structure, wall thickening, or periappendiceal fat/inflammatory changes.",
+              "why_required": "Identifying or not identifying these features is central to determining whether appendicitis is the source of symptoms."
+            },
+            {
+              "requirement_key": "req_comp_app",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence of appendicitis-related complications such as perforation, abscess, or significant periappendiceal fluid.",
+              "why_required": "Complications influence urgency, need for surgery versus drainage, and overall management strategy."
+            }
+          ],
+          "evidence": [
+            "Actual current order: Ultrasound Abdomen (US APPENDIX)"
+          ]
+        },
+        "question_continuity": "rerouted",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis_app",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Prior imaging was limited to pelvic ultrasound: “PELVIS U.S., TRANSVAGINAL… The right ovary is not visualized.”"
+              ],
+              "reason": "No prior study specifically assessed visualization of the appendix or the RLQ bowel loops."
+            },
+            {
+              "requirement_key": "req_pres_app",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No imaging of the appendix is reported before this order."
+              ],
+              "reason": "There is no pre-order imaging information about appendiceal size, compressibility, or periappendiceal changes."
+            },
+            {
+              "requirement_key": "req_comp_app",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No CT or appendix-focused ultrasound has been performed to look for perforation or abscess."
+              ],
+              "reason": "Potential complications of appendicitis have not been directly evaluated by any prior imaging."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Before the appendix ultrasound, none of the key dimensions needed to determine the presence or complexity of appendicitis had been imaged."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "An appendix-focused abdominal ultrasound is designed to visualize the appendix and detect features of acute appendicitis or its complications, particularly in young patients.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The record does not explicitly state that appendicitis became the leading diagnosis after the pelvic ultrasound, so the exact weighting between ruling in appendicitis versus continued search for any RLQ cause is partly inferred."
+        },
+        "derived_transition": "reroute",
+        "alternative_reconstruction": "The appendix ultrasound could alternatively be framed as part of a parallel workup of RLQ pain in a young female, where gynecologic and appendiceal causes are evaluated in tandem rather than sequentially, with the question being: 'Is there any imaging evidence of appendicitis that would prioritize surgical management even if a pelvic cause cannot yet be excluded?'"
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 3,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "7f3710f41cc5f7d81cf7ba57e7620f02c180944bb4f8b92550e0e4be64ed507b",
+      "attempts": [
+        {
+          "attempt": 1,
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient likely has acute appendicitis accounting for her right lower quadrant abdominal pain, fever, and leukocytosis, and cross-sectional imaging is needed to further characterize it.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease within the RLQ abdominal pain syndrome",
+                  "status": "likely",
+                  "evidence": [
+                    "“presents with 1  week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”",
+                    "“Targeted examination of the right lower quadrant was performed which revealed a tubular blind-ending intraperitoneal structure with wall thickening and dilation up to 16 cm and a small adjacent fluid collection.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there sonographic evidence of acute appendicitis as the source of this patient’s right lower quadrant pain and inflammatory findings?",
+                "study_adequacy": "limited_but_diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The appendix ultrasound visualized an abnormally thick-walled, markedly dilated blind-ending tubular structure with adjacent fluid, making acute appendicitis the leading diagnosis despite not tracing the structure to the cecum.",
+                "discordance": {
+                  "label": "indeterminate",
+                  "evidence_stream_1": "“a tubular blind-ending intraperitoneal structure with wall thickening and dilation up to 16 cm and a small adjacent fluid collection… could not be followed to its origin at the cecum.”",
+                  "evidence_stream_2": "ABDOMINAL EXAM: “Soft, nondistended, nontender, no rebound or guarding”",
+                  "reason": "Imaging strongly suggests appendicitis while the abdominal exam is benign, creating some clinical–imaging tension but not definitive conflict."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The patient likely has acute appendicitis, but the exact anatomic origin, extent of inflammation, and presence of complications remain uncertain after ultrasound.",
+                "reason": "Ultrasound findings are highly suggestive of appendicitis but technically limited by inability to follow the tubular structure to the cecum and only small adjacent fluid, leaving uncertainty about confirmation, extent, and complications."
+              },
+              "current_question": {
+                "primary": "What is the exact anatomic confirmation and extent of the suspected appendicitis, including any complications, in this patient with RLQ pain and abnormal appendix ultrasound?",
+                "target": "vermiform appendix, cecum, and surrounding abdominopelvic structures",
+                "type": "severity_or_extent",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirmation of appendicitis and delineation of its extent or complications would solidify the diagnosis, guide urgency and type of surgical versus interventional management, and assess need for broader therapy.",
+                "negative_answer_changes": "If CT does not confirm appendicitis or shows an alternative explanation, clinicians would reconsider the diagnosis, adjust the treatment plan, and potentially de-escalate or redirect surgical planning.",
+                "secondary_questions": [
+                  "Is there CT evidence of an alternative intra-abdominal or pelvic source for the patient’s symptoms instead of or in addition to appendicitis?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_ct_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate CT visualization of the appendix, cecum, and adjacent abdominopelvic structures to confidently assess for appendicitis and other pathology.",
+                    "why_required": "Clear visualization is needed to confirm that the sonographic tubular structure corresponds to the appendix and to survey for other potential sources."
+                  },
+                  {
+                    "requirement_key": "req_ct_sev",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "CT characterization of the extent of appendiceal inflammation, including length of involvement, surrounding fat stranding, and degree of adjacent fluid.",
+                    "why_required": "Extent of inflammation influences operative planning, urgency, and medical management."
+                  },
+                  {
+                    "requirement_key": "req_ct_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and nature of appendicitis-related complications such as perforation, abscess, phlegmon, or diffuse peritonitis.",
+                    "why_required": "Complications determine whether surgery, percutaneous drainage, or more intensive supportive care is required."
+                  },
+                  {
+                    "requirement_key": "req_ct_alt",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Identification or exclusion of alternative intra-abdominal or pelvic sources of RLQ pain (e.g., other bowel pathology, gynecologic disease not seen on prior US).",
+                    "why_required": "If appendicitis is not clearly confirmed, management depends on whether another treatable source can be identified."
+                  }
+                ],
+                "evidence": [
+                  "Actual current order: CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+                  "“could not be followed to its origin at the cecum.  No sonographic evidence of appendicolith or large adjacent fluid collection”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_ct_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“Targeted examination of the right lower quadrant was performed which revealed a tubular blind-ending intraperitoneal structure… Due to technical limitations, the structure could not be followed to its origin at the cecum.”"
+                    ],
+                    "reason": "Ultrasound visualized an abnormal tubular structure but could not confirm its cecal origin or fully survey adjacent abdominopelvic anatomy, leaving incomplete visualization."
+                  },
+                  {
+                    "requirement_key": "req_ct_sev",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“wall thickening and dilation up to 16 cm and a small adjacent fluid collection.”"
+                    ],
+                    "reason": "Ultrasound indicates marked dilation and some fluid but cannot fully quantify the length of involvement, full surrounding inflammation, or more distant spread."
+                  },
+                  {
+                    "requirement_key": "req_ct_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“a small adjacent fluid collection… No sonographic evidence of appendicolith or large adjacent fluid collection”"
+                    ],
+                    "reason": "The small fluid suggests possible early complication, but ultrasound is limited in detecting perforation, abscess, or diffuse peritonitis, so complication status remains uncertain."
+                  },
+                  {
+                    "requirement_key": "req_ct_alt",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "PELVIS U.S.: “The left ovary demonstrates normal… The right ovary is not visualized.  There is a small amount of free fluid.”"
+                    ],
+                    "reason": "Prior pelvic ultrasound excludes major left-sided gynecologic pathology but does not visualize the right ovary and cannot comprehensively exclude other intra-abdominal causes."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Ultrasound provides strong but incomplete information about the presence and severity of suspected appendicitis and limited assessment of complications and alternative sources, motivating more definitive CT evaluation."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix, define the extent of inflammation, detect perforation or abscess, and survey for alternative intra-abdominal or pelvic pathology.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not explicitly document whether the CT is primarily for preoperative planning versus resolving imaging–exam discordance or medicolegal caution in a young patient, so the exact weighting of these motives is inferred."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "The CT could also be framed as an adjudicating study to resolve uncertainty created by a strongly suggestive but technically limited ultrasound and a benign abdominal exam, with the primary question being whether cross-sectional imaging confirms or overturns the ultrasound-based diagnosis of appendicitis."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient likely has acute appendicitis accounting for her right lower quadrant abdominal pain, fever, and leukocytosis, and cross-sectional imaging is needed to further characterize it.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease within the RLQ abdominal pain syndrome\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“presents with 1  week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”\",\n        \"“Targeted examination of the right lower quadrant was performed which revealed a tubular blind-ending intraperitoneal structure with wall thickening and dilation up to 16 cm and a small adjacent fluid collection.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there sonographic evidence of acute appendicitis as the source of this patient’s right lower quadrant pain and inflammatory findings?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The appendix ultrasound visualized an abnormally thick-walled, markedly dilated blind-ending tubular structure with adjacent fluid, making acute appendicitis the leading diagnosis despite not tracing the structure to the cecum.\",\n    \"discordance\": {\n      \"label\": \"indeterminate\",\n      \"evidence_stream_1\": \"“a tubular blind-ending intraperitoneal structure with wall thickening and dilation up to 16 cm and a small adjacent fluid collection… could not be followed to its origin at the cecum.”\",\n      \"evidence_stream_2\": \"ABDOMINAL EXAM: “Soft, nondistended, nontender, no rebound or guarding”\",\n      \"reason\": \"Imaging strongly suggests appendicitis while the abdominal exam is benign, creating some clinical–imaging tension but not definitive conflict.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient likely has acute appendicitis, but the exact anatomic origin, extent of inflammation, and presence of complications remain uncertain after ultrasound.\",\n    \"reason\": \"Ultrasound findings are highly suggestive of appendicitis but technically limited by inability to follow the tubular structure to the cecum and only small adjacent fluid, leaving uncertainty about confirmation, extent, and complications.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the exact anatomic confirmation and extent of the suspected appendicitis, including any complications, in this patient with RLQ pain and abnormal appendix ultrasound?\",\n    \"target\": \"vermiform appendix, cecum, and surrounding abdominopelvic structures\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirmation of appendicitis and delineation of its extent or complications would solidify the diagnosis, guide urgency and type of surgical versus interventional management, and assess need for broader therapy.\",\n    \"negative_answer_changes\": \"If CT does not confirm appendicitis or shows an alternative explanation, clinicians would reconsider the diagnosis, adjust the treatment plan, and potentially de-escalate or redirect surgical planning.\",\n    \"secondary_questions\": [\n      \"Is there CT evidence of an alternative intra-abdominal or pelvic source for the patient’s symptoms instead of or in addition to appendicitis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_ct_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate CT visualization of the appendix, cecum, and adjacent abdominopelvic structures to confidently assess for appendicitis and other pathology.\",\n        \"why_required\": \"Clear visualization is needed to confirm that the sonographic tubular structure corresponds to the appendix and to survey for other potential sources.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_sev\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"CT characterization of the extent of appendiceal inflammation, including length of involvement, surrounding fat stranding, and degree of adjacent fluid.\",\n        \"why_required\": \"Extent of inflammation influences operative planning, urgency, and medical management.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and nature of appendicitis-related complications such as perforation, abscess, phlegmon, or diffuse peritonitis.\",\n        \"why_required\": \"Complications determine whether surgery, percutaneous drainage, or more intensive supportive care is required.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_alt\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification or exclusion of alternative intra-abdominal or pelvic sources of RLQ pain (e.g., other bowel pathology, gynecologic disease not seen on prior US).\",\n        \"why_required\": \"If appendicitis is not clearly confirmed, management depends on whether another treatable source can be identified.\"\n      }\n    ],\n    \"evidence\": [\n      \"Actual current order: CT Abdomen (CT ABD & PELVIS WITH CONTRAST)\",\n      \"“could not be followed to its origin at the cecum.  No sonographic evidence of appendicolith or large adjacent fluid collection”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_ct_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“Targeted examination of the right lower quadrant was performed which revealed a tubular blind-ending intraperitoneal structure… Due to technical limitations, the structure could not be followed to its origin at the cecum.”\"\n        ],\n        \"reason\": \"Ultrasound visualized an abnormal tubular structure but could not confirm its cecal origin or fully survey adjacent abdominopelvic anatomy, leaving incomplete visualization.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_sev\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“wall thickening and dilation up to 16 cm and a small adjacent fluid collection.”\"\n        ],\n        \"reason\": \"Ultrasound indicates marked dilation and some fluid but cannot fully quantify the length of involvement, full surrounding inflammation, or more distant spread.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“a small adjacent fluid collection… No sonographic evidence of appendicolith or large adjacent fluid collection”\"\n        ],\n        \"reason\": \"The small fluid suggests possible early complication, but ultrasound is limited in detecting perforation, abscess, or diffuse peritonitis, so complication status remains uncertain.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_alt\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"PELVIS U.S.: “The left ovary demonstrates normal… The right ovary is not visualized.  There is a small amount of free fluid.”\"\n        ],\n        \"reason\": \"Prior pelvic ultrasound excludes major left-sided gynecologic pathology but does not visualize the right ovary and cannot comprehensively exclude other intra-abdominal causes.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Ultrasound provides strong but incomplete information about the presence and severity of suspected appendicitis and limited assessment of complications and alternative sources, motivating more definitive CT evaluation.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix, define the extent of inflammation, detect perforation or abscess, and survey for alternative intra-abdominal or pelvic pathology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly document whether the CT is primarily for preoperative planning versus resolving imaging–exam discordance or medicolegal caution in a young patient, so the exact weighting of these motives is inferred.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"The CT could also be framed as an adjudicating study to resolve uncertainty created by a strongly suggestive but technically limited ultrasound and a benign abdominal exam, with the primary question being whether cross-sectional imaging confirms or overturns the ultrasound-based diagnosis of appendicitis.\"\n}",
+            "request_id": "gen-1788157065-iXih6XkVnGeKFDFw8KFC",
+            "usage": {
+              "completion_tokens": 1967,
+              "prompt_tokens": 4842,
+              "total_tokens": 6809,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2048,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0234185,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0234185,
+                "upstream_inference_prompt_cost": 0.0037485,
+                "upstream_inference_completions_cost": 0.01967
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient likely has acute appendicitis accounting for her right lower quadrant abdominal pain, fever, and leukocytosis, and cross-sectional imaging is needed to further characterize it.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific disease within the RLQ abdominal pain syndrome",
+            "status": "likely",
+            "evidence": [
+              "“presents with 1  week of intermittent RLQ abdominal pain… has had fevers as high as ___ yesterday”",
+              "“Targeted examination of the right lower quadrant was performed which revealed a tubular blind-ending intraperitoneal structure with wall thickening and dilation up to 16 cm and a small adjacent fluid collection.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there sonographic evidence of acute appendicitis as the source of this patient’s right lower quadrant pain and inflammatory findings?",
+          "study_adequacy": "limited_but_diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The appendix ultrasound visualized an abnormally thick-walled, markedly dilated blind-ending tubular structure with adjacent fluid, making acute appendicitis the leading diagnosis despite not tracing the structure to the cecum.",
+          "discordance": {
+            "label": "indeterminate",
+            "evidence_stream_1": "“a tubular blind-ending intraperitoneal structure with wall thickening and dilation up to 16 cm and a small adjacent fluid collection… could not be followed to its origin at the cecum.”",
+            "evidence_stream_2": "ABDOMINAL EXAM: “Soft, nondistended, nontender, no rebound or guarding”",
+            "reason": "Imaging strongly suggests appendicitis while the abdominal exam is benign, creating some clinical–imaging tension but not definitive conflict."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient likely has acute appendicitis, but the exact anatomic origin, extent of inflammation, and presence of complications remain uncertain after ultrasound.",
+          "reason": "Ultrasound findings are highly suggestive of appendicitis but technically limited by inability to follow the tubular structure to the cecum and only small adjacent fluid, leaving uncertainty about confirmation, extent, and complications."
+        },
+        "current_question": {
+          "primary": "What is the exact anatomic confirmation and extent of the suspected appendicitis, including any complications, in this patient with RLQ pain and abnormal appendix ultrasound?",
+          "target": "vermiform appendix, cecum, and surrounding abdominopelvic structures",
+          "type": "severity_or_extent",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirmation of appendicitis and delineation of its extent or complications would solidify the diagnosis, guide urgency and type of surgical versus interventional management, and assess need for broader therapy.",
+          "negative_answer_changes": "If CT does not confirm appendicitis or shows an alternative explanation, clinicians would reconsider the diagnosis, adjust the treatment plan, and potentially de-escalate or redirect surgical planning.",
+          "secondary_questions": [
+            "Is there CT evidence of an alternative intra-abdominal or pelvic source for the patient’s symptoms instead of or in addition to appendicitis?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_ct_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate CT visualization of the appendix, cecum, and adjacent abdominopelvic structures to confidently assess for appendicitis and other pathology.",
+              "why_required": "Clear visualization is needed to confirm that the sonographic tubular structure corresponds to the appendix and to survey for other potential sources."
+            },
+            {
+              "requirement_key": "req_ct_sev",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "CT characterization of the extent of appendiceal inflammation, including length of involvement, surrounding fat stranding, and degree of adjacent fluid.",
+              "why_required": "Extent of inflammation influences operative planning, urgency, and medical management."
+            },
+            {
+              "requirement_key": "req_ct_comp",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and nature of appendicitis-related complications such as perforation, abscess, phlegmon, or diffuse peritonitis.",
+              "why_required": "Complications determine whether surgery, percutaneous drainage, or more intensive supportive care is required."
+            },
+            {
+              "requirement_key": "req_ct_alt",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Identification or exclusion of alternative intra-abdominal or pelvic sources of RLQ pain (e.g., other bowel pathology, gynecologic disease not seen on prior US).",
+              "why_required": "If appendicitis is not clearly confirmed, management depends on whether another treatable source can be identified."
+            }
+          ],
+          "evidence": [
+            "Actual current order: CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+            "“could not be followed to its origin at the cecum.  No sonographic evidence of appendicolith or large adjacent fluid collection”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_ct_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“Targeted examination of the right lower quadrant was performed which revealed a tubular blind-ending intraperitoneal structure… Due to technical limitations, the structure could not be followed to its origin at the cecum.”"
+              ],
+              "reason": "Ultrasound visualized an abnormal tubular structure but could not confirm its cecal origin or fully survey adjacent abdominopelvic anatomy, leaving incomplete visualization."
+            },
+            {
+              "requirement_key": "req_ct_sev",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“wall thickening and dilation up to 16 cm and a small adjacent fluid collection.”"
+              ],
+              "reason": "Ultrasound indicates marked dilation and some fluid but cannot fully quantify the length of involvement, full surrounding inflammation, or more distant spread."
+            },
+            {
+              "requirement_key": "req_ct_comp",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“a small adjacent fluid collection… No sonographic evidence of appendicolith or large adjacent fluid collection”"
+              ],
+              "reason": "The small fluid suggests possible early complication, but ultrasound is limited in detecting perforation, abscess, or diffuse peritonitis, so complication status remains uncertain."
+            },
+            {
+              "requirement_key": "req_ct_alt",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "partially_addressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "PELVIS U.S.: “The left ovary demonstrates normal… The right ovary is not visualized.  There is a small amount of free fluid.”"
+              ],
+              "reason": "Prior pelvic ultrasound excludes major left-sided gynecologic pathology but does not visualize the right ovary and cannot comprehensively exclude other intra-abdominal causes."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Ultrasound provides strong but incomplete information about the presence and severity of suspected appendicitis and limited assessment of complications and alternative sources, motivating more definitive CT evaluation."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix, define the extent of inflammation, detect perforation or abscess, and survey for alternative intra-abdominal or pelvic pathology.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not explicitly document whether the CT is primarily for preoperative planning versus resolving imaging–exam discordance or medicolegal caution in a young patient, so the exact weighting of these motives is inferred."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "The CT could also be framed as an adjudicating study to resolve uncertainty created by a strongly suggestive but technically limited ultrasound and a benign abdominal exam, with the primary question being whether cross-sectional imaging confirms or overturns the ultrasound-based diagnosis of appendicitis."
+      },
+      "validation_errors": []
+    }
+  ]
+}

@@ -153,8 +153,10 @@ def main() -> None:
 
     contract = prompts.output_contract()
     assert "answer_requirements" in contract["current_question"]
+    assert "requirement_key" in contract["current_question"]["answer_requirements"][0]
     assert "coverage" in contract and "pre_order_coverage" not in contract
     assert "requirements" in contract["coverage"]
+    assert "requirement_key" in contract["coverage"]["requirements"][0]
 
     # Deterministic lexical stability is not qualitative saturation.
     assert saturation["conclusion"] == "lexically_stable_but_not_yet_qualitatively_saturated"

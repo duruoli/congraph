@@ -1,0 +1,666 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 29060924,
+  "source_path": "results/annotation_experiment/full/cholecystitis_29060924.json",
+  "model": "openai/gpt-5-mini",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "f1e822ee10d0a42f64b396994410504d6c70c7b9a770ea34b8c102442b2de4c9",
+      "attempts": [
+        {
+          "attempt": 1,
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has gallstones (cholelithiasis).",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "patient-level diagnostic finding",
+                  "status": "established",
+                  "evidence": [
+                    "Ultrasound showed cholelithiasis without gallbladder wall thickening."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The abnormal liver tests (markedly elevated ALT/AST, alkaline phosphatase, and bilirubin) raise concern for biliary obstruction or an acute biliary process (e.g., choledocholithiasis or acute cholecystitis).",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "diagnostic impression / mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220.",
+                    "She was transferred to ___ for consideration of ERCP consultation given LFT abnormalities."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "ERCP is being considered as a potential intervention for presumed biliary obstruction.",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "care-planning / procedural consideration",
+                  "status": "suspected",
+                  "evidence": [
+                    "transferred to ___ for consideration of ERCP consultation given LFT abnormalities."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "no prior imaging study result available in this decision stream",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point; assumptions are derived from the presenting history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Is the patient's RUQ pain and abnormal LFTs due to a biliary source (gallbladder inflammation or obstructing common bile duct stone) versus a nonbiliary hepatocellular cause?",
+                "target": "gallbladder and biliary tree (acute cholecystitis / choledocholithiasis / CBD dilation) vs hepatic source",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If ultrasound shows biliary obstruction (CBD dilation or features of acute cholecystitis) -> proceed toward ERCP/surgical/acute biliary management.",
+                "negative_answer_changes": "If ultrasound shows no biliary obstruction and no cholecystitis -> favor nonbiliary hepatocellular etiologies and pursue medical/medical-hepatology workup rather than immediate ERCP.",
+                "secondary_questions": [
+                  "Is there sonographic evidence of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy)?",
+                  "Is the common bile duct dilated or is there an identifiable CBD stone?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Assess gallbladder inflammatory signs (wall thickening, pericholecystic fluid, sonographic Murphy) to evaluate for acute cholecystitis",
+                    "why_required": "Distinguishes acute cholecystitis (would change to urgent surgical/IR/medical management) from noninflammatory gallstones."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Document presence/absence of gallstones and whether a stone is impacted in cystic duct",
+                    "why_required": "Confirms known cholelithiasis and assesses for obstructing gallstone causing symptoms."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evaluate common bile duct for dilation or visible choledocholithiasis",
+                    "why_required": "CBD dilation or visible stone would support need for ERCP and explain LFT abnormalities."
+                  }
+                ],
+                "evidence": [
+                  "Ultrasound showed cholelithiasis without gallbladder wall thickening.",
+                  "LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "sufficiently_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "Ultrasound showed cholelithiasis without gallbladder wall thickening."
+                    ],
+                    "reason": "A prior ultrasound explicitly reported no gallbladder wall thickening, which argues against sonographic acute cholecystitis at the time of that exam."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "sufficiently_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "Ultrasound showed cholelithiasis without gallbladder wall thickening."
+                    ],
+                    "reason": "Prior ultrasound documents gallstones (cholelithiasis), establishing their presence before this order."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220."
+                    ],
+                    "reason": "No prior imaging of the common bile duct is reported; labs suggest possible obstruction but do not visualize CBD dilation or stone."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Gallstones are established and sonographic cholecystitis was previously not seen, but the biliary tree (CBD dilation/stone) has not been assessed and remains a key unanswered element."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant ultrasound can demonstrate gallstones, gallbladder inflammatory signs, and bile duct dilation — information needed to decide on ERCP or alternative workup.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "Ultrasound may not reliably detect intraductal stones (choledocholithiasis) in all cases; the chart does not explain why a repeat/targeted ultrasound is needed now if an earlier study already documented cholelithiasis (timing/source of prior US is not clarified)."
+              },
+              "derived_transition": "adjudicate",
+              "alternative_reconstruction": "The order could alternatively be intended primarily as a liver-focused ultrasound to evaluate hepatocellular causes of transaminitis rather than biliary obstruction; however the history of RUQ pain, prior US showing cholelithiasis, and explicit ERCP consideration make a biliary-focused intent more likely."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has gallstones (cholelithiasis).\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"patient-level diagnostic finding\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Ultrasound showed cholelithiasis without gallbladder wall thickening.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The abnormal liver tests (markedly elevated ALT/AST, alkaline phosphatase, and bilirubin) raise concern for biliary obstruction or an acute biliary process (e.g., choledocholithiasis or acute cholecystitis).\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnostic impression / mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220.\",\n        \"She was transferred to ___ for consideration of ERCP consultation given LFT abnormalities.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"ERCP is being considered as a potential intervention for presumed biliary obstruction.\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"care-planning / procedural consideration\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"transferred to ___ for consideration of ERCP consultation given LFT abnormalities.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging study result available in this decision stream\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; assumptions are derived from the presenting history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is the patient's RUQ pain and abnormal LFTs due to a biliary source (gallbladder inflammation or obstructing common bile duct stone) versus a nonbiliary hepatocellular cause?\",\n    \"target\": \"gallbladder and biliary tree (acute cholecystitis / choledocholithiasis / CBD dilation) vs hepatic source\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If ultrasound shows biliary obstruction (CBD dilation or features of acute cholecystitis) -> proceed toward ERCP/surgical/acute biliary management.\",\n    \"negative_answer_changes\": \"If ultrasound shows no biliary obstruction and no cholecystitis -> favor nonbiliary hepatocellular etiologies and pursue medical/medical-hepatology workup rather than immediate ERCP.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy)?\",\n      \"Is the common bile duct dilated or is there an identifiable CBD stone?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assess gallbladder inflammatory signs (wall thickening, pericholecystic fluid, sonographic Murphy) to evaluate for acute cholecystitis\",\n        \"why_required\": \"Distinguishes acute cholecystitis (would change to urgent surgical/IR/medical management) from noninflammatory gallstones.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Document presence/absence of gallstones and whether a stone is impacted in cystic duct\",\n        \"why_required\": \"Confirms known cholelithiasis and assesses for obstructing gallstone causing symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evaluate common bile duct for dilation or visible choledocholithiasis\",\n        \"why_required\": \"CBD dilation or visible stone would support need for ERCP and explain LFT abnormalities.\"\n      }\n    ],\n    \"evidence\": [\n      \"Ultrasound showed cholelithiasis without gallbladder wall thickening.\",\n      \"LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Ultrasound showed cholelithiasis without gallbladder wall thickening.\"\n        ],\n        \"reason\": \"A prior ultrasound explicitly reported no gallbladder wall thickening, which argues against sonographic acute cholecystitis at the time of that exam.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Ultrasound showed cholelithiasis without gallbladder wall thickening.\"\n        ],\n        \"reason\": \"Prior ultrasound documents gallstones (cholelithiasis), establishing their presence before this order.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220.\"\n        ],\n        \"reason\": \"No prior imaging of the common bile duct is reported; labs suggest possible obstruction but do not visualize CBD dilation or stone.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Gallstones are established and sonographic cholecystitis was previously not seen, but the biliary tree (CBD dilation/stone) has not been assessed and remains a key unanswered element.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant ultrasound can demonstrate gallstones, gallbladder inflammatory signs, and bile duct dilation — information needed to decide on ERCP or alternative workup.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Ultrasound may not reliably detect intraductal stones (choledocholithiasis) in all cases; the chart does not explain why a repeat/targeted ultrasound is needed now if an earlier study already documented cholelithiasis (timing/source of prior US is not clarified).\"\n  },\n  \"derived_transition\": \"adjudicate\",\n  \"alternative_reconstruction\": \"The order could alternatively be intended primarily as a liver-focused ultrasound to evaluate hepatocellular causes of transaminitis rather than biliary obstruction; however the history of RUQ pain, prior US showing cholelithiasis, and explicit ERCP consideration make a biliary-focused intent more likely.\"\n}",
+            "request_id": "gen-1788150831-YcPWXhBpZ5DhRRHTytM0",
+            "usage": {
+              "completion_tokens": 3659,
+              "prompt_tokens": 3586,
+              "total_tokens": 7245,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 1920,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0082145,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0082145,
+                "upstream_inference_prompt_cost": 0.0008965,
+                "upstream_inference_completions_cost": 0.007318
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has gallstones (cholelithiasis).",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "patient-level diagnostic finding",
+            "status": "established",
+            "evidence": [
+              "Ultrasound showed cholelithiasis without gallbladder wall thickening."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The abnormal liver tests (markedly elevated ALT/AST, alkaline phosphatase, and bilirubin) raise concern for biliary obstruction or an acute biliary process (e.g., choledocholithiasis or acute cholecystitis).",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "diagnostic impression / mechanism",
+            "status": "suspected",
+            "evidence": [
+              "LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220.",
+              "She was transferred to ___ for consideration of ERCP consultation given LFT abnormalities."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "ERCP is being considered as a potential intervention for presumed biliary obstruction.",
+            "type": "intervention_or_device_state",
+            "other_proposed_type": "",
+            "level": "care-planning / procedural consideration",
+            "status": "suspected",
+            "evidence": [
+              "transferred to ___ for consideration of ERCP consultation given LFT abnormalities."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "no prior imaging study result available in this decision stream",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point; assumptions are derived from the presenting history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "Is the patient's RUQ pain and abnormal LFTs due to a biliary source (gallbladder inflammation or obstructing common bile duct stone) versus a nonbiliary hepatocellular cause?",
+          "target": "gallbladder and biliary tree (acute cholecystitis / choledocholithiasis / CBD dilation) vs hepatic source",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If ultrasound shows biliary obstruction (CBD dilation or features of acute cholecystitis) -> proceed toward ERCP/surgical/acute biliary management.",
+          "negative_answer_changes": "If ultrasound shows no biliary obstruction and no cholecystitis -> favor nonbiliary hepatocellular etiologies and pursue medical/medical-hepatology workup rather than immediate ERCP.",
+          "secondary_questions": [
+            "Is there sonographic evidence of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy)?",
+            "Is the common bile duct dilated or is there an identifiable CBD stone?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Assess gallbladder inflammatory signs (wall thickening, pericholecystic fluid, sonographic Murphy) to evaluate for acute cholecystitis",
+              "why_required": "Distinguishes acute cholecystitis (would change to urgent surgical/IR/medical management) from noninflammatory gallstones."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Document presence/absence of gallstones and whether a stone is impacted in cystic duct",
+              "why_required": "Confirms known cholelithiasis and assesses for obstructing gallstone causing symptoms."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Evaluate common bile duct for dilation or visible choledocholithiasis",
+              "why_required": "CBD dilation or visible stone would support need for ERCP and explain LFT abnormalities."
+            }
+          ],
+          "evidence": [
+            "Ultrasound showed cholelithiasis without gallbladder wall thickening.",
+            "LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "sufficiently_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "Ultrasound showed cholelithiasis without gallbladder wall thickening."
+              ],
+              "reason": "A prior ultrasound explicitly reported no gallbladder wall thickening, which argues against sonographic acute cholecystitis at the time of that exam."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "sufficiently_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "Ultrasound showed cholelithiasis without gallbladder wall thickening."
+              ],
+              "reason": "Prior ultrasound documents gallstones (cholelithiasis), establishing their presence before this order."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220."
+              ],
+              "reason": "No prior imaging of the common bile duct is reported; labs suggest possible obstruction but do not visualize CBD dilation or stone."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Gallstones are established and sonographic cholecystitis was previously not seen, but the biliary tree (CBD dilation/stone) has not been assessed and remains a key unanswered element."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant ultrasound can demonstrate gallstones, gallbladder inflammatory signs, and bile duct dilation — information needed to decide on ERCP or alternative workup.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "Ultrasound may not reliably detect intraductal stones (choledocholithiasis) in all cases; the chart does not explain why a repeat/targeted ultrasound is needed now if an earlier study already documented cholelithiasis (timing/source of prior US is not clarified)."
+        },
+        "derived_transition": "adjudicate",
+        "alternative_reconstruction": "The order could alternatively be intended primarily as a liver-focused ultrasound to evaluate hepatocellular causes of transaminitis rather than biliary obstruction; however the history of RUQ pain, prior US showing cholelithiasis, and explicit ERCP consideration make a biliary-focused intent more likely."
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "MRCP Abdomen (MRCP (MR ABD W&W/OC))",
+      "request_prompt_sha256": "8f9f95dd0b70ddcea9578b04fd4c1bac9630e687494768762c64112dded9e334",
+      "attempts": [
+        {
+          "attempt": 1,
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has gallstones (cholelithiasis).",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "patient-level diagnostic finding",
+                  "status": "established",
+                  "evidence": [
+                    "Cholelithiasis without definite gallbladder wall thickening."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Markedly abnormal liver tests raise concern for a biliary obstructive process (e.g., choledocholithiasis) contributing to her presentation.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "diagnostic impression / mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Prior RUQ ultrasound showed no biliary ductal dilation (CHD measures 4 mm) and no intrahepatic biliary dilation.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "imaging finding",
+                  "status": "established",
+                  "evidence": [
+                    "There is no intrahepatic biliary dilation. The CHD measures 4 mm."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "retain",
+                "changed_proposition": null,
+                "reason": "No new intervening results after the prior ultrasound; established cholelithiasis and abnormal LFTs remain the driving concerns, and the ultrasound finding of nondilated ducts persists."
+              },
+              "current_question": {
+                "primary": "Is the patient's biochemical and clinical presentation due to an obstructing biliary lesion (choledocholithiasis or other biliary obstruction) that would warrant ERCP or similar biliary intervention?",
+                "target": "common bile duct obstruction (choledocholithiasis) and biliary tree dilation",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirmation of obstructing CBD stone or ductal dilation -> proceed to therapeutic ERCP or other biliary decompression/intervention.",
+                "negative_answer_changes": "No obstructing biliary lesion -> favor nonbiliary hepatocellular etiologies and avoid immediate ERCP; pursue medical/hepatology workup.",
+                "secondary_questions": [
+                  "Is there a discrete choledocholithiasis visible in the biliary tree?",
+                  "Is there new or interval biliary dilation not seen on prior ultrasound?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Detect presence or absence of choledocholithiasis (intracanalicular stones) or convincing CBD obstruction",
+                    "why_required": "Presence of a CBD stone or obstruction would directly indicate need for ERCP and explain LFT abnormalities."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Assess biliary tree for ductal dilation (intrahepatic and extrahepatic) and anatomic level of any obstruction",
+                    "why_required": "Ductal dilation supports obstructive etiology and helps localize the level of obstruction for management planning."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Re-evaluate gallbladder for sonographic signs of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy)",
+                    "why_required": "Distinguishes acute cholecystitis from isolated ductal obstruction; affects surgical vs endoscopic management."
+                  }
+                ],
+                "evidence": [
+                  "LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220.",
+                  "Cholelithiasis without definite gallbladder wall thickening.",
+                  "There is no intrahepatic biliary dilation. The CHD measures 4 mm."
+                ]
+              },
+              "question_continuity": "same",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "There is no intrahepatic biliary dilation. The CHD measures 4 mm."
+                    ],
+                    "reason": "Prior US documents no ductal dilation, which argues against ongoing high-grade obstruction, but ultrasound is limited in sensitivity for intraductal stones and cannot reliably exclude choledocholithiasis."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "There is no intrahepatic biliary dilation. The CHD measures 4 mm."
+                    ],
+                    "reason": "Ultrasound reports nondilated ducts (CHD 4 mm) which argues against ductal dilation now, but MRCP can better delineate small ductal stones or subtle dilation and map the level of obstruction if present."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "sufficiently_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "Cholelithiasis without definite gallbladder wall thickening."
+                    ],
+                    "reason": "Prior ultrasound explicitly reported no gallbladder wall thickening, reducing likelihood of sonographic acute cholecystitis at the time of that study."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Gallstones are established and ultrasound refuted sonographic cholecystitis and ductal dilation, but ultrasound cannot reliably exclude intraductal stones; key question of choledocholithiasis/occult obstruction remains incompletely addressed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "MRCP noninvasively visualizes the entire biliary tree and is sensitive for choledocholithiasis and ductal dilation, addressing the remaining uncertainty about obstructing biliary lesions.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The prior ultrasound already showed nondilated ducts (CHD 4 mm); the chart does not explicitly state why MRCP is preferred now versus proceeding directly to ERCP or repeat ultrasound, leaving some uncertainty about timing/urgency and whether the goal is diagnosis versus preprocedural planning."
+              },
+              "derived_transition": "adjudicate",
+              "alternative_reconstruction": "MRCP could be ordered primarily as noninvasive pre-ERCP mapping/planning (to localize a suspected stone before endoscopy) rather than solely to decide whether any obstruction exists."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has gallstones (cholelithiasis).\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"patient-level diagnostic finding\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Cholelithiasis without definite gallbladder wall thickening.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Markedly abnormal liver tests raise concern for a biliary obstructive process (e.g., choledocholithiasis) contributing to her presentation.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnostic impression / mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Prior RUQ ultrasound showed no biliary ductal dilation (CHD measures 4 mm) and no intrahepatic biliary dilation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"imaging finding\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"There is no intrahepatic biliary dilation. The CHD measures 4 mm.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"retain\",\n    \"changed_proposition\": null,\n    \"reason\": \"No new intervening results after the prior ultrasound; established cholelithiasis and abnormal LFTs remain the driving concerns, and the ultrasound finding of nondilated ducts persists.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is the patient's biochemical and clinical presentation due to an obstructing biliary lesion (choledocholithiasis or other biliary obstruction) that would warrant ERCP or similar biliary intervention?\",\n    \"target\": \"common bile duct obstruction (choledocholithiasis) and biliary tree dilation\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirmation of obstructing CBD stone or ductal dilation -> proceed to therapeutic ERCP or other biliary decompression/intervention.\",\n    \"negative_answer_changes\": \"No obstructing biliary lesion -> favor nonbiliary hepatocellular etiologies and avoid immediate ERCP; pursue medical/hepatology workup.\",\n    \"secondary_questions\": [\n      \"Is there a discrete choledocholithiasis visible in the biliary tree?\",\n      \"Is there new or interval biliary dilation not seen on prior ultrasound?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Detect presence or absence of choledocholithiasis (intracanalicular stones) or convincing CBD obstruction\",\n        \"why_required\": \"Presence of a CBD stone or obstruction would directly indicate need for ERCP and explain LFT abnormalities.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assess biliary tree for ductal dilation (intrahepatic and extrahepatic) and anatomic level of any obstruction\",\n        \"why_required\": \"Ductal dilation supports obstructive etiology and helps localize the level of obstruction for management planning.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Re-evaluate gallbladder for sonographic signs of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy)\",\n        \"why_required\": \"Distinguishes acute cholecystitis from isolated ductal obstruction; affects surgical vs endoscopic management.\"\n      }\n    ],\n    \"evidence\": [\n      \"LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220.\",\n      \"Cholelithiasis without definite gallbladder wall thickening.\",\n      \"There is no intrahepatic biliary dilation. The CHD measures 4 mm.\"\n    ]\n  },\n  \"question_continuity\": \"same\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"There is no intrahepatic biliary dilation. The CHD measures 4 mm.\"\n        ],\n        \"reason\": \"Prior US documents no ductal dilation, which argues against ongoing high-grade obstruction, but ultrasound is limited in sensitivity for intraductal stones and cannot reliably exclude choledocholithiasis.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"There is no intrahepatic biliary dilation. The CHD measures 4 mm.\"\n        ],\n        \"reason\": \"Ultrasound reports nondilated ducts (CHD 4 mm) which argues against ductal dilation now, but MRCP can better delineate small ductal stones or subtle dilation and map the level of obstruction if present.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Cholelithiasis without definite gallbladder wall thickening.\"\n        ],\n        \"reason\": \"Prior ultrasound explicitly reported no gallbladder wall thickening, reducing likelihood of sonographic acute cholecystitis at the time of that study.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Gallstones are established and ultrasound refuted sonographic cholecystitis and ductal dilation, but ultrasound cannot reliably exclude intraductal stones; key question of choledocholithiasis/occult obstruction remains incompletely addressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"MRCP noninvasively visualizes the entire biliary tree and is sensitive for choledocholithiasis and ductal dilation, addressing the remaining uncertainty about obstructing biliary lesions.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The prior ultrasound already showed nondilated ducts (CHD 4 mm); the chart does not explicitly state why MRCP is preferred now versus proceeding directly to ERCP or repeat ultrasound, leaving some uncertainty about timing/urgency and whether the goal is diagnosis versus preprocedural planning.\"\n  },\n  \"derived_transition\": \"adjudicate\",\n  \"alternative_reconstruction\": \"MRCP could be ordered primarily as noninvasive pre-ERCP mapping/planning (to localize a suspected stone before endoscopy) rather than solely to decide whether any obstruction exists.\"\n}",
+            "request_id": "gen-1788150858-5BvmWFas8IkiSESnLvL1",
+            "usage": {
+              "completion_tokens": 3209,
+              "prompt_tokens": 5365,
+              "total_tokens": 8574,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 1472,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1792,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.00735605,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.00735605,
+                "upstream_inference_prompt_cost": 0.00093805,
+                "upstream_inference_completions_cost": 0.006418
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has gallstones (cholelithiasis).",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "patient-level diagnostic finding",
+            "status": "established",
+            "evidence": [
+              "Cholelithiasis without definite gallbladder wall thickening."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Markedly abnormal liver tests raise concern for a biliary obstructive process (e.g., choledocholithiasis) contributing to her presentation.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "diagnostic impression / mechanism",
+            "status": "suspected",
+            "evidence": [
+              "LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Prior RUQ ultrasound showed no biliary ductal dilation (CHD measures 4 mm) and no intrahepatic biliary dilation.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "imaging finding",
+            "status": "established",
+            "evidence": [
+              "There is no intrahepatic biliary dilation. The CHD measures 4 mm."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "retain",
+          "changed_proposition": null,
+          "reason": "No new intervening results after the prior ultrasound; established cholelithiasis and abnormal LFTs remain the driving concerns, and the ultrasound finding of nondilated ducts persists."
+        },
+        "current_question": {
+          "primary": "Is the patient's biochemical and clinical presentation due to an obstructing biliary lesion (choledocholithiasis or other biliary obstruction) that would warrant ERCP or similar biliary intervention?",
+          "target": "common bile duct obstruction (choledocholithiasis) and biliary tree dilation",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirmation of obstructing CBD stone or ductal dilation -> proceed to therapeutic ERCP or other biliary decompression/intervention.",
+          "negative_answer_changes": "No obstructing biliary lesion -> favor nonbiliary hepatocellular etiologies and avoid immediate ERCP; pursue medical/hepatology workup.",
+          "secondary_questions": [
+            "Is there a discrete choledocholithiasis visible in the biliary tree?",
+            "Is there new or interval biliary dilation not seen on prior ultrasound?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Detect presence or absence of choledocholithiasis (intracanalicular stones) or convincing CBD obstruction",
+              "why_required": "Presence of a CBD stone or obstruction would directly indicate need for ERCP and explain LFT abnormalities."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Assess biliary tree for ductal dilation (intrahepatic and extrahepatic) and anatomic level of any obstruction",
+              "why_required": "Ductal dilation supports obstructive etiology and helps localize the level of obstruction for management planning."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Re-evaluate gallbladder for sonographic signs of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy)",
+              "why_required": "Distinguishes acute cholecystitis from isolated ductal obstruction; affects surgical vs endoscopic management."
+            }
+          ],
+          "evidence": [
+            "LFTs were elevated - ALT 523, AST 275, Tbili 2.3, AP 220.",
+            "Cholelithiasis without definite gallbladder wall thickening.",
+            "There is no intrahepatic biliary dilation. The CHD measures 4 mm."
+          ]
+        },
+        "question_continuity": "same",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "There is no intrahepatic biliary dilation. The CHD measures 4 mm."
+              ],
+              "reason": "Prior US documents no ductal dilation, which argues against ongoing high-grade obstruction, but ultrasound is limited in sensitivity for intraductal stones and cannot reliably exclude choledocholithiasis."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "There is no intrahepatic biliary dilation. The CHD measures 4 mm."
+              ],
+              "reason": "Ultrasound reports nondilated ducts (CHD 4 mm) which argues against ductal dilation now, but MRCP can better delineate small ductal stones or subtle dilation and map the level of obstruction if present."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "sufficiently_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "Cholelithiasis without definite gallbladder wall thickening."
+              ],
+              "reason": "Prior ultrasound explicitly reported no gallbladder wall thickening, reducing likelihood of sonographic acute cholecystitis at the time of that study."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Gallstones are established and ultrasound refuted sonographic cholecystitis and ductal dilation, but ultrasound cannot reliably exclude intraductal stones; key question of choledocholithiasis/occult obstruction remains incompletely addressed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "MRCP noninvasively visualizes the entire biliary tree and is sensitive for choledocholithiasis and ductal dilation, addressing the remaining uncertainty about obstructing biliary lesions.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The prior ultrasound already showed nondilated ducts (CHD 4 mm); the chart does not explicitly state why MRCP is preferred now versus proceeding directly to ERCP or repeat ultrasound, leaving some uncertainty about timing/urgency and whether the goal is diagnosis versus preprocedural planning."
+        },
+        "derived_transition": "adjudicate",
+        "alternative_reconstruction": "MRCP could be ordered primarily as noninvasive pre-ERCP mapping/planning (to localize a suspected stone before endoscopy) rather than solely to decide whether any obstruction exists."
+      },
+      "validation_errors": []
+    }
+  ]
+}
