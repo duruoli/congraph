@@ -5,6 +5,85 @@
 > framework check 或模型海选，也不要打开 final test；当前任务是冻结 GPT-5.1
 > DIRECT 工作流后，分批完成 development 标注。
 
+## 2026-08-31 continuation checkpoint：DIRECT 中途 prompt 修订
+
+> **下一对话从本节开始；本节覆盖下方较早的“下一任务”说明。** 不要重做 discovery、
+> framework check、模型选择或旧患者标注，也不要读取 final test 临床内容。
+
+### 当前完成范围
+
+- Development 共235位患者、433步；final test 58位、109步仍未打开。
+- GPT-5.1 DIRECT 已覆盖76位互不重复的 development 患者、142步，当前 validator 复扫为
+  142/142步有效：
+  - 旧 pilot：6位、12步；
+  - 后续 development：70位、130步；
+  - 结果均使用旧 prompt hash `26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536`，
+    位于 `results/aqc_direct/{pilot,development}/26ee973ad4d7/`。
+- 尚未标注：159位 development 患者、291步。
+- 上述 DIRECT 已记录费用合计约 `$4.102132`；网络中断时未返回 usage 的调用不一定包含在内，
+  账户扣费以 OpenRouter 账单为准。
+- 当前 validator 为 `2.0.0`；retry protocol 为 `1.0.0-validator-feedback`。运行器支持逐步修复、
+  保留 superseded step、跨恢复累计费用，以及跨 prompt hash 按患者去重。
+
+### 为什么修改 prompt
+
+对旧版本结果进行5例定向人工抽查，并对候选问题进行扩展复核后，发现三项需要在继续扩批前修正：
+
+1. 重复检查有时没有把“较前变化/新触发因素”纳入 A/Q/C 推理；
+2. 当病历只支持较粗的检查目的时，模型可能仅凭医嘱名称重建过于具体的 question；
+3. assumption 偶尔把已建立的临床事实与仍在推测的病因/机制/并发症合成一个高置信命题。
+
+因此 `experiments/aqc/prompts.py` 的 DIRECT/COMMON 规则已整理为七个单一职责部分：
+Assumptions、Question、Requirements、Coverage、Trajectory、Repeats、Order fit。关键修改是：
+
+- 不同置信度的事实与推测必须拆为原子 propositions；通常1--3条限制主要针对不确定假设，
+  只额外保留决策所需的 established facts，所有 propositions 总计仍不超过5条；
+- evidence fidelity 优先于 question specificity；精确目标或触发因素无证据时，使用证据支持的
+  较粗共同问题、降低 `intent_support`，并把歧义写入 `unsupported_residual`；不得只凭检查名称
+  锁定具体目标；
+- 重复当前检查或检查目标时，必须在 A/Q/C 中考虑较前变化与新触发因素，但不机械增加一个
+  独立 `temporal_course_or_response` requirement。
+
+最终新 prompt hash 是
+`d9f0c01a505663454371289ea7f45995b2ea8f897a72053d8e90ad1bd738deb9`。
+中间编辑 hash `c22b05201972...` 和 `f6069ad7b1a3...` 没有产生模型标注。输出 contract、因果遮蔽、
+模型选择和 validator 枚举没有改变。
+
+### 版本边界
+
+- 旧 hash 的76位/142步仍是可审计的 development 探索材料，不删除、不覆盖、不静默改写。
+- prompt 内容已经改变，旧 pilot 不能充当新 prompt 的正式 pilot，也不能把两个 hash 的输出
+  当作同一无版本数据直接汇总频率。后续分析必须记录 prompt hash，并考虑分版本报告、敏感性
+  检查或在冻结后形成统一处理方案。
+- `scripts/run_aqc_direct.py --stratified-new` 已跨所有 prompt-hash 目录排除已完成患者，因此新
+  hash 不会重新发送上述76位患者。
+- final test 仍不可读取；此次修改完全来自 development 审计。
+
+### 下一对话应从哪里开始
+
+1. 阅读本 checkpoint、`experiments/aqc/prompts.py`、`scripts/run_aqc_direct.py` 和
+   `scripts/run_aqc_framework_check.py`；运行本地编译和 dry run，确认 prompt hash 精确为
+   `d9f0c01a505663454371289ea7f45995b2ea8f897a72053d8e90ad1bd738deb9`。
+2. 不要立即标完剩余159位。先用新 prompt 选12位 bridge batch（四种疾病各3位），且不得重复
+   已完成76位：
+
+   ```powershell
+   & '.\.venv\Scripts\python.exe' scripts/run_aqc_direct.py `
+     --scope development --model openai/gpt-5.1 `
+     --stratified-new 12 --retries 2 --no-cost-stop
+   ```
+
+3. dry run 后，在任何新临床文本发往 OpenRouter 前，必须重新取得用户对该12位批次、
+   OpenRouter、GPT-5.1、DIRECT用途及不设费用停止线的明确授权；获得授权后才加 `--execute`。
+4. bridge batch 完成后用 validator 2.0 全量复扫；只用
+   `--repair-invalid-steps --repair-existing-only` 定向补失败步骤，不得重跑成功步骤。
+5. 人工重点复核：所有 repeat；所有 `weakly_supported/unclear`；question 比病历证据更具体的候选；
+   以及包含 established 事实和 speculative 病因的复合 assumption。确认三项 prompt 修正生效后，
+   才扩大新版本批次。
+
+用户已表示后续运行不需要费用停止线，但外部临床文本授权仍按新批次单独确认；不要把上一批授权
+自动扩展到新的患者集合。
+
 ## 已完成状态
 
 - 正式语料：293位患者、542个决策步。
