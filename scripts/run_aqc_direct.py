@@ -24,6 +24,8 @@ from scripts.run_aqc_framework_check import validate_output  # noqa: E402
 DEV = ROOT / "data" / "aqc_development"
 PILOT = ROOT / "data" / "aqc_direct" / "pilot_manifest.json"
 RESULTS = ROOT / "results" / "aqc_direct"
+VALIDATOR_VERSION = "2.0.0"
+RETRY_PROTOCOL_VERSION = "1.0.0-validator-feedback"
 DEFAULT_MODELS = [
     "anthropic/claude-sonnet-4.6",
     "openai/gpt-5.1",
@@ -66,16 +68,81 @@ def usage_cost(call: dict[str, Any]) -> float:
     return float(usage.get("cost") or call.get("cost") or 0.0)
 
 
-def result_cost(result: dict[str, Any]) -> float:
+def current_run_cost(result: dict[str, Any]) -> float:
     return sum(
         usage_cost(attempt.get("call") or {})
         for step in result.get("steps", [])
+        if not step.get("reused")
         for attempt in step.get("attempts", [])
     )
 
 
+def step_cost(step: dict[str, Any]) -> float:
+    return sum(usage_cost(a.get("call") or {}) for a in step.get("attempts", [])) + (
+        step_cost(step["superseded_step"])
+        if isinstance(step.get("superseded_step"), dict) else 0.0
+    )
+
+
+def result_cost(result: dict[str, Any]) -> float:
+    return sum(step_cost(step) for step in result.get("steps", [])) + sum(
+        result_cost(old) for old in result.get("superseded_runs", [])
+    )
+
+
+def result_is_valid(result: dict[str, Any], expected_steps: int) -> bool:
+    steps = result.get("steps")
+    if not isinstance(steps, list) or len(steps) != expected_steps:
+        return False
+    return all(
+        not validate_output(step.get("accepted"), is_first_step=index == 0)
+        for index, step in enumerate(steps)
+    )
+
+
+def select_stratified_new(
+    patients: list[dict[str, Any]], model: str, batch_size: int
+) -> list[dict[str, Any]]:
+    completed_names = {
+        path.name
+        for path in (RESULTS / "development").glob(f"*/{slug(model)}/*.json")
+    }
+    remaining = [
+        patient for patient in patients
+        if f"{patient['disease']}_{patient['hadm_id']}.json" not in completed_names
+    ]
+    diseases = sorted({patient["disease"] for patient in remaining})
+    groups = {
+        disease: sorted(
+            (patient for patient in remaining if patient["disease"] == disease),
+            key=lambda patient: digest(
+                f"congraph-aqc-direct-development-batches-v1|{disease}|{patient['hadm_id']}"
+            ),
+        )
+        for disease in diseases
+    }
+    selected: list[dict[str, Any]] = []
+    while len(selected) < batch_size and any(groups.values()):
+        for disease in diseases:
+            if groups[disease] and len(selected) < batch_size:
+                selected.append(groups[disease].pop(0))
+    return selected
+
+
+def select_invalid_existing(
+    patients: list[dict[str, Any]], model: str, scope: str
+) -> list[dict[str, Any]]:
+    out_dir = RESULTS / scope / prompt_version_hash()[:12] / slug(model)
+    selected = []
+    for patient in patients:
+        path = out_dir / f"{patient['disease']}_{patient['hadm_id']}.json"
+        if path.exists() and not result_is_valid(read_json(path), int(patient["n_steps"])):
+            selected.append(patient)
+    return selected
+
+
 def run_patient(patient: dict[str, Any], model: str, frames: dict[str, pd.DataFrame],
-                labmap: dict, retries: int) -> dict[str, Any]:
+                labmap: dict, retries: int, existing: dict[str, Any] | None = None) -> dict[str, Any]:
     disease, hadm_id = patient["disease"], int(patient["hadm_id"])
     source = read_json(ROOT / patient["source_path"])
     row = frames[disease][frames[disease]["hadm_id"] == hadm_id]
@@ -87,32 +154,58 @@ def run_patient(patient: dict[str, Any], model: str, frames: dict[str, pd.DataFr
 
     prior = None
     steps = []
-    for dp, source_step in zip(record["decision_points"], source["steps"], strict=True):
+    old_steps = existing.get("steps", []) if isinstance(existing, dict) else []
+    for step_index, (dp, source_step) in enumerate(
+        zip(record["decision_points"], source["steps"], strict=True)
+    ):
         if int(dp["step"]) != int(source_step["step"]):
             raise ValueError(f"step id mismatch: {disease}/{hadm_id}")
+        old_step = old_steps[step_index] if step_index < len(old_steps) else None
+        if isinstance(old_step, dict) and not validate_output(
+            old_step.get("accepted"), is_first_step=step_index == 0
+        ):
+            reused_step = dict(old_step)
+            reused_step["reused"] = True
+            steps.append(reused_step)
+            prior = old_step["accepted"]
+            continue
         user = prompts.build_direct_user(dp, record["baseline"], prior)
         attempts = []
+        retry_errors: list[str] = []
         for attempt_index in range(retries + 1):
+            attempt_user = user
+            if retry_errors:
+                attempt_user += (
+                    "\n\n## Validator feedback from the preceding attempt\n"
+                    "Correct every listed structural error while preserving evidence-grounded "
+                    "clinical uncertainty. Return the full JSON object again.\n- "
+                    + "\n- ".join(retry_errors)
+                )
             call = call_json(
-                prompts.DIRECT_SYSTEM, user, model=model, temperature=0.0, max_tokens=4000
+                prompts.DIRECT_SYSTEM, attempt_user, model=model, temperature=0.0, max_tokens=4000
             )
-            errors = validate_output(call.get("parsed"), is_first_step=int(dp["step"]) == 1)
+            errors = validate_output(call.get("parsed"), is_first_step=step_index == 0)
             attempts.append({
                 "attempt": attempt_index + 1,
+                "request_prompt_sha256": digest(prompts.DIRECT_SYSTEM + "\n" + attempt_user),
                 "call": call,
                 "validation_errors": errors,
             })
             if not errors:
                 break
+            retry_errors = errors
         accepted = attempts[-1]["call"].get("parsed") if not attempts[-1]["validation_errors"] else None
-        steps.append({
+        new_step = {
             "step": int(dp["step"]),
             "ordered": dp["ordered"],
             "request_prompt_sha256": digest(prompts.DIRECT_SYSTEM + "\n" + user),
             "attempts": attempts,
             "accepted": accepted,
             "validation_errors": attempts[-1]["validation_errors"],
-        })
+        }
+        if isinstance(old_step, dict):
+            new_step["superseded_step"] = old_step
+        steps.append(new_step)
         if accepted is None:
             break
         prior = accepted
@@ -124,6 +217,8 @@ def run_patient(patient: dict[str, Any], model: str, frames: dict[str, pd.DataFr
         "source_path": patient["source_path"],
         "model": model,
         "prompt_version_sha256": prompt_version_hash(),
+        "validator_version": VALIDATOR_VERSION,
+        "retry_protocol_version": RETRY_PROTOCOL_VERSION,
         "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
         "steps": steps,
     }
@@ -134,13 +229,32 @@ def main() -> None:
     parser.add_argument("--scope", choices=("pilot", "development"), default="pilot")
     parser.add_argument("--model", action="append", dest="models")
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--stratified-new", type=int, metavar="N",
+                        help="select N not-yet-written development patients round-robin by disease")
     parser.add_argument("--retries", type=int, default=2)
-    parser.add_argument("--cost-stop-usd", type=float, default=5.0)
+    cost_group = parser.add_mutually_exclusive_group()
+    cost_group.add_argument("--cost-stop-usd", type=float, default=5.0)
+    cost_group.add_argument("--no-cost-stop", action="store_true",
+                            help="disable the per-run recorded-cost stopping threshold")
     parser.add_argument("--execute", action="store_true", help="authorize calls after external approval")
+    parser.add_argument("--repair-invalid", action="store_true",
+                        help="rerun only incomplete/invalid stored trajectories and retain old runs")
+    parser.add_argument("--repair-invalid-steps", action="store_true",
+                        help="rerun only invalid/missing steps; reuse valid stored steps")
+    parser.add_argument("--repair-existing-only", action="store_true",
+                        help="select only stored trajectories failing the current validator")
     args = parser.parse_args()
     models = args.models or DEFAULT_MODELS
     patients = load_patients(args.scope)
-    if args.limit is not None:
+    if args.repair_existing_only:
+        if len(models) != 1 or not args.repair_invalid_steps:
+            parser.error("--repair-existing-only requires one model and --repair-invalid-steps")
+        patients = select_invalid_existing(patients, models[0], args.scope)
+    elif args.stratified_new is not None:
+        if args.scope != "development" or len(models) != 1:
+            parser.error("--stratified-new requires --scope development and exactly one model")
+        patients = select_stratified_new(patients, models[0], args.stratified_new)
+    elif args.limit is not None:
         patients = patients[:args.limit]
 
     plan = {
@@ -148,10 +262,18 @@ def main() -> None:
         "models": models,
         "n_patients": len(patients),
         "n_steps": sum(int(p["n_steps"]) for p in patients),
+        "by_disease": {
+            disease: sum(p["disease"] == disease for p in patients)
+            for disease in sorted({p["disease"] for p in patients})
+        },
         "pilot_patients_excluded": 6 if args.scope == "development" else 0,
         "retries": args.retries,
-        "cost_stop_usd": args.cost_stop_usd,
+        "cost_stop_usd": None if args.no_cost_stop else args.cost_stop_usd,
         "prompt_version_sha256": prompt_version_hash(),
+        "validator_version": VALIDATOR_VERSION,
+        "retry_protocol_version": RETRY_PROTOCOL_VERSION,
+        "repair_invalid": args.repair_invalid,
+        "repair_invalid_steps": args.repair_invalid_steps,
         "output_root": str(RESULTS.relative_to(ROOT)),
     }
     print(json.dumps(plan, ensure_ascii=False, indent=2))
@@ -175,14 +297,29 @@ def main() -> None:
         for index, patient in enumerate(patients, start=1):
             out = out_dir / f"{patient['disease']}_{patient['hadm_id']}.json"
             if out.exists():
-                print(f"[{model} {index}/{len(patients)}] resume skip {out.name}")
-                continue
-            if spent >= args.cost_stop_usd:
+                old_result = read_json(out)
+                if not (args.repair_invalid or args.repair_invalid_steps) or result_is_valid(
+                    old_result, int(patient["n_steps"])
+                ):
+                    print(f"[{model} {index}/{len(patients)}] resume skip {out.name}")
+                    continue
+                print(f"[{model} {index}/{len(patients)}] repair invalid {out.name}")
+            else:
+                old_result = None
+            if not args.no_cost_stop and spent >= args.cost_stop_usd:
                 raise RuntimeError(f"cost stop reached: ${spent:.6f}")
             print(f"[{model} {index}/{len(patients)}] {patient['disease']}/{patient['hadm_id']}")
-            result = run_patient(patient, model, frames, labmap, args.retries)
+            result = run_patient(
+                patient, model, frames, labmap, args.retries,
+                existing=old_result if args.repair_invalid_steps else None,
+            )
+            if old_result is not None and not args.repair_invalid_steps:
+                result["superseded_runs"] = [
+                    *old_result.get("superseded_runs", []),
+                    {key: value for key, value in old_result.items() if key != "superseded_runs"},
+                ]
             out.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-            spent += result_cost(result)
+            spent += current_run_cost(result)
             print(f"recorded session cost: ${spent:.6f}")
 
 

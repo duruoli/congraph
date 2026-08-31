@@ -1,0 +1,380 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 25901037,
+  "source_path": "results/annotation_experiment/full/diverticulitis_25901037.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "22481775eae8cd90c186cd2680adb4f0430a5272e92b8b40c94bdbd591351953",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "22481775eae8cd90c186cd2680adb4f0430a5272e92b8b40c94bdbd591351953",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute intra‑abdominal process as the cause of her new left‑lower‑quadrant abdominal pain and leukocytosis.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "specific clinical syndrome (acute abdomen / intra‑abdominal pathology)",
+                  "status": "suspected",
+                  "evidence": [
+                    "“p/w 2  days LLQ abd pain. Patient in usual state of health until day  prior to presentation when she noted onset LLQ abdominal pain.  Pain described as constant w waves of increased intensity.”",
+                    "White Blood Cells: 15.9 K/uL (ref 4.0-10.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient’s ulcerative colitis and stage IV lung cancer place her at elevated risk for abdominal complications (e.g., colitis flare, perforation, abscess, obstruction, metastatic or treatment‑related pathology).",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "disease-level risk mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "“___ w stage IV NSCLCA on crizotinib, UC on balsalazide p/w 2  days LLQ abd pain.”",
+                    "“Bowel pattern described as \"erratic\" due to UC but currently at baseline.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Despite normal abdominal examination, clinically important intra‑abdominal pathology may still be present and needs imaging evaluation.",
+                  "type": "other",
+                  "other_proposed_type": "clinical-physical exam limitation",
+                  "level": "general diagnostic principle applied to this case",
+                  "status": "likely",
+                  "evidence": [
+                    "Abd: Soft, non-distended, non-tender",
+                    "Surgery consult obtained.   On surgery eval, patient endorses ___ LLQ pain."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable (this is the first imaging decision for the abdomen/pelvis).",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No prior abdominal imaging question to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "First reconstruction point; assumptions inferred directly from presenting history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Is there a focal intra‑abdominal or pelvic pathology causing the patient’s new left‑lower‑quadrant abdominal pain and leukocytosis that would change acute management (e.g., diverticulitis, colitis complication, obstruction, abscess, perforation, or metastatic disease)?",
+                "target": "intra‑abdominal and pelvic viscera, mesentery, and peritoneal cavity",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming a focal abdominal source (e.g., diverticulitis, abscess, obstruction, metastatic lesion) would guide surgical vs medical management, antibiotics, possible intervention, and oncologic treatment adjustments.",
+                "negative_answer_changes": "If no focal abdominal source is identified, clinicians might pursue non‑abdominal causes of pain, adjust pain control, reconsider UC or treatment‑related functional etiologies, and potentially defer surgery or invasive interventions.",
+                "secondary_questions": [
+                  "Is there evidence of a complication such as abscess, perforation, or obstruction requiring urgent surgical or interventional management?",
+                  "Is there radiologic evidence of metastatic or treatment‑related abdominal pathology influencing cancer management?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate contrast-enhanced visualization of the abdomen and pelvis including bowel, solid organs, mesentery, and peritoneal cavity.",
+                    "why_required": "Determining whether a focal abdominal source exists requires full assessment of relevant structures."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of focal inflammatory, obstructive, neoplastic, or infectious pathology in the abdomen/pelvis corresponding to LLQ pain.",
+                    "why_required": "Identifying or ruling out a focal lesion is central to deciding if there is an intra‑abdominal source of the symptoms."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, location, and character of complications such as abscess, perforation, free air, or obstruction.",
+                    "why_required": "Complications determine need and urgency for surgery, drainage, or escalation of care."
+                  },
+                  {
+                    "requirement_key": "req_sev",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent and severity of any identified abdominal pathology (e.g., length of involved bowel, size of collections, burden of metastatic disease).",
+                    "why_required": "Severity and extent guide whether conservative, interventional, or operative strategies are appropriate."
+                  }
+                ],
+                "evidence": [
+                  "“___ w stage IV NSCLCA on crizotinib, UC on balsalazide p/w 2  days LLQ abd pain.”",
+                  "Surgery consult obtained.   On surgery eval, patient endorses ___ LLQ pain."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No prior abdominal or pelvic imaging is described."
+                    ],
+                    "reason": "Only a chest radiograph has been performed; there is no prior imaging visualizing abdominal organs, bowel, or peritoneal cavity."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Abd: Soft, non-distended, non-tender"
+                    ],
+                    "reason": "Clinical exam is benign but cannot reliably establish presence or absence of intra‑abdominal pathology; no imaging assessment yet exists."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Lactate: 1.1 mmol/L (ref 0.5-2.0)"
+                    ],
+                    "reason": "Normal lactate and stable vitals argue against severe sepsis or shock but do not exclude localized complications; no imaging evidence yet addresses abscess, perforation, or obstruction."
+                  },
+                  {
+                    "requirement_key": "req_sev",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No abdominal imaging results are provided prior to this decision."
+                    ],
+                    "reason": "There is no pre‑order imaging characterization of severity or extent of any abdominal pathology."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before ordering the CT abdomen/pelvis, there is no imaging addressing visualization, presence, complications, or extent of intra‑abdominal disease; the source of LLQ pain remains unlocalized."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast‑enhanced CT of the abdomen and pelvis is the standard modality to evaluate acute abdominal pain for inflammatory, obstructive, neoplastic, and infectious causes and their complications.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not specify a narrower leading diagnosis (e.g., diverticulitis vs UC flare vs metastatic disease) or explicitly document why CT was preferred over ultrasound, but the general intent to localize an intra‑abdominal source for LLQ pain is well supported."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute intra‑abdominal process as the cause of her new left‑lower‑quadrant abdominal pain and leukocytosis.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific clinical syndrome (acute abdomen / intra‑abdominal pathology)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“p/w 2  days LLQ abd pain. Patient in usual state of health until day  prior to presentation when she noted onset LLQ abdominal pain.  Pain described as constant w waves of increased intensity.”\",\n        \"White Blood Cells: 15.9 K/uL (ref 4.0-10.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient’s ulcerative colitis and stage IV lung cancer place her at elevated risk for abdominal complications (e.g., colitis flare, perforation, abscess, obstruction, metastatic or treatment‑related pathology).\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease-level risk mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“___ w stage IV NSCLCA on crizotinib, UC on balsalazide p/w 2  days LLQ abd pain.”\",\n        \"“Bowel pattern described as \\\"erratic\\\" due to UC but currently at baseline.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Despite normal abdominal examination, clinically important intra‑abdominal pathology may still be present and needs imaging evaluation.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"clinical-physical exam limitation\",\n      \"level\": \"general diagnostic principle applied to this case\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Abd: Soft, non-distended, non-tender\",\n        \"Surgery consult obtained.   On surgery eval, patient endorses ___ LLQ pain.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable (this is the first imaging decision for the abdomen/pelvis).\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior abdominal imaging question to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"First reconstruction point; assumptions inferred directly from presenting history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a focal intra‑abdominal or pelvic pathology causing the patient’s new left‑lower‑quadrant abdominal pain and leukocytosis that would change acute management (e.g., diverticulitis, colitis complication, obstruction, abscess, perforation, or metastatic disease)?\",\n    \"target\": \"intra‑abdominal and pelvic viscera, mesentery, and peritoneal cavity\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming a focal abdominal source (e.g., diverticulitis, abscess, obstruction, metastatic lesion) would guide surgical vs medical management, antibiotics, possible intervention, and oncologic treatment adjustments.\",\n    \"negative_answer_changes\": \"If no focal abdominal source is identified, clinicians might pursue non‑abdominal causes of pain, adjust pain control, reconsider UC or treatment‑related functional etiologies, and potentially defer surgery or invasive interventions.\",\n    \"secondary_questions\": [\n      \"Is there evidence of a complication such as abscess, perforation, or obstruction requiring urgent surgical or interventional management?\",\n      \"Is there radiologic evidence of metastatic or treatment‑related abdominal pathology influencing cancer management?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate contrast-enhanced visualization of the abdomen and pelvis including bowel, solid organs, mesentery, and peritoneal cavity.\",\n        \"why_required\": \"Determining whether a focal abdominal source exists requires full assessment of relevant structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of focal inflammatory, obstructive, neoplastic, or infectious pathology in the abdomen/pelvis corresponding to LLQ pain.\",\n        \"why_required\": \"Identifying or ruling out a focal lesion is central to deciding if there is an intra‑abdominal source of the symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, location, and character of complications such as abscess, perforation, free air, or obstruction.\",\n        \"why_required\": \"Complications determine need and urgency for surgery, drainage, or escalation of care.\"\n      },\n      {\n        \"requirement_key\": \"req_sev\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent and severity of any identified abdominal pathology (e.g., length of involved bowel, size of collections, burden of metastatic disease).\",\n        \"why_required\": \"Severity and extent guide whether conservative, interventional, or operative strategies are appropriate.\"\n      }\n    ],\n    \"evidence\": [\n      \"“___ w stage IV NSCLCA on crizotinib, UC on balsalazide p/w 2  days LLQ abd pain.”\",\n      \"Surgery consult obtained.   On surgery eval, patient endorses ___ LLQ pain.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal or pelvic imaging is described.\"\n        ],\n        \"reason\": \"Only a chest radiograph has been performed; there is no prior imaging visualizing abdominal organs, bowel, or peritoneal cavity.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Abd: Soft, non-distended, non-tender\"\n        ],\n        \"reason\": \"Clinical exam is benign but cannot reliably establish presence or absence of intra‑abdominal pathology; no imaging assessment yet exists.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Lactate: 1.1 mmol/L (ref 0.5-2.0)\"\n        ],\n        \"reason\": \"Normal lactate and stable vitals argue against severe sepsis or shock but do not exclude localized complications; no imaging evidence yet addresses abscess, perforation, or obstruction.\"\n      },\n      {\n        \"requirement_key\": \"req_sev\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No abdominal imaging results are provided prior to this decision.\"\n        ],\n        \"reason\": \"There is no pre‑order imaging characterization of severity or extent of any abdominal pathology.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before ordering the CT abdomen/pelvis, there is no imaging addressing visualization, presence, complications, or extent of intra‑abdominal disease; the source of LLQ pain remains unlocalized.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast‑enhanced CT of the abdomen and pelvis is the standard modality to evaluate acute abdominal pain for inflammatory, obstructive, neoplastic, and infectious causes and their complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not specify a narrower leading diagnosis (e.g., diverticulitis vs UC flare vs metastatic disease) or explicitly document why CT was preferred over ultrasound, but the general intent to localize an intra‑abdominal source for LLQ pain is well supported.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788171629-1GIkLste1CJHlwOn10jz",
+            "usage": {
+              "completion_tokens": 1967,
+              "prompt_tokens": 3342,
+              "total_tokens": 5309,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0238475,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0238475,
+                "upstream_inference_prompt_cost": 0.0041775,
+                "upstream_inference_completions_cost": 0.01967
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute intra‑abdominal process as the cause of her new left‑lower‑quadrant abdominal pain and leukocytosis.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "specific clinical syndrome (acute abdomen / intra‑abdominal pathology)",
+            "status": "suspected",
+            "evidence": [
+              "“p/w 2  days LLQ abd pain. Patient in usual state of health until day  prior to presentation when she noted onset LLQ abdominal pain.  Pain described as constant w waves of increased intensity.”",
+              "White Blood Cells: 15.9 K/uL (ref 4.0-10.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient’s ulcerative colitis and stage IV lung cancer place her at elevated risk for abdominal complications (e.g., colitis flare, perforation, abscess, obstruction, metastatic or treatment‑related pathology).",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "disease-level risk mechanism",
+            "status": "suspected",
+            "evidence": [
+              "“___ w stage IV NSCLCA on crizotinib, UC on balsalazide p/w 2  days LLQ abd pain.”",
+              "“Bowel pattern described as \"erratic\" due to UC but currently at baseline.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Despite normal abdominal examination, clinically important intra‑abdominal pathology may still be present and needs imaging evaluation.",
+            "type": "other",
+            "other_proposed_type": "clinical-physical exam limitation",
+            "level": "general diagnostic principle applied to this case",
+            "status": "likely",
+            "evidence": [
+              "Abd: Soft, non-distended, non-tender",
+              "Surgery consult obtained.   On surgery eval, patient endorses ___ LLQ pain."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable (this is the first imaging decision for the abdomen/pelvis).",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "No prior abdominal imaging question to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "First reconstruction point; assumptions inferred directly from presenting history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "Is there a focal intra‑abdominal or pelvic pathology causing the patient’s new left‑lower‑quadrant abdominal pain and leukocytosis that would change acute management (e.g., diverticulitis, colitis complication, obstruction, abscess, perforation, or metastatic disease)?",
+          "target": "intra‑abdominal and pelvic viscera, mesentery, and peritoneal cavity",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming a focal abdominal source (e.g., diverticulitis, abscess, obstruction, metastatic lesion) would guide surgical vs medical management, antibiotics, possible intervention, and oncologic treatment adjustments.",
+          "negative_answer_changes": "If no focal abdominal source is identified, clinicians might pursue non‑abdominal causes of pain, adjust pain control, reconsider UC or treatment‑related functional etiologies, and potentially defer surgery or invasive interventions.",
+          "secondary_questions": [
+            "Is there evidence of a complication such as abscess, perforation, or obstruction requiring urgent surgical or interventional management?",
+            "Is there radiologic evidence of metastatic or treatment‑related abdominal pathology influencing cancer management?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate contrast-enhanced visualization of the abdomen and pelvis including bowel, solid organs, mesentery, and peritoneal cavity.",
+              "why_required": "Determining whether a focal abdominal source exists requires full assessment of relevant structures."
+            },
+            {
+              "requirement_key": "req_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of focal inflammatory, obstructive, neoplastic, or infectious pathology in the abdomen/pelvis corresponding to LLQ pain.",
+              "why_required": "Identifying or ruling out a focal lesion is central to deciding if there is an intra‑abdominal source of the symptoms."
+            },
+            {
+              "requirement_key": "req_comp",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, location, and character of complications such as abscess, perforation, free air, or obstruction.",
+              "why_required": "Complications determine need and urgency for surgery, drainage, or escalation of care."
+            },
+            {
+              "requirement_key": "req_sev",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent and severity of any identified abdominal pathology (e.g., length of involved bowel, size of collections, burden of metastatic disease).",
+              "why_required": "Severity and extent guide whether conservative, interventional, or operative strategies are appropriate."
+            }
+          ],
+          "evidence": [
+            "“___ w stage IV NSCLCA on crizotinib, UC on balsalazide p/w 2  days LLQ abd pain.”",
+            "Surgery consult obtained.   On surgery eval, patient endorses ___ LLQ pain."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No prior abdominal or pelvic imaging is described."
+              ],
+              "reason": "Only a chest radiograph has been performed; there is no prior imaging visualizing abdominal organs, bowel, or peritoneal cavity."
+            },
+            {
+              "requirement_key": "req_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Abd: Soft, non-distended, non-tender"
+              ],
+              "reason": "Clinical exam is benign but cannot reliably establish presence or absence of intra‑abdominal pathology; no imaging assessment yet exists."
+            },
+            {
+              "requirement_key": "req_comp",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Lactate: 1.1 mmol/L (ref 0.5-2.0)"
+              ],
+              "reason": "Normal lactate and stable vitals argue against severe sepsis or shock but do not exclude localized complications; no imaging evidence yet addresses abscess, perforation, or obstruction."
+            },
+            {
+              "requirement_key": "req_sev",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No abdominal imaging results are provided prior to this decision."
+              ],
+              "reason": "There is no pre‑order imaging characterization of severity or extent of any abdominal pathology."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Before ordering the CT abdomen/pelvis, there is no imaging addressing visualization, presence, complications, or extent of intra‑abdominal disease; the source of LLQ pain remains unlocalized."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast‑enhanced CT of the abdomen and pelvis is the standard modality to evaluate acute abdominal pain for inflammatory, obstructive, neoplastic, and infectious causes and their complications.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not specify a narrower leading diagnosis (e.g., diverticulitis vs UC flare vs metastatic disease) or explicitly document why CT was preferred over ultrasound, but the general intent to localize an intra‑abdominal source for LLQ pain is well supported."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

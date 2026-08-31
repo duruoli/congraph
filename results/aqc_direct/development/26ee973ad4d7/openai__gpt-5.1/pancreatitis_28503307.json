@@ -1,0 +1,698 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 28503307,
+  "source_path": "results/annotation_experiment/full/pancreatitis_28503307.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "0e33f8b7e038ca1c2e53c3ea15a3bfb85d33d32d99f8b7bd01e9310652e2b4ff",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "0e33f8b7e038ca1c2e53c3ea15a3bfb85d33d32d99f8b7bd01e9310652e2b4ff",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has symptomatic gallstone disease as the likely cause of her recurrent epigastric pain episodes.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical working diagnosis linking symptoms to gallstones",
+                  "status": "likely",
+                  "evidence": [
+                    "“known h/o cholelithiasis presenting with elevated lipase after going to ___ office with 3 days of epigastric pain”",
+                    "“she had elevated ALT and AP on ___ after presenting with similar epigastric pain and was worked up with RUQ US that showed gallstones but no cholecystitis… Reportedly her epigastric pain during that time resolved as did her LFT abnormalities until this episode.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The current episode may represent gallstone-related pancreatitis or another biliary complication rather than simple biliary colic alone.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "complication of gallstones",
+                  "status": "suspected",
+                  "evidence": [
+                    "“presenting with elevated lipase after going to ___ office with 3 days of epigastric pain”",
+                    "“Of note is that she had elevated ALT and AP on ___ after presenting with similar epigastric pain… RUQ US that showed gallstones but no cholecystitis.”"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is no current clinical or biochemical evidence of acute cholecystitis or obstructive jaundice.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific alternative diagnoses within biliary disease",
+                  "status": "likely",
+                  "evidence": [
+                    "“tender in epigastrum, feels deep, no clinical murphys, no rebound or guarding”",
+                    "“Alkaline Phosphatase: 86.0 IU/L… Bilirubin, Total: 0.6 mg/dL… Alanine Aminotransferase (ALT): 20.0 IU/L”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First decision point; no prior imaging."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; assumptions are newly instantiated from history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Is there current sonographic evidence of gallbladder or biliary pathology (e.g., stones, wall changes, ductal dilation) that would localize the source of this epigastric pain to the hepatobiliary system and guide management?",
+                "target": "gallbladder and biliary tree",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming gallbladder or biliary pathology would support biliary etiology of pain and push toward cholecystectomy or further biliary intervention.",
+                "negative_answer_changes": "Lack of biliary abnormalities would weaken the link between current pain and gallstones and prompt consideration of non-biliary causes or alternative imaging.",
+                "secondary_questions": [
+                  "Are gallstones still present and are there secondary signs suggesting acute cholecystitis?",
+                  "Is there common bile duct dilation that might indicate choledocholithiasis contributing to pancreatitis or pain?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the gallbladder, intrahepatic bile ducts, and common bile duct.",
+                    "why_required": "These structures must be well seen to determine whether the biliary system is the source of symptoms."
+                  },
+                  {
+                    "requirement_key": "req_stones",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones and biliary sludge in the gallbladder and visualized ducts.",
+                    "why_required": "Detecting or excluding stones is central to determining whether gallstone disease is driving the current episode."
+                  },
+                  {
+                    "requirement_key": "req_wall",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Gallbladder wall thickness, pericholecystic fluid, and sonographic Murphy sign as markers of inflammatory severity.",
+                    "why_required": "Inflammatory changes would indicate acute cholecystitis rather than or in addition to simple colic."
+                  },
+                  {
+                    "requirement_key": "req_duct",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Diameter of the common bile duct and intrahepatic ducts to assess for dilation.",
+                    "why_required": "Ductal dilation would suggest obstructive biliary pathology such as choledocholithiasis contributing to pain and pancreatitis."
+                  }
+                ],
+                "evidence": [
+                  "“___ with known h/o cholelithiasis presenting with elevated lipase after going to ___ office with 3 days of epigastric pain.”",
+                  "“worked up with RUQ US that showed gallstones but no cholecystitis. She put off plans for CCY… Reportedly her epigastric pain during that time resolved as did her LFT abnormalities until this episode.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      ""
+                    ],
+                    "reason": "No current imaging of the gallbladder or bile ducts is available before this order; prior RUQ US was from a previous resolved episode."
+                  },
+                  {
+                    "requirement_key": "req_stones",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“RUQ US that showed gallstones but no cholecystitis.”"
+                    ],
+                    "reason": "Gallstones were documented historically, but their current status in this new episode has not been reassessed with imaging."
+                  },
+                  {
+                    "requirement_key": "req_wall",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“tender in epigastrum, feels deep, no clinical murphys, no rebound or guarding”"
+                    ],
+                    "reason": "Clinical exam suggests no Murphy sign, but there is no imaging assessment of gallbladder wall or pericholecystic changes for this episode."
+                  },
+                  {
+                    "requirement_key": "req_duct",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Alkaline Phosphatase: 86.0 IU/L… Bilirubin, Total: 0.6 mg/dL”"
+                    ],
+                    "reason": "Normal liver chemistries argue against major obstruction, but duct caliber has not been imaged in this episode."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key biliary-source questions for this new presentation lack current imaging; only historical imaging and present labs/physical exam are available."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Abdominal liver/gallbladder ultrasound is the standard first-line test to evaluate gallbladder stones, wall changes, and bile duct dilation as potential sources of epigastric pain in a patient with known cholelithiasis.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The mild lipase elevation and predominant epigastric pain could also reflect non-biliary pancreatitis or peptic/other upper GI pathology that this limited hepatobiliary ultrasound will not fully evaluate."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has symptomatic gallstone disease as the likely cause of her recurrent epigastric pain episodes.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical working diagnosis linking symptoms to gallstones\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“known h/o cholelithiasis presenting with elevated lipase after going to ___ office with 3 days of epigastric pain”\",\n        \"“she had elevated ALT and AP on ___ after presenting with similar epigastric pain and was worked up with RUQ US that showed gallstones but no cholecystitis… Reportedly her epigastric pain during that time resolved as did her LFT abnormalities until this episode.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The current episode may represent gallstone-related pancreatitis or another biliary complication rather than simple biliary colic alone.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication of gallstones\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“presenting with elevated lipase after going to ___ office with 3 days of epigastric pain”\",\n        \"“Of note is that she had elevated ALT and AP on ___ after presenting with similar epigastric pain… RUQ US that showed gallstones but no cholecystitis.”\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is no current clinical or biochemical evidence of acute cholecystitis or obstructive jaundice.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific alternative diagnoses within biliary disease\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“tender in epigastrum, feels deep, no clinical murphys, no rebound or guarding”\",\n        \"“Alkaline Phosphatase: 86.0 IU/L… Bilirubin, Total: 0.6 mg/dL… Alanine Aminotransferase (ALT): 20.0 IU/L”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior imaging.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; assumptions are newly instantiated from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there current sonographic evidence of gallbladder or biliary pathology (e.g., stones, wall changes, ductal dilation) that would localize the source of this epigastric pain to the hepatobiliary system and guide management?\",\n    \"target\": \"gallbladder and biliary tree\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming gallbladder or biliary pathology would support biliary etiology of pain and push toward cholecystectomy or further biliary intervention.\",\n    \"negative_answer_changes\": \"Lack of biliary abnormalities would weaken the link between current pain and gallstones and prompt consideration of non-biliary causes or alternative imaging.\",\n    \"secondary_questions\": [\n      \"Are gallstones still present and are there secondary signs suggesting acute cholecystitis?\",\n      \"Is there common bile duct dilation that might indicate choledocholithiasis contributing to pancreatitis or pain?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder, intrahepatic bile ducts, and common bile duct.\",\n        \"why_required\": \"These structures must be well seen to determine whether the biliary system is the source of symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_stones\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones and biliary sludge in the gallbladder and visualized ducts.\",\n        \"why_required\": \"Detecting or excluding stones is central to determining whether gallstone disease is driving the current episode.\"\n      },\n      {\n        \"requirement_key\": \"req_wall\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Gallbladder wall thickness, pericholecystic fluid, and sonographic Murphy sign as markers of inflammatory severity.\",\n        \"why_required\": \"Inflammatory changes would indicate acute cholecystitis rather than or in addition to simple colic.\"\n      },\n      {\n        \"requirement_key\": \"req_duct\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Diameter of the common bile duct and intrahepatic ducts to assess for dilation.\",\n        \"why_required\": \"Ductal dilation would suggest obstructive biliary pathology such as choledocholithiasis contributing to pain and pancreatitis.\"\n      }\n    ],\n    \"evidence\": [\n      \"“___ with known h/o cholelithiasis presenting with elevated lipase after going to ___ office with 3 days of epigastric pain.”\",\n      \"“worked up with RUQ US that showed gallstones but no cholecystitis. She put off plans for CCY… Reportedly her epigastric pain during that time resolved as did her LFT abnormalities until this episode.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\"\n        ],\n        \"reason\": \"No current imaging of the gallbladder or bile ducts is available before this order; prior RUQ US was from a previous resolved episode.\"\n      },\n      {\n        \"requirement_key\": \"req_stones\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“RUQ US that showed gallstones but no cholecystitis.”\"\n        ],\n        \"reason\": \"Gallstones were documented historically, but their current status in this new episode has not been reassessed with imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_wall\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“tender in epigastrum, feels deep, no clinical murphys, no rebound or guarding”\"\n        ],\n        \"reason\": \"Clinical exam suggests no Murphy sign, but there is no imaging assessment of gallbladder wall or pericholecystic changes for this episode.\"\n      },\n      {\n        \"requirement_key\": \"req_duct\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Alkaline Phosphatase: 86.0 IU/L… Bilirubin, Total: 0.6 mg/dL”\"\n        ],\n        \"reason\": \"Normal liver chemistries argue against major obstruction, but duct caliber has not been imaged in this episode.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key biliary-source questions for this new presentation lack current imaging; only historical imaging and present labs/physical exam are available.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Abdominal liver/gallbladder ultrasound is the standard first-line test to evaluate gallbladder stones, wall changes, and bile duct dilation as potential sources of epigastric pain in a patient with known cholelithiasis.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The mild lipase elevation and predominant epigastric pain could also reflect non-biliary pancreatitis or peptic/other upper GI pathology that this limited hepatobiliary ultrasound will not fully evaluate.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788167975-M0ynd2t8QIqlobhsEDPj",
+            "usage": {
+              "completion_tokens": 1974,
+              "prompt_tokens": 3114,
+              "total_tokens": 5088,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0236325,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0236325,
+                "upstream_inference_prompt_cost": 0.0038925,
+                "upstream_inference_completions_cost": 0.01974
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has symptomatic gallstone disease as the likely cause of her recurrent epigastric pain episodes.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical working diagnosis linking symptoms to gallstones",
+            "status": "likely",
+            "evidence": [
+              "“known h/o cholelithiasis presenting with elevated lipase after going to ___ office with 3 days of epigastric pain”",
+              "“she had elevated ALT and AP on ___ after presenting with similar epigastric pain and was worked up with RUQ US that showed gallstones but no cholecystitis… Reportedly her epigastric pain during that time resolved as did her LFT abnormalities until this episode.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The current episode may represent gallstone-related pancreatitis or another biliary complication rather than simple biliary colic alone.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "complication of gallstones",
+            "status": "suspected",
+            "evidence": [
+              "“presenting with elevated lipase after going to ___ office with 3 days of epigastric pain”",
+              "“Of note is that she had elevated ALT and AP on ___ after presenting with similar epigastric pain… RUQ US that showed gallstones but no cholecystitis.”"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "There is no current clinical or biochemical evidence of acute cholecystitis or obstructive jaundice.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific alternative diagnoses within biliary disease",
+            "status": "likely",
+            "evidence": [
+              "“tender in epigastrum, feels deep, no clinical murphys, no rebound or guarding”",
+              "“Alkaline Phosphatase: 86.0 IU/L… Bilirubin, Total: 0.6 mg/dL… Alanine Aminotransferase (ALT): 20.0 IU/L”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First decision point; no prior imaging."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; assumptions are newly instantiated from history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "Is there current sonographic evidence of gallbladder or biliary pathology (e.g., stones, wall changes, ductal dilation) that would localize the source of this epigastric pain to the hepatobiliary system and guide management?",
+          "target": "gallbladder and biliary tree",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming gallbladder or biliary pathology would support biliary etiology of pain and push toward cholecystectomy or further biliary intervention.",
+          "negative_answer_changes": "Lack of biliary abnormalities would weaken the link between current pain and gallstones and prompt consideration of non-biliary causes or alternative imaging.",
+          "secondary_questions": [
+            "Are gallstones still present and are there secondary signs suggesting acute cholecystitis?",
+            "Is there common bile duct dilation that might indicate choledocholithiasis contributing to pancreatitis or pain?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the gallbladder, intrahepatic bile ducts, and common bile duct.",
+              "why_required": "These structures must be well seen to determine whether the biliary system is the source of symptoms."
+            },
+            {
+              "requirement_key": "req_stones",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones and biliary sludge in the gallbladder and visualized ducts.",
+              "why_required": "Detecting or excluding stones is central to determining whether gallstone disease is driving the current episode."
+            },
+            {
+              "requirement_key": "req_wall",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Gallbladder wall thickness, pericholecystic fluid, and sonographic Murphy sign as markers of inflammatory severity.",
+              "why_required": "Inflammatory changes would indicate acute cholecystitis rather than or in addition to simple colic."
+            },
+            {
+              "requirement_key": "req_duct",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Diameter of the common bile duct and intrahepatic ducts to assess for dilation.",
+              "why_required": "Ductal dilation would suggest obstructive biliary pathology such as choledocholithiasis contributing to pain and pancreatitis."
+            }
+          ],
+          "evidence": [
+            "“___ with known h/o cholelithiasis presenting with elevated lipase after going to ___ office with 3 days of epigastric pain.”",
+            "“worked up with RUQ US that showed gallstones but no cholecystitis. She put off plans for CCY… Reportedly her epigastric pain during that time resolved as did her LFT abnormalities until this episode.”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                ""
+              ],
+              "reason": "No current imaging of the gallbladder or bile ducts is available before this order; prior RUQ US was from a previous resolved episode."
+            },
+            {
+              "requirement_key": "req_stones",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“RUQ US that showed gallstones but no cholecystitis.”"
+              ],
+              "reason": "Gallstones were documented historically, but their current status in this new episode has not been reassessed with imaging."
+            },
+            {
+              "requirement_key": "req_wall",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“tender in epigastrum, feels deep, no clinical murphys, no rebound or guarding”"
+              ],
+              "reason": "Clinical exam suggests no Murphy sign, but there is no imaging assessment of gallbladder wall or pericholecystic changes for this episode."
+            },
+            {
+              "requirement_key": "req_duct",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Alkaline Phosphatase: 86.0 IU/L… Bilirubin, Total: 0.6 mg/dL”"
+              ],
+              "reason": "Normal liver chemistries argue against major obstruction, but duct caliber has not been imaged in this episode."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key biliary-source questions for this new presentation lack current imaging; only historical imaging and present labs/physical exam are available."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Abdominal liver/gallbladder ultrasound is the standard first-line test to evaluate gallbladder stones, wall changes, and bile duct dilation as potential sources of epigastric pain in a patient with known cholelithiasis.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The mild lipase elevation and predominant epigastric pain could also reflect non-biliary pancreatitis or peptic/other upper GI pathology that this limited hepatobiliary ultrasound will not fully evaluate."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "MRCP Abdomen (MRCP (MR ABD W&W/OC))",
+      "request_prompt_sha256": "57796cdcaa45f0ec361824d277de42fb8d4f443a693db67f747f56aa3f9970e4",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "57796cdcaa45f0ec361824d277de42fb8d4f443a693db67f747f56aa3f9970e4",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The current epigastric pain episode with elevated lipase in a patient with known gallstones may be due to occult biliary obstruction or gallstone-related pancreatitis despite normal liver chemistries and a nondilated CBD on ultrasound.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "possible biliary complication of known gallstone disease",
+                  "status": "suspected",
+                  "evidence": [
+                    "“___ with known h/o cholelithiasis presenting with elevated lipase after going to ___ office with 3 days of epigastric pain.”",
+                    "“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.  The pancreas is largely obscured by overlying bowel gas.”"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there current sonographic evidence of gallbladder or biliary pathology (e.g., stones, wall changes, ductal dilation) that would localize the source of this epigastric pain to the hepatobiliary system and guide management?",
+                "study_adequacy": "limited_but_diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "indeterminate",
+                "effect_on_previous_question": "The ultrasound excluded ductal dilation and overt choledocholithiasis but was limited for gallbladder wall assessment and largely nonvisualized pancreas, leaving the biliary contribution to pancreatitis and subtle obstruction unresolved.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.”",
+                  "evidence_stream_2": "“The pancreas is largely obscured by overlying bowel gas.”",
+                  "reason": "Imaging and clinical data both lack signs of obstruction yet clinical suspicion for biliary pancreatitis persists; this is residual uncertainty rather than direct conflict."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The current episode may represent gallstone-related pancreatitis or another biliary complication rather than simple biliary colic alone.",
+                "reason": "Ultrasound showed a normal-caliber CBD and no choledocholithiasis but had limited pancreatic visualization, refining concern toward an occult biliary cause for pancreatitis that is not excluded by US."
+              },
+              "current_question": {
+                "primary": "Is there choledocholithiasis or other obstructing pathology of the biliary tree explaining this suspected biliary pancreatitis episode that was not detected on ultrasound?",
+                "target": "common bile duct and proximal biliary tree",
+                "type": "complication",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Demonstrating choledocholithiasis or obstruction would confirm a biliary cause, prompting consideration of ERCP or other intervention and influencing timing of cholecystectomy.",
+                "negative_answer_changes": "Excluding choledocholithiasis and obstruction would weaken the biliary-complication hypothesis for this pancreatitis and support conservative management or evaluation of non-biliary causes.",
+                "secondary_questions": [
+                  "Is there MR evidence of pancreatic inflammation or other pancreatic pathology corresponding to the elevated lipase?",
+                  "Are there subtle biliary strictures, sludge, or anatomic variants that could predispose to recurrent pancreatitis?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis_bile",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "High-quality visualization of the common bile duct and intrahepatic/extrahepatic bile ducts.",
+                    "why_required": "Adequate ductal visualization is necessary to determine whether an obstructing lesion is present."
+                  },
+                  {
+                    "requirement_key": "req_cbd_stones",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of choledocholithiasis or obstructing intraductal debris/sludge in the common bile duct.",
+                    "why_required": "Detecting duct stones directly tests whether occult obstruction is causing pancreatitis and pain."
+                  },
+                  {
+                    "requirement_key": "req_other_obstruction",
+                    "id": "finding_identity",
+                    "other_proposed_dimension": "",
+                    "dimension": "Identification of non-stone obstructing lesions (e.g., strictures, masses) within the biliary tree.",
+                    "why_required": "Non-calculous obstructions could explain symptoms and guide need for further intervention."
+                  },
+                  {
+                    "requirement_key": "req_pancreas",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree and distribution of pancreatic inflammation or edema consistent with pancreatitis.",
+                    "why_required": "Characterizing pancreatic involvement supports or challenges the presumed diagnosis and may affect management intensity."
+                  }
+                ],
+                "evidence": [
+                  "“Lipase: 138.0 IU/L (ref 0.0-60.0)”",
+                  "“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.  The pancreas is largely obscured by overlying bowel gas.”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis_bile",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.”"
+                    ],
+                    "reason": "Ultrasound visualized the CBD and showed it to be normal in caliber, but MRCP offers more complete and sensitive assessment of the entire biliary tree, especially in the setting of persistent concern."
+                  },
+                  {
+                    "requirement_key": "req_cbd_stones",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“There is no evidence of choledocholithiasis.”"
+                    ],
+                    "reason": "US did not show CBD stones, but sensitivity for small stones or sludge is limited and clinical suspicion persists with elevated lipase and recurrent symptoms."
+                  },
+                  {
+                    "requirement_key": "req_other_obstruction",
+                    "requirement_id": "finding_identity",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      ""
+                    ],
+                    "reason": "No prior imaging comment addresses biliary strictures, masses, or other non-stone obstructing lesions."
+                  },
+                  {
+                    "requirement_key": "req_pancreas",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“The pancreas is largely obscured by overlying bowel gas.”"
+                    ],
+                    "reason": "The pancreas was not adequately visualized on ultrasound, so the presence and extent of pancreatitis remain undefined."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Ultrasound partially excludes gross CBD stones and dilation but leaves occult obstruction, non-stone lesions, and pancreatic inflammatory changes insufficiently assessed, warranting MRCP."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "MRCP provides high-resolution, noninvasive imaging of the biliary tree and pancreas, well suited to detect choledocholithiasis, subtle obstruction, and pancreatitis not seen on limited ultrasound.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The modest degree of lipase elevation and lack of jaundice or LFT abnormalities make the pretest probability of CBD obstruction somewhat uncertain, so the threshold for proceeding directly to MRCP rather than observation alone is not fully explained by charted data."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The current epigastric pain episode with elevated lipase in a patient with known gallstones may be due to occult biliary obstruction or gallstone-related pancreatitis despite normal liver chemistries and a nondilated CBD on ultrasound.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"possible biliary complication of known gallstone disease\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“___ with known h/o cholelithiasis presenting with elevated lipase after going to ___ office with 3 days of epigastric pain.”\",\n        \"“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.  The pancreas is largely obscured by overlying bowel gas.”\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there current sonographic evidence of gallbladder or biliary pathology (e.g., stones, wall changes, ductal dilation) that would localize the source of this epigastric pain to the hepatobiliary system and guide management?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"indeterminate\",\n    \"effect_on_previous_question\": \"The ultrasound excluded ductal dilation and overt choledocholithiasis but was limited for gallbladder wall assessment and largely nonvisualized pancreas, leaving the biliary contribution to pancreatitis and subtle obstruction unresolved.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.”\",\n      \"evidence_stream_2\": \"“The pancreas is largely obscured by overlying bowel gas.”\",\n      \"reason\": \"Imaging and clinical data both lack signs of obstruction yet clinical suspicion for biliary pancreatitis persists; this is residual uncertainty rather than direct conflict.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The current episode may represent gallstone-related pancreatitis or another biliary complication rather than simple biliary colic alone.\",\n    \"reason\": \"Ultrasound showed a normal-caliber CBD and no choledocholithiasis but had limited pancreatic visualization, refining concern toward an occult biliary cause for pancreatitis that is not excluded by US.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there choledocholithiasis or other obstructing pathology of the biliary tree explaining this suspected biliary pancreatitis episode that was not detected on ultrasound?\",\n    \"target\": \"common bile duct and proximal biliary tree\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Demonstrating choledocholithiasis or obstruction would confirm a biliary cause, prompting consideration of ERCP or other intervention and influencing timing of cholecystectomy.\",\n    \"negative_answer_changes\": \"Excluding choledocholithiasis and obstruction would weaken the biliary-complication hypothesis for this pancreatitis and support conservative management or evaluation of non-biliary causes.\",\n    \"secondary_questions\": [\n      \"Is there MR evidence of pancreatic inflammation or other pancreatic pathology corresponding to the elevated lipase?\",\n      \"Are there subtle biliary strictures, sludge, or anatomic variants that could predispose to recurrent pancreatitis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis_bile\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"High-quality visualization of the common bile duct and intrahepatic/extrahepatic bile ducts.\",\n        \"why_required\": \"Adequate ductal visualization is necessary to determine whether an obstructing lesion is present.\"\n      },\n      {\n        \"requirement_key\": \"req_cbd_stones\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of choledocholithiasis or obstructing intraductal debris/sludge in the common bile duct.\",\n        \"why_required\": \"Detecting duct stones directly tests whether occult obstruction is causing pancreatitis and pain.\"\n      },\n      {\n        \"requirement_key\": \"req_other_obstruction\",\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification of non-stone obstructing lesions (e.g., strictures, masses) within the biliary tree.\",\n        \"why_required\": \"Non-calculous obstructions could explain symptoms and guide need for further intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree and distribution of pancreatic inflammation or edema consistent with pancreatitis.\",\n        \"why_required\": \"Characterizing pancreatic involvement supports or challenges the presumed diagnosis and may affect management intensity.\"\n      }\n    ],\n    \"evidence\": [\n      \"“Lipase: 138.0 IU/L (ref 0.0-60.0)”\",\n      \"“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.  The pancreas is largely obscured by overlying bowel gas.”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis_bile\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.”\"\n        ],\n        \"reason\": \"Ultrasound visualized the CBD and showed it to be normal in caliber, but MRCP offers more complete and sensitive assessment of the entire biliary tree, especially in the setting of persistent concern.\"\n      },\n      {\n        \"requirement_key\": \"req_cbd_stones\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“There is no evidence of choledocholithiasis.”\"\n        ],\n        \"reason\": \"US did not show CBD stones, but sensitivity for small stones or sludge is limited and clinical suspicion persists with elevated lipase and recurrent symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_other_obstruction\",\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\"\n        ],\n        \"reason\": \"No prior imaging comment addresses biliary strictures, masses, or other non-stone obstructing lesions.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“The pancreas is largely obscured by overlying bowel gas.”\"\n        ],\n        \"reason\": \"The pancreas was not adequately visualized on ultrasound, so the presence and extent of pancreatitis remain undefined.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Ultrasound partially excludes gross CBD stones and dilation but leaves occult obstruction, non-stone lesions, and pancreatic inflammatory changes insufficiently assessed, warranting MRCP.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"MRCP provides high-resolution, noninvasive imaging of the biliary tree and pancreas, well suited to detect choledocholithiasis, subtle obstruction, and pancreatitis not seen on limited ultrasound.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The modest degree of lipase elevation and lack of jaundice or LFT abnormalities make the pretest probability of CBD obstruction somewhat uncertain, so the threshold for proceeding directly to MRCP rather than observation alone is not fully explained by charted data.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788168004-KJ3NNOUEIxJCRMLx1ygw",
+            "usage": {
+              "completion_tokens": 1818,
+              "prompt_tokens": 5071,
+              "total_tokens": 6889,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1792,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02250275,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02250275,
+                "upstream_inference_prompt_cost": 0.00432275,
+                "upstream_inference_completions_cost": 0.01818
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The current epigastric pain episode with elevated lipase in a patient with known gallstones may be due to occult biliary obstruction or gallstone-related pancreatitis despite normal liver chemistries and a nondilated CBD on ultrasound.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "possible biliary complication of known gallstone disease",
+            "status": "suspected",
+            "evidence": [
+              "“___ with known h/o cholelithiasis presenting with elevated lipase after going to ___ office with 3 days of epigastric pain.”",
+              "“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.  The pancreas is largely obscured by overlying bowel gas.”"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there current sonographic evidence of gallbladder or biliary pathology (e.g., stones, wall changes, ductal dilation) that would localize the source of this epigastric pain to the hepatobiliary system and guide management?",
+          "study_adequacy": "limited_but_diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "indeterminate",
+          "effect_on_previous_question": "The ultrasound excluded ductal dilation and overt choledocholithiasis but was limited for gallbladder wall assessment and largely nonvisualized pancreas, leaving the biliary contribution to pancreatitis and subtle obstruction unresolved.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.”",
+            "evidence_stream_2": "“The pancreas is largely obscured by overlying bowel gas.”",
+            "reason": "Imaging and clinical data both lack signs of obstruction yet clinical suspicion for biliary pancreatitis persists; this is residual uncertainty rather than direct conflict."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The current episode may represent gallstone-related pancreatitis or another biliary complication rather than simple biliary colic alone.",
+          "reason": "Ultrasound showed a normal-caliber CBD and no choledocholithiasis but had limited pancreatic visualization, refining concern toward an occult biliary cause for pancreatitis that is not excluded by US."
+        },
+        "current_question": {
+          "primary": "Is there choledocholithiasis or other obstructing pathology of the biliary tree explaining this suspected biliary pancreatitis episode that was not detected on ultrasound?",
+          "target": "common bile duct and proximal biliary tree",
+          "type": "complication",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Demonstrating choledocholithiasis or obstruction would confirm a biliary cause, prompting consideration of ERCP or other intervention and influencing timing of cholecystectomy.",
+          "negative_answer_changes": "Excluding choledocholithiasis and obstruction would weaken the biliary-complication hypothesis for this pancreatitis and support conservative management or evaluation of non-biliary causes.",
+          "secondary_questions": [
+            "Is there MR evidence of pancreatic inflammation or other pancreatic pathology corresponding to the elevated lipase?",
+            "Are there subtle biliary strictures, sludge, or anatomic variants that could predispose to recurrent pancreatitis?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis_bile",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "High-quality visualization of the common bile duct and intrahepatic/extrahepatic bile ducts.",
+              "why_required": "Adequate ductal visualization is necessary to determine whether an obstructing lesion is present."
+            },
+            {
+              "requirement_key": "req_cbd_stones",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of choledocholithiasis or obstructing intraductal debris/sludge in the common bile duct.",
+              "why_required": "Detecting duct stones directly tests whether occult obstruction is causing pancreatitis and pain."
+            },
+            {
+              "requirement_key": "req_other_obstruction",
+              "id": "finding_identity",
+              "other_proposed_dimension": "",
+              "dimension": "Identification of non-stone obstructing lesions (e.g., strictures, masses) within the biliary tree.",
+              "why_required": "Non-calculous obstructions could explain symptoms and guide need for further intervention."
+            },
+            {
+              "requirement_key": "req_pancreas",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Degree and distribution of pancreatic inflammation or edema consistent with pancreatitis.",
+              "why_required": "Characterizing pancreatic involvement supports or challenges the presumed diagnosis and may affect management intensity."
+            }
+          ],
+          "evidence": [
+            "“Lipase: 138.0 IU/L (ref 0.0-60.0)”",
+            "“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.  The pancreas is largely obscured by overlying bowel gas.”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis_bile",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“The CBD is of normal caliber measuring 3 mm.  There is no evidence of choledocholithiasis.”"
+              ],
+              "reason": "Ultrasound visualized the CBD and showed it to be normal in caliber, but MRCP offers more complete and sensitive assessment of the entire biliary tree, especially in the setting of persistent concern."
+            },
+            {
+              "requirement_key": "req_cbd_stones",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“There is no evidence of choledocholithiasis.”"
+              ],
+              "reason": "US did not show CBD stones, but sensitivity for small stones or sludge is limited and clinical suspicion persists with elevated lipase and recurrent symptoms."
+            },
+            {
+              "requirement_key": "req_other_obstruction",
+              "requirement_id": "finding_identity",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                ""
+              ],
+              "reason": "No prior imaging comment addresses biliary strictures, masses, or other non-stone obstructing lesions."
+            },
+            {
+              "requirement_key": "req_pancreas",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“The pancreas is largely obscured by overlying bowel gas.”"
+              ],
+              "reason": "The pancreas was not adequately visualized on ultrasound, so the presence and extent of pancreatitis remain undefined."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Ultrasound partially excludes gross CBD stones and dilation but leaves occult obstruction, non-stone lesions, and pancreatic inflammatory changes insufficiently assessed, warranting MRCP."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "MRCP provides high-resolution, noninvasive imaging of the biliary tree and pancreas, well suited to detect choledocholithiasis, subtle obstruction, and pancreatitis not seen on limited ultrasound.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The modest degree of lipase elevation and lack of jaundice or LFT abnormalities make the pretest probability of CBD obstruction somewhat uncertain, so the threshold for proceeding directly to MRCP rather than observation alone is not fully explained by charted data."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

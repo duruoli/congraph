@@ -1,0 +1,564 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 21252470,
+  "source_path": "results/annotation_experiment/full/diverticulitis_21252470.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS W/O CONTRAST)",
+      "request_prompt_sha256": "fbe9bd4c83782f2d2756dd353f402ff937b61cfa1a39005bde4d2436ded946cc",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "fbe9bd4c83782f2d2756dd353f402ff937b61cfa1a39005bde4d2436ded946cc",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute systemic illness with possible intra-abdominal or abdominal-pelvic source contributing to leukocytosis and hypotension.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome level",
+                  "status": "suspected",
+                  "evidence": [
+                    "White Blood Cells: 26.9 K/uL (ref 4.0-11.0)",
+                    "94/48",
+                    "He describes non-bloody diarrhea ___ times per day for the 5 days prior to his admission. He describes mild abdominal discomfort that started while in the ED."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has acute kidney injury and severe hyperkalemia likely related to volume depletion from diarrhea rather than an intrinsic obstructive uropathy.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic mechanism level",
+                  "status": "suspected",
+                  "evidence": [
+                    "Urea Nitrogen: 98.0 mg/dL (ref 6.0-20.0)",
+                    "Creatinine: 2.0 mg/dL (ref 0.5-1.2)",
+                    "Potassium: 7.5 mEq/L (ref 3.3-5.1)",
+                    "He describes non-bloody diarrhea ___ times per day for the 5 days prior to his admission."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is no current clinical or radiographic evidence of a primary cardiopulmonary cause for the patient’s presentation.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "differential-diagnosis component",
+                  "status": "established",
+                  "evidence": [
+                    "Denies fevers, chills, chest pain, shortness of breath",
+                    "There is no focal consolidation.  No pleural effusion or pneumothorax is identified."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "first decision point; no prior question to compare"
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision point, so the key syndromic and etiologic assumptions are being defined de novo based on the presenting history, exam, labs, and chest radiograph."
+              },
+              "current_question": {
+                "primary": "Is there an acute intra-abdominal or pelvic process explaining the patient’s systemic illness (hypotension, leukocytosis) and abdominal symptoms?",
+                "target": "acute intra-abdominal or pelvic pathology (e.g., colitis, ischemia, perforation, abscess, obstruction, obstructive uropathy)",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirm an abdominal source for the current systemic illness and guide specific management such as antibiotics, possible surgical consultation, or intervention for obstruction or perforation.",
+                "negative_answer_changes": "Reduce the likelihood of an intra-abdominal source, prompting focus on non-abdominal causes of leukocytosis, hypotension, and renal dysfunction such as primary renal, endocrine, or other systemic etiologies.",
+                "secondary_questions": [
+                  "Is there evidence of obstructive uropathy contributing to the acute kidney injury?",
+                  "Is there imaging evidence of colitis or another inflammatory process corresponding to the diarrhea and mild abdominal tenderness?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Global visualization of abdominal and pelvic viscera (bowel, solid organs, retroperitoneum, urinary tract) for acute pathology.",
+                    "why_required": "Determining whether an intra-abdominal source exists requires overall assessment of the abdomen and pelvis for inflammatory, obstructive, ischemic, or perforated processes."
+                  },
+                  {
+                    "requirement_key": "req_bowel",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of acute bowel pathology such as colitis, obstruction, perforation, or ischemia.",
+                    "why_required": "The patient’s diarrhea, abdominal discomfort, systemic leukocytosis, and hypotension raise concern for significant bowel disease that could drive systemic illness."
+                  },
+                  {
+                    "requirement_key": "req_urinary",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of obstructive uropathy (hydronephrosis, ureteral obstruction, bladder outlet obstruction).",
+                    "why_required": "Clarifying whether the acute kidney injury and hyperkalemia could be due to obstruction versus volume depletion or intrinsic renal disease affects management and urgency of decompression."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of serious abdominal complications such as abscess, free air, or large-volume free fluid.",
+                    "why_required": "Detecting complications would escalate management to urgent surgical or interventional approaches and more intensive monitoring."
+                  }
+                ],
+                "evidence": [
+                  "He describes non-bloody diarrhea ___ times per day for the 5 days prior to his admission. He describes mild abdominal discomfort that started while in the ED.",
+                  "94/48",
+                  "White Blood Cells: 26.9 K/uL (ref 4.0-11.0)",
+                  "Urea Nitrogen: 98.0 mg/dL (ref 6.0-20.0) ... Creatinine: 2.0 mg/dL (ref 0.5-1.2)"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "PA AND LATERAL VIEWS OF THE CHEST:"
+                    ],
+                    "reason": "Only a chest radiograph has been performed, which does not visualize the abdomen or pelvis."
+                  },
+                  {
+                    "requirement_key": "req_bowel",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Abdomen obese, soft, very mild left sided tenderness to deep palpation without any guarding"
+                    ],
+                    "reason": "The physical exam notes only mild tenderness and provides no definitive information about structural bowel pathology; no abdominal imaging has been done."
+                  },
+                  {
+                    "requirement_key": "req_urinary",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Urine Appearance: Clear.",
+                      "Creatinine: 2.0 mg/dL (ref 0.5-1.2)"
+                    ],
+                    "reason": "Labs show kidney dysfunction but urinalysis is bland; no imaging has assessed for hydronephrosis or obstruction."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "He describes mild abdominal discomfort that started while in the ED.",
+                      "Lactate: 1.5 mmol/L (ref 0.5-2.0)"
+                    ],
+                    "reason": "There is no imaging or exam evidence of perforation, abscess, or free fluid; absence of peritoneal signs and normal lactate do not exclude early or compartmentalized complications."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before this CT, no study has evaluated the abdomen or pelvis, so the existence and nature of an intra-abdominal source remain entirely unaddressed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A non-contrast CT of the abdomen and pelvis can globally assess bowel, solid organs, retroperitoneum, and urinary tract for inflammatory disease, obstruction, ischemia, perforation, abscess, and obstructive uropathy even in the setting of renal dysfunction.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact balance between concern for bowel pathology versus obstructive uropathy versus other abdominal causes is not explicit in the chart, and the choice of non-contrast technique is inferred from renal dysfunction rather than directly stated."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute systemic illness with possible intra-abdominal or abdominal-pelvic source contributing to leukocytosis and hypotension.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"White Blood Cells: 26.9 K/uL (ref 4.0-11.0)\",\n        \"94/48\",\n        \"He describes non-bloody diarrhea ___ times per day for the 5 days prior to his admission. He describes mild abdominal discomfort that started while in the ED.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has acute kidney injury and severe hyperkalemia likely related to volume depletion from diarrhea rather than an intrinsic obstructive uropathy.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic mechanism level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Urea Nitrogen: 98.0 mg/dL (ref 6.0-20.0)\",\n        \"Creatinine: 2.0 mg/dL (ref 0.5-1.2)\",\n        \"Potassium: 7.5 mEq/L (ref 3.3-5.1)\",\n        \"He describes non-bloody diarrhea ___ times per day for the 5 days prior to his admission.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is no current clinical or radiographic evidence of a primary cardiopulmonary cause for the patient’s presentation.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential-diagnosis component\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Denies fevers, chills, chest pain, shortness of breath\",\n        \"There is no focal consolidation.  No pleural effusion or pneumothorax is identified.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"first decision point; no prior question to compare\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision point, so the key syndromic and etiologic assumptions are being defined de novo based on the presenting history, exam, labs, and chest radiograph.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an acute intra-abdominal or pelvic process explaining the patient’s systemic illness (hypotension, leukocytosis) and abdominal symptoms?\",\n    \"target\": \"acute intra-abdominal or pelvic pathology (e.g., colitis, ischemia, perforation, abscess, obstruction, obstructive uropathy)\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirm an abdominal source for the current systemic illness and guide specific management such as antibiotics, possible surgical consultation, or intervention for obstruction or perforation.\",\n    \"negative_answer_changes\": \"Reduce the likelihood of an intra-abdominal source, prompting focus on non-abdominal causes of leukocytosis, hypotension, and renal dysfunction such as primary renal, endocrine, or other systemic etiologies.\",\n    \"secondary_questions\": [\n      \"Is there evidence of obstructive uropathy contributing to the acute kidney injury?\",\n      \"Is there imaging evidence of colitis or another inflammatory process corresponding to the diarrhea and mild abdominal tenderness?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Global visualization of abdominal and pelvic viscera (bowel, solid organs, retroperitoneum, urinary tract) for acute pathology.\",\n        \"why_required\": \"Determining whether an intra-abdominal source exists requires overall assessment of the abdomen and pelvis for inflammatory, obstructive, ischemic, or perforated processes.\"\n      },\n      {\n        \"requirement_key\": \"req_bowel\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute bowel pathology such as colitis, obstruction, perforation, or ischemia.\",\n        \"why_required\": \"The patient’s diarrhea, abdominal discomfort, systemic leukocytosis, and hypotension raise concern for significant bowel disease that could drive systemic illness.\"\n      },\n      {\n        \"requirement_key\": \"req_urinary\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of obstructive uropathy (hydronephrosis, ureteral obstruction, bladder outlet obstruction).\",\n        \"why_required\": \"Clarifying whether the acute kidney injury and hyperkalemia could be due to obstruction versus volume depletion or intrinsic renal disease affects management and urgency of decompression.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of serious abdominal complications such as abscess, free air, or large-volume free fluid.\",\n        \"why_required\": \"Detecting complications would escalate management to urgent surgical or interventional approaches and more intensive monitoring.\"\n      }\n    ],\n    \"evidence\": [\n      \"He describes non-bloody diarrhea ___ times per day for the 5 days prior to his admission. He describes mild abdominal discomfort that started while in the ED.\",\n      \"94/48\",\n      \"White Blood Cells: 26.9 K/uL (ref 4.0-11.0)\",\n      \"Urea Nitrogen: 98.0 mg/dL (ref 6.0-20.0) ... Creatinine: 2.0 mg/dL (ref 0.5-1.2)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"PA AND LATERAL VIEWS OF THE CHEST:\"\n        ],\n        \"reason\": \"Only a chest radiograph has been performed, which does not visualize the abdomen or pelvis.\"\n      },\n      {\n        \"requirement_key\": \"req_bowel\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Abdomen obese, soft, very mild left sided tenderness to deep palpation without any guarding\"\n        ],\n        \"reason\": \"The physical exam notes only mild tenderness and provides no definitive information about structural bowel pathology; no abdominal imaging has been done.\"\n      },\n      {\n        \"requirement_key\": \"req_urinary\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Urine Appearance: Clear.\",\n          \"Creatinine: 2.0 mg/dL (ref 0.5-1.2)\"\n        ],\n        \"reason\": \"Labs show kidney dysfunction but urinalysis is bland; no imaging has assessed for hydronephrosis or obstruction.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"He describes mild abdominal discomfort that started while in the ED.\",\n          \"Lactate: 1.5 mmol/L (ref 0.5-2.0)\"\n        ],\n        \"reason\": \"There is no imaging or exam evidence of perforation, abscess, or free fluid; absence of peritoneal signs and normal lactate do not exclude early or compartmentalized complications.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before this CT, no study has evaluated the abdomen or pelvis, so the existence and nature of an intra-abdominal source remain entirely unaddressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A non-contrast CT of the abdomen and pelvis can globally assess bowel, solid organs, retroperitoneum, and urinary tract for inflammatory disease, obstruction, ischemia, perforation, abscess, and obstructive uropathy even in the setting of renal dysfunction.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact balance between concern for bowel pathology versus obstructive uropathy versus other abdominal causes is not explicit in the chart, and the choice of non-contrast technique is inferred from renal dysfunction rather than directly stated.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788168167-3kyXUh1UeILLqUdVVf7X",
+            "usage": {
+              "completion_tokens": 2081,
+              "prompt_tokens": 3290,
+              "total_tokens": 5371,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0249225,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0249225,
+                "upstream_inference_prompt_cost": 0.0041125,
+                "upstream_inference_completions_cost": 0.02081
+              }
+            }
+          },
+          "validation_errors": [
+            "assumption_0_bad_evidence_count",
+            "assumption_1_bad_evidence_count"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "ae660d2383bd53fcc95f265e9c464063acfe4a005c0015fc82d330d96b07b55f",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute abdominal process contributing to systemic illness and weakness.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level clinical state",
+                  "status": "suspected",
+                  "evidence": [
+                    "He describes mild abdominal discomfort that started while in the ED.",
+                    "White Blood Cells: 26.9 K/uL (ref 4.0-11.0)"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient is experiencing significant volume and metabolic derangements, likely related to diarrhea and possible renal hypoperfusion.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic mechanism",
+                  "status": "likely",
+                  "evidence": [
+                    "He describes non-bloody diarrhea ___ times per day for the 5 days prior to his admission. Has had a decreased appetite.",
+                    "Urea Nitrogen: 98.0 mg/dL (ref 6.0-20.0) ... Creatinine: 2.0 mg/dL (ref 0.5-1.2); Potassium: 7.5 mEq/L (ref 3.3-5.1)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable (this is the first decision point)",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No prior imaging questions or results to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; assumptions are newly inferred from history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Is there an acute intra-abdominal or pelvic pathology explaining the patient’s systemic illness and abdominal discomfort?",
+                "target": "acute intra-abdominal or pelvic pathology (e.g., colitis, obstruction, ischemia, perforation, abscess)",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would support an intra-abdominal source for illness and guide urgent medical or surgical management.",
+                "negative_answer_changes": "Would reduce concern for a primary structural intra-abdominal cause and shift focus to predominantly medical causes (e.g., volume depletion, renal failure).",
+                "secondary_questions": [
+                  "Is there evidence of complications such as perforation, abscess, or obstruction that would alter the urgency or type of intervention?",
+                  "What is the extent and distribution of any bowel or solid-organ abnormality if present?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Global visualization of the abdomen and pelvis to assess bowel, solid organs, mesentery, and retroperitoneum.",
+                    "why_required": "The question cannot be answered without imaging these regions to look for structural causes of acute abdominal pathology."
+                  },
+                  {
+                    "requirement_key": "req_exist",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of acute inflammatory, obstructive, ischemic, or perforated pathology in bowel and abdominal organs.",
+                    "why_required": "Determining whether an acute structural lesion exists is central to explaining the patient’s systemic illness."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and nature of complications such as perforation, abscess, obstruction, or free fluid/air.",
+                    "why_required": "Complications would escalate urgency and influence choice between medical versus surgical or interventional management."
+                  },
+                  {
+                    "requirement_key": "req_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent and severity of any detected bowel wall abnormality, fluid collections, or organ involvement.",
+                    "why_required": "Severity and distribution guide prognosis and treatment intensity for intra-abdominal pathology."
+                  }
+                ],
+                "evidence": [
+                  "He describes mild abdominal discomfort that started while in the ED.",
+                  "White Blood Cells: 26.9 K/uL (ref 4.0-11.0); Lactate: 1.5 mmol/L (ref 0.5-2.0)"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No abdominal or pelvic imaging is documented before this CT order."
+                    ],
+                    "reason": "Only a chest radiograph is available; it does not visualize the abdomen or pelvis."
+                  },
+                  {
+                    "requirement_key": "req_exist",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Abdomen obese, soft, very mild left sided tenderness to deep palpation without any guarding, no hernias"
+                    ],
+                    "reason": "Physical exam suggests only mild tenderness and cannot rule in or out specific intra-abdominal pathology."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No prior abdominal imaging or explicit assessment of perforation, abscess, or obstruction is documented."
+                    ],
+                    "reason": "There is no direct assessment for intra-abdominal complications before this order."
+                  },
+                  {
+                    "requirement_key": "req_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No imaging-based description of bowel or organ involvement or fluid collections is available prior to the CT."
+                    ],
+                    "reason": "Extent of any potential abdominal pathology has not been evaluated with imaging."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key imaging requirements regarding intra-abdominal pathology remain unaddressed prior to this CT order."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A CT abdomen and pelvis without contrast can globally visualize abdominal and pelvic structures, detect many acute pathologies (e.g., obstruction, perforation, large inflammatory processes), and characterize complications and extent even without IV contrast.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The rationale for omitting IV contrast specifically (e.g., concern about kidney function versus other constraints) is not fully explained by the visible chart."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal process contributing to systemic illness and weakness.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level clinical state\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"He describes mild abdominal discomfort that started while in the ED.\",\n        \"White Blood Cells: 26.9 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient is experiencing significant volume and metabolic derangements, likely related to diarrhea and possible renal hypoperfusion.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic mechanism\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"He describes non-bloody diarrhea ___ times per day for the 5 days prior to his admission. Has had a decreased appetite.\",\n        \"Urea Nitrogen: 98.0 mg/dL (ref 6.0-20.0) ... Creatinine: 2.0 mg/dL (ref 0.5-1.2); Potassium: 7.5 mEq/L (ref 3.3-5.1)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable (this is the first decision point)\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging questions or results to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; assumptions are newly inferred from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an acute intra-abdominal or pelvic pathology explaining the patient’s systemic illness and abdominal discomfort?\",\n    \"target\": \"acute intra-abdominal or pelvic pathology (e.g., colitis, obstruction, ischemia, perforation, abscess)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would support an intra-abdominal source for illness and guide urgent medical or surgical management.\",\n    \"negative_answer_changes\": \"Would reduce concern for a primary structural intra-abdominal cause and shift focus to predominantly medical causes (e.g., volume depletion, renal failure).\",\n    \"secondary_questions\": [\n      \"Is there evidence of complications such as perforation, abscess, or obstruction that would alter the urgency or type of intervention?\",\n      \"What is the extent and distribution of any bowel or solid-organ abnormality if present?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Global visualization of the abdomen and pelvis to assess bowel, solid organs, mesentery, and retroperitoneum.\",\n        \"why_required\": \"The question cannot be answered without imaging these regions to look for structural causes of acute abdominal pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_exist\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute inflammatory, obstructive, ischemic, or perforated pathology in bowel and abdominal organs.\",\n        \"why_required\": \"Determining whether an acute structural lesion exists is central to explaining the patient’s systemic illness.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and nature of complications such as perforation, abscess, obstruction, or free fluid/air.\",\n        \"why_required\": \"Complications would escalate urgency and influence choice between medical versus surgical or interventional management.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent and severity of any detected bowel wall abnormality, fluid collections, or organ involvement.\",\n        \"why_required\": \"Severity and distribution guide prognosis and treatment intensity for intra-abdominal pathology.\"\n      }\n    ],\n    \"evidence\": [\n      \"He describes mild abdominal discomfort that started while in the ED.\",\n      \"White Blood Cells: 26.9 K/uL (ref 4.0-11.0); Lactate: 1.5 mmol/L (ref 0.5-2.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No abdominal or pelvic imaging is documented before this CT order.\"\n        ],\n        \"reason\": \"Only a chest radiograph is available; it does not visualize the abdomen or pelvis.\"\n      },\n      {\n        \"requirement_key\": \"req_exist\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Abdomen obese, soft, very mild left sided tenderness to deep palpation without any guarding, no hernias\"\n        ],\n        \"reason\": \"Physical exam suggests only mild tenderness and cannot rule in or out specific intra-abdominal pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal imaging or explicit assessment of perforation, abscess, or obstruction is documented.\"\n        ],\n        \"reason\": \"There is no direct assessment for intra-abdominal complications before this order.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No imaging-based description of bowel or organ involvement or fluid collections is available prior to the CT.\"\n        ],\n        \"reason\": \"Extent of any potential abdominal pathology has not been evaluated with imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key imaging requirements regarding intra-abdominal pathology remain unaddressed prior to this CT order.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A CT abdomen and pelvis without contrast can globally visualize abdominal and pelvic structures, detect many acute pathologies (e.g., obstruction, perforation, large inflammatory processes), and characterize complications and extent even without IV contrast.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The rationale for omitting IV contrast specifically (e.g., concern about kidney function versus other constraints) is not fully explained by the visible chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788168196-DFCTMVqh04Imt9iFgbVZ",
+            "usage": {
+              "completion_tokens": 1660,
+              "prompt_tokens": 3335,
+              "total_tokens": 4995,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3072,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.01731275,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.01731275,
+                "upstream_inference_prompt_cost": 0.00071275,
+                "upstream_inference_completions_cost": 0.0166
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute abdominal process contributing to systemic illness and weakness.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome-level clinical state",
+            "status": "suspected",
+            "evidence": [
+              "He describes mild abdominal discomfort that started while in the ED.",
+              "White Blood Cells: 26.9 K/uL (ref 4.0-11.0)"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient is experiencing significant volume and metabolic derangements, likely related to diarrhea and possible renal hypoperfusion.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "pathophysiologic mechanism",
+            "status": "likely",
+            "evidence": [
+              "He describes non-bloody diarrhea ___ times per day for the 5 days prior to his admission. Has had a decreased appetite.",
+              "Urea Nitrogen: 98.0 mg/dL (ref 6.0-20.0) ... Creatinine: 2.0 mg/dL (ref 0.5-1.2); Potassium: 7.5 mEq/L (ref 3.3-5.1)"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable (this is the first decision point)",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "No prior imaging questions or results to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; assumptions are newly inferred from history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "Is there an acute intra-abdominal or pelvic pathology explaining the patient’s systemic illness and abdominal discomfort?",
+          "target": "acute intra-abdominal or pelvic pathology (e.g., colitis, obstruction, ischemia, perforation, abscess)",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would support an intra-abdominal source for illness and guide urgent medical or surgical management.",
+          "negative_answer_changes": "Would reduce concern for a primary structural intra-abdominal cause and shift focus to predominantly medical causes (e.g., volume depletion, renal failure).",
+          "secondary_questions": [
+            "Is there evidence of complications such as perforation, abscess, or obstruction that would alter the urgency or type of intervention?",
+            "What is the extent and distribution of any bowel or solid-organ abnormality if present?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Global visualization of the abdomen and pelvis to assess bowel, solid organs, mesentery, and retroperitoneum.",
+              "why_required": "The question cannot be answered without imaging these regions to look for structural causes of acute abdominal pathology."
+            },
+            {
+              "requirement_key": "req_exist",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of acute inflammatory, obstructive, ischemic, or perforated pathology in bowel and abdominal organs.",
+              "why_required": "Determining whether an acute structural lesion exists is central to explaining the patient’s systemic illness."
+            },
+            {
+              "requirement_key": "req_comp",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and nature of complications such as perforation, abscess, obstruction, or free fluid/air.",
+              "why_required": "Complications would escalate urgency and influence choice between medical versus surgical or interventional management."
+            },
+            {
+              "requirement_key": "req_extent",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent and severity of any detected bowel wall abnormality, fluid collections, or organ involvement.",
+              "why_required": "Severity and distribution guide prognosis and treatment intensity for intra-abdominal pathology."
+            }
+          ],
+          "evidence": [
+            "He describes mild abdominal discomfort that started while in the ED.",
+            "White Blood Cells: 26.9 K/uL (ref 4.0-11.0); Lactate: 1.5 mmol/L (ref 0.5-2.0)"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No abdominal or pelvic imaging is documented before this CT order."
+              ],
+              "reason": "Only a chest radiograph is available; it does not visualize the abdomen or pelvis."
+            },
+            {
+              "requirement_key": "req_exist",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Abdomen obese, soft, very mild left sided tenderness to deep palpation without any guarding, no hernias"
+              ],
+              "reason": "Physical exam suggests only mild tenderness and cannot rule in or out specific intra-abdominal pathology."
+            },
+            {
+              "requirement_key": "req_comp",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No prior abdominal imaging or explicit assessment of perforation, abscess, or obstruction is documented."
+              ],
+              "reason": "There is no direct assessment for intra-abdominal complications before this order."
+            },
+            {
+              "requirement_key": "req_extent",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No imaging-based description of bowel or organ involvement or fluid collections is available prior to the CT."
+              ],
+              "reason": "Extent of any potential abdominal pathology has not been evaluated with imaging."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key imaging requirements regarding intra-abdominal pathology remain unaddressed prior to this CT order."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A CT abdomen and pelvis without contrast can globally visualize abdominal and pelvic structures, detect many acute pathologies (e.g., obstruction, perforation, large inflammatory processes), and characterize complications and extent even without IV contrast.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The rationale for omitting IV contrast specifically (e.g., concern about kidney function versus other constraints) is not fully explained by the visible chart."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

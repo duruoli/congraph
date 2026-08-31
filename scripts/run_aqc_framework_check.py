@@ -214,6 +214,28 @@ def validate_output(value: Any, *, is_first_step: bool = False) -> list[str]:
         previous = value.get("previous_order_update")
         if not isinstance(previous, dict) or previous.get("applicable") is not False:
             errors.append("first_step_previous_order_update_applicable")
+    else:
+        if value.get("question_continuity") == "initial":
+            errors.append("later_step_question_continuity_initial")
+        change = value.get("assumption_change")
+        if isinstance(change, dict) and change.get("label") == "initial":
+            errors.append("later_step_assumption_change_initial")
+        if value.get("derived_transition") == "initial":
+            errors.append("later_step_derived_transition_initial")
+        previous = value.get("previous_order_update")
+        if isinstance(previous, dict) and previous.get("applicable") is False:
+            errors.append("later_step_previous_order_update_not_applicable")
+    if value.get("question_continuity") not in {"initial", "same", "refined", "new", "reopened"}:
+        errors.append("bad_question_continuity")
+    change = value.get("assumption_change")
+    if not isinstance(change, dict) or change.get("label") not in {
+        "establish", "retain", "refine", "challenge", "exclude", "replace", "initial"
+    }:
+        errors.append("bad_assumption_change")
+    if value.get("derived_transition") not in {
+        "remedy", "adjudicate", "advance", "reroute", "reopen", "close", "initial", "unclear"
+    }:
+        errors.append("bad_derived_transition")
     return errors
 
 

@@ -1,0 +1,378 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 27609215,
+  "source_path": "results/annotation_experiment/full/pancreatitis_27609215.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "ba828ddb712ec6ca2a294505c8114b3d6180673fb6805dad70d4ecf7e193a6bb",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "ba828ddb712ec6ca2a294505c8114b3d6180673fb6805dad70d4ecf7e193a6bb",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis as the cause of his epigastric pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease diagnosis",
+                  "status": "established",
+                  "evidence": [
+                    "Lipase: 3430.0 IU/L (ref 0.0-60.0)",
+                    "Pt is ___ y.o male with h.o DM1 who developed \"heartburn\" at 3pm yesterday... awoke suddenly at 2am with \"cramping\" ___ epigastric pain with radiation to the back"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The acute pancreatitis may be biliary in origin (gallstone pancreatitis or other hepatobiliary obstruction).",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism under an established disease",
+                  "status": "suspected",
+                  "evidence": [
+                    "Bilirubin, Total: 3.7 mg/dL (ref 0.0-1.5)",
+                    "Alanine Aminotransferase (ALT): 393.0 IU/L (ref 0.0-40.0); Asparate Aminotransferase (AST): 533.0 IU/L (ref 0.0-40.0); Alkaline Phosphatase: 201.0 IU/L (ref 40.0-130.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Hypertriglyceridemia is unlikely to be the primary cause of this pancreatitis episode.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism under an established disease",
+                  "status": "excluded",
+                  "evidence": [
+                    "Triglycerides: 209.0 mg/dL (ref 0.0-149.0)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "This is the first imaging decision point."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point; acute pancreatitis is established from history and lipase, and biliary etiology is newly suspected from liver test abnormalities."
+              },
+              "current_question": {
+                "primary": "Is there evidence of gallbladder or biliary pathology explaining this episode of acute pancreatitis and cholestatic liver test elevation?",
+                "target": "gallbladder and proximal biliary tree (including common bile duct and gallstones/sludge)",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirm gallstone or obstructive biliary etiology for pancreatitis, prompting consideration of ERCP or surgical consultation and specific biliary management.",
+                "negative_answer_changes": "Reduce likelihood of biliary etiology and prompt evaluation for alternative causes or management without urgent biliary intervention.",
+                "secondary_questions": [
+                  "Is there bile duct dilation or other evidence of ongoing biliary obstruction in the setting of acute pancreatitis?",
+                  "Are there sonographic signs of cholecystitis or other gallbladder disease that would change management?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis_gb_cbd",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and technical assessment of the gallbladder and common bile duct",
+                    "why_required": "The biliary structures must be adequately seen to determine if they contain stones, sludge, or dilation explaining pancreatitis."
+                  },
+                  {
+                    "requirement_key": "req_gallstones",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones or biliary sludge in the gallbladder or common bile duct",
+                    "why_required": "Demonstration of stones or sludge would directly support a biliary etiology for pancreatitis."
+                  },
+                  {
+                    "requirement_key": "req_cbd_dilation",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of common bile duct dilation or other signs of obstructive cholestasis",
+                    "why_required": "The extent of duct dilation helps determine severity and need for urgent ERCP or further biliary imaging."
+                  },
+                  {
+                    "requirement_key": "req_cholecystitis",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characteristics of acute cholecystitis or other gallbladder inflammatory complications",
+                    "why_required": "Concomitant cholecystitis or gallbladder complication would change urgency and type of intervention."
+                  }
+                ],
+                "evidence": [
+                  "Lipase: 3430.0 IU/L (ref 0.0-60.0)",
+                  "Bilirubin, Total: 3.7 mg/dL (ref 0.0-1.5); Alanine Aminotransferase (ALT): 393.0 IU/L; Asparate Aminotransferase (AST): 533.0 IU/L; Alkaline Phosphatase: 201.0 IU/L"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis_gb_cbd",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No prior abdominal ultrasound or hepatobiliary imaging is documented before this order."
+                    ],
+                    "reason": "Only a chest radiograph has been performed; it does not visualize gallbladder or bile ducts."
+                  },
+                  {
+                    "requirement_key": "req_gallstones",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No mention of gallstones or prior gallbladder imaging in the history or imaging section."
+                    ],
+                    "reason": "There is no imaging or prior diagnosis documenting stones or their absence."
+                  },
+                  {
+                    "requirement_key": "req_cbd_dilation",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Bilirubin, Total: 3.7 mg/dL (ref 0.0-1.5)"
+                    ],
+                    "reason": "Laboratory cholestasis suggests possible obstruction, but actual duct diameter or obstruction severity has not been imaged."
+                  },
+                  {
+                    "requirement_key": "req_cholecystitis",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "abd: +bs, soft, ND, +TTP epigastric/LUQ, no guarding or rebound"
+                    ],
+                    "reason": "Physical exam does not localize to RUQ or demonstrate peritoneal signs; no imaging has assessed gallbladder wall, pericholecystic fluid, or sonographic Murphy sign."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before this order, there is strong biochemical evidence of pancreatitis and cholestasis but no imaging of the hepatobiliary system to determine biliary etiology or complications."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant / hepatobiliary ultrasound can directly visualize the gallbladder and common bile duct, detect stones or sludge, assess duct size, and evaluate for cholecystitis or other biliary pathology.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The choice of a single-organ liver or gallbladder protocol rather than a more comprehensive pancreatobiliary or full abdominal study is not fully explained by the chart alone."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis as the cause of his epigastric pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 3430.0 IU/L (ref 0.0-60.0)\",\n        \"Pt is ___ y.o male with h.o DM1 who developed \\\"heartburn\\\" at 3pm yesterday... awoke suddenly at 2am with \\\"cramping\\\" ___ epigastric pain with radiation to the back\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The acute pancreatitis may be biliary in origin (gallstone pancreatitis or other hepatobiliary obstruction).\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism under an established disease\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Bilirubin, Total: 3.7 mg/dL (ref 0.0-1.5)\",\n        \"Alanine Aminotransferase (ALT): 393.0 IU/L (ref 0.0-40.0); Asparate Aminotransferase (AST): 533.0 IU/L (ref 0.0-40.0); Alkaline Phosphatase: 201.0 IU/L (ref 40.0-130.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Hypertriglyceridemia is unlikely to be the primary cause of this pancreatitis episode.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism under an established disease\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"Triglycerides: 209.0 mg/dL (ref 0.0-149.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"This is the first imaging decision point.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; acute pancreatitis is established from history and lipase, and biliary etiology is newly suspected from liver test abnormalities.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there evidence of gallbladder or biliary pathology explaining this episode of acute pancreatitis and cholestatic liver test elevation?\",\n    \"target\": \"gallbladder and proximal biliary tree (including common bile duct and gallstones/sludge)\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirm gallstone or obstructive biliary etiology for pancreatitis, prompting consideration of ERCP or surgical consultation and specific biliary management.\",\n    \"negative_answer_changes\": \"Reduce likelihood of biliary etiology and prompt evaluation for alternative causes or management without urgent biliary intervention.\",\n    \"secondary_questions\": [\n      \"Is there bile duct dilation or other evidence of ongoing biliary obstruction in the setting of acute pancreatitis?\",\n      \"Are there sonographic signs of cholecystitis or other gallbladder disease that would change management?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis_gb_cbd\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and technical assessment of the gallbladder and common bile duct\",\n        \"why_required\": \"The biliary structures must be adequately seen to determine if they contain stones, sludge, or dilation explaining pancreatitis.\"\n      },\n      {\n        \"requirement_key\": \"req_gallstones\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones or biliary sludge in the gallbladder or common bile duct\",\n        \"why_required\": \"Demonstration of stones or sludge would directly support a biliary etiology for pancreatitis.\"\n      },\n      {\n        \"requirement_key\": \"req_cbd_dilation\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of common bile duct dilation or other signs of obstructive cholestasis\",\n        \"why_required\": \"The extent of duct dilation helps determine severity and need for urgent ERCP or further biliary imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_cholecystitis\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characteristics of acute cholecystitis or other gallbladder inflammatory complications\",\n        \"why_required\": \"Concomitant cholecystitis or gallbladder complication would change urgency and type of intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 3430.0 IU/L (ref 0.0-60.0)\",\n      \"Bilirubin, Total: 3.7 mg/dL (ref 0.0-1.5); Alanine Aminotransferase (ALT): 393.0 IU/L; Asparate Aminotransferase (AST): 533.0 IU/L; Alkaline Phosphatase: 201.0 IU/L\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis_gb_cbd\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal ultrasound or hepatobiliary imaging is documented before this order.\"\n        ],\n        \"reason\": \"Only a chest radiograph has been performed; it does not visualize gallbladder or bile ducts.\"\n      },\n      {\n        \"requirement_key\": \"req_gallstones\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No mention of gallstones or prior gallbladder imaging in the history or imaging section.\"\n        ],\n        \"reason\": \"There is no imaging or prior diagnosis documenting stones or their absence.\"\n      },\n      {\n        \"requirement_key\": \"req_cbd_dilation\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Bilirubin, Total: 3.7 mg/dL (ref 0.0-1.5)\"\n        ],\n        \"reason\": \"Laboratory cholestasis suggests possible obstruction, but actual duct diameter or obstruction severity has not been imaged.\"\n      },\n      {\n        \"requirement_key\": \"req_cholecystitis\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"abd: +bs, soft, ND, +TTP epigastric/LUQ, no guarding or rebound\"\n        ],\n        \"reason\": \"Physical exam does not localize to RUQ or demonstrate peritoneal signs; no imaging has assessed gallbladder wall, pericholecystic fluid, or sonographic Murphy sign.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before this order, there is strong biochemical evidence of pancreatitis and cholestasis but no imaging of the hepatobiliary system to determine biliary etiology or complications.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant / hepatobiliary ultrasound can directly visualize the gallbladder and common bile duct, detect stones or sludge, assess duct size, and evaluate for cholecystitis or other biliary pathology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of a single-organ liver or gallbladder protocol rather than a more comprehensive pancreatobiliary or full abdominal study is not fully explained by the chart alone.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788171434-zETUppueoVElgbJnlnkQ",
+            "usage": {
+              "completion_tokens": 1949,
+              "prompt_tokens": 3279,
+              "total_tokens": 5228,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02358875,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02358875,
+                "upstream_inference_prompt_cost": 0.00409875,
+                "upstream_inference_completions_cost": 0.01949
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis as the cause of his epigastric pain.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific disease diagnosis",
+            "status": "established",
+            "evidence": [
+              "Lipase: 3430.0 IU/L (ref 0.0-60.0)",
+              "Pt is ___ y.o male with h.o DM1 who developed \"heartburn\" at 3pm yesterday... awoke suddenly at 2am with \"cramping\" ___ epigastric pain with radiation to the back"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The acute pancreatitis may be biliary in origin (gallstone pancreatitis or other hepatobiliary obstruction).",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism under an established disease",
+            "status": "suspected",
+            "evidence": [
+              "Bilirubin, Total: 3.7 mg/dL (ref 0.0-1.5)",
+              "Alanine Aminotransferase (ALT): 393.0 IU/L (ref 0.0-40.0); Asparate Aminotransferase (AST): 533.0 IU/L (ref 0.0-40.0); Alkaline Phosphatase: 201.0 IU/L (ref 40.0-130.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Hypertriglyceridemia is unlikely to be the primary cause of this pancreatitis episode.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism under an established disease",
+            "status": "excluded",
+            "evidence": [
+              "Triglycerides: 209.0 mg/dL (ref 0.0-149.0)"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "This is the first imaging decision point."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point; acute pancreatitis is established from history and lipase, and biliary etiology is newly suspected from liver test abnormalities."
+        },
+        "current_question": {
+          "primary": "Is there evidence of gallbladder or biliary pathology explaining this episode of acute pancreatitis and cholestatic liver test elevation?",
+          "target": "gallbladder and proximal biliary tree (including common bile duct and gallstones/sludge)",
+          "type": "etiology_or_mechanism",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirm gallstone or obstructive biliary etiology for pancreatitis, prompting consideration of ERCP or surgical consultation and specific biliary management.",
+          "negative_answer_changes": "Reduce likelihood of biliary etiology and prompt evaluation for alternative causes or management without urgent biliary intervention.",
+          "secondary_questions": [
+            "Is there bile duct dilation or other evidence of ongoing biliary obstruction in the setting of acute pancreatitis?",
+            "Are there sonographic signs of cholecystitis or other gallbladder disease that would change management?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis_gb_cbd",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization and technical assessment of the gallbladder and common bile duct",
+              "why_required": "The biliary structures must be adequately seen to determine if they contain stones, sludge, or dilation explaining pancreatitis."
+            },
+            {
+              "requirement_key": "req_gallstones",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones or biliary sludge in the gallbladder or common bile duct",
+              "why_required": "Demonstration of stones or sludge would directly support a biliary etiology for pancreatitis."
+            },
+            {
+              "requirement_key": "req_cbd_dilation",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Degree of common bile duct dilation or other signs of obstructive cholestasis",
+              "why_required": "The extent of duct dilation helps determine severity and need for urgent ERCP or further biliary imaging."
+            },
+            {
+              "requirement_key": "req_cholecystitis",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and characteristics of acute cholecystitis or other gallbladder inflammatory complications",
+              "why_required": "Concomitant cholecystitis or gallbladder complication would change urgency and type of intervention."
+            }
+          ],
+          "evidence": [
+            "Lipase: 3430.0 IU/L (ref 0.0-60.0)",
+            "Bilirubin, Total: 3.7 mg/dL (ref 0.0-1.5); Alanine Aminotransferase (ALT): 393.0 IU/L; Asparate Aminotransferase (AST): 533.0 IU/L; Alkaline Phosphatase: 201.0 IU/L"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis_gb_cbd",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No prior abdominal ultrasound or hepatobiliary imaging is documented before this order."
+              ],
+              "reason": "Only a chest radiograph has been performed; it does not visualize gallbladder or bile ducts."
+            },
+            {
+              "requirement_key": "req_gallstones",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No mention of gallstones or prior gallbladder imaging in the history or imaging section."
+              ],
+              "reason": "There is no imaging or prior diagnosis documenting stones or their absence."
+            },
+            {
+              "requirement_key": "req_cbd_dilation",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Bilirubin, Total: 3.7 mg/dL (ref 0.0-1.5)"
+              ],
+              "reason": "Laboratory cholestasis suggests possible obstruction, but actual duct diameter or obstruction severity has not been imaged."
+            },
+            {
+              "requirement_key": "req_cholecystitis",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "abd: +bs, soft, ND, +TTP epigastric/LUQ, no guarding or rebound"
+              ],
+              "reason": "Physical exam does not localize to RUQ or demonstrate peritoneal signs; no imaging has assessed gallbladder wall, pericholecystic fluid, or sonographic Murphy sign."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Before this order, there is strong biochemical evidence of pancreatitis and cholestasis but no imaging of the hepatobiliary system to determine biliary etiology or complications."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant / hepatobiliary ultrasound can directly visualize the gallbladder and common bile duct, detect stones or sludge, assess duct size, and evaluate for cholecystitis or other biliary pathology.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The choice of a single-organ liver or gallbladder protocol rather than a more comprehensive pancreatobiliary or full abdominal study is not fully explained by the chart alone."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

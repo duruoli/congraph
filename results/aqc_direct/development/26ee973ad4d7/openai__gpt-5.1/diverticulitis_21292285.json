@@ -1,0 +1,1623 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 21292285,
+  "source_path": "results/annotation_experiment/full/diverticulitis_21292285.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABDOMEN W/O CONTRAST)",
+      "request_prompt_sha256": "261740bd94b31ccb0765546f8c1c69b941210139a9e1bc893ec640766636f532",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "261740bd94b31ccb0765546f8c1c69b941210139a9e1bc893ec640766636f532",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute surgical abdomen with concern for intra-abdominal catastrophe such as perforation, ischemia, or peritonitis causing shock.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome-level working diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "“presents with less than one day of acute abdominal pain.  Seen at ___ and was hypotensive with concerning abdominal exam, so transfer here for further eval.”",
+                    "“Abd is diffusely tender, rigid, with rebound and guarding” and “75/40”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has underlying chronic liver disease with ascites contributing to diagnostic uncertainty about the source of abdominal findings.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "disease-level comorbidity framing abdominal process",
+                  "status": "established",
+                  "evidence": [
+                    "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”",
+                    "Ascitic fluid studies show elevated protein and WBCs: “Total Protein, Ascites: 4.5 g/dL… Polys: 85.0 %”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Renal failure and anticoagulation (coumadin) substantially limit contrast use and increase the risk of occult hemorrhagic or ischemic intra-abdominal complications.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "complication and risk-factor level",
+                  "status": "established",
+                  "evidence": [
+                    "“ESRD… Creatinine: 5.8 mg/dL… Estimated GFR = 10… GFR<15 = Kidney Failure.”",
+                    "“Afib on coumadin… INR: 3.9… PT: 37.2 sec”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First decision point; no previous imaging order."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; initial working assumptions are derived from history, exam, labs, and ascites studies."
+              },
+              "current_question": {
+                "primary": "What acute intra-abdominal process is causing this patient’s shock and peritoneal signs in the setting of ascites and liver disease, given that IV contrast is contraindicated?",
+                "target": "acute intra-abdominal pathology (perforation, ischemia, hemorrhage, abscess, or other source of peritonitis) in the abdomen",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identification of a specific surgical or procedural target (e.g., perforation site, abscess, large hematoma, bowel ischemia pattern) would support urgent operative or interventional management and targeted source control.",
+                "negative_answer_changes": "If no clear catastrophic lesion is identified, clinicians may prioritize non-operative causes, continued resuscitation, repeat or alternative imaging, diagnostic paracentesis/serial exams, or palliative decisions given comorbidities.",
+                "secondary_questions": [
+                  "Is there imaging evidence of complications such as free air, large volume hemoperitoneum, or gross bowel infarction that would mandate or argue strongly against emergent surgery in this high-risk patient?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Global visualization of the abdomen and peritoneal cavity, including bowel loops, mesentery, and intra-abdominal fluid/collections, even without IV contrast.",
+                    "why_required": "Overall assessment is needed to survey for major pathology (free air, large collections, gross bowel abnormality) as a first step in determining the acute source."
+                  },
+                  {
+                    "requirement_key": "req_peritonitis",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of radiographic signs of perforation or peritonitis (free intraperitoneal air, pneumatosis, marked bowel wall thickening or dilatation, loculated or complex ascitic collections).",
+                    "why_required": "Detecting perforation/peritonitis would confirm a surgical or interventional source and guide emergent management."
+                  },
+                  {
+                    "requirement_key": "req_hemorrhage",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of large intra-abdominal or intraperitoneal hemorrhage or hematoma that could cause hypotension in an anticoagulated patient.",
+                    "why_required": "Substantial hemoperitoneum would change resuscitation strategy and operative/interventional planning, and is particularly relevant with INR 3.9."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of any detected bowel or solid-organ abnormality (e.g., diffuse vs focal bowel involvement, size and distribution of collections).",
+                    "why_required": "The extent determines feasibility and risk of surgery versus conservative or palliative approaches in a patient with ESRD, CAD, AS, and coagulopathy."
+                  }
+                ],
+                "evidence": [
+                  "“presents with less than one day of acute abdominal pain… hypotensive with concerning abdominal exam… Abd is diffusely tender, rigid, with rebound and guarding”",
+                  "“ESRD… Creatinine: 5.8… INR: 3.9… Afib on coumadin… CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                    ],
+                    "reason": "A prior CT abdomen is mentioned but appears non-contrast and non-diagnostic for source; it confirms ascites and nodular liver but not the cause of the acute abdomen, so visualization of key acute pathology remains incomplete."
+                  },
+                  {
+                    "requirement_key": "req_peritonitis",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“No obvious source of perforation or sepsis.”"
+                    ],
+                    "reason": "The prior CT explicitly failed to reveal a source; this is effectively an unanswered question about perforation/peritonitis rather than a confident exclusion, especially with ongoing rigid abdomen."
+                  },
+                  {
+                    "requirement_key": "req_hemorrhage",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      ""
+                    ],
+                    "reason": "There is no specific mention of evaluating or excluding intra-abdominal hemorrhage on prior imaging; anticoagulation and hypotension keep this as an open concern."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“No obvious source of perforation or sepsis.”"
+                    ],
+                    "reason": "The prior CT provides no detail on severity or extent of any acute process, only that no obvious source was seen; thus extent remains uncharacterized."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Despite a prior CT, the key acute-source questions (perforation, hemorrhage, extent of bowel/organ involvement) remain unresolved in a hemodynamically unstable patient with peritoneal signs."
+              },
+              "current_order_fit": {
+                "test_question_capability": "partially_capable",
+                "why_this_order_could_answer": "A non-contrast CT abdomen can still detect free air, large or complex fluid collections, gross bowel obstruction, pneumatosis, and large hematomas, informing the identity and extent of acute intra-abdominal catastrophe when IV contrast is unsafe.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The choice to repeat or obtain another CT abdomen without contrast despite a prior CT and severe renal disease is only partly explained; timing, differences in protocol, and whether this is a repeat vs outside study review are not explicit."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute surgical abdomen with concern for intra-abdominal catastrophe such as perforation, ischemia, or peritonitis causing shock.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome-level working diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“presents with less than one day of acute abdominal pain.  Seen at ___ and was hypotensive with concerning abdominal exam, so transfer here for further eval.”\",\n        \"“Abd is diffusely tender, rigid, with rebound and guarding” and “75/40”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has underlying chronic liver disease with ascites contributing to diagnostic uncertainty about the source of abdominal findings.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease-level comorbidity framing abdominal process\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\",\n        \"Ascitic fluid studies show elevated protein and WBCs: “Total Protein, Ascites: 4.5 g/dL… Polys: 85.0 %”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Renal failure and anticoagulation (coumadin) substantially limit contrast use and increase the risk of occult hemorrhagic or ischemic intra-abdominal complications.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication and risk-factor level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“ESRD… Creatinine: 5.8 mg/dL… Estimated GFR = 10… GFR<15 = Kidney Failure.”\",\n        \"“Afib on coumadin… INR: 3.9… PT: 37.2 sec”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no previous imaging order.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; initial working assumptions are derived from history, exam, labs, and ascites studies.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What acute intra-abdominal process is causing this patient’s shock and peritoneal signs in the setting of ascites and liver disease, given that IV contrast is contraindicated?\",\n    \"target\": \"acute intra-abdominal pathology (perforation, ischemia, hemorrhage, abscess, or other source of peritonitis) in the abdomen\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identification of a specific surgical or procedural target (e.g., perforation site, abscess, large hematoma, bowel ischemia pattern) would support urgent operative or interventional management and targeted source control.\",\n    \"negative_answer_changes\": \"If no clear catastrophic lesion is identified, clinicians may prioritize non-operative causes, continued resuscitation, repeat or alternative imaging, diagnostic paracentesis/serial exams, or palliative decisions given comorbidities.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of complications such as free air, large volume hemoperitoneum, or gross bowel infarction that would mandate or argue strongly against emergent surgery in this high-risk patient?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Global visualization of the abdomen and peritoneal cavity, including bowel loops, mesentery, and intra-abdominal fluid/collections, even without IV contrast.\",\n        \"why_required\": \"Overall assessment is needed to survey for major pathology (free air, large collections, gross bowel abnormality) as a first step in determining the acute source.\"\n      },\n      {\n        \"requirement_key\": \"req_peritonitis\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of radiographic signs of perforation or peritonitis (free intraperitoneal air, pneumatosis, marked bowel wall thickening or dilatation, loculated or complex ascitic collections).\",\n        \"why_required\": \"Detecting perforation/peritonitis would confirm a surgical or interventional source and guide emergent management.\"\n      },\n      {\n        \"requirement_key\": \"req_hemorrhage\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of large intra-abdominal or intraperitoneal hemorrhage or hematoma that could cause hypotension in an anticoagulated patient.\",\n        \"why_required\": \"Substantial hemoperitoneum would change resuscitation strategy and operative/interventional planning, and is particularly relevant with INR 3.9.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of any detected bowel or solid-organ abnormality (e.g., diffuse vs focal bowel involvement, size and distribution of collections).\",\n        \"why_required\": \"The extent determines feasibility and risk of surgery versus conservative or palliative approaches in a patient with ESRD, CAD, AS, and coagulopathy.\"\n      }\n    ],\n    \"evidence\": [\n      \"“presents with less than one day of acute abdominal pain… hypotensive with concerning abdominal exam… Abd is diffusely tender, rigid, with rebound and guarding”\",\n      \"“ESRD… Creatinine: 5.8… INR: 3.9… Afib on coumadin… CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n        ],\n        \"reason\": \"A prior CT abdomen is mentioned but appears non-contrast and non-diagnostic for source; it confirms ascites and nodular liver but not the cause of the acute abdomen, so visualization of key acute pathology remains incomplete.\"\n      },\n      {\n        \"requirement_key\": \"req_peritonitis\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“No obvious source of perforation or sepsis.”\"\n        ],\n        \"reason\": \"The prior CT explicitly failed to reveal a source; this is effectively an unanswered question about perforation/peritonitis rather than a confident exclusion, especially with ongoing rigid abdomen.\"\n      },\n      {\n        \"requirement_key\": \"req_hemorrhage\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\"\n        ],\n        \"reason\": \"There is no specific mention of evaluating or excluding intra-abdominal hemorrhage on prior imaging; anticoagulation and hypotension keep this as an open concern.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“No obvious source of perforation or sepsis.”\"\n        ],\n        \"reason\": \"The prior CT provides no detail on severity or extent of any acute process, only that no obvious source was seen; thus extent remains uncharacterized.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Despite a prior CT, the key acute-source questions (perforation, hemorrhage, extent of bowel/organ involvement) remain unresolved in a hemodynamically unstable patient with peritoneal signs.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"partially_capable\",\n    \"why_this_order_could_answer\": \"A non-contrast CT abdomen can still detect free air, large or complex fluid collections, gross bowel obstruction, pneumatosis, and large hematomas, informing the identity and extent of acute intra-abdominal catastrophe when IV contrast is unsafe.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice to repeat or obtain another CT abdomen without contrast despite a prior CT and severe renal disease is only partly explained; timing, differences in protocol, and whether this is a repeat vs outside study review are not explicit.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788177234-qgQU5LT2OAQS3uAFrN0w",
+            "usage": {
+              "completion_tokens": 2108,
+              "prompt_tokens": 3326,
+              "total_tokens": 5434,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0252375,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0252375,
+                "upstream_inference_prompt_cost": 0.0041575,
+                "upstream_inference_completions_cost": 0.02108
+              }
+            }
+          },
+          "validation_errors": [
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "ca0efc9c922c3788cf5165b0d3b8aa077f822cbe588539d235747b5f718f9046",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute surgical abdomen with possible intra-abdominal catastrophe (such as perforation, ischemia, or peritonitis) causing hypotension and diffuse rigid tenderness.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall clinical syndrome / presentation",
+                  "status": "likely",
+                  "evidence": [
+                    "“presents with less than one day of acute abdominal pain… was hypotensive with concerning abdominal exam”",
+                    "“Abd is diffusely tender, rigid, with rebound and guarding”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The etiology of the acute abdomen is currently unclear despite initial CT imaging that did not show an obvious source.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "mechanistic cause of current syndrome",
+                  "status": "unclear",
+                  "evidence": [
+                    "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”",
+                    "“who presents with less than one day of acute abdominal pain… transfer here for further eval.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has decompensated chronic liver disease with new or worsened ascites, which may be contributing to abdominal pain and sepsis physiology.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific underlying disease process",
+                  "status": "suspected",
+                  "evidence": [
+                    "“CT Abdomen->ascites moderate amount, nodular liver.”",
+                    "Ascitic fluid: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "no prior orders at this first decision point",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "no prior imaging question or result to compare at this first step"
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point, so the working assumptions are being established from the baseline presentation and prior outside CT description."
+              },
+              "current_question": {
+                "primary": "What acute intra-abdominal process is causing this patient’s shock and rigid, peritonitic abdomen despite a prior CT that did not show an obvious perforation or septic source?",
+                "target": "acute intra-abdominal pathology such as perforation, ischemia, or other surgical cause of peritonitis",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a specific intra-abdominal catastrophe (e.g., perforation, ischemia, abscess) would support urgent surgical or interventional management and guide resuscitation priorities.",
+                "negative_answer_changes": "If no clear intra-abdominal source is found, clinicians may consider non-abdominal causes of shock or focus on medical management of ascites and sepsis without immediate surgery.",
+                "secondary_questions": [
+                  "Is there radiologic evidence of bowel perforation, ischemia, or other emergent surgical pathology requiring immediate operative or interventional treatment?",
+                  "What is the distribution and severity of ascites and any associated inflammatory or infectious changes within the abdomen?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization of abdominal viscera and peritoneal cavity to evaluate for acute pathology (bowel, mesentery, solid organs, peritoneum).",
+                    "why_required": "Adequate visualization of the abdomen is necessary to determine whether there is a structural cause for peritonitis and hypotension."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of signs of perforation, bowel ischemia, or other acute surgical pathology (e.g., free air, pneumatosis, portal venous gas, focal inflammatory collections).",
+                    "why_required": "Confirming or excluding these findings is essential to decide on emergent surgery versus non-operative management."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of ascites and any associated peritoneal or organ involvement.",
+                    "why_required": "The amount and distribution of ascites and inflammatory changes inform the likelihood and spread of peritonitis and influence procedural or surgical planning."
+                  }
+                ],
+                "evidence": [
+                  "“who presents with less than one day of acute abdominal pain… was hypotensive with concerning abdominal exam”",
+                  "“Abd is diffusely tender, rigid, with rebound and guarding… CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                    ],
+                    "reason": "An outside CT abdomen has already visualized the abdomen and noted ascites and nodular liver but reported no obvious source of perforation or sepsis; given the persistent peritonitic exam and shock, this prior visualization is treated as only partially addressing the current need."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                    ],
+                    "reason": "The prior CT report suggests absence of a clear perforation or septic source, partially refuting major perforation at that time, but limitations of the report and evolving clinical status mean the requirement is not fully satisfied."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“CT Abdomen->ascites moderate amount, nodular liver.”",
+                      "Ascitic studies show inflammatory fluid: “Polys: 85.0 %”"
+                    ],
+                    "reason": "The prior CT and ascitic fluid analysis indicate moderate ascites and inflammatory changes, offering some information on extent but not a full mapping of severity or spread in the current state."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "The prior CT and ascitic fluid analysis offer partial information about intra-abdominal pathology and ascites but do not definitively identify or exclude a specific acute surgical source in the setting of ongoing shock and peritonitis."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A non-contrast CT abdomen can globally reassess the peritoneal cavity and abdominal organs, detect free air, bowel wall changes, or evolving collections, and quantify and characterize ascites in a patient with renal failure and hemodynamic instability.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact reason for repeating CT at this time despite a recent outside CT—such as concern for rapid evolution versus doubt about prior image quality—is not explicit in the chart."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute surgical abdomen with possible intra-abdominal catastrophe (such as perforation, ischemia, or peritonitis) causing hypotension and diffuse rigid tenderness.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical syndrome / presentation\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“presents with less than one day of acute abdominal pain… was hypotensive with concerning abdominal exam”\",\n        \"“Abd is diffusely tender, rigid, with rebound and guarding”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The etiology of the acute abdomen is currently unclear despite initial CT imaging that did not show an obvious source.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"mechanistic cause of current syndrome\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\",\n        \"“who presents with less than one day of acute abdominal pain… transfer here for further eval.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has decompensated chronic liver disease with new or worsened ascites, which may be contributing to abdominal pain and sepsis physiology.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific underlying disease process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“CT Abdomen->ascites moderate amount, nodular liver.”\",\n        \"Ascitic fluid: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior orders at this first decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"no prior imaging question or result to compare at this first step\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point, so the working assumptions are being established from the baseline presentation and prior outside CT description.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What acute intra-abdominal process is causing this patient’s shock and rigid, peritonitic abdomen despite a prior CT that did not show an obvious perforation or septic source?\",\n    \"target\": \"acute intra-abdominal pathology such as perforation, ischemia, or other surgical cause of peritonitis\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a specific intra-abdominal catastrophe (e.g., perforation, ischemia, abscess) would support urgent surgical or interventional management and guide resuscitation priorities.\",\n    \"negative_answer_changes\": \"If no clear intra-abdominal source is found, clinicians may consider non-abdominal causes of shock or focus on medical management of ascites and sepsis without immediate surgery.\",\n    \"secondary_questions\": [\n      \"Is there radiologic evidence of bowel perforation, ischemia, or other emergent surgical pathology requiring immediate operative or interventional treatment?\",\n      \"What is the distribution and severity of ascites and any associated inflammatory or infectious changes within the abdomen?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of abdominal viscera and peritoneal cavity to evaluate for acute pathology (bowel, mesentery, solid organs, peritoneum).\",\n        \"why_required\": \"Adequate visualization of the abdomen is necessary to determine whether there is a structural cause for peritonitis and hypotension.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of signs of perforation, bowel ischemia, or other acute surgical pathology (e.g., free air, pneumatosis, portal venous gas, focal inflammatory collections).\",\n        \"why_required\": \"Confirming or excluding these findings is essential to decide on emergent surgery versus non-operative management.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of ascites and any associated peritoneal or organ involvement.\",\n        \"why_required\": \"The amount and distribution of ascites and inflammatory changes inform the likelihood and spread of peritonitis and influence procedural or surgical planning.\"\n      }\n    ],\n    \"evidence\": [\n      \"“who presents with less than one day of acute abdominal pain… was hypotensive with concerning abdominal exam”\",\n      \"“Abd is diffusely tender, rigid, with rebound and guarding… CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n        ],\n        \"reason\": \"An outside CT abdomen has already visualized the abdomen and noted ascites and nodular liver but reported no obvious source of perforation or sepsis; given the persistent peritonitic exam and shock, this prior visualization is treated as only partially addressing the current need.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n        ],\n        \"reason\": \"The prior CT report suggests absence of a clear perforation or septic source, partially refuting major perforation at that time, but limitations of the report and evolving clinical status mean the requirement is not fully satisfied.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“CT Abdomen->ascites moderate amount, nodular liver.”\",\n          \"Ascitic studies show inflammatory fluid: “Polys: 85.0 %”\"\n        ],\n        \"reason\": \"The prior CT and ascitic fluid analysis indicate moderate ascites and inflammatory changes, offering some information on extent but not a full mapping of severity or spread in the current state.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"The prior CT and ascitic fluid analysis offer partial information about intra-abdominal pathology and ascites but do not definitively identify or exclude a specific acute surgical source in the setting of ongoing shock and peritonitis.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A non-contrast CT abdomen can globally reassess the peritoneal cavity and abdominal organs, detect free air, bowel wall changes, or evolving collections, and quantify and characterize ascites in a patient with renal failure and hemodynamic instability.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact reason for repeating CT at this time despite a recent outside CT—such as concern for rapid evolution versus doubt about prior image quality—is not explicit in the chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788177252-qLLzihUioJQtlpfWXTgo",
+            "usage": {
+              "completion_tokens": 1872,
+              "prompt_tokens": 3362,
+              "total_tokens": 5234,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3200,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0193225,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0193225,
+                "upstream_inference_prompt_cost": 0.0006025,
+                "upstream_inference_completions_cost": 0.01872
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute surgical abdomen with possible intra-abdominal catastrophe (such as perforation, ischemia, or peritonitis) causing hypotension and diffuse rigid tenderness.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "overall clinical syndrome / presentation",
+            "status": "likely",
+            "evidence": [
+              "“presents with less than one day of acute abdominal pain… was hypotensive with concerning abdominal exam”",
+              "“Abd is diffusely tender, rigid, with rebound and guarding”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The etiology of the acute abdomen is currently unclear despite initial CT imaging that did not show an obvious source.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "mechanistic cause of current syndrome",
+            "status": "unclear",
+            "evidence": [
+              "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”",
+              "“who presents with less than one day of acute abdominal pain… transfer here for further eval.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has decompensated chronic liver disease with new or worsened ascites, which may be contributing to abdominal pain and sepsis physiology.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific underlying disease process",
+            "status": "suspected",
+            "evidence": [
+              "“CT Abdomen->ascites moderate amount, nodular liver.”",
+              "Ascitic fluid: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "no prior orders at this first decision point",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "no prior imaging question or result to compare at this first step"
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point, so the working assumptions are being established from the baseline presentation and prior outside CT description."
+        },
+        "current_question": {
+          "primary": "What acute intra-abdominal process is causing this patient’s shock and rigid, peritonitic abdomen despite a prior CT that did not show an obvious perforation or septic source?",
+          "target": "acute intra-abdominal pathology such as perforation, ischemia, or other surgical cause of peritonitis",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a specific intra-abdominal catastrophe (e.g., perforation, ischemia, abscess) would support urgent surgical or interventional management and guide resuscitation priorities.",
+          "negative_answer_changes": "If no clear intra-abdominal source is found, clinicians may consider non-abdominal causes of shock or focus on medical management of ascites and sepsis without immediate surgery.",
+          "secondary_questions": [
+            "Is there radiologic evidence of bowel perforation, ischemia, or other emergent surgical pathology requiring immediate operative or interventional treatment?",
+            "What is the distribution and severity of ascites and any associated inflammatory or infectious changes within the abdomen?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization of abdominal viscera and peritoneal cavity to evaluate for acute pathology (bowel, mesentery, solid organs, peritoneum).",
+              "why_required": "Adequate visualization of the abdomen is necessary to determine whether there is a structural cause for peritonitis and hypotension."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of signs of perforation, bowel ischemia, or other acute surgical pathology (e.g., free air, pneumatosis, portal venous gas, focal inflammatory collections).",
+              "why_required": "Confirming or excluding these findings is essential to decide on emergent surgery versus non-operative management."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity and extent of ascites and any associated peritoneal or organ involvement.",
+              "why_required": "The amount and distribution of ascites and inflammatory changes inform the likelihood and spread of peritonitis and influence procedural or surgical planning."
+            }
+          ],
+          "evidence": [
+            "“who presents with less than one day of acute abdominal pain… was hypotensive with concerning abdominal exam”",
+            "“Abd is diffusely tender, rigid, with rebound and guarding… CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "mixed",
+              "supporting_evidence": [
+                "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+              ],
+              "reason": "An outside CT abdomen has already visualized the abdomen and noted ascites and nodular liver but reported no obvious source of perforation or sepsis; given the persistent peritonitic exam and shock, this prior visualization is treated as only partially addressing the current need."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+              ],
+              "reason": "The prior CT report suggests absence of a clear perforation or septic source, partially refuting major perforation at that time, but limitations of the report and evolving clinical status mean the requirement is not fully satisfied."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“CT Abdomen->ascites moderate amount, nodular liver.”",
+                "Ascitic studies show inflammatory fluid: “Polys: 85.0 %”"
+              ],
+              "reason": "The prior CT and ascitic fluid analysis indicate moderate ascites and inflammatory changes, offering some information on extent but not a full mapping of severity or spread in the current state."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "The prior CT and ascitic fluid analysis offer partial information about intra-abdominal pathology and ascites but do not definitively identify or exclude a specific acute surgical source in the setting of ongoing shock and peritonitis."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A non-contrast CT abdomen can globally reassess the peritoneal cavity and abdominal organs, detect free air, bowel wall changes, or evolving collections, and quantify and characterize ascites in a patient with renal failure and hemodynamic instability.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The exact reason for repeating CT at this time despite a recent outside CT—such as concern for rapid evolution versus doubt about prior image quality—is not explicit in the chart."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": [],
+      "superseded_step": {
+        "step": 1,
+        "ordered": "CT Abdomen (CT ABDOMEN W/O CONTRAST)",
+        "request_prompt_sha256": "261740bd94b31ccb0765546f8c1c69b941210139a9e1bc893ec640766636f532",
+        "attempts": [
+          {
+            "attempt": 1,
+            "request_prompt_sha256": "261740bd94b31ccb0765546f8c1c69b941210139a9e1bc893ec640766636f532",
+            "call": {
+              "parsed": {
+                "assumptions": [
+                  {
+                    "proposition": "The patient has life‑threatening acute surgical abdomen with possible bowel perforation or ischemia causing peritonitis and septic shock.",
+                    "type": "syndrome_or_source_frame",
+                    "other_proposed_type": "",
+                    "level": "syndrome-level working diagnosis explaining the presentation",
+                    "status": "likely",
+                    "evidence": [
+                      "“presents with less than one day of acute abdominal pain… was hypotensive with concerning abdominal exam… Abd is diffusely tender, rigid, with rebound and guarding”",
+                      "“lactate 2.9 . IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                    ],
+                    "support": "well_supported"
+                  },
+                  {
+                    "proposition": "The patient has significant chronic comorbidities (ESRD, CAD, severe valvular/CHF, atrial fibrillation on warfarin) that make anesthesia and emergent laparotomy extremely high risk.",
+                    "type": "intervention_or_device_state",
+                    "other_proposed_type": "",
+                    "level": "patient-level risk/constraint on management",
+                    "status": "established",
+                    "evidence": [
+                      "“PMH of ESRD, CAD, Aortic stenosis, Afib on coumadin… CHF-predominantly diastolic, CRI”",
+                      "“INR: 3.9”"
+                    ],
+                    "support": "well_supported"
+                  },
+                  {
+                    "proposition": "The prior outside CT abdomen without contrast showing ascites and a nodular liver did not identify a clear surgical source, so the source of peritonitis/sepsis remains uncertain.",
+                    "type": "disease_or_finding_identity",
+                    "other_proposed_type": "",
+                    "level": "finding-level interpretation of prior imaging",
+                    "status": "established",
+                    "evidence": [
+                      "“IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                    ],
+                    "support": "well_supported"
+                  }
+                ],
+                "previous_order_update": {
+                  "applicable": false,
+                  "previous_question": null,
+                  "study_adequacy": "not_applicable",
+                  "test_question_capability": "not_applicable",
+                  "result_status": "not_applicable",
+                  "effect_on_previous_question": "not_applicable",
+                  "discordance": {
+                    "label": "not_applicable",
+                    "evidence_stream_1": "",
+                    "evidence_stream_2": "",
+                    "reason": ""
+                  }
+                },
+                "assumption_change": {
+                  "label": "initial",
+                  "changed_proposition": null,
+                  "reason": "This is the first decision point; assumptions are newly inferred from the presenting history, exam, labs, and the outside CT summary."
+                },
+                "current_question": {
+                  "primary": "Is there radiologic evidence of an acute intra‑abdominal surgical catastrophe (such as bowel perforation, ischemia, or other source of peritonitis) that explains the rigid abdomen and shock and would justify high‑risk intervention?",
+                  "target": "acute intra-abdominal surgical source of peritonitis/sepsis (e.g., perforated viscus, ischemic bowel, abscess)",
+                  "type": "existence_or_identity",
+                  "other_proposed_type": "",
+                  "positive_answer_changes": "Strengthen the diagnosis of specific catastrophic intra‑abdominal pathology, prompting emergent surgical or procedural source control despite high operative risk.",
+                  "negative_answer_changes": "Lower the likelihood of a surgically correctable intra‑abdominal source, shifting management toward non‑operative/supportive care or alternative etiologies (e.g., primary peritonitis related to liver disease).",
+                  "secondary_questions": [
+                    "Where within the abdomen is the process localized if present (e.g., small bowel, colon, stomach, gallbladder)?",
+                    "Is there evidence of complications such as pneumoperitoneum, abscess, or bowel necrosis that alter urgency and type of intervention?"
+                  ],
+                  "answer_requirements": [
+                    {
+                      "requirement_key": "req_presence_source",
+                      "id": "presence_or_absence",
+                      "other_proposed_dimension": "",
+                      "dimension": "Presence or absence of a discrete intra‑abdominal source lesion such as bowel perforation, ischemic bowel, abscess, or other focal surgical pathology.",
+                      "why_required": "Determining whether a correctable surgical lesion exists is essential to decide on emergent laparotomy or other invasive source control."
+                    },
+                    {
+                      "requirement_key": "req_localization",
+                      "id": "anatomic_localization",
+                      "other_proposed_dimension": "",
+                      "dimension": "Anatomic site of any identified intra‑abdominal pathology (e.g., specific bowel segment, stomach, gallbladder, retroperitoneum).",
+                      "why_required": "Localization guides feasibility, approach, and risk/benefit assessment of potential operative or percutaneous interventions."
+                    },
+                    {
+                      "requirement_key": "req_complication",
+                      "id": "complication_presence_or_character",
+                      "other_proposed_dimension": "",
+                      "dimension": "Presence and character of complications such as pneumoperitoneum, large-volume or loculated infected fluid, or bowel necrosis.",
+                      "why_required": "Complications define the acuity and may mandate urgent intervention despite comorbidities."
+                    },
+                    {
+                      "requirement_key": "req_visualization",
+                      "id": "target_visualization_or_assessment",
+                      "other_proposed_dimension": "",
+                      "dimension": "Global visualization of abdominal viscera and peritoneal cavity to assess for subtle signs of perforation or ischemia that may have been missed previously.",
+                      "why_required": "Adequate visualization is needed to improve upon the outside CT that reported no obvious source yet the patient is critically ill."
+                    }
+                  ],
+                  "evidence": [
+                    "“presents with less than one day of acute abdominal pain… Abd is diffusely tender, rigid, with rebound and guarding no edema .”",
+                    "“IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                  ]
+                },
+                "question_continuity": "initial",
+                "coverage": {
+                  "requirements": [
+                    {
+                      "requirement_key": "req_presence_source",
+                      "requirement_id": "presence_or_absence",
+                      "status": "partially_addressed",
+                      "direction": "mixed",
+                      "supporting_evidence": [
+                        "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                      ],
+                      "reason": "The outside CT explicitly reports no obvious source, which argues against but does not exclude a surgical lesion; exam and labs still strongly suggest an intra‑abdominal catastrophe."
+                    },
+                    {
+                      "requirement_key": "req_localization",
+                      "requirement_id": "anatomic_localization",
+                      "status": "unaddressed",
+                      "direction": "no_direction",
+                      "supporting_evidence": [
+                        "“No obvious source of perforation or sepsis.”"
+                      ],
+                      "reason": "No specific intra‑abdominal focus or site was identified on the prior CT; only ascites and nodular liver are described."
+                    },
+                    {
+                      "requirement_key": "req_complication",
+                      "requirement_id": "complication_presence_or_character",
+                      "status": "partially_addressed",
+                      "direction": "supports",
+                      "supporting_evidence": [
+                        "“ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”",
+                        "“Abd is diffusely tender, rigid, with rebound and guarding”"
+                      ],
+                      "reason": "Ascites is documented but the prior CT report does not detail pneumoperitoneum, abscess, or necrosis; the exam suggests severe peritonitis but imaging complications are not fully characterized."
+                    },
+                    {
+                      "requirement_key": "req_visualization",
+                      "requirement_id": "target_visualization_or_assessment",
+                      "status": "partially_addressed",
+                      "direction": "no_direction",
+                      "supporting_evidence": [
+                        "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                      ],
+                      "reason": "We know a CT was performed, but have only a brief summary without adequacy details; it may have been limited (e.g., noncontrast in ESRD) and could have missed subtle pathology."
+                    }
+                  ],
+                  "aggregate": "partially_answered",
+                  "aggregate_reason": "A prior CT gives some reassurance by not showing an obvious source, but the key questions about a specific surgical lesion, its exact location, and complications remain incompletely addressed in the face of a very concerning clinical picture."
+                },
+                "current_order_fit": {
+                  "test_question_capability": "capable",
+                  "why_this_order_could_answer": "CT abdomen without contrast can systematically reassess bowel, solid organs, peritoneal cavity, and free air/fluid to detect or better characterize a surgical source of peritonitis and its complications, even in an ESRD patient who cannot receive IV contrast.",
+                  "intent_support": "well_supported",
+                  "unsupported_residual": "The rationale for specifically repeating a noncontrast CT rather than obtaining additional modalities (e.g., focused US, surgical exploration without repeat imaging) is not fully specified, nor is it clear whether the repeat CT is intended as confirmation of the outside study versus interval change assessment."
+                },
+                "derived_transition": "advance",
+                "alternative_reconstruction": ""
+              },
+              "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has life‑threatening acute surgical abdomen with possible bowel perforation or ischemia causing peritonitis and septic shock.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level working diagnosis explaining the presentation\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“presents with less than one day of acute abdominal pain… was hypotensive with concerning abdominal exam… Abd is diffusely tender, rigid, with rebound and guarding”\",\n        \"“lactate 2.9 . IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has significant chronic comorbidities (ESRD, CAD, severe valvular/CHF, atrial fibrillation on warfarin) that make anesthesia and emergent laparotomy extremely high risk.\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"patient-level risk/constraint on management\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“PMH of ESRD, CAD, Aortic stenosis, Afib on coumadin… CHF-predominantly diastolic, CRI”\",\n        \"“INR: 3.9”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The prior outside CT abdomen without contrast showing ascites and a nodular liver did not identify a clear surgical source, so the source of peritonitis/sepsis remains uncertain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"finding-level interpretation of prior imaging\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; assumptions are newly inferred from the presenting history, exam, labs, and the outside CT summary.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there radiologic evidence of an acute intra‑abdominal surgical catastrophe (such as bowel perforation, ischemia, or other source of peritonitis) that explains the rigid abdomen and shock and would justify high‑risk intervention?\",\n    \"target\": \"acute intra-abdominal surgical source of peritonitis/sepsis (e.g., perforated viscus, ischemic bowel, abscess)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Strengthen the diagnosis of specific catastrophic intra‑abdominal pathology, prompting emergent surgical or procedural source control despite high operative risk.\",\n    \"negative_answer_changes\": \"Lower the likelihood of a surgically correctable intra‑abdominal source, shifting management toward non‑operative/supportive care or alternative etiologies (e.g., primary peritonitis related to liver disease).\",\n    \"secondary_questions\": [\n      \"Where within the abdomen is the process localized if present (e.g., small bowel, colon, stomach, gallbladder)?\",\n      \"Is there evidence of complications such as pneumoperitoneum, abscess, or bowel necrosis that alter urgency and type of intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_presence_source\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of a discrete intra‑abdominal source lesion such as bowel perforation, ischemic bowel, abscess, or other focal surgical pathology.\",\n        \"why_required\": \"Determining whether a correctable surgical lesion exists is essential to decide on emergent laparotomy or other invasive source control.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Anatomic site of any identified intra‑abdominal pathology (e.g., specific bowel segment, stomach, gallbladder, retroperitoneum).\",\n        \"why_required\": \"Localization guides feasibility, approach, and risk/benefit assessment of potential operative or percutaneous interventions.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as pneumoperitoneum, large-volume or loculated infected fluid, or bowel necrosis.\",\n        \"why_required\": \"Complications define the acuity and may mandate urgent intervention despite comorbidities.\"\n      },\n      {\n        \"requirement_key\": \"req_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Global visualization of abdominal viscera and peritoneal cavity to assess for subtle signs of perforation or ischemia that may have been missed previously.\",\n        \"why_required\": \"Adequate visualization is needed to improve upon the outside CT that reported no obvious source yet the patient is critically ill.\"\n      }\n    ],\n    \"evidence\": [\n      \"“presents with less than one day of acute abdominal pain… Abd is diffusely tender, rigid, with rebound and guarding no edema .”\",\n      \"“IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_presence_source\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n        ],\n        \"reason\": \"The outside CT explicitly reports no obvious source, which argues against but does not exclude a surgical lesion; exam and labs still strongly suggest an intra‑abdominal catastrophe.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“No obvious source of perforation or sepsis.”\"\n        ],\n        \"reason\": \"No specific intra‑abdominal focus or site was identified on the prior CT; only ascites and nodular liver are described.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\",\n          \"“Abd is diffusely tender, rigid, with rebound and guarding”\"\n        ],\n        \"reason\": \"Ascites is documented but the prior CT report does not detail pneumoperitoneum, abscess, or necrosis; the exam suggests severe peritonitis but imaging complications are not fully characterized.\"\n      },\n      {\n        \"requirement_key\": \"req_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n        ],\n        \"reason\": \"We know a CT was performed, but have only a brief summary without adequacy details; it may have been limited (e.g., noncontrast in ESRD) and could have missed subtle pathology.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"A prior CT gives some reassurance by not showing an obvious source, but the key questions about a specific surgical lesion, its exact location, and complications remain incompletely addressed in the face of a very concerning clinical picture.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"CT abdomen without contrast can systematically reassess bowel, solid organs, peritoneal cavity, and free air/fluid to detect or better characterize a surgical source of peritonitis and its complications, even in an ESRD patient who cannot receive IV contrast.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The rationale for specifically repeating a noncontrast CT rather than obtaining additional modalities (e.g., focused US, surgical exploration without repeat imaging) is not fully specified, nor is it clear whether the repeat CT is intended as confirmation of the outside study versus interval change assessment.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+              "request_id": "gen-1788171066-ACDpkOXE1DfNvp6RFlrg",
+              "usage": {
+                "completion_tokens": 2099,
+                "prompt_tokens": 3326,
+                "total_tokens": 5425,
+                "completion_tokens_details": {
+                  "accepted_prediction_tokens": null,
+                  "audio_tokens": 0,
+                  "reasoning_tokens": 0,
+                  "rejected_prediction_tokens": null,
+                  "text_tokens": null,
+                  "image_tokens": 0
+                },
+                "compute_units": null,
+                "prompt_tokens_details": {
+                  "audio_tokens": 0,
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 0,
+                  "image_tokens": null,
+                  "text_tokens": null,
+                  "video_tokens": 0
+                },
+                "cost": 0.0251475,
+                "is_byok": false,
+                "cost_details": {
+                  "upstream_inference_cost": 0.0251475,
+                  "upstream_inference_prompt_cost": 0.0041575,
+                  "upstream_inference_completions_cost": 0.02099
+                }
+              }
+            },
+            "validation_errors": [
+              "first_step_derived_transition_not_initial"
+            ]
+          },
+          {
+            "attempt": 2,
+            "request_prompt_sha256": "ca0efc9c922c3788cf5165b0d3b8aa077f822cbe588539d235747b5f718f9046",
+            "call": {
+              "parsed": {
+                "assumptions": [
+                  {
+                    "proposition": "The patient has an acute surgical abdomen with diffuse peritonitis and septic shock physiology.",
+                    "type": "syndrome_or_source_frame",
+                    "other_proposed_type": "",
+                    "level": "syndrome-level clinical problem",
+                    "status": "likely",
+                    "evidence": [
+                      "VS: 98.8  60  75/40  20  97 4L  Moderate distress, uncomfortable, intermittent confusion",
+                      "Abd is diffusely tender, rigid, with rebound and guarding",
+                      "Seen at ___ and was hypotensive with concerning abdominal exam, so transfer here for further eval."
+                    ],
+                    "support": "well_supported"
+                  },
+                  {
+                    "proposition": "The patient has underlying advanced chronic kidney disease / ESRD limiting the safe use of iodinated contrast.",
+                    "type": "intervention_or_device_state",
+                    "other_proposed_type": "",
+                    "level": "comorbid condition affecting test choice",
+                    "status": "established",
+                    "evidence": [
+                      "___ with PMH of ESRD, CAD, Aortic stenosis, Afib on coumadin",
+                      "Creatinine: 5.8 mg/dL (ref 0.5-1.2) ... Estimated GFR = 10 if non African-American"
+                    ],
+                    "support": "well_supported"
+                  },
+                  {
+                    "proposition": "The patient has new or worsening ascites, possibly related to nodular liver disease/cirrhosis, and this may be the site or clue to intra-abdominal infection or perforation.",
+                    "type": "disease_or_finding_identity",
+                    "other_proposed_type": "",
+                    "level": "disease/finding level",
+                    "status": "suspected",
+                    "evidence": [
+                      "IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.",
+                      "Bilirubin, Total, Ascites: 1.2 mg/dL ... Polys: 85.0 %"
+                    ],
+                    "support": "weakly_supported"
+                  }
+                ],
+                "previous_order_update": {
+                  "applicable": false,
+                  "previous_question": null,
+                  "study_adequacy": "not_applicable",
+                  "test_question_capability": "not_applicable",
+                  "result_status": "not_applicable",
+                  "effect_on_previous_question": "not_applicable; this is the first decision point so there is no prior question to update.",
+                  "discordance": {
+                    "label": "not_applicable",
+                    "evidence_stream_1": "",
+                    "evidence_stream_2": "",
+                    "reason": "No prior imaging question or results are present at this first step."
+                  }
+                },
+                "assumption_change": {
+                  "label": "initial",
+                  "changed_proposition": null,
+                  "reason": "This is the first decision point, so these assumptions are being formulated de novo from the history, exam, and labs."
+                },
+                "current_question": {
+                  "primary": "Is there an intra-abdominal catastrophic process such as perforation, ischemia, or other surgical pathology explaining the acute peritonitis and shock?",
+                  "target": "intra-abdominal viscera and peritoneal cavity",
+                  "type": "existence_or_identity",
+                  "other_proposed_type": "",
+                  "positive_answer_changes": "Confirmation of a surgically remediable source (e.g., perforated viscus, ischemic bowel) would prompt emergent surgical consultation/intervention and source control.",
+                  "negative_answer_changes": "If no clear catastrophic source is identified, clinicians may pursue alternative explanations (e.g., medical sepsis, primary spontaneous peritonitis, non-surgical liver-related complications) and tailor management away from immediate surgery.",
+                  "secondary_questions": [
+                    "Is there imaging evidence of complications such as bowel ischemia, pneumoperitoneum, or abscess that would change operative urgency?",
+                    "What is the distribution and character of ascites and peritoneal findings in this patient with nodular liver and suspected infection?"
+                  ],
+                  "answer_requirements": [
+                    {
+                      "requirement_key": "req_1",
+                      "id": "target_visualization_or_assessment",
+                      "other_proposed_dimension": "",
+                      "dimension": "Global visualization of abdominal organs and peritoneal cavity to evaluate for gross pathology (e.g., free air, free fluid, abnormal bowel).",
+                      "why_required": "A broad overview is needed to detect any major surgical process in a patient with diffuse peritonitis and shock."
+                    },
+                    {
+                      "requirement_key": "req_2",
+                      "id": "presence_or_absence",
+                      "other_proposed_dimension": "",
+                      "dimension": "Presence or absence of signs of perforated viscus or free intraperitoneal air.",
+                      "why_required": "Demonstrating or excluding perforation directly guides emergent operative decision-making."
+                    },
+                    {
+                      "requirement_key": "req_3",
+                      "id": "complication_presence_or_character",
+                      "other_proposed_dimension": "",
+                      "dimension": "Evidence of ischemic bowel or other severe intra-abdominal complications (e.g., abscess, infarction).",
+                      "why_required": "Identifying serious complications determines urgency and type of intervention and prognosis."
+                    }
+                  ],
+                  "evidence": [
+                    "who presents with less than one day of acute abdominal pain.",
+                    "Abd is diffusely tender, rigid, with rebound and guarding",
+                    "VS: 98.8  60  75/40  20  97 4L  Moderate distress, uncomfortable, intermittent confusion"
+                  ]
+                },
+                "question_continuity": "initial",
+                "coverage": {
+                  "requirements": [
+                    {
+                      "requirement_key": "req_1",
+                      "requirement_id": "target_visualization_or_assessment",
+                      "status": "unaddressed",
+                      "direction": "no_direction",
+                      "supporting_evidence": [
+                        "IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis."
+                      ],
+                      "reason": "A prior CT abdomen at an outside facility noted ascites and a nodular liver but explicitly reported 'No obvious source of perforation or sepsis,' without detailed characterization; given the persistent peritonitis and shock, this does not sufficiently visualize or characterize all current pathology at this institution."
+                    },
+                    {
+                      "requirement_key": "req_2",
+                      "requirement_id": "presence_or_absence",
+                      "status": "partially_addressed",
+                      "direction": "refutes",
+                      "supporting_evidence": [
+                        "IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis."
+                      ],
+                      "reason": "The prior CT suggests no clear source of perforation or sepsis, but it may not have been contrast-enhanced or contemporaneous with the current decompensation and cannot be fully relied on to exclude perforation now."
+                    },
+                    {
+                      "requirement_key": "req_3",
+                      "requirement_id": "complication_presence_or_character",
+                      "status": "unaddressed",
+                      "direction": "no_direction",
+                      "supporting_evidence": [
+                        "IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis."
+                      ],
+                      "reason": "The outside CT did not describe bowel ischemia, abscess, or detailed complications and only noted ascites and nodular liver; complication status remains essentially unknown."
+                    }
+                  ],
+                  "aggregate": "unanswered",
+                  "aggregate_reason": "Existing imaging gives only a cursory negative statement about a source of perforation or sepsis and does not adequately resolve whether a catastrophic intra-abdominal process is present now."
+                },
+                "current_order_fit": {
+                  "test_question_capability": "capable",
+                  "why_this_order_could_answer": "A CT abdomen without contrast can broadly visualize abdominal organs and the peritoneal cavity, detect free air, large collections, and gross bowel pathology while avoiding iodinated contrast in severe renal dysfunction.",
+                  "intent_support": "well_supported",
+                  "unsupported_residual": "The precise rationale for repeating CT so soon after an earlier CT (e.g., change in exam severity vs. concern about prior study quality) and the choice against limited-contrast protocols are not fully specified in the chart."
+                },
+                "derived_transition": "initial",
+                "alternative_reconstruction": ""
+              },
+              "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute surgical abdomen with diffuse peritonitis and septic shock physiology.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level clinical problem\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"VS: 98.8  60  75/40  20  97 4L  Moderate distress, uncomfortable, intermittent confusion\",\n        \"Abd is diffusely tender, rigid, with rebound and guarding\",\n        \"Seen at ___ and was hypotensive with concerning abdominal exam, so transfer here for further eval.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has underlying advanced chronic kidney disease / ESRD limiting the safe use of iodinated contrast.\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"comorbid condition affecting test choice\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"___ with PMH of ESRD, CAD, Aortic stenosis, Afib on coumadin\",\n        \"Creatinine: 5.8 mg/dL (ref 0.5-1.2) ... Estimated GFR = 10 if non African-American\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has new or worsening ascites, possibly related to nodular liver disease/cirrhosis, and this may be the site or clue to intra-abdominal infection or perforation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease/finding level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.\",\n        \"Bilirubin, Total, Ascites: 1.2 mg/dL ... Polys: 85.0 %\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable; this is the first decision point so there is no prior question to update.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging question or results are present at this first step.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point, so these assumptions are being formulated de novo from the history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an intra-abdominal catastrophic process such as perforation, ischemia, or other surgical pathology explaining the acute peritonitis and shock?\",\n    \"target\": \"intra-abdominal viscera and peritoneal cavity\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirmation of a surgically remediable source (e.g., perforated viscus, ischemic bowel) would prompt emergent surgical consultation/intervention and source control.\",\n    \"negative_answer_changes\": \"If no clear catastrophic source is identified, clinicians may pursue alternative explanations (e.g., medical sepsis, primary spontaneous peritonitis, non-surgical liver-related complications) and tailor management away from immediate surgery.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of complications such as bowel ischemia, pneumoperitoneum, or abscess that would change operative urgency?\",\n      \"What is the distribution and character of ascites and peritoneal findings in this patient with nodular liver and suspected infection?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Global visualization of abdominal organs and peritoneal cavity to evaluate for gross pathology (e.g., free air, free fluid, abnormal bowel).\",\n        \"why_required\": \"A broad overview is needed to detect any major surgical process in a patient with diffuse peritonitis and shock.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of signs of perforated viscus or free intraperitoneal air.\",\n        \"why_required\": \"Demonstrating or excluding perforation directly guides emergent operative decision-making.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of ischemic bowel or other severe intra-abdominal complications (e.g., abscess, infarction).\",\n        \"why_required\": \"Identifying serious complications determines urgency and type of intervention and prognosis.\"\n      }\n    ],\n    \"evidence\": [\n      \"who presents with less than one day of acute abdominal pain.\",\n      \"Abd is diffusely tender, rigid, with rebound and guarding\",\n      \"VS: 98.8  60  75/40  20  97 4L  Moderate distress, uncomfortable, intermittent confusion\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.\"\n        ],\n        \"reason\": \"A prior CT abdomen at an outside facility noted ascites and a nodular liver but explicitly reported 'No obvious source of perforation or sepsis,' without detailed characterization; given the persistent peritonitis and shock, this does not sufficiently visualize or characterize all current pathology at this institution.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.\"\n        ],\n        \"reason\": \"The prior CT suggests no clear source of perforation or sepsis, but it may not have been contrast-enhanced or contemporaneous with the current decompensation and cannot be fully relied on to exclude perforation now.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.\"\n        ],\n        \"reason\": \"The outside CT did not describe bowel ischemia, abscess, or detailed complications and only noted ascites and nodular liver; complication status remains essentially unknown.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Existing imaging gives only a cursory negative statement about a source of perforation or sepsis and does not adequately resolve whether a catastrophic intra-abdominal process is present now.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A CT abdomen without contrast can broadly visualize abdominal organs and the peritoneal cavity, detect free air, large collections, and gross bowel pathology while avoiding iodinated contrast in severe renal dysfunction.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The precise rationale for repeating CT so soon after an earlier CT (e.g., change in exam severity vs. concern about prior study quality) and the choice against limited-contrast protocols are not fully specified in the chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+              "request_id": "gen-1788171095-ceJF6Ju5X0q6YiVkJ3iw",
+              "usage": {
+                "completion_tokens": 1850,
+                "prompt_tokens": 3362,
+                "total_tokens": 5212,
+                "completion_tokens_details": {
+                  "accepted_prediction_tokens": null,
+                  "audio_tokens": 0,
+                  "reasoning_tokens": 0,
+                  "rejected_prediction_tokens": null,
+                  "text_tokens": null,
+                  "image_tokens": 0
+                },
+                "compute_units": null,
+                "prompt_tokens_details": {
+                  "audio_tokens": 0,
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 3200,
+                  "image_tokens": null,
+                  "text_tokens": null,
+                  "video_tokens": 0
+                },
+                "cost": 0.0191025,
+                "is_byok": false,
+                "cost_details": {
+                  "upstream_inference_cost": 0.0191025,
+                  "upstream_inference_prompt_cost": 0.0006025,
+                  "upstream_inference_completions_cost": 0.0185
+                }
+              }
+            },
+            "validation_errors": [
+              "assumption_0_bad_evidence_count"
+            ]
+          },
+          {
+            "attempt": 3,
+            "request_prompt_sha256": "c6a8a55f3513d07cd91a1fa7af8afa213ab9f141205aaa30c8656bcb8b7933f2",
+            "call": {
+              "parsed": {
+                "assumptions": [
+                  {
+                    "proposition": "The patient has an acute surgical abdomen with suspected intra-abdominal catastrophe (e.g., perforation, ischemia, or peritonitis) causing hypotension and rigid, diffusely tender abdomen.",
+                    "type": "syndrome_or_source_frame",
+                    "other_proposed_type": "",
+                    "level": "clinical syndrome level (acute surgical abdomen with shock)",
+                    "status": "likely",
+                    "evidence": [
+                      "“presents with less than one day of acute abdominal pain.  Seen at ___ and was hypotensive with concerning abdominal exam, so transfer here for further eval.”",
+                      "“VS: 98.8  60  75/40  20  97 4L… Abd is diffusely tender, rigid, with rebound and guarding”"
+                    ],
+                    "support": "well_supported"
+                  }
+                ],
+                "previous_order_update": {
+                  "applicable": false,
+                  "previous_question": null,
+                  "study_adequacy": "not_applicable",
+                  "test_question_capability": "not_applicable",
+                  "result_status": "not_applicable",
+                  "effect_on_previous_question": "not_applicable (this is the first decision point)",
+                  "discordance": {
+                    "label": "not_applicable",
+                    "evidence_stream_1": "",
+                    "evidence_stream_2": "",
+                    "reason": "no prior imaging questions or results exist at this initial step"
+                  }
+                },
+                "assumption_change": {
+                  "label": "initial",
+                  "changed_proposition": null,
+                  "reason": "This is the first imaging decision; the acute surgical abdomen syndrome is inferred de novo from history, exam, and vitals."
+                },
+                "current_question": {
+                  "primary": "Is there radiographic evidence of an acute intra-abdominal surgical process such as perforation, ischemia, or another source of peritonitis responsible for this patient’s shock and rigid abdomen?",
+                  "target": "acute intra-abdominal surgical pathology (perforation, ischemia, peritonitis source, or other catastrophic process)",
+                  "type": "existence_or_identity",
+                  "other_proposed_type": "",
+                  "positive_answer_changes": "Confirming a specific acute intra-abdominal catastrophe would support urgent surgical or procedural intervention and targeted resuscitation despite comorbidities.",
+                  "negative_answer_changes": "If no acute surgical source is identified, clinicians may reconsider alternative causes of shock and abdominal findings and potentially delay or modify operative plans.",
+                  "secondary_questions": [
+                    "What is the anatomic location and extent of any identified intra-abdominal pathology contributing to peritonitis or shock?"
+                  ],
+                  "answer_requirements": [
+                    {
+                      "requirement_key": "req_1",
+                      "id": "target_visualization_or_assessment",
+                      "other_proposed_dimension": "",
+                      "dimension": "Global visualization of the abdomen for free air, fluid, bowel wall changes, and solid organ abnormalities",
+                      "why_required": "The acute surgical pathology must first be adequately visualized in order to determine whether a catastrophic intra-abdominal process is present."
+                    },
+                    {
+                      "requirement_key": "req_2",
+                      "id": "presence_or_absence",
+                      "other_proposed_dimension": "",
+                      "dimension": "Presence or absence of signs of perforation, bowel ischemia, or other emergent intra-abdominal pathology (e.g., pneumoperitoneum, devascularized bowel, abscess, or large-volume inflammatory fluid)",
+                      "why_required": "Determining whether a qualifying acute process exists is essential to decide on emergent surgical versus conservative management."
+                    },
+                    {
+                      "requirement_key": "req_3",
+                      "id": "anatomic_localization",
+                      "other_proposed_dimension": "",
+                      "dimension": "Location of any identified intra-abdominal pathology (e.g., specific bowel segment, solid organ, or compartment)",
+                      "why_required": "Localization guides the feasibility, urgency, and type of operative or interventional approach."
+                    }
+                  ],
+                  "evidence": [
+                    "“presents with less than one day of acute abdominal pain.  Seen at ___ and was hypotensive with concerning abdominal exam, so transfer here for further eval.”",
+                    "“Abd is diffusely tender, rigid, with rebound and guarding”"
+                  ]
+                },
+                "question_continuity": "initial",
+                "coverage": {
+                  "requirements": [
+                    {
+                      "requirement_key": "req_1",
+                      "requirement_id": "target_visualization_or_assessment",
+                      "status": "unaddressed",
+                      "direction": "no_direction",
+                      "supporting_evidence": [
+                        "“IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                      ],
+                      "reason": "A prior CT abdomen is mentioned but reported only as revealing moderate ascites and nodular liver with no obvious source; details about technique, contrast use, and adequacy for detecting subtle catastrophic pathology are not provided, so adequate visualization for the current high-stakes question remains uncertain and effectively unaddressed."
+                    },
+                    {
+                      "requirement_key": "req_2",
+                      "requirement_id": "presence_or_absence",
+                      "status": "partially_addressed",
+                      "direction": "refutes",
+                      "supporting_evidence": [
+                        "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                      ],
+                      "reason": "The prior CT reportedly found no obvious source of perforation or sepsis, which partially refutes a grossly apparent source but does not fully exclude more subtle or evolving catastrophic intra-abdominal pathology."
+                    },
+                    {
+                      "requirement_key": "req_3",
+                      "requirement_id": "anatomic_localization",
+                      "status": "unaddressed",
+                      "direction": "no_direction",
+                      "supporting_evidence": [
+                        "“CT Abdomen->ascites moderate amount, nodular liver.”"
+                      ],
+                      "reason": "No specific pathologic focus was localized on prior imaging; documentation only notes ascites and nodular liver without identifying a surgical lesion, so the localization requirement remains unaddressed."
+                    }
+                  ],
+                  "aggregate": "unanswered",
+                  "aggregate_reason": "Although a prior CT described no obvious source of sepsis or perforation, the adequacy and detail are insufficient for the life-threatening acute abdomen, so the key question about a specific catastrophic surgical process remains effectively unanswered."
+                },
+                "current_order_fit": {
+                  "test_question_capability": "capable",
+                  "why_this_order_could_answer": "A non-contrast CT abdomen can depict free air, fluid, bowel dilation, wall thickening, and many emergent intra-abdominal pathologies, directly addressing the need to detect or exclude a catastrophic surgical source.",
+                  "intent_support": "well_supported",
+                  "unsupported_residual": "The rationale for repeating CT despite a prior CT abdomen (e.g., concern for progression, technical limitations of the first scan, or change in condition) is not explicitly documented and remains partly inferential."
+                },
+                "derived_transition": "advance",
+                "alternative_reconstruction": ""
+              },
+              "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute surgical abdomen with suspected intra-abdominal catastrophe (e.g., perforation, ischemia, or peritonitis) causing hypotension and rigid, diffusely tender abdomen.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome level (acute surgical abdomen with shock)\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“presents with less than one day of acute abdominal pain.  Seen at ___ and was hypotensive with concerning abdominal exam, so transfer here for further eval.”\",\n        \"“VS: 98.8  60  75/40  20  97 4L… Abd is diffusely tender, rigid, with rebound and guarding”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable (this is the first decision point)\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"no prior imaging questions or results exist at this initial step\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the acute surgical abdomen syndrome is inferred de novo from history, exam, and vitals.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there radiographic evidence of an acute intra-abdominal surgical process such as perforation, ischemia, or another source of peritonitis responsible for this patient’s shock and rigid abdomen?\",\n    \"target\": \"acute intra-abdominal surgical pathology (perforation, ischemia, peritonitis source, or other catastrophic process)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming a specific acute intra-abdominal catastrophe would support urgent surgical or procedural intervention and targeted resuscitation despite comorbidities.\",\n    \"negative_answer_changes\": \"If no acute surgical source is identified, clinicians may reconsider alternative causes of shock and abdominal findings and potentially delay or modify operative plans.\",\n    \"secondary_questions\": [\n      \"What is the anatomic location and extent of any identified intra-abdominal pathology contributing to peritonitis or shock?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Global visualization of the abdomen for free air, fluid, bowel wall changes, and solid organ abnormalities\",\n        \"why_required\": \"The acute surgical pathology must first be adequately visualized in order to determine whether a catastrophic intra-abdominal process is present.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of signs of perforation, bowel ischemia, or other emergent intra-abdominal pathology (e.g., pneumoperitoneum, devascularized bowel, abscess, or large-volume inflammatory fluid)\",\n        \"why_required\": \"Determining whether a qualifying acute process exists is essential to decide on emergent surgical versus conservative management.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Location of any identified intra-abdominal pathology (e.g., specific bowel segment, solid organ, or compartment)\",\n        \"why_required\": \"Localization guides the feasibility, urgency, and type of operative or interventional approach.\"\n      }\n    ],\n    \"evidence\": [\n      \"“presents with less than one day of acute abdominal pain.  Seen at ___ and was hypotensive with concerning abdominal exam, so transfer here for further eval.”\",\n      \"“Abd is diffusely tender, rigid, with rebound and guarding”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“IMAGING: CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n        ],\n        \"reason\": \"A prior CT abdomen is mentioned but reported only as revealing moderate ascites and nodular liver with no obvious source; details about technique, contrast use, and adequacy for detecting subtle catastrophic pathology are not provided, so adequate visualization for the current high-stakes question remains uncertain and effectively unaddressed.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n        ],\n        \"reason\": \"The prior CT reportedly found no obvious source of perforation or sepsis, which partially refutes a grossly apparent source but does not fully exclude more subtle or evolving catastrophic intra-abdominal pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“CT Abdomen->ascites moderate amount, nodular liver.”\"\n        ],\n        \"reason\": \"No specific pathologic focus was localized on prior imaging; documentation only notes ascites and nodular liver without identifying a surgical lesion, so the localization requirement remains unaddressed.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Although a prior CT described no obvious source of sepsis or perforation, the adequacy and detail are insufficient for the life-threatening acute abdomen, so the key question about a specific catastrophic surgical process remains effectively unanswered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A non-contrast CT abdomen can depict free air, fluid, bowel dilation, wall thickening, and many emergent intra-abdominal pathologies, directly addressing the need to detect or exclude a catastrophic surgical source.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The rationale for repeating CT despite a prior CT abdomen (e.g., concern for progression, technical limitations of the first scan, or change in condition) is not explicitly documented and remains partly inferential.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+              "request_id": "gen-1788171120-iIZZWJdib9mhGm2lymiA",
+              "usage": {
+                "completion_tokens": 1550,
+                "prompt_tokens": 3362,
+                "total_tokens": 4912,
+                "completion_tokens_details": {
+                  "accepted_prediction_tokens": null,
+                  "audio_tokens": 0,
+                  "reasoning_tokens": 0,
+                  "rejected_prediction_tokens": null,
+                  "text_tokens": null,
+                  "image_tokens": 0
+                },
+                "compute_units": null,
+                "prompt_tokens_details": {
+                  "audio_tokens": 0,
+                  "cache_write_tokens": 0,
+                  "cached_tokens": 3200,
+                  "image_tokens": null,
+                  "text_tokens": null,
+                  "video_tokens": 0
+                },
+                "cost": 0.0161025,
+                "is_byok": false,
+                "cost_details": {
+                  "upstream_inference_cost": 0.0161025,
+                  "upstream_inference_prompt_cost": 0.0006025,
+                  "upstream_inference_completions_cost": 0.0155
+                }
+              }
+            },
+            "validation_errors": [
+              "first_step_derived_transition_not_initial"
+            ]
+          }
+        ],
+        "accepted": null,
+        "validation_errors": [
+          "first_step_derived_transition_not_initial"
+        ]
+      }
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABDOMEN W/O CONTRAST)",
+      "request_prompt_sha256": "1879dacbd10fc87c5289d1356af4ecbac89bcf8e758dadca60d459d7b682822d",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "1879dacbd10fc87c5289d1356af4ecbac89bcf8e758dadca60d459d7b682822d",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient currently has an acute surgical abdomen with peritonitis and shock, and the specific intra-abdominal catastrophe (e.g., perforation, ischemia, severe inflammatory focus) remains unidentified after the initial CT.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall clinical syndrome / presentation and its unresolved source",
+                  "status": "likely",
+                  "evidence": [
+                    "“presents with less than one day of acute abdominal pain.  Seen at ___ and was hypotensive with concerning abdominal exam”",
+                    "“Abd is diffusely tender, rigid, with rebound and guarding… CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Despite a prior non-contrast CT showing ascites and no free air, a clinically important intra-abdominal source such as occult perforation, ischemia, or loculated infection is still suspected because of persistent rigid abdomen and shock.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "mechanistic cause of current acute abdomen",
+                  "status": "suspected",
+                  "evidence": [
+                    "“Abd is diffusely tender, rigid, with rebound and guarding”",
+                    "Prior CT: “There is no pneumoperitoneum… Note is made of a moderate volume of ascites… In the setting of ascites and the absence of contrast, the presence or absence of ____ is difficult to evaluate.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has significant ascites and likely chronic liver disease (nodular liver) that may confound exam and imaging but also raises concern for infected or secondary peritonitis.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific underlying disease / comorbidity",
+                  "status": "likely",
+                  "evidence": [
+                    "“CT Abdomen->ascites moderate amount, nodular liver.”",
+                    "Ascites: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "no prior orders at this decision point within this system’s reconstruction",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No earlier imaging decision within this reconstruction to compare against."
+                }
+              },
+              "assumption_change": {
+                "label": "retain",
+                "changed_proposition": "The patient has acute surgical abdomen with possible intra-abdominal catastrophe (such as perforation, ischemia, or peritonitis) causing hypotension and diffuse rigid tenderness.",
+                "reason": "Newly visible formal CT report and labs reinforce the prior view that an acute, severe intra-abdominal process is present but not yet anatomically defined."
+              },
+              "current_question": {
+                "primary": "Is there an acute intra-abdominal surgical process (such as occult perforation, bowel ischemia, or focal inflammatory/hemorrhagic source) responsible for this patient’s shock and rigid peritonitic abdomen that was not definitively characterized on the earlier non-contrast CT?",
+                "target": "acute intra-abdominal pathology including perforation, ischemia, focal collection, or other surgical cause of peritonitis",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a specific catastrophic intra-abdominal lesion (e.g., free air, non-contrast signs of bowel ischemia, localized fluid/abscess, hemorrhage) would support urgent operative or procedural intervention and guide surgical approach.",
+                "negative_answer_changes": "If no acute surgical pathology is demonstrated despite high-quality imaging, clinicians may reconsider non-abdominal or medical causes of shock and treat empirically for peritonitis while re-evaluating need and timing of surgery.",
+                "secondary_questions": [
+                  "Are there CT signs of bowel ischemia, evolving perforation, or a drainable/operable collection explaining the rigid abdomen and hypotension?",
+                  "What is the current distribution and nature of ascites and any associated peritoneal or organ inflammatory changes that might indicate secondary peritonitis or another focal source?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comprehensive visualization of bowel, mesentery, peritoneal cavity, and solid organs to reassess for acute pathology in the setting of ascites and prior limited non-contrast study.",
+                    "why_required": "Direct inspection of the abdominal viscera and peritoneum is necessary to detect or confidently exclude a structural cause of peritonitis and shock."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of CT signs of bowel perforation, ischemia, focal fluid/abscess, or hemorrhage (e.g., free air, abnormal bowel wall, loculated collections, high-attenuation fluid).",
+                    "why_required": "Determining whether any of these findings are present is crucial for deciding on emergent surgery or other invasive management."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity, distribution, and character of ascites and peritoneal/inflammatory changes.",
+                    "why_required": "The extent and character of ascites and peritoneal inflammation influence diagnosis (e.g., spontaneous vs. secondary peritonitis) and operative versus percutaneous or medical strategies."
+                  }
+                ],
+                "evidence": [
+                  "“Abd is diffusely tender, rigid, with rebound and guarding”",
+                  "Prior CT: “In the setting of ascites and the absence of contrast, the presence or absence of ____ is difficult to evaluate… There is no pneumoperitoneum… Note is made of a moderate volume of ascites.”"
+                ]
+              },
+              "question_continuity": "same",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "“Axial CT images were acquired through the abdomen and pelvis without intravenous contrast.”",
+                      "“In the setting of ascites and the absence of contrast, the presence or absence of ____ is difficult to evaluate.”"
+                    ],
+                    "reason": "The prior non-contrast CT did visualize the abdomen but specifically notes limitations in evaluating key structures in the setting of ascites and lack of contrast, leaving incomplete assessment of some potential sources."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "“There is no pneumoperitoneum.”",
+                      "“In the setting of ascites and the absence of contrast, the presence or absence of ____ is difficult to evaluate.”"
+                    ],
+                    "reason": "The exam refutes gross perforation via absence of free air but acknowledges that certain pathologies remain difficult to evaluate, so perforation, ischemia, or subtle collections are not definitively excluded."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“Note is made of a moderate volume of ascites.”",
+                      "Ascites: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”"
+                    ],
+                    "reason": "Imaging and fluid analysis characterize ascites as moderate and inflammatory, but do not fully map its distribution or associated focal peritoneal changes relevant to surgical planning."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "The prior CT and ascitic studies provide partial information about intra-abdominal pathology and ascites but leave important etiologic and anatomic questions unresolved in a patient with ongoing peritonitis and shock."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A repeat or system-internal non-contrast CT abdomen can reassess the entire peritoneal cavity and bowel for evolving free air, bowel wall changes, loculated collections, or hemorrhage and better delineate ascites in a patient who cannot receive IV contrast.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not explicitly state why a second non-contrast CT rather than alternative imaging (e.g., focused bedside ultrasound, surgical exploration without further imaging, or contrast-enhanced study despite renal risk) was chosen at this exact time, nor why the limitations of prior CT were thought remediable without IV contrast."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient currently has an acute surgical abdomen with peritonitis and shock, and the specific intra-abdominal catastrophe (e.g., perforation, ischemia, severe inflammatory focus) remains unidentified after the initial CT.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical syndrome / presentation and its unresolved source\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“presents with less than one day of acute abdominal pain.  Seen at ___ and was hypotensive with concerning abdominal exam”\",\n        \"“Abd is diffusely tender, rigid, with rebound and guarding… CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Despite a prior non-contrast CT showing ascites and no free air, a clinically important intra-abdominal source such as occult perforation, ischemia, or loculated infection is still suspected because of persistent rigid abdomen and shock.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"mechanistic cause of current acute abdomen\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“Abd is diffusely tender, rigid, with rebound and guarding”\",\n        \"Prior CT: “There is no pneumoperitoneum… Note is made of a moderate volume of ascites… In the setting of ascites and the absence of contrast, the presence or absence of ____ is difficult to evaluate.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has significant ascites and likely chronic liver disease (nodular liver) that may confound exam and imaging but also raises concern for infected or secondary peritonitis.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific underlying disease / comorbidity\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“CT Abdomen->ascites moderate amount, nodular liver.”\",\n        \"Ascites: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior orders at this decision point within this system’s reconstruction\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No earlier imaging decision within this reconstruction to compare against.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"retain\",\n    \"changed_proposition\": \"The patient has acute surgical abdomen with possible intra-abdominal catastrophe (such as perforation, ischemia, or peritonitis) causing hypotension and diffuse rigid tenderness.\",\n    \"reason\": \"Newly visible formal CT report and labs reinforce the prior view that an acute, severe intra-abdominal process is present but not yet anatomically defined.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an acute intra-abdominal surgical process (such as occult perforation, bowel ischemia, or focal inflammatory/hemorrhagic source) responsible for this patient’s shock and rigid peritonitic abdomen that was not definitively characterized on the earlier non-contrast CT?\",\n    \"target\": \"acute intra-abdominal pathology including perforation, ischemia, focal collection, or other surgical cause of peritonitis\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a specific catastrophic intra-abdominal lesion (e.g., free air, non-contrast signs of bowel ischemia, localized fluid/abscess, hemorrhage) would support urgent operative or procedural intervention and guide surgical approach.\",\n    \"negative_answer_changes\": \"If no acute surgical pathology is demonstrated despite high-quality imaging, clinicians may reconsider non-abdominal or medical causes of shock and treat empirically for peritonitis while re-evaluating need and timing of surgery.\",\n    \"secondary_questions\": [\n      \"Are there CT signs of bowel ischemia, evolving perforation, or a drainable/operable collection explaining the rigid abdomen and hypotension?\",\n      \"What is the current distribution and nature of ascites and any associated peritoneal or organ inflammatory changes that might indicate secondary peritonitis or another focal source?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comprehensive visualization of bowel, mesentery, peritoneal cavity, and solid organs to reassess for acute pathology in the setting of ascites and prior limited non-contrast study.\",\n        \"why_required\": \"Direct inspection of the abdominal viscera and peritoneum is necessary to detect or confidently exclude a structural cause of peritonitis and shock.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of CT signs of bowel perforation, ischemia, focal fluid/abscess, or hemorrhage (e.g., free air, abnormal bowel wall, loculated collections, high-attenuation fluid).\",\n        \"why_required\": \"Determining whether any of these findings are present is crucial for deciding on emergent surgery or other invasive management.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity, distribution, and character of ascites and peritoneal/inflammatory changes.\",\n        \"why_required\": \"The extent and character of ascites and peritoneal inflammation influence diagnosis (e.g., spontaneous vs. secondary peritonitis) and operative versus percutaneous or medical strategies.\"\n      }\n    ],\n    \"evidence\": [\n      \"“Abd is diffusely tender, rigid, with rebound and guarding”\",\n      \"Prior CT: “In the setting of ascites and the absence of contrast, the presence or absence of ____ is difficult to evaluate… There is no pneumoperitoneum… Note is made of a moderate volume of ascites.”\"\n    ]\n  },\n  \"question_continuity\": \"same\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"“Axial CT images were acquired through the abdomen and pelvis without intravenous contrast.”\",\n          \"“In the setting of ascites and the absence of contrast, the presence or absence of ____ is difficult to evaluate.”\"\n        ],\n        \"reason\": \"The prior non-contrast CT did visualize the abdomen but specifically notes limitations in evaluating key structures in the setting of ascites and lack of contrast, leaving incomplete assessment of some potential sources.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"“There is no pneumoperitoneum.”\",\n          \"“In the setting of ascites and the absence of contrast, the presence or absence of ____ is difficult to evaluate.”\"\n        ],\n        \"reason\": \"The exam refutes gross perforation via absence of free air but acknowledges that certain pathologies remain difficult to evaluate, so perforation, ischemia, or subtle collections are not definitively excluded.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“Note is made of a moderate volume of ascites.”\",\n          \"Ascites: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”\"\n        ],\n        \"reason\": \"Imaging and fluid analysis characterize ascites as moderate and inflammatory, but do not fully map its distribution or associated focal peritoneal changes relevant to surgical planning.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"The prior CT and ascitic studies provide partial information about intra-abdominal pathology and ascites but leave important etiologic and anatomic questions unresolved in a patient with ongoing peritonitis and shock.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A repeat or system-internal non-contrast CT abdomen can reassess the entire peritoneal cavity and bowel for evolving free air, bowel wall changes, loculated collections, or hemorrhage and better delineate ascites in a patient who cannot receive IV contrast.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly state why a second non-contrast CT rather than alternative imaging (e.g., focused bedside ultrasound, surgical exploration without further imaging, or contrast-enhanced study despite renal risk) was chosen at this exact time, nor why the limitations of prior CT were thought remediable without IV contrast.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788177270-U4C0sgFbXiNFLLhEZABu",
+            "usage": {
+              "completion_tokens": 2144,
+              "prompt_tokens": 5581,
+              "total_tokens": 7725,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2048,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02611225,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02611225,
+                "upstream_inference_prompt_cost": 0.00467225,
+                "upstream_inference_completions_cost": 0.02144
+              }
+            }
+          },
+          "validation_errors": [
+            "later_step_previous_order_update_not_applicable"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "54b1c6e96f315ad7811b7a6c0e23070e11d9729dbb9204c40f7166475d9fdb29",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute surgical abdomen with possible intra-abdominal catastrophe (such as perforation, ischemia, or peritonitis) causing hypotension and diffuse rigid tenderness.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall clinical syndrome / presentation",
+                  "status": "likely",
+                  "evidence": [
+                    "“presents with less than one day of acute abdominal pain.  Seen at ___ and was hypotensive with concerning abdominal exam, so transfer here for further eval.”",
+                    "“Abd is diffusely tender, rigid, with rebound and guarding”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The etiology of the acute abdomen remains unclear despite initial CT imaging that did not show an obvious source of perforation or sepsis.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "mechanistic cause of current syndrome",
+                  "status": "unclear",
+                  "evidence": [
+                    "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”",
+                    "“who presents with less than one day of acute abdominal pain… transfer here for further eval.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has significant ascites with inflammatory ascitic fluid suggesting peritonitis or intra-abdominal infection.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific underlying disease or process contributing to acute presentation",
+                  "status": "likely",
+                  "evidence": [
+                    "“CT Abdomen->ascites moderate amount, nodular liver.”",
+                    "Ascitic fluid: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What acute intra-abdominal process is causing this patient’s shock and rigid, peritonitic abdomen despite a prior CT that did not show an obvious perforation or septic source?",
+                "study_adequacy": "limited_but_diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "indeterminate",
+                "effect_on_previous_question": "The prior non-contrast CT abdomen visualized the abdomen, confirmed moderate ascites and nodular liver, and reported no pneumoperitoneum or obvious source of perforation or sepsis, partially refuting gross perforation but failing to identify a definitive cause of the acute abdomen.",
+                "discordance": {
+                  "label": "indeterminate",
+                  "evidence_stream_1": "“There is no pneumoperitoneum… Note is made of a moderate volume of ascites.”",
+                  "evidence_stream_2": "“Abd is diffusely tender, rigid, with rebound and guarding… was hypotensive with concerning abdominal exam”",
+                  "reason": "Imaging does not show free air or a clear source despite severe peritonitic exam and shock, but this may reflect limitations of non-contrast CT rather than true exclusion of intra-abdominal catastrophe."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The patient has decompensated chronic liver disease with new or worsened ascites, which may be contributing to abdominal pain and sepsis physiology.",
+                "reason": "Ascitic fluid composition with high polymorphonuclear cells and moderate protein shifts focus from chronic liver disease alone toward active peritonitis or intra-abdominal infection as a key component of the presentation."
+              },
+              "current_question": {
+                "primary": "Is there a surgically or interventionally treatable intra-abdominal source (such as perforation, ischemia, or localized infectious focus) responsible for this patient’s shock and rigid abdomen that was not clearly identified on the earlier CT?",
+                "target": "acute intra-abdominal pathology including perforation, ischemic bowel, or focal infectious collections in the peritoneal cavity and abdominal organs",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Demonstrating a specific perforation, ischemic segment, or drainable collection would strongly support urgent operative or interventional management rather than conservative care alone.",
+                "negative_answer_changes": "If no treatable intra-abdominal source is identified, clinicians may favor medical management of peritonitis and shock, reconsider non-abdominal causes of hypotension, and potentially defer emergent surgery.",
+                "secondary_questions": [
+                  "Are there CT signs of bowel ischemia, evolving perforation, or new free air that explain the peritonitic exam and hypotension?",
+                  "What is the current distribution and extent of ascites and associated inflammatory changes that might guide procedural or surgical planning?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comprehensive visualization of bowel, mesentery, solid organs, and peritoneal cavity to reassess for acute pathology.",
+                    "why_required": "Identifying an intra-abdominal catastrophe requires adequate visualization of relevant abdominal structures on repeat imaging."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of free intraperitoneal air, focal fluid collections/abscess, bowel wall pneumatosis, or other CT signs of perforation or ischemia.",
+                    "why_required": "Determining whether these critical findings are present directly guides the need for emergent surgery or intervention."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of ascites and any peritoneal or organ inflammatory changes.",
+                    "why_required": "The amount and spread of fluid and inflammation inform the likely burden of peritonitis and help plan procedures or operative approach."
+                  }
+                ],
+                "evidence": [
+                  "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”",
+                  "“Abd is diffusely tender, rigid, with rebound and guarding… was hypotensive with concerning abdominal exam”"
+                ]
+              },
+              "question_continuity": "same",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "“Axial CT images were acquired through the abdomen and pelvis without intravenous contrast… Note is made of a moderate volume of ascites.”"
+                    ],
+                    "reason": "The prior non-contrast CT visualized abdominal viscera and peritoneal cavity but lacked IV contrast and had limitations in evaluating fine details, especially in the deep pelvis and in the setting of ascites, so current structural assessment is incomplete."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“There is no pneumoperitoneum.”",
+                      "“There is no free gas in the pelvis.”"
+                    ],
+                    "reason": "The prior CT reported no free air and no obvious source of perforation or sepsis, which partially refutes gross perforation at that time but does not exclude evolving perforation, ischemia, or small or early collections given non-contrast technique and ongoing peritonitis."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“Note is made of a moderate volume of ascites.”",
+                      "Ascitic fluid: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”"
+                    ],
+                    "reason": "CT and ascitic studies show moderate ascites with inflammatory characteristics, giving some sense of extent and severity, but do not fully map the distribution or associated inflammatory changes throughout the peritoneal cavity."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Existing CT and fluid studies provide partial information but do not definitively identify or exclude a specific surgically treatable intra-abdominal source in the context of ongoing shock and rigid abdomen."
+              },
+              "current_order_fit": {
+                "test_question_capability": "partially_capable",
+                "why_this_order_could_answer": "A repeat non-contrast CT abdomen can reassess abdominal structures for new free air, evolving ischemia, or collections and better characterize ascites, though lack of IV contrast limits detailed vascular and perfusion assessment.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not fully explain why a repeat non-contrast CT is favored over immediate surgical exploration or alternative imaging (e.g., ultrasound or contrast-enhanced CT despite renal risk), nor the exact timing relative to clinical changes."
+              },
+              "derived_transition": "adjudicate",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute surgical abdomen with possible intra-abdominal catastrophe (such as perforation, ischemia, or peritonitis) causing hypotension and diffuse rigid tenderness.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical syndrome / presentation\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“presents with less than one day of acute abdominal pain.  Seen at ___ and was hypotensive with concerning abdominal exam, so transfer here for further eval.”\",\n        \"“Abd is diffusely tender, rigid, with rebound and guarding”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The etiology of the acute abdomen remains unclear despite initial CT imaging that did not show an obvious source of perforation or sepsis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"mechanistic cause of current syndrome\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\",\n        \"“who presents with less than one day of acute abdominal pain… transfer here for further eval.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has significant ascites with inflammatory ascitic fluid suggesting peritonitis or intra-abdominal infection.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific underlying disease or process contributing to acute presentation\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“CT Abdomen->ascites moderate amount, nodular liver.”\",\n        \"Ascitic fluid: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What acute intra-abdominal process is causing this patient’s shock and rigid, peritonitic abdomen despite a prior CT that did not show an obvious perforation or septic source?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"indeterminate\",\n    \"effect_on_previous_question\": \"The prior non-contrast CT abdomen visualized the abdomen, confirmed moderate ascites and nodular liver, and reported no pneumoperitoneum or obvious source of perforation or sepsis, partially refuting gross perforation but failing to identify a definitive cause of the acute abdomen.\",\n    \"discordance\": {\n      \"label\": \"indeterminate\",\n      \"evidence_stream_1\": \"“There is no pneumoperitoneum… Note is made of a moderate volume of ascites.”\",\n      \"evidence_stream_2\": \"“Abd is diffusely tender, rigid, with rebound and guarding… was hypotensive with concerning abdominal exam”\",\n      \"reason\": \"Imaging does not show free air or a clear source despite severe peritonitic exam and shock, but this may reflect limitations of non-contrast CT rather than true exclusion of intra-abdominal catastrophe.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient has decompensated chronic liver disease with new or worsened ascites, which may be contributing to abdominal pain and sepsis physiology.\",\n    \"reason\": \"Ascitic fluid composition with high polymorphonuclear cells and moderate protein shifts focus from chronic liver disease alone toward active peritonitis or intra-abdominal infection as a key component of the presentation.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a surgically or interventionally treatable intra-abdominal source (such as perforation, ischemia, or localized infectious focus) responsible for this patient’s shock and rigid abdomen that was not clearly identified on the earlier CT?\",\n    \"target\": \"acute intra-abdominal pathology including perforation, ischemic bowel, or focal infectious collections in the peritoneal cavity and abdominal organs\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Demonstrating a specific perforation, ischemic segment, or drainable collection would strongly support urgent operative or interventional management rather than conservative care alone.\",\n    \"negative_answer_changes\": \"If no treatable intra-abdominal source is identified, clinicians may favor medical management of peritonitis and shock, reconsider non-abdominal causes of hypotension, and potentially defer emergent surgery.\",\n    \"secondary_questions\": [\n      \"Are there CT signs of bowel ischemia, evolving perforation, or new free air that explain the peritonitic exam and hypotension?\",\n      \"What is the current distribution and extent of ascites and associated inflammatory changes that might guide procedural or surgical planning?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comprehensive visualization of bowel, mesentery, solid organs, and peritoneal cavity to reassess for acute pathology.\",\n        \"why_required\": \"Identifying an intra-abdominal catastrophe requires adequate visualization of relevant abdominal structures on repeat imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of free intraperitoneal air, focal fluid collections/abscess, bowel wall pneumatosis, or other CT signs of perforation or ischemia.\",\n        \"why_required\": \"Determining whether these critical findings are present directly guides the need for emergent surgery or intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of ascites and any peritoneal or organ inflammatory changes.\",\n        \"why_required\": \"The amount and spread of fluid and inflammation inform the likely burden of peritonitis and help plan procedures or operative approach.\"\n      }\n    ],\n    \"evidence\": [\n      \"“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”\",\n      \"“Abd is diffusely tender, rigid, with rebound and guarding… was hypotensive with concerning abdominal exam”\"\n    ]\n  },\n  \"question_continuity\": \"same\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"“Axial CT images were acquired through the abdomen and pelvis without intravenous contrast… Note is made of a moderate volume of ascites.”\"\n        ],\n        \"reason\": \"The prior non-contrast CT visualized abdominal viscera and peritoneal cavity but lacked IV contrast and had limitations in evaluating fine details, especially in the deep pelvis and in the setting of ascites, so current structural assessment is incomplete.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“There is no pneumoperitoneum.”\",\n          \"“There is no free gas in the pelvis.”\"\n        ],\n        \"reason\": \"The prior CT reported no free air and no obvious source of perforation or sepsis, which partially refutes gross perforation at that time but does not exclude evolving perforation, ischemia, or small or early collections given non-contrast technique and ongoing peritonitis.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“Note is made of a moderate volume of ascites.”\",\n          \"Ascitic fluid: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”\"\n        ],\n        \"reason\": \"CT and ascitic studies show moderate ascites with inflammatory characteristics, giving some sense of extent and severity, but do not fully map the distribution or associated inflammatory changes throughout the peritoneal cavity.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Existing CT and fluid studies provide partial information but do not definitively identify or exclude a specific surgically treatable intra-abdominal source in the context of ongoing shock and rigid abdomen.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"partially_capable\",\n    \"why_this_order_could_answer\": \"A repeat non-contrast CT abdomen can reassess abdominal structures for new free air, evolving ischemia, or collections and better characterize ascites, though lack of IV contrast limits detailed vascular and perfusion assessment.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not fully explain why a repeat non-contrast CT is favored over immediate surgical exploration or alternative imaging (e.g., ultrasound or contrast-enhanced CT despite renal risk), nor the exact timing relative to clinical changes.\"\n  },\n  \"derived_transition\": \"adjudicate\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788177289-DdXzmU8umUnobP5RQ5wY",
+            "usage": {
+              "completion_tokens": 2105,
+              "prompt_tokens": 5618,
+              "total_tokens": 7723,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 5376,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0220245,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0220245,
+                "upstream_inference_prompt_cost": 0.0009745,
+                "upstream_inference_completions_cost": 0.02105
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute surgical abdomen with possible intra-abdominal catastrophe (such as perforation, ischemia, or peritonitis) causing hypotension and diffuse rigid tenderness.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "overall clinical syndrome / presentation",
+            "status": "likely",
+            "evidence": [
+              "“presents with less than one day of acute abdominal pain.  Seen at ___ and was hypotensive with concerning abdominal exam, so transfer here for further eval.”",
+              "“Abd is diffusely tender, rigid, with rebound and guarding”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The etiology of the acute abdomen remains unclear despite initial CT imaging that did not show an obvious source of perforation or sepsis.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "mechanistic cause of current syndrome",
+            "status": "unclear",
+            "evidence": [
+              "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”",
+              "“who presents with less than one day of acute abdominal pain… transfer here for further eval.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has significant ascites with inflammatory ascitic fluid suggesting peritonitis or intra-abdominal infection.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific underlying disease or process contributing to acute presentation",
+            "status": "likely",
+            "evidence": [
+              "“CT Abdomen->ascites moderate amount, nodular liver.”",
+              "Ascitic fluid: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What acute intra-abdominal process is causing this patient’s shock and rigid, peritonitic abdomen despite a prior CT that did not show an obvious perforation or septic source?",
+          "study_adequacy": "limited_but_diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "indeterminate",
+          "effect_on_previous_question": "The prior non-contrast CT abdomen visualized the abdomen, confirmed moderate ascites and nodular liver, and reported no pneumoperitoneum or obvious source of perforation or sepsis, partially refuting gross perforation but failing to identify a definitive cause of the acute abdomen.",
+          "discordance": {
+            "label": "indeterminate",
+            "evidence_stream_1": "“There is no pneumoperitoneum… Note is made of a moderate volume of ascites.”",
+            "evidence_stream_2": "“Abd is diffusely tender, rigid, with rebound and guarding… was hypotensive with concerning abdominal exam”",
+            "reason": "Imaging does not show free air or a clear source despite severe peritonitic exam and shock, but this may reflect limitations of non-contrast CT rather than true exclusion of intra-abdominal catastrophe."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient has decompensated chronic liver disease with new or worsened ascites, which may be contributing to abdominal pain and sepsis physiology.",
+          "reason": "Ascitic fluid composition with high polymorphonuclear cells and moderate protein shifts focus from chronic liver disease alone toward active peritonitis or intra-abdominal infection as a key component of the presentation."
+        },
+        "current_question": {
+          "primary": "Is there a surgically or interventionally treatable intra-abdominal source (such as perforation, ischemia, or localized infectious focus) responsible for this patient’s shock and rigid abdomen that was not clearly identified on the earlier CT?",
+          "target": "acute intra-abdominal pathology including perforation, ischemic bowel, or focal infectious collections in the peritoneal cavity and abdominal organs",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Demonstrating a specific perforation, ischemic segment, or drainable collection would strongly support urgent operative or interventional management rather than conservative care alone.",
+          "negative_answer_changes": "If no treatable intra-abdominal source is identified, clinicians may favor medical management of peritonitis and shock, reconsider non-abdominal causes of hypotension, and potentially defer emergent surgery.",
+          "secondary_questions": [
+            "Are there CT signs of bowel ischemia, evolving perforation, or new free air that explain the peritonitic exam and hypotension?",
+            "What is the current distribution and extent of ascites and associated inflammatory changes that might guide procedural or surgical planning?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Comprehensive visualization of bowel, mesentery, solid organs, and peritoneal cavity to reassess for acute pathology.",
+              "why_required": "Identifying an intra-abdominal catastrophe requires adequate visualization of relevant abdominal structures on repeat imaging."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of free intraperitoneal air, focal fluid collections/abscess, bowel wall pneumatosis, or other CT signs of perforation or ischemia.",
+              "why_required": "Determining whether these critical findings are present directly guides the need for emergent surgery or intervention."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity and extent of ascites and any peritoneal or organ inflammatory changes.",
+              "why_required": "The amount and spread of fluid and inflammation inform the likely burden of peritonitis and help plan procedures or operative approach."
+            }
+          ],
+          "evidence": [
+            "“CT Abdomen->ascites moderate amount, nodular liver.  No obvious source of perforation or sepsis.”",
+            "“Abd is diffusely tender, rigid, with rebound and guarding… was hypotensive with concerning abdominal exam”"
+          ]
+        },
+        "question_continuity": "same",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "mixed",
+              "supporting_evidence": [
+                "“Axial CT images were acquired through the abdomen and pelvis without intravenous contrast… Note is made of a moderate volume of ascites.”"
+              ],
+              "reason": "The prior non-contrast CT visualized abdominal viscera and peritoneal cavity but lacked IV contrast and had limitations in evaluating fine details, especially in the deep pelvis and in the setting of ascites, so current structural assessment is incomplete."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“There is no pneumoperitoneum.”",
+                "“There is no free gas in the pelvis.”"
+              ],
+              "reason": "The prior CT reported no free air and no obvious source of perforation or sepsis, which partially refutes gross perforation at that time but does not exclude evolving perforation, ischemia, or small or early collections given non-contrast technique and ongoing peritonitis."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“Note is made of a moderate volume of ascites.”",
+                "Ascitic fluid: “Polys: 85.0 % … Total Protein, Ascites: 4.5 g/dL … Albumin, Ascites: 2.8 g/dL”"
+              ],
+              "reason": "CT and ascitic studies show moderate ascites with inflammatory characteristics, giving some sense of extent and severity, but do not fully map the distribution or associated inflammatory changes throughout the peritoneal cavity."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Existing CT and fluid studies provide partial information but do not definitively identify or exclude a specific surgically treatable intra-abdominal source in the context of ongoing shock and rigid abdomen."
+        },
+        "current_order_fit": {
+          "test_question_capability": "partially_capable",
+          "why_this_order_could_answer": "A repeat non-contrast CT abdomen can reassess abdominal structures for new free air, evolving ischemia, or collections and better characterize ascites, though lack of IV contrast limits detailed vascular and perfusion assessment.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not fully explain why a repeat non-contrast CT is favored over immediate surgical exploration or alternative imaging (e.g., ultrasound or contrast-enhanced CT despite renal risk), nor the exact timing relative to clinical changes."
+        },
+        "derived_transition": "adjudicate",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

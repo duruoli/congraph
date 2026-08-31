@@ -1,0 +1,660 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 28698256,
+  "source_path": "results/annotation_experiment/full/appendicitis_28698256.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL)",
+      "request_prompt_sha256": "e55859dc56dbdbf73729d1b2d750d415e09187941843340cd57626d6476f04b2",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "e55859dc56dbdbf73729d1b2d750d415e09187941843340cd57626d6476f04b2",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute right lower quadrant abdominal/pelvic pain syndrome possibly arising from a gynecologic pelvic source.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation / suspected source of symptoms",
+                  "status": "suspected",
+                  "evidence": [
+                    "“presents with sudden onset RLQ pain that started last night after dinner. Pain is sharp and accompanied by multiple episodes of nausea/vomiting.”",
+                    "“abd: soft, moderately tender in RLQ, nondistended, nonrigid, no guarding” and “HCG, Urine, Qualitative: NEGATIVE.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A gynecologic pelvic pathology such as ovarian torsion or other adnexal process is a leading concern in the differential for this patient’s acute right lower quadrant pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific diagnostic hypothesis within the differential",
+                  "status": "suspected",
+                  "evidence": [
+                    "“Pt is ___ y/o F who presents with sudden onset RLQ pain”",
+                    "Order: “Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL)” (gynecologic-focused imaging choice in a nonpregnant female with RLQ pain)."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has systemic inflammatory response to an acute intraabdominal or pelvic process, as suggested by leukocytosis with neutrophilia.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "physiologic response / illness severity",
+                  "status": "established",
+                  "evidence": [
+                    "“White Blood Cells: 14.8 K/uL (ref 4.0-11.0)”",
+                    "“Neutrophils: 83.3 % (ref 50.0-70.0)”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_assessed",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No prior imaging orders or questions at this first decision point."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; the assumptions are newly formulated from the presenting history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Is there a gynecologic pelvic cause, such as ovarian torsion or another adnexal pathology, that explains this patient’s acute right lower quadrant pain?",
+                "target": "ovaries and adnexa as potential source of acute RLQ/pelvic pain",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming an adnexal or ovarian source (e.g., torsion, cyst, mass) would direct urgent gynecologic/surgical management and reduce emphasis on alternative intraabdominal sources such as appendicitis.",
+                "negative_answer_changes": "Lack of a gynecologic source would shift diagnostic focus toward non-gynecologic causes of RLQ pain such as appendicitis, renal colic, or gastrointestinal etiologies, likely prompting alternative imaging (e.g., CT abdomen/pelvis).",
+                "secondary_questions": [
+                  "If a gynecologic pelvic lesion is present, what is its location and character (e.g., cystic, solid, torsed) to guide urgency and type of intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the uterus, ovaries, and adnexa in the pelvis.",
+                    "why_required": "A gynecologic pelvic source cannot be confirmed or excluded without directly assessing the pelvic organs."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of adnexal masses, ovarian enlargement, or other focal pelvic pathology that could account for the acute RLQ pain.",
+                    "why_required": "Determining whether a structural adnexal abnormality exists is central to deciding if a gynecologic process explains the symptoms."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "finding_identity",
+                    "other_proposed_dimension": "",
+                    "dimension": "Characterization of any identified adnexal or ovarian lesion (e.g., simple cyst, complex cyst, torsion-suggestive changes).",
+                    "why_required": "Specific identity and nature of a lesion determine the likelihood that it explains the acute pain and the urgency/type of intervention."
+                  },
+                  {
+                    "requirement_key": "req_4",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Precise laterality and pelvic location of any lesion relative to the right lower quadrant.",
+                    "why_required": "Correlation of lesion location with the side of pain is necessary to attribute symptoms confidently to a gynecologic source."
+                  }
+                ],
+                "evidence": [
+                  "“Pt is ___ y/o F who presents with sudden onset RLQ pain that started last night after dinner.”",
+                  "Order placed: “Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL)” in a nonpregnant female with RLQ pain and negative urine HCG."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Imaging resulted before this decision point: (none)”"
+                    ],
+                    "reason": "No prior imaging has evaluated the pelvic organs, so visualization of uterus, ovaries, and adnexa has not yet occurred."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Imaging resulted before this decision point: (none)”"
+                    ],
+                    "reason": "No prior imaging or pelvic-specific diagnostic test has assessed for adnexal masses or other focal gynecologic pathology."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "finding_identity",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No imaging characterization of pelvic structures is documented before this order."
+                    ],
+                    "reason": "Without any previous pelvic imaging, the identity or character of potential adnexal lesions remains completely unknown."
+                  },
+                  {
+                    "requirement_key": "req_4",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "There is no prior imaging that localizes pelvic pathology relative to the right lower quadrant."
+                    ],
+                    "reason": "Anatomic localization of any pelvic lesion has not been addressed due to absence of prior imaging."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All required dimensions regarding pelvic/gynecologic sources for RLQ pain remain unaddressed before this first imaging order."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Transvaginal pelvic ultrasound is a first-line, high-resolution modality for visualizing the uterus, ovaries, and adnexa, detecting adnexal masses, ovarian torsion signs, and other gynecologic causes of acute pelvic/RLQ pain.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not explicitly state that appendicitis or other non-gynecologic causes were deprioritized before ordering pelvic ultrasound, so the relative weighting of gynecologic versus gastrointestinal/appendiceal etiologies is inferred rather than documented."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute right lower quadrant abdominal/pelvic pain syndrome possibly arising from a gynecologic pelvic source.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation / suspected source of symptoms\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“presents with sudden onset RLQ pain that started last night after dinner. Pain is sharp and accompanied by multiple episodes of nausea/vomiting.”\",\n        \"“abd: soft, moderately tender in RLQ, nondistended, nonrigid, no guarding” and “HCG, Urine, Qualitative: NEGATIVE.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A gynecologic pelvic pathology such as ovarian torsion or other adnexal process is a leading concern in the differential for this patient’s acute right lower quadrant pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnostic hypothesis within the differential\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“Pt is ___ y/o F who presents with sudden onset RLQ pain”\",\n        \"Order: “Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL)” (gynecologic-focused imaging choice in a nonpregnant female with RLQ pain).\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has systemic inflammatory response to an acute intraabdominal or pelvic process, as suggested by leukocytosis with neutrophilia.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic response / illness severity\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“White Blood Cells: 14.8 K/uL (ref 4.0-11.0)”\",\n        \"“Neutrophils: 83.3 % (ref 50.0-70.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_assessed\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging orders or questions at this first decision point.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the assumptions are newly formulated from the presenting history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a gynecologic pelvic cause, such as ovarian torsion or another adnexal pathology, that explains this patient’s acute right lower quadrant pain?\",\n    \"target\": \"ovaries and adnexa as potential source of acute RLQ/pelvic pain\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming an adnexal or ovarian source (e.g., torsion, cyst, mass) would direct urgent gynecologic/surgical management and reduce emphasis on alternative intraabdominal sources such as appendicitis.\",\n    \"negative_answer_changes\": \"Lack of a gynecologic source would shift diagnostic focus toward non-gynecologic causes of RLQ pain such as appendicitis, renal colic, or gastrointestinal etiologies, likely prompting alternative imaging (e.g., CT abdomen/pelvis).\",\n    \"secondary_questions\": [\n      \"If a gynecologic pelvic lesion is present, what is its location and character (e.g., cystic, solid, torsed) to guide urgency and type of intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the uterus, ovaries, and adnexa in the pelvis.\",\n        \"why_required\": \"A gynecologic pelvic source cannot be confirmed or excluded without directly assessing the pelvic organs.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of adnexal masses, ovarian enlargement, or other focal pelvic pathology that could account for the acute RLQ pain.\",\n        \"why_required\": \"Determining whether a structural adnexal abnormality exists is central to deciding if a gynecologic process explains the symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of any identified adnexal or ovarian lesion (e.g., simple cyst, complex cyst, torsion-suggestive changes).\",\n        \"why_required\": \"Specific identity and nature of a lesion determine the likelihood that it explains the acute pain and the urgency/type of intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_4\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Precise laterality and pelvic location of any lesion relative to the right lower quadrant.\",\n        \"why_required\": \"Correlation of lesion location with the side of pain is necessary to attribute symptoms confidently to a gynecologic source.\"\n      }\n    ],\n    \"evidence\": [\n      \"“Pt is ___ y/o F who presents with sudden onset RLQ pain that started last night after dinner.”\",\n      \"Order placed: “Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL)” in a nonpregnant female with RLQ pain and negative urine HCG.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Imaging resulted before this decision point: (none)”\"\n        ],\n        \"reason\": \"No prior imaging has evaluated the pelvic organs, so visualization of uterus, ovaries, and adnexa has not yet occurred.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Imaging resulted before this decision point: (none)”\"\n        ],\n        \"reason\": \"No prior imaging or pelvic-specific diagnostic test has assessed for adnexal masses or other focal gynecologic pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No imaging characterization of pelvic structures is documented before this order.\"\n        ],\n        \"reason\": \"Without any previous pelvic imaging, the identity or character of potential adnexal lesions remains completely unknown.\"\n      },\n      {\n        \"requirement_key\": \"req_4\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"There is no prior imaging that localizes pelvic pathology relative to the right lower quadrant.\"\n        ],\n        \"reason\": \"Anatomic localization of any pelvic lesion has not been addressed due to absence of prior imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All required dimensions regarding pelvic/gynecologic sources for RLQ pain remain unaddressed before this first imaging order.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Transvaginal pelvic ultrasound is a first-line, high-resolution modality for visualizing the uterus, ovaries, and adnexa, detecting adnexal masses, ovarian torsion signs, and other gynecologic causes of acute pelvic/RLQ pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly state that appendicitis or other non-gynecologic causes were deprioritized before ordering pelvic ultrasound, so the relative weighting of gynecologic versus gastrointestinal/appendiceal etiologies is inferred rather than documented.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788168262-an5WSZkeKgEM1QcwmYB8",
+            "usage": {
+              "completion_tokens": 1945,
+              "prompt_tokens": 2632,
+              "total_tokens": 4577,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02274,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02274,
+                "upstream_inference_prompt_cost": 0.00329,
+                "upstream_inference_completions_cost": 0.01945
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute right lower quadrant abdominal/pelvic pain syndrome possibly arising from a gynecologic pelvic source.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation / suspected source of symptoms",
+            "status": "suspected",
+            "evidence": [
+              "“presents with sudden onset RLQ pain that started last night after dinner. Pain is sharp and accompanied by multiple episodes of nausea/vomiting.”",
+              "“abd: soft, moderately tender in RLQ, nondistended, nonrigid, no guarding” and “HCG, Urine, Qualitative: NEGATIVE.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A gynecologic pelvic pathology such as ovarian torsion or other adnexal process is a leading concern in the differential for this patient’s acute right lower quadrant pain.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific diagnostic hypothesis within the differential",
+            "status": "suspected",
+            "evidence": [
+              "“Pt is ___ y/o F who presents with sudden onset RLQ pain”",
+              "Order: “Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL)” (gynecologic-focused imaging choice in a nonpregnant female with RLQ pain)."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has systemic inflammatory response to an acute intraabdominal or pelvic process, as suggested by leukocytosis with neutrophilia.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "physiologic response / illness severity",
+            "status": "established",
+            "evidence": [
+              "“White Blood Cells: 14.8 K/uL (ref 4.0-11.0)”",
+              "“Neutrophils: 83.3 % (ref 50.0-70.0)”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_assessed",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "No prior imaging orders or questions at this first decision point."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; the assumptions are newly formulated from the presenting history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "Is there a gynecologic pelvic cause, such as ovarian torsion or another adnexal pathology, that explains this patient’s acute right lower quadrant pain?",
+          "target": "ovaries and adnexa as potential source of acute RLQ/pelvic pain",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming an adnexal or ovarian source (e.g., torsion, cyst, mass) would direct urgent gynecologic/surgical management and reduce emphasis on alternative intraabdominal sources such as appendicitis.",
+          "negative_answer_changes": "Lack of a gynecologic source would shift diagnostic focus toward non-gynecologic causes of RLQ pain such as appendicitis, renal colic, or gastrointestinal etiologies, likely prompting alternative imaging (e.g., CT abdomen/pelvis).",
+          "secondary_questions": [
+            "If a gynecologic pelvic lesion is present, what is its location and character (e.g., cystic, solid, torsed) to guide urgency and type of intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the uterus, ovaries, and adnexa in the pelvis.",
+              "why_required": "A gynecologic pelvic source cannot be confirmed or excluded without directly assessing the pelvic organs."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of adnexal masses, ovarian enlargement, or other focal pelvic pathology that could account for the acute RLQ pain.",
+              "why_required": "Determining whether a structural adnexal abnormality exists is central to deciding if a gynecologic process explains the symptoms."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "finding_identity",
+              "other_proposed_dimension": "",
+              "dimension": "Characterization of any identified adnexal or ovarian lesion (e.g., simple cyst, complex cyst, torsion-suggestive changes).",
+              "why_required": "Specific identity and nature of a lesion determine the likelihood that it explains the acute pain and the urgency/type of intervention."
+            },
+            {
+              "requirement_key": "req_4",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Precise laterality and pelvic location of any lesion relative to the right lower quadrant.",
+              "why_required": "Correlation of lesion location with the side of pain is necessary to attribute symptoms confidently to a gynecologic source."
+            }
+          ],
+          "evidence": [
+            "“Pt is ___ y/o F who presents with sudden onset RLQ pain that started last night after dinner.”",
+            "Order placed: “Ultrasound Abdomen (PELVIS U.S., TRANSVAGINAL)” in a nonpregnant female with RLQ pain and negative urine HCG."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Imaging resulted before this decision point: (none)”"
+              ],
+              "reason": "No prior imaging has evaluated the pelvic organs, so visualization of uterus, ovaries, and adnexa has not yet occurred."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Imaging resulted before this decision point: (none)”"
+              ],
+              "reason": "No prior imaging or pelvic-specific diagnostic test has assessed for adnexal masses or other focal gynecologic pathology."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "finding_identity",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No imaging characterization of pelvic structures is documented before this order."
+              ],
+              "reason": "Without any previous pelvic imaging, the identity or character of potential adnexal lesions remains completely unknown."
+            },
+            {
+              "requirement_key": "req_4",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "There is no prior imaging that localizes pelvic pathology relative to the right lower quadrant."
+              ],
+              "reason": "Anatomic localization of any pelvic lesion has not been addressed due to absence of prior imaging."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All required dimensions regarding pelvic/gynecologic sources for RLQ pain remain unaddressed before this first imaging order."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Transvaginal pelvic ultrasound is a first-line, high-resolution modality for visualizing the uterus, ovaries, and adnexa, detecting adnexal masses, ovarian torsion signs, and other gynecologic causes of acute pelvic/RLQ pain.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not explicitly state that appendicitis or other non-gynecologic causes were deprioritized before ordering pelvic ultrasound, so the relative weighting of gynecologic versus gastrointestinal/appendiceal etiologies is inferred rather than documented."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "5e6b8950c1b3e77d4b9c49861908398b8bb0fe871169ee96add746a32f964cb8",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "5e6b8950c1b3e77d4b9c49861908398b8bb0fe871169ee96add746a32f964cb8",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "Acute appendicitis is now a leading suspected cause of this patient’s right lower quadrant abdominal pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific diagnostic hypothesis within the differential",
+                  "status": "suspected",
+                  "evidence": [
+                    "“Pt is ___ y/o F who presents with sudden onset RLQ pain that started last night after dinner.  Pain is sharp and accompanied by multiple episodes of nausea/vomiting.”",
+                    "Ultrasound: “Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there a gynecologic pelvic cause, such as ovarian torsion or another adnexal pathology, that explains this patient’s acute right lower quadrant pain?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "negative",
+                "effect_on_previous_question": "The pelvic ultrasound adequately visualized the uterus and ovaries, showed normal Doppler waveforms with no evidence of ovarian torsion or adnexal mass, and therefore effectively excluded a gynecologic pelvic source while incidentally suggesting a possible but unconfirmed dilated appendix, shifting concern toward appendicitis.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "“The ovaries are normal demonstrating normal arterial and venous Doppler waveforms.  There is no evidence of ovarian torsion.”",
+                  "evidence_stream_2": "“Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”",
+                  "reason": "Clinical concern for acute RLQ pain is supported while the suspected gynecologic source is not; the ultrasound result and evolving clinical suspicion are directionally aligned in refocusing on a non-gynecologic source."
+                }
+              },
+              "assumption_change": {
+                "label": "replace",
+                "changed_proposition": "A gynecologic pelvic pathology such as ovarian torsion or other adnexal process is a leading concern in the differential for this patient’s acute right lower quadrant pain.",
+                "reason": "Pelvic ultrasound showed normal uterus and ovaries with “no evidence of ovarian torsion” and instead raised the possibility of a dilated appendix, so the leading suspected source shifts from gynecologic pathology to appendicitis."
+              },
+              "current_question": {
+                "primary": "Does this patient have appendicitis or another intraabdominal cause in the right lower quadrant that explains her acute pain and inflammatory labs?",
+                "target": "appendix and adjacent right lower quadrant intraabdominal structures",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying appendicitis or another specific intraabdominal pathology would justify surgical or other targeted intervention and narrow the differential away from functional or nonspecific pain.",
+                "negative_answer_changes": "If CT shows no appendicitis or alternative intraabdominal source, clinicians would reconsider the diagnosis, potentially manage conservatively, and explore non-appendiceal causes of RLQ pain.",
+                "secondary_questions": [
+                  "If appendicitis or another process is present, what is its extent and are there complications such as perforation or abscess?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the appendix and surrounding right lower quadrant bowel and mesentery.",
+                    "why_required": "The presence or absence of appendicitis cannot be determined without directly assessing the appendix and adjacent tissues."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of imaging features of appendicitis or another focal RLQ intraabdominal pathology (e.g., inflamed bowel, abscess).",
+                    "why_required": "Detecting or excluding an abnormal RLQ process is central to deciding whether a specific intraabdominal disease explains the symptoms."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "finding_identity",
+                    "other_proposed_dimension": "",
+                    "dimension": "Characterization of any RLQ lesion or inflammatory process (e.g., uncomplicated appendicitis, perforated appendicitis, abscess, other bowel pathology).",
+                    "why_required": "Identifying the exact nature of the process guides urgency and type of management, particularly surgical versus conservative treatment."
+                  }
+                ],
+                "evidence": [
+                  "Ultrasound: “Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”",
+                  "“White Blood Cells: 14.8 K/uL (ref 4.0-11.0)” and “Neutrophils: 83.3 % (ref 50.0-70.0)”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Targeted ultrasound examination was then performed in the right lower quadrant at the site of patient's pain.  There is a tubular structure at this site measuring 5 mm in diameter.  On realtime scanning, compression of the structure could not be verified.  However, no hyperemia was seen and a blind end could not be confirmed.”"
+                    ],
+                    "reason": "The RLQ ultrasound attempted to visualize the suspected appendix and did identify a tubular structure, but inability to confirm a blind end or compressibility made the assessment incomplete and inconclusive."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Findings may represent a dilated appendix, though sonographic findings are inconclusive.”"
+                    ],
+                    "reason": "The ultrasound raised the possibility of a dilated appendix but explicitly stated that findings were inconclusive, so it neither confirmed nor excluded appendicitis or another focal RLQ process."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "finding_identity",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”"
+                    ],
+                    "reason": "Because the tubular structure could not be definitively identified as the appendix and its inflammatory status was unclear, the specific identity and nature of any RLQ pathology remain undetermined."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Prior ultrasound partially visualized a possible appendix but remained inconclusive about the presence and character of appendicitis or another RLQ intraabdominal source, so the core diagnostic question is still open."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis is well suited to visualize the appendix and surrounding structures, detect or exclude appendicitis, and characterize alternative RLQ intraabdominal pathology.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The record does not explicitly state whether non-appendiceal gastrointestinal or urinary etiologies (e.g., renal colic, colitis) are being separately prioritized versus primarily focusing on appendicitis; the relative weighting of these alternatives is inferred rather than documented."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Acute appendicitis is now a leading suspected cause of this patient’s right lower quadrant abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnostic hypothesis within the differential\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“Pt is ___ y/o F who presents with sudden onset RLQ pain that started last night after dinner.  Pain is sharp and accompanied by multiple episodes of nausea/vomiting.”\",\n        \"Ultrasound: “Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there a gynecologic pelvic cause, such as ovarian torsion or another adnexal pathology, that explains this patient’s acute right lower quadrant pain?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"negative\",\n    \"effect_on_previous_question\": \"The pelvic ultrasound adequately visualized the uterus and ovaries, showed normal Doppler waveforms with no evidence of ovarian torsion or adnexal mass, and therefore effectively excluded a gynecologic pelvic source while incidentally suggesting a possible but unconfirmed dilated appendix, shifting concern toward appendicitis.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"“The ovaries are normal demonstrating normal arterial and venous Doppler waveforms.  There is no evidence of ovarian torsion.”\",\n      \"evidence_stream_2\": \"“Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”\",\n      \"reason\": \"Clinical concern for acute RLQ pain is supported while the suspected gynecologic source is not; the ultrasound result and evolving clinical suspicion are directionally aligned in refocusing on a non-gynecologic source.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"replace\",\n    \"changed_proposition\": \"A gynecologic pelvic pathology such as ovarian torsion or other adnexal process is a leading concern in the differential for this patient’s acute right lower quadrant pain.\",\n    \"reason\": \"Pelvic ultrasound showed normal uterus and ovaries with “no evidence of ovarian torsion” and instead raised the possibility of a dilated appendix, so the leading suspected source shifts from gynecologic pathology to appendicitis.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Does this patient have appendicitis or another intraabdominal cause in the right lower quadrant that explains her acute pain and inflammatory labs?\",\n    \"target\": \"appendix and adjacent right lower quadrant intraabdominal structures\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying appendicitis or another specific intraabdominal pathology would justify surgical or other targeted intervention and narrow the differential away from functional or nonspecific pain.\",\n    \"negative_answer_changes\": \"If CT shows no appendicitis or alternative intraabdominal source, clinicians would reconsider the diagnosis, potentially manage conservatively, and explore non-appendiceal causes of RLQ pain.\",\n    \"secondary_questions\": [\n      \"If appendicitis or another process is present, what is its extent and are there complications such as perforation or abscess?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the appendix and surrounding right lower quadrant bowel and mesentery.\",\n        \"why_required\": \"The presence or absence of appendicitis cannot be determined without directly assessing the appendix and adjacent tissues.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of imaging features of appendicitis or another focal RLQ intraabdominal pathology (e.g., inflamed bowel, abscess).\",\n        \"why_required\": \"Detecting or excluding an abnormal RLQ process is central to deciding whether a specific intraabdominal disease explains the symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of any RLQ lesion or inflammatory process (e.g., uncomplicated appendicitis, perforated appendicitis, abscess, other bowel pathology).\",\n        \"why_required\": \"Identifying the exact nature of the process guides urgency and type of management, particularly surgical versus conservative treatment.\"\n      }\n    ],\n    \"evidence\": [\n      \"Ultrasound: “Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”\",\n      \"“White Blood Cells: 14.8 K/uL (ref 4.0-11.0)” and “Neutrophils: 83.3 % (ref 50.0-70.0)”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Targeted ultrasound examination was then performed in the right lower quadrant at the site of patient's pain.  There is a tubular structure at this site measuring 5 mm in diameter.  On realtime scanning, compression of the structure could not be verified.  However, no hyperemia was seen and a blind end could not be confirmed.”\"\n        ],\n        \"reason\": \"The RLQ ultrasound attempted to visualize the suspected appendix and did identify a tubular structure, but inability to confirm a blind end or compressibility made the assessment incomplete and inconclusive.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Findings may represent a dilated appendix, though sonographic findings are inconclusive.”\"\n        ],\n        \"reason\": \"The ultrasound raised the possibility of a dilated appendix but explicitly stated that findings were inconclusive, so it neither confirmed nor excluded appendicitis or another focal RLQ process.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”\"\n        ],\n        \"reason\": \"Because the tubular structure could not be definitively identified as the appendix and its inflammatory status was unclear, the specific identity and nature of any RLQ pathology remain undetermined.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Prior ultrasound partially visualized a possible appendix but remained inconclusive about the presence and character of appendicitis or another RLQ intraabdominal source, so the core diagnostic question is still open.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis is well suited to visualize the appendix and surrounding structures, detect or exclude appendicitis, and characterize alternative RLQ intraabdominal pathology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The record does not explicitly state whether non-appendiceal gastrointestinal or urinary etiologies (e.g., renal colic, colitis) are being separately prioritized versus primarily focusing on appendicitis; the relative weighting of these alternatives is inferred rather than documented.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788168290-ThdKW2L08ie2qNViGDmA",
+            "usage": {
+              "completion_tokens": 1800,
+              "prompt_tokens": 4597,
+              "total_tokens": 6397,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1280,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02230625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02230625,
+                "upstream_inference_prompt_cost": 0.00430625,
+                "upstream_inference_completions_cost": 0.018
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "Acute appendicitis is now a leading suspected cause of this patient’s right lower quadrant abdominal pain.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific diagnostic hypothesis within the differential",
+            "status": "suspected",
+            "evidence": [
+              "“Pt is ___ y/o F who presents with sudden onset RLQ pain that started last night after dinner.  Pain is sharp and accompanied by multiple episodes of nausea/vomiting.”",
+              "Ultrasound: “Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there a gynecologic pelvic cause, such as ovarian torsion or another adnexal pathology, that explains this patient’s acute right lower quadrant pain?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "negative",
+          "effect_on_previous_question": "The pelvic ultrasound adequately visualized the uterus and ovaries, showed normal Doppler waveforms with no evidence of ovarian torsion or adnexal mass, and therefore effectively excluded a gynecologic pelvic source while incidentally suggesting a possible but unconfirmed dilated appendix, shifting concern toward appendicitis.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "“The ovaries are normal demonstrating normal arterial and venous Doppler waveforms.  There is no evidence of ovarian torsion.”",
+            "evidence_stream_2": "“Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”",
+            "reason": "Clinical concern for acute RLQ pain is supported while the suspected gynecologic source is not; the ultrasound result and evolving clinical suspicion are directionally aligned in refocusing on a non-gynecologic source."
+          }
+        },
+        "assumption_change": {
+          "label": "replace",
+          "changed_proposition": "A gynecologic pelvic pathology such as ovarian torsion or other adnexal process is a leading concern in the differential for this patient’s acute right lower quadrant pain.",
+          "reason": "Pelvic ultrasound showed normal uterus and ovaries with “no evidence of ovarian torsion” and instead raised the possibility of a dilated appendix, so the leading suspected source shifts from gynecologic pathology to appendicitis."
+        },
+        "current_question": {
+          "primary": "Does this patient have appendicitis or another intraabdominal cause in the right lower quadrant that explains her acute pain and inflammatory labs?",
+          "target": "appendix and adjacent right lower quadrant intraabdominal structures",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying appendicitis or another specific intraabdominal pathology would justify surgical or other targeted intervention and narrow the differential away from functional or nonspecific pain.",
+          "negative_answer_changes": "If CT shows no appendicitis or alternative intraabdominal source, clinicians would reconsider the diagnosis, potentially manage conservatively, and explore non-appendiceal causes of RLQ pain.",
+          "secondary_questions": [
+            "If appendicitis or another process is present, what is its extent and are there complications such as perforation or abscess?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the appendix and surrounding right lower quadrant bowel and mesentery.",
+              "why_required": "The presence or absence of appendicitis cannot be determined without directly assessing the appendix and adjacent tissues."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of imaging features of appendicitis or another focal RLQ intraabdominal pathology (e.g., inflamed bowel, abscess).",
+              "why_required": "Detecting or excluding an abnormal RLQ process is central to deciding whether a specific intraabdominal disease explains the symptoms."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "finding_identity",
+              "other_proposed_dimension": "",
+              "dimension": "Characterization of any RLQ lesion or inflammatory process (e.g., uncomplicated appendicitis, perforated appendicitis, abscess, other bowel pathology).",
+              "why_required": "Identifying the exact nature of the process guides urgency and type of management, particularly surgical versus conservative treatment."
+            }
+          ],
+          "evidence": [
+            "Ultrasound: “Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”",
+            "“White Blood Cells: 14.8 K/uL (ref 4.0-11.0)” and “Neutrophils: 83.3 % (ref 50.0-70.0)”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Targeted ultrasound examination was then performed in the right lower quadrant at the site of patient's pain.  There is a tubular structure at this site measuring 5 mm in diameter.  On realtime scanning, compression of the structure could not be verified.  However, no hyperemia was seen and a blind end could not be confirmed.”"
+              ],
+              "reason": "The RLQ ultrasound attempted to visualize the suspected appendix and did identify a tubular structure, but inability to confirm a blind end or compressibility made the assessment incomplete and inconclusive."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Findings may represent a dilated appendix, though sonographic findings are inconclusive.”"
+              ],
+              "reason": "The ultrasound raised the possibility of a dilated appendix but explicitly stated that findings were inconclusive, so it neither confirmed nor excluded appendicitis or another focal RLQ process."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "finding_identity",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Findings may represent a dilated appendix, though sonographic findings are inconclusive.  CT of the abdomen and pelvis is recommended for further characterization.”"
+              ],
+              "reason": "Because the tubular structure could not be definitively identified as the appendix and its inflammatory status was unclear, the specific identity and nature of any RLQ pathology remain undetermined."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Prior ultrasound partially visualized a possible appendix but remained inconclusive about the presence and character of appendicitis or another RLQ intraabdominal source, so the core diagnostic question is still open."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis is well suited to visualize the appendix and surrounding structures, detect or exclude appendicitis, and characterize alternative RLQ intraabdominal pathology.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The record does not explicitly state whether non-appendiceal gastrointestinal or urinary etiologies (e.g., renal colic, colitis) are being separately prioritized versus primarily focusing on appendicitis; the relative weighting of these alternatives is inferred rather than documented."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

@@ -1,0 +1,678 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 26244836,
+  "source_path": "results/annotation_experiment/full/diverticulitis_26244836.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (RENAL U.S.)",
+      "request_prompt_sha256": "6ff00db9cf940eda1bfbb8973588c12f68504380081186ba418a5f3433ccd8d8",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "6ff00db9cf940eda1bfbb8973588c12f68504380081186ba418a5f3433ccd8d8",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient may have ongoing or recurrent renal/urinary tract pathology (e.g., obstruction, complication of prior stent, or infection source) contributing to current fever and systemic symptoms.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "suspected clinical source of sepsis/fever",
+                  "status": "suspected",
+                  "evidence": [
+                    "“hx of HIV recently admitted ___ with R obstructing  renal stone with stent placement which was removed on ___,  completed course of oral abx on ___, presents with sudden  onset chills and fever to 103 last night.”",
+                    "“No abd pain. NO urinary sxs and denies back pain,  hematuria.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The source of the patient’s fever and sepsis-like presentation is not yet clearly localized and could be urinary, gastrointestinal, or pulmonary.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall syndrome framing",
+                  "status": "suspected",
+                  "evidence": [
+                    "“presents with sudden  onset chills and fever to 103 last night.”",
+                    "“Imaging showed: CXR Since ___, new faint right  basilar opacity may represent atelectasis, but superimposed infection is also considered, given the patient's symptoms.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is acute kidney injury and reduced renal function that may be related to current illness and/or prior obstructing stone.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "organ dysfunction severity",
+                  "status": "established",
+                  "evidence": [
+                    "“Labs were significant for: HCO3 17, BUN 34, Cr 1.7… Estimated GFR = 42 if non African-American… GFR<60 = Chronic Kidney Disease, GFR<15 = Kidney Failure.”",
+                    "“HIV medications held during  admission ___ worsening renal function though he is back on  these.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; assumptions are newly inferred from the baseline presentation and history of obstructing renal stone with stent removal, current fever, and AKI."
+              },
+              "current_question": {
+                "primary": "Is there current renal or urinary tract pathology such as obstruction, hydronephrosis, or other structural complication that could explain the patient’s fever and kidney dysfunction?",
+                "target": "kidneys and proximal urinary tract (including sequelae of recent obstructing stone and stent removal)",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would support a urinary/renal source of infection or obstruction, prompting urologic consultation, possible decompression, and tailoring of antibiotics and fluid management.",
+                "negative_answer_changes": "Would make a urinary/renal structural source less likely and shift focus toward pulmonary, gastrointestinal, or other sources while managing AKI medically.",
+                "secondary_questions": [
+                  "Is there hydronephrosis or other sonographic evidence of obstruction after recent right renal stone and stent removal?",
+                  "Are there gross renal parenchymal abnormalities (e.g., abscess, pyelonephritis pattern) that could serve as the infection source?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization of both kidneys and proximal ureters to assess for post-obstructive changes or other abnormalities.",
+                    "why_required": "Adequate visualization is necessary to determine whether there is structural renal or collecting system pathology that could explain the current presentation."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of hydronephrosis or other signs of urinary tract obstruction.",
+                    "why_required": "Detecting or ruling out obstruction is central to determining whether the urinary tract is the current source of illness or AKI."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of renal complications such as abscess, significant scarring, or other focal lesions related to prior obstructing stone or infection.",
+                    "why_required": "Such complications would strongly localize the source of fever and influence the need for invasive intervention or targeted therapy."
+                  }
+                ],
+                "evidence": [
+                  "“hx of HIV recently admitted ___ with R obstructing  renal stone with stent placement which was removed on ___,  completed course of oral abx on ___, presents with sudden  onset chills and fever to 103 last night.”",
+                  "“Labs were significant for: HCO3 17, BUN 34, Cr 1.7… Estimated GFR = 42…”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No prior renal imaging is described in the current encounter; only a chest radiograph result is provided."
+                    ],
+                    "reason": "Existing imaging (chest radiograph) does not assess the kidneys or urinary tract, so visualization of the renal system remains unaddressed."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Imaging showed: CXR… New faint right  basilar opacity may represent atelectasis, although superimposed infection is not excluded…”"
+                    ],
+                    "reason": "There is no imaging or other objective assessment of hydronephrosis or obstruction in this encounter; UA is not definitive for obstruction, so this remains unanswered."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "History of “R obstructing  renal stone with stent placement which was removed” but no imaging description of post-procedural renal status."
+                    ],
+                    "reason": "No prior imaging has evaluated for renal abscess, scarring, or other complications in the current presentation."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before the renal ultrasound, there is no imaging evaluation of renal structure, obstruction, or renal infectious complications in this encounter."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Renal ultrasound directly visualizes the kidneys and collecting systems, can detect hydronephrosis, obstruction, and many structural complications relevant to a post-stone, febrile patient with AKI.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order does not fully explain how competing potential sources (pulmonary opacity, acute diarrhea/colitis, HIV-related or opportunistic infections) are being prioritized relative to the urinary source."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient may have ongoing or recurrent renal/urinary tract pathology (e.g., obstruction, complication of prior stent, or infection source) contributing to current fever and systemic symptoms.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"suspected clinical source of sepsis/fever\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“hx of HIV recently admitted ___ with R obstructing  renal stone with stent placement which was removed on ___,  completed course of oral abx on ___, presents with sudden  onset chills and fever to 103 last night.”\",\n        \"“No abd pain. NO urinary sxs and denies back pain,  hematuria.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The source of the patient’s fever and sepsis-like presentation is not yet clearly localized and could be urinary, gastrointestinal, or pulmonary.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall syndrome framing\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“presents with sudden  onset chills and fever to 103 last night.”\",\n        \"“Imaging showed: CXR Since ___, new faint right  basilar opacity may represent atelectasis, but superimposed infection is also considered, given the patient's symptoms.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is acute kidney injury and reduced renal function that may be related to current illness and/or prior obstructing stone.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ dysfunction severity\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“Labs were significant for: HCO3 17, BUN 34, Cr 1.7… Estimated GFR = 42 if non African-American… GFR<60 = Chronic Kidney Disease, GFR<15 = Kidney Failure.”\",\n        \"“HIV medications held during  admission ___ worsening renal function though he is back on  these.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; assumptions are newly inferred from the baseline presentation and history of obstructing renal stone with stent removal, current fever, and AKI.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there current renal or urinary tract pathology such as obstruction, hydronephrosis, or other structural complication that could explain the patient’s fever and kidney dysfunction?\",\n    \"target\": \"kidneys and proximal urinary tract (including sequelae of recent obstructing stone and stent removal)\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would support a urinary/renal source of infection or obstruction, prompting urologic consultation, possible decompression, and tailoring of antibiotics and fluid management.\",\n    \"negative_answer_changes\": \"Would make a urinary/renal structural source less likely and shift focus toward pulmonary, gastrointestinal, or other sources while managing AKI medically.\",\n    \"secondary_questions\": [\n      \"Is there hydronephrosis or other sonographic evidence of obstruction after recent right renal stone and stent removal?\",\n      \"Are there gross renal parenchymal abnormalities (e.g., abscess, pyelonephritis pattern) that could serve as the infection source?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of both kidneys and proximal ureters to assess for post-obstructive changes or other abnormalities.\",\n        \"why_required\": \"Adequate visualization is necessary to determine whether there is structural renal or collecting system pathology that could explain the current presentation.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of hydronephrosis or other signs of urinary tract obstruction.\",\n        \"why_required\": \"Detecting or ruling out obstruction is central to determining whether the urinary tract is the current source of illness or AKI.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of renal complications such as abscess, significant scarring, or other focal lesions related to prior obstructing stone or infection.\",\n        \"why_required\": \"Such complications would strongly localize the source of fever and influence the need for invasive intervention or targeted therapy.\"\n      }\n    ],\n    \"evidence\": [\n      \"“hx of HIV recently admitted ___ with R obstructing  renal stone with stent placement which was removed on ___,  completed course of oral abx on ___, presents with sudden  onset chills and fever to 103 last night.”\",\n      \"“Labs were significant for: HCO3 17, BUN 34, Cr 1.7… Estimated GFR = 42…”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior renal imaging is described in the current encounter; only a chest radiograph result is provided.\"\n        ],\n        \"reason\": \"Existing imaging (chest radiograph) does not assess the kidneys or urinary tract, so visualization of the renal system remains unaddressed.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Imaging showed: CXR… New faint right  basilar opacity may represent atelectasis, although superimposed infection is not excluded…”\"\n        ],\n        \"reason\": \"There is no imaging or other objective assessment of hydronephrosis or obstruction in this encounter; UA is not definitive for obstruction, so this remains unanswered.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"History of “R obstructing  renal stone with stent placement which was removed” but no imaging description of post-procedural renal status.\"\n        ],\n        \"reason\": \"No prior imaging has evaluated for renal abscess, scarring, or other complications in the current presentation.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before the renal ultrasound, there is no imaging evaluation of renal structure, obstruction, or renal infectious complications in this encounter.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Renal ultrasound directly visualizes the kidneys and collecting systems, can detect hydronephrosis, obstruction, and many structural complications relevant to a post-stone, febrile patient with AKI.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order does not fully explain how competing potential sources (pulmonary opacity, acute diarrhea/colitis, HIV-related or opportunistic infections) are being prioritized relative to the urinary source.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788172275-vZCxYZFfQVW8Coyxv4EQ",
+            "usage": {
+              "completion_tokens": 1820,
+              "prompt_tokens": 3647,
+              "total_tokens": 5467,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02275875,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02275875,
+                "upstream_inference_prompt_cost": 0.00455875,
+                "upstream_inference_completions_cost": 0.0182
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient may have ongoing or recurrent renal/urinary tract pathology (e.g., obstruction, complication of prior stent, or infection source) contributing to current fever and systemic symptoms.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "suspected clinical source of sepsis/fever",
+            "status": "suspected",
+            "evidence": [
+              "“hx of HIV recently admitted ___ with R obstructing  renal stone with stent placement which was removed on ___,  completed course of oral abx on ___, presents with sudden  onset chills and fever to 103 last night.”",
+              "“No abd pain. NO urinary sxs and denies back pain,  hematuria.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The source of the patient’s fever and sepsis-like presentation is not yet clearly localized and could be urinary, gastrointestinal, or pulmonary.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "overall syndrome framing",
+            "status": "suspected",
+            "evidence": [
+              "“presents with sudden  onset chills and fever to 103 last night.”",
+              "“Imaging showed: CXR Since ___, new faint right  basilar opacity may represent atelectasis, but superimposed infection is also considered, given the patient's symptoms.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is acute kidney injury and reduced renal function that may be related to current illness and/or prior obstructing stone.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "organ dysfunction severity",
+            "status": "established",
+            "evidence": [
+              "“Labs were significant for: HCO3 17, BUN 34, Cr 1.7… Estimated GFR = 42 if non African-American… GFR<60 = Chronic Kidney Disease, GFR<15 = Kidney Failure.”",
+              "“HIV medications held during  admission ___ worsening renal function though he is back on  these.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; assumptions are newly inferred from the baseline presentation and history of obstructing renal stone with stent removal, current fever, and AKI."
+        },
+        "current_question": {
+          "primary": "Is there current renal or urinary tract pathology such as obstruction, hydronephrosis, or other structural complication that could explain the patient’s fever and kidney dysfunction?",
+          "target": "kidneys and proximal urinary tract (including sequelae of recent obstructing stone and stent removal)",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would support a urinary/renal source of infection or obstruction, prompting urologic consultation, possible decompression, and tailoring of antibiotics and fluid management.",
+          "negative_answer_changes": "Would make a urinary/renal structural source less likely and shift focus toward pulmonary, gastrointestinal, or other sources while managing AKI medically.",
+          "secondary_questions": [
+            "Is there hydronephrosis or other sonographic evidence of obstruction after recent right renal stone and stent removal?",
+            "Are there gross renal parenchymal abnormalities (e.g., abscess, pyelonephritis pattern) that could serve as the infection source?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization of both kidneys and proximal ureters to assess for post-obstructive changes or other abnormalities.",
+              "why_required": "Adequate visualization is necessary to determine whether there is structural renal or collecting system pathology that could explain the current presentation."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of hydronephrosis or other signs of urinary tract obstruction.",
+              "why_required": "Detecting or ruling out obstruction is central to determining whether the urinary tract is the current source of illness or AKI."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of renal complications such as abscess, significant scarring, or other focal lesions related to prior obstructing stone or infection.",
+              "why_required": "Such complications would strongly localize the source of fever and influence the need for invasive intervention or targeted therapy."
+            }
+          ],
+          "evidence": [
+            "“hx of HIV recently admitted ___ with R obstructing  renal stone with stent placement which was removed on ___,  completed course of oral abx on ___, presents with sudden  onset chills and fever to 103 last night.”",
+            "“Labs were significant for: HCO3 17, BUN 34, Cr 1.7… Estimated GFR = 42…”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No prior renal imaging is described in the current encounter; only a chest radiograph result is provided."
+              ],
+              "reason": "Existing imaging (chest radiograph) does not assess the kidneys or urinary tract, so visualization of the renal system remains unaddressed."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Imaging showed: CXR… New faint right  basilar opacity may represent atelectasis, although superimposed infection is not excluded…”"
+              ],
+              "reason": "There is no imaging or other objective assessment of hydronephrosis or obstruction in this encounter; UA is not definitive for obstruction, so this remains unanswered."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "History of “R obstructing  renal stone with stent placement which was removed” but no imaging description of post-procedural renal status."
+              ],
+              "reason": "No prior imaging has evaluated for renal abscess, scarring, or other complications in the current presentation."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Before the renal ultrasound, there is no imaging evaluation of renal structure, obstruction, or renal infectious complications in this encounter."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Renal ultrasound directly visualizes the kidneys and collecting systems, can detect hydronephrosis, obstruction, and many structural complications relevant to a post-stone, febrile patient with AKI.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The order does not fully explain how competing potential sources (pulmonary opacity, acute diarrhea/colitis, HIV-related or opportunistic infections) are being prioritized relative to the urinary source."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD & PELVIS W/O CONTRAST)",
+      "request_prompt_sha256": "5db64025a15e5cdf97ff0f5188471b005f825e8e277cedd1ca4392cc02854d05",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "5db64025a15e5cdf97ff0f5188471b005f825e8e277cedd1ca4392cc02854d05",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient’s current fever and systemic symptoms may arise from an intra-abdominal or pelvic source such as colitis, enteric infection, or complication of recent nephrolithiasis/intervention rather than (or in addition to) pneumonia or simple viral illness.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall syndrome framing",
+                  "status": "suspected",
+                  "evidence": [
+                    "“presents with sudden  onset chills and fever to 103 last night.”",
+                    "“Has  also been having loose stools which started abruptly yesterday afternoon with 3 or 4 episodes of watery diarrhea… Exam notable for mild LLQ tenderness… CXR… new faint right  basilar opacity may represent atelectasis, although superimposed infection is not excluded in this clinical setting.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Significant obstructive uropathy has resolved, but residual stones and post-procedural/urologic complications remain a potential intra-abdominal source of infection.",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "post-procedural/urologic status",
+                  "status": "suspected",
+                  "evidence": [
+                    "“hx of HIV recently admitted ___ with R obstructing  renal stone with stent placement which was removed on ___”",
+                    "“Previously seen right hydroureteronephrosis has resolved… A 1.0 cm echogenic stone in the lower pole of the left kidney… No evidence of a fluid collection.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The renal ultrasound has effectively ruled out hydronephrosis or a large perinephric fluid collection as the primary cause of current sepsis-like presentation.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "extent of urologic/renal structural disease as source",
+                  "status": "likely",
+                  "evidence": [
+                    "“Previously seen right hydroureteronephrosis has resolved.”",
+                    "“No evidence of a fluid collection.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there current renal or urinary tract pathology such as obstruction, hydronephrosis, or other structural complication that could explain the patient’s fever and kidney dysfunction?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "negative",
+                "effect_on_previous_question": "The renal ultrasound adequately visualized both kidneys and bladder, demonstrating resolved hydronephrosis, a nonobstructing stone, and no fluid collection, thereby refuting significant obstruction or large perinephric abscess as the primary current source of fever and AKI.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "“Previously seen right hydroureteronephrosis has resolved.”",
+                  "evidence_stream_2": "“No evidence of a fluid collection.”",
+                  "reason": "Ultrasound findings are consistent with clinical improvement in obstruction and do not conflict with other data."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The patient may have ongoing or recurrent renal/urinary tract pathology (e.g., obstruction, complication of prior stent, or infection source) contributing to current fever and systemic symptoms.",
+                "reason": "Renal ultrasound shows resolved hydroureteronephrosis and no fluid collection, so obstruction/large abscess is de-emphasized while smaller or non-urologic intra-abdominal sources remain possible."
+              },
+              "current_question": {
+                "primary": "Is there an intra-abdominal or pelvic source of infection or inflammatory process, such as colitis or a complication of nephrolithiasis/procedures, that explains the patient’s fever, LLQ tenderness, diarrhea, and systemic illness?",
+                "target": "abdomen and pelvis including bowel, solid organs, urinary tract, and peritoneum",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identification of a focal abdominal/pelvic source (e.g., colitis, abscess, diverticulitis, occult obstruction or stone complication) would direct targeted antimicrobial therapy, possible surgical/urologic consultation, and source control strategies.",
+                "negative_answer_changes": "Absence of an identifiable abdominal/pelvic source would shift focus toward pulmonary, primary gastrointestinal infection without structural disease, or other systemic/infectious etiologies, and may reduce the need for procedural source control in the abdomen.",
+                "secondary_questions": [
+                  "Is there imaging evidence of colitis or other bowel pathology corresponding to LLQ tenderness and acute watery diarrhea?",
+                  "Is there any intra-abdominal abscess or subtle urologic complication not detected on ultrasound that could serve as an occult source of infection?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comprehensive visualization of abdominal and pelvic organs including bowel, solid organs, urinary tract, and peritoneal spaces.",
+                    "why_required": "Full assessment of these structures is necessary to localize a potential intra-abdominal infectious or inflammatory source for fever and LLQ tenderness."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of colitis, diverticulitis, bowel wall thickening, or other acute bowel pathology, particularly in the left lower quadrant.",
+                    "why_required": "Bowel pathology could directly explain LLQ tenderness and diarrhea and serve as a primary source of sepsis."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, location, and character of any intra-abdominal or pelvic abscess, occult obstruction, or post-nephrolithiasis complication not seen on ultrasound.",
+                    "why_required": "Detecting such complications would identify a treatable source requiring specific interventions like drainage or procedural management."
+                  }
+                ],
+                "evidence": [
+                  "“Has  also been having loose stools which started abruptly yesterday afternoon with 3 or 4 episodes of watery diarrhea… Exam notable for mild LLQ tenderness”",
+                  "“Previously seen right hydroureteronephrosis has resolved… No evidence of a fluid collection.”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Prior imaging consists of a chest radiograph and a focused renal ultrasound, which do not evaluate the bowel, much of the solid organs, or peritoneal spaces."
+                    ],
+                    "reason": "No prior study visualizes the full abdomen and pelvis; only kidneys, bladder, and chest have been imaged."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Exam notable for mild LLQ tenderness” and “loose stools… watery diarrhea” with no abdominal imaging assessing the bowel."
+                    ],
+                    "reason": "There is clinical concern for bowel pathology, but no imaging evaluates for colitis, diverticulitis, or other LLQ bowel disease."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“Previously seen right hydroureteronephrosis has resolved… No evidence of a fluid collection.”"
+                    ],
+                    "reason": "Renal ultrasound refutes large perinephric collections and ongoing hydronephrosis, but cannot exclude smaller or non-renal intra-abdominal abscesses or complications elsewhere."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Existing imaging does not evaluate the broader abdomen and pelvis or bowel pathology; only urologic obstruction and large perinephric collections have been partially excluded."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Noncontrast CT of the abdomen and pelvis provides comprehensive visualization of abdominal and pelvic structures, detecting colitis, diverticulitis, stones, obstruction, and many abscesses even without IV contrast in a patient with renal dysfunction.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The choice of noncontrast CT rather than contrast-enhanced CT or primary stool/enteric workup for diarrhea is not fully specified, particularly how renal function and HIV status influenced modality and timing."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient’s current fever and systemic symptoms may arise from an intra-abdominal or pelvic source such as colitis, enteric infection, or complication of recent nephrolithiasis/intervention rather than (or in addition to) pneumonia or simple viral illness.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall syndrome framing\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“presents with sudden  onset chills and fever to 103 last night.”\",\n        \"“Has  also been having loose stools which started abruptly yesterday afternoon with 3 or 4 episodes of watery diarrhea… Exam notable for mild LLQ tenderness… CXR… new faint right  basilar opacity may represent atelectasis, although superimposed infection is not excluded in this clinical setting.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Significant obstructive uropathy has resolved, but residual stones and post-procedural/urologic complications remain a potential intra-abdominal source of infection.\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"post-procedural/urologic status\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“hx of HIV recently admitted ___ with R obstructing  renal stone with stent placement which was removed on ___”\",\n        \"“Previously seen right hydroureteronephrosis has resolved… A 1.0 cm echogenic stone in the lower pole of the left kidney… No evidence of a fluid collection.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The renal ultrasound has effectively ruled out hydronephrosis or a large perinephric fluid collection as the primary cause of current sepsis-like presentation.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"extent of urologic/renal structural disease as source\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“Previously seen right hydroureteronephrosis has resolved.”\",\n        \"“No evidence of a fluid collection.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there current renal or urinary tract pathology such as obstruction, hydronephrosis, or other structural complication that could explain the patient’s fever and kidney dysfunction?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"negative\",\n    \"effect_on_previous_question\": \"The renal ultrasound adequately visualized both kidneys and bladder, demonstrating resolved hydronephrosis, a nonobstructing stone, and no fluid collection, thereby refuting significant obstruction or large perinephric abscess as the primary current source of fever and AKI.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"“Previously seen right hydroureteronephrosis has resolved.”\",\n      \"evidence_stream_2\": \"“No evidence of a fluid collection.”\",\n      \"reason\": \"Ultrasound findings are consistent with clinical improvement in obstruction and do not conflict with other data.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient may have ongoing or recurrent renal/urinary tract pathology (e.g., obstruction, complication of prior stent, or infection source) contributing to current fever and systemic symptoms.\",\n    \"reason\": \"Renal ultrasound shows resolved hydroureteronephrosis and no fluid collection, so obstruction/large abscess is de-emphasized while smaller or non-urologic intra-abdominal sources remain possible.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an intra-abdominal or pelvic source of infection or inflammatory process, such as colitis or a complication of nephrolithiasis/procedures, that explains the patient’s fever, LLQ tenderness, diarrhea, and systemic illness?\",\n    \"target\": \"abdomen and pelvis including bowel, solid organs, urinary tract, and peritoneum\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identification of a focal abdominal/pelvic source (e.g., colitis, abscess, diverticulitis, occult obstruction or stone complication) would direct targeted antimicrobial therapy, possible surgical/urologic consultation, and source control strategies.\",\n    \"negative_answer_changes\": \"Absence of an identifiable abdominal/pelvic source would shift focus toward pulmonary, primary gastrointestinal infection without structural disease, or other systemic/infectious etiologies, and may reduce the need for procedural source control in the abdomen.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of colitis or other bowel pathology corresponding to LLQ tenderness and acute watery diarrhea?\",\n      \"Is there any intra-abdominal abscess or subtle urologic complication not detected on ultrasound that could serve as an occult source of infection?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comprehensive visualization of abdominal and pelvic organs including bowel, solid organs, urinary tract, and peritoneal spaces.\",\n        \"why_required\": \"Full assessment of these structures is necessary to localize a potential intra-abdominal infectious or inflammatory source for fever and LLQ tenderness.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of colitis, diverticulitis, bowel wall thickening, or other acute bowel pathology, particularly in the left lower quadrant.\",\n        \"why_required\": \"Bowel pathology could directly explain LLQ tenderness and diarrhea and serve as a primary source of sepsis.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, location, and character of any intra-abdominal or pelvic abscess, occult obstruction, or post-nephrolithiasis complication not seen on ultrasound.\",\n        \"why_required\": \"Detecting such complications would identify a treatable source requiring specific interventions like drainage or procedural management.\"\n      }\n    ],\n    \"evidence\": [\n      \"“Has  also been having loose stools which started abruptly yesterday afternoon with 3 or 4 episodes of watery diarrhea… Exam notable for mild LLQ tenderness”\",\n      \"“Previously seen right hydroureteronephrosis has resolved… No evidence of a fluid collection.”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Prior imaging consists of a chest radiograph and a focused renal ultrasound, which do not evaluate the bowel, much of the solid organs, or peritoneal spaces.\"\n        ],\n        \"reason\": \"No prior study visualizes the full abdomen and pelvis; only kidneys, bladder, and chest have been imaged.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Exam notable for mild LLQ tenderness” and “loose stools… watery diarrhea” with no abdominal imaging assessing the bowel.\"\n        ],\n        \"reason\": \"There is clinical concern for bowel pathology, but no imaging evaluates for colitis, diverticulitis, or other LLQ bowel disease.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“Previously seen right hydroureteronephrosis has resolved… No evidence of a fluid collection.”\"\n        ],\n        \"reason\": \"Renal ultrasound refutes large perinephric collections and ongoing hydronephrosis, but cannot exclude smaller or non-renal intra-abdominal abscesses or complications elsewhere.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Existing imaging does not evaluate the broader abdomen and pelvis or bowel pathology; only urologic obstruction and large perinephric collections have been partially excluded.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Noncontrast CT of the abdomen and pelvis provides comprehensive visualization of abdominal and pelvic structures, detecting colitis, diverticulitis, stones, obstruction, and many abscesses even without IV contrast in a patient with renal dysfunction.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of noncontrast CT rather than contrast-enhanced CT or primary stool/enteric workup for diarrhea is not fully specified, particularly how renal function and HIV status influenced modality and timing.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788172300-EPDfQgsUbQXL2beX7lDN",
+            "usage": {
+              "completion_tokens": 2041,
+              "prompt_tokens": 5492,
+              "total_tokens": 7533,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.027275,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.027275,
+                "upstream_inference_prompt_cost": 0.006865,
+                "upstream_inference_completions_cost": 0.02041
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient’s current fever and systemic symptoms may arise from an intra-abdominal or pelvic source such as colitis, enteric infection, or complication of recent nephrolithiasis/intervention rather than (or in addition to) pneumonia or simple viral illness.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "overall syndrome framing",
+            "status": "suspected",
+            "evidence": [
+              "“presents with sudden  onset chills and fever to 103 last night.”",
+              "“Has  also been having loose stools which started abruptly yesterday afternoon with 3 or 4 episodes of watery diarrhea… Exam notable for mild LLQ tenderness… CXR… new faint right  basilar opacity may represent atelectasis, although superimposed infection is not excluded in this clinical setting.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Significant obstructive uropathy has resolved, but residual stones and post-procedural/urologic complications remain a potential intra-abdominal source of infection.",
+            "type": "intervention_or_device_state",
+            "other_proposed_type": "",
+            "level": "post-procedural/urologic status",
+            "status": "suspected",
+            "evidence": [
+              "“hx of HIV recently admitted ___ with R obstructing  renal stone with stent placement which was removed on ___”",
+              "“Previously seen right hydroureteronephrosis has resolved… A 1.0 cm echogenic stone in the lower pole of the left kidney… No evidence of a fluid collection.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The renal ultrasound has effectively ruled out hydronephrosis or a large perinephric fluid collection as the primary cause of current sepsis-like presentation.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "extent of urologic/renal structural disease as source",
+            "status": "likely",
+            "evidence": [
+              "“Previously seen right hydroureteronephrosis has resolved.”",
+              "“No evidence of a fluid collection.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there current renal or urinary tract pathology such as obstruction, hydronephrosis, or other structural complication that could explain the patient’s fever and kidney dysfunction?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "negative",
+          "effect_on_previous_question": "The renal ultrasound adequately visualized both kidneys and bladder, demonstrating resolved hydronephrosis, a nonobstructing stone, and no fluid collection, thereby refuting significant obstruction or large perinephric abscess as the primary current source of fever and AKI.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "“Previously seen right hydroureteronephrosis has resolved.”",
+            "evidence_stream_2": "“No evidence of a fluid collection.”",
+            "reason": "Ultrasound findings are consistent with clinical improvement in obstruction and do not conflict with other data."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient may have ongoing or recurrent renal/urinary tract pathology (e.g., obstruction, complication of prior stent, or infection source) contributing to current fever and systemic symptoms.",
+          "reason": "Renal ultrasound shows resolved hydroureteronephrosis and no fluid collection, so obstruction/large abscess is de-emphasized while smaller or non-urologic intra-abdominal sources remain possible."
+        },
+        "current_question": {
+          "primary": "Is there an intra-abdominal or pelvic source of infection or inflammatory process, such as colitis or a complication of nephrolithiasis/procedures, that explains the patient’s fever, LLQ tenderness, diarrhea, and systemic illness?",
+          "target": "abdomen and pelvis including bowel, solid organs, urinary tract, and peritoneum",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identification of a focal abdominal/pelvic source (e.g., colitis, abscess, diverticulitis, occult obstruction or stone complication) would direct targeted antimicrobial therapy, possible surgical/urologic consultation, and source control strategies.",
+          "negative_answer_changes": "Absence of an identifiable abdominal/pelvic source would shift focus toward pulmonary, primary gastrointestinal infection without structural disease, or other systemic/infectious etiologies, and may reduce the need for procedural source control in the abdomen.",
+          "secondary_questions": [
+            "Is there imaging evidence of colitis or other bowel pathology corresponding to LLQ tenderness and acute watery diarrhea?",
+            "Is there any intra-abdominal abscess or subtle urologic complication not detected on ultrasound that could serve as an occult source of infection?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Comprehensive visualization of abdominal and pelvic organs including bowel, solid organs, urinary tract, and peritoneal spaces.",
+              "why_required": "Full assessment of these structures is necessary to localize a potential intra-abdominal infectious or inflammatory source for fever and LLQ tenderness."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of colitis, diverticulitis, bowel wall thickening, or other acute bowel pathology, particularly in the left lower quadrant.",
+              "why_required": "Bowel pathology could directly explain LLQ tenderness and diarrhea and serve as a primary source of sepsis."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, location, and character of any intra-abdominal or pelvic abscess, occult obstruction, or post-nephrolithiasis complication not seen on ultrasound.",
+              "why_required": "Detecting such complications would identify a treatable source requiring specific interventions like drainage or procedural management."
+            }
+          ],
+          "evidence": [
+            "“Has  also been having loose stools which started abruptly yesterday afternoon with 3 or 4 episodes of watery diarrhea… Exam notable for mild LLQ tenderness”",
+            "“Previously seen right hydroureteronephrosis has resolved… No evidence of a fluid collection.”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Prior imaging consists of a chest radiograph and a focused renal ultrasound, which do not evaluate the bowel, much of the solid organs, or peritoneal spaces."
+              ],
+              "reason": "No prior study visualizes the full abdomen and pelvis; only kidneys, bladder, and chest have been imaged."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Exam notable for mild LLQ tenderness” and “loose stools… watery diarrhea” with no abdominal imaging assessing the bowel."
+              ],
+              "reason": "There is clinical concern for bowel pathology, but no imaging evaluates for colitis, diverticulitis, or other LLQ bowel disease."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“Previously seen right hydroureteronephrosis has resolved… No evidence of a fluid collection.”"
+              ],
+              "reason": "Renal ultrasound refutes large perinephric collections and ongoing hydronephrosis, but cannot exclude smaller or non-renal intra-abdominal abscesses or complications elsewhere."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Existing imaging does not evaluate the broader abdomen and pelvis or bowel pathology; only urologic obstruction and large perinephric collections have been partially excluded."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Noncontrast CT of the abdomen and pelvis provides comprehensive visualization of abdominal and pelvic structures, detecting colitis, diverticulitis, stones, obstruction, and many abscesses even without IV contrast in a patient with renal dysfunction.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The choice of noncontrast CT rather than contrast-enhanced CT or primary stool/enteric workup for diarrhea is not fully specified, particularly how renal function and HIV status influenced modality and timing."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

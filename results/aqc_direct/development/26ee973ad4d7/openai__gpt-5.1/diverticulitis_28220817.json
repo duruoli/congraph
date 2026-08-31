@@ -1,0 +1,378 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 28220817,
+  "source_path": "results/annotation_experiment/full/diverticulitis_28220817.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "514b5f3b33150d078c8b6e475be63164ed20e9d72606cf4a7ae1248f2f09bbfa",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "514b5f3b33150d078c8b6e475be63164ed20e9d72606cf4a7ae1248f2f09bbfa",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute intra‑abdominal/intra‑pelvic process causing right lower quadrant abdominal pain and sepsis-like presentation.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level working diagnosis (possible intra-abdominal infection/inflammation or other acute surgical abdomen)",
+                  "status": "suspected",
+                  "evidence": [
+                    "“P/w RLQ pain with no radiation and subjective fevers that's been worsening… Pt was found to be tachycardic 122 with Tmax 102.8… Pt was given 1L fluid in clinic, Tylenol and Meropenem and pain, tachycardia and fever improved.”",
+                    "“ABDOMEN: obese. no obvious masses. moderate RLQ abdominal tenderness, - rebound tenderness… No N/V/D/C.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is at high risk for serious intra‑abdominal infection or bleeding complications due to aplastic anemia, chronic anticoagulation, and chronic kidney disease.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "patient-level risk/complication frame",
+                  "status": "established",
+                  "evidence": [
+                    "“aplastic anemia… hx of VTE-IVC filter, life long anticoagulation… Of note, pt did not take her Coumadin this AM ___ abdominal pain. INR 2.0.”",
+                    "“Estimated GFR = 44 if non African-American… GFR<60 = Chronic Kidney Disease… Platelet Count: 109.0 K/uL (ref 150.0-400.0)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Pulmonary infection is a concurrent concern but not the primary suspected source of this acute presentation.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "competing syndrome-level source",
+                  "status": "suspected",
+                  "evidence": [
+                    "“She also complains of a productive cough with clear/white sputum for 1 week and new throat pain this morning with DOE above her baseline that resolved with rest… inspiratory and expiratory crackles noted bilaterally at bases, lung sounds coarse.”"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; acute RLQ pain with sepsis concern and high-risk comorbidities define the initial syndrome and risk frame."
+              },
+              "current_question": {
+                "primary": "Is there an acute intra-abdominal or pelvic pathology explaining the right lower quadrant pain and sepsis-like presentation (e.g., appendicitis, diverticulitis, colitis, perforation, abscess, ischemia, or significant intra-abdominal bleeding)?",
+                "target": "acute intra-abdominal or pelvic pathology causing RLQ pain and systemic inflammatory response",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirm a focal abdominal source to direct urgent management such as surgery, percutaneous drainage, targeted antibiotics, or anticoagulation reversal if bleeding.",
+                "negative_answer_changes": "Decrease likelihood of an intra-abdominal source and redirect workup toward alternative sources such as pulmonary infection or other causes of fever and pain.",
+                "secondary_questions": [
+                  "If an intra-abdominal process is present, what is its exact anatomic location and extent?",
+                  "Is there imaging evidence of intra-abdominal bleeding or perforation in the setting of anticoagulation and aplastic anemia?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of an acute inflammatory, infectious, ischemic, perforated, or hemorrhagic process within the abdomen or pelvis explaining RLQ pain.",
+                    "why_required": "Determines whether there is a focal intra-abdominal source that accounts for symptoms and guides urgent therapy."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Anatomic localization of any detected intra-abdominal process (e.g., appendix, cecum, terminal ileum, colon, mesentery, pelvic organs).",
+                    "why_required": "Specific site dictates management choices such as surgical approach, need for drainage, or medical therapy alone."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of any intra-abdominal pathology, including size of collections, presence of perforation, free air, free fluid, or large hematoma.",
+                    "why_required": "Extent and complications determine urgency, feasibility of operative vs. nonoperative management, and risk–benefit of continuing anticoagulation."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of complications such as abscess, obstruction, ischemia, or active/recent intra-abdominal bleeding.",
+                    "why_required": "Complications require tailored interventions (e.g., drainage, surgery, transfusion, anticoagulation reversal) in this high-risk patient."
+                  }
+                ],
+                "evidence": [
+                  "“P/w RLQ pain with no radiation and subjective fevers that's been worsening… Pt was found to be tachycardic 122 with Tmax 102.8… Meropenem and pain, tachycardia and fever improved.”",
+                  "“ABDOMEN:… moderate RLQ abdominal tenderness, - rebound tenderness… Of note, pt did not take her Coumadin this AM ___ abdominal pain. INR 2.0.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Imaging resulted before this decision point: (none)”"
+                    ],
+                    "reason": "No prior imaging or other definitive abdominal diagnostic tests are documented to establish or exclude an acute intra-abdominal process."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“ABDOMEN:… moderate RLQ abdominal tenderness, - rebound tenderness.”"
+                    ],
+                    "reason": "Clinical exam localizes pain to the RLQ but cannot anatomically localize a specific intra-abdominal lesion or organ source."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Vital signs: “Tmax 102.8… tachycardic 122… improved after fluids and Meropenem.”"
+                    ],
+                    "reason": "Systemic signs suggest severity but do not quantify intra-abdominal extent, presence of free air/fluid, or size of any collection or hematoma."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“hx of VTE-IVC filter, life long anticoagulation… INR 2.0… Platelet Count: 109.0 K/uL (ref 150.0-400.0)”"
+                    ],
+                    "reason": "Comorbidities increase risk of abscess or bleeding, but no prior imaging or procedures define whether such complications are present."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key requirements regarding the existence, location, severity, and complications of an acute intra-abdominal process remain unaddressed prior to this first imaging study."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis is well suited to detect, localize, and characterize acute intra-abdominal and pelvic inflammatory, infectious, ischemic, perforated, or hemorrhagic processes and their complications.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not specify exact leading differential diagnoses (e.g., appendicitis vs. cecal diverticulitis vs. mesenteric ischemia) or articulate why CT was chosen over ultrasound or noncontrast CT in the setting of CKD and anticoagulation, though the general intent to find an intra-abdominal source is clear."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute intra‑abdominal/intra‑pelvic process causing right lower quadrant abdominal pain and sepsis-like presentation.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level working diagnosis (possible intra-abdominal infection/inflammation or other acute surgical abdomen)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“P/w RLQ pain with no radiation and subjective fevers that's been worsening… Pt was found to be tachycardic 122 with Tmax 102.8… Pt was given 1L fluid in clinic, Tylenol and Meropenem and pain, tachycardia and fever improved.”\",\n        \"“ABDOMEN: obese. no obvious masses. moderate RLQ abdominal tenderness, - rebound tenderness… No N/V/D/C.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is at high risk for serious intra‑abdominal infection or bleeding complications due to aplastic anemia, chronic anticoagulation, and chronic kidney disease.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"patient-level risk/complication frame\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“aplastic anemia… hx of VTE-IVC filter, life long anticoagulation… Of note, pt did not take her Coumadin this AM ___ abdominal pain. INR 2.0.”\",\n        \"“Estimated GFR = 44 if non African-American… GFR<60 = Chronic Kidney Disease… Platelet Count: 109.0 K/uL (ref 150.0-400.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Pulmonary infection is a concurrent concern but not the primary suspected source of this acute presentation.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing syndrome-level source\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“She also complains of a productive cough with clear/white sputum for 1 week and new throat pain this morning with DOE above her baseline that resolved with rest… inspiratory and expiratory crackles noted bilaterally at bases, lung sounds coarse.”\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; acute RLQ pain with sepsis concern and high-risk comorbidities define the initial syndrome and risk frame.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an acute intra-abdominal or pelvic pathology explaining the right lower quadrant pain and sepsis-like presentation (e.g., appendicitis, diverticulitis, colitis, perforation, abscess, ischemia, or significant intra-abdominal bleeding)?\",\n    \"target\": \"acute intra-abdominal or pelvic pathology causing RLQ pain and systemic inflammatory response\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirm a focal abdominal source to direct urgent management such as surgery, percutaneous drainage, targeted antibiotics, or anticoagulation reversal if bleeding.\",\n    \"negative_answer_changes\": \"Decrease likelihood of an intra-abdominal source and redirect workup toward alternative sources such as pulmonary infection or other causes of fever and pain.\",\n    \"secondary_questions\": [\n      \"If an intra-abdominal process is present, what is its exact anatomic location and extent?\",\n      \"Is there imaging evidence of intra-abdominal bleeding or perforation in the setting of anticoagulation and aplastic anemia?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of an acute inflammatory, infectious, ischemic, perforated, or hemorrhagic process within the abdomen or pelvis explaining RLQ pain.\",\n        \"why_required\": \"Determines whether there is a focal intra-abdominal source that accounts for symptoms and guides urgent therapy.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Anatomic localization of any detected intra-abdominal process (e.g., appendix, cecum, terminal ileum, colon, mesentery, pelvic organs).\",\n        \"why_required\": \"Specific site dictates management choices such as surgical approach, need for drainage, or medical therapy alone.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of any intra-abdominal pathology, including size of collections, presence of perforation, free air, free fluid, or large hematoma.\",\n        \"why_required\": \"Extent and complications determine urgency, feasibility of operative vs. nonoperative management, and risk–benefit of continuing anticoagulation.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as abscess, obstruction, ischemia, or active/recent intra-abdominal bleeding.\",\n        \"why_required\": \"Complications require tailored interventions (e.g., drainage, surgery, transfusion, anticoagulation reversal) in this high-risk patient.\"\n      }\n    ],\n    \"evidence\": [\n      \"“P/w RLQ pain with no radiation and subjective fevers that's been worsening… Pt was found to be tachycardic 122 with Tmax 102.8… Meropenem and pain, tachycardia and fever improved.”\",\n      \"“ABDOMEN:… moderate RLQ abdominal tenderness, - rebound tenderness… Of note, pt did not take her Coumadin this AM ___ abdominal pain. INR 2.0.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Imaging resulted before this decision point: (none)”\"\n        ],\n        \"reason\": \"No prior imaging or other definitive abdominal diagnostic tests are documented to establish or exclude an acute intra-abdominal process.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“ABDOMEN:… moderate RLQ abdominal tenderness, - rebound tenderness.”\"\n        ],\n        \"reason\": \"Clinical exam localizes pain to the RLQ but cannot anatomically localize a specific intra-abdominal lesion or organ source.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Vital signs: “Tmax 102.8… tachycardic 122… improved after fluids and Meropenem.”\"\n        ],\n        \"reason\": \"Systemic signs suggest severity but do not quantify intra-abdominal extent, presence of free air/fluid, or size of any collection or hematoma.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“hx of VTE-IVC filter, life long anticoagulation… INR 2.0… Platelet Count: 109.0 K/uL (ref 150.0-400.0)”\"\n        ],\n        \"reason\": \"Comorbidities increase risk of abscess or bleeding, but no prior imaging or procedures define whether such complications are present.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key requirements regarding the existence, location, severity, and complications of an acute intra-abdominal process remain unaddressed prior to this first imaging study.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis is well suited to detect, localize, and characterize acute intra-abdominal and pelvic inflammatory, infectious, ischemic, perforated, or hemorrhagic processes and their complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not specify exact leading differential diagnoses (e.g., appendicitis vs. cecal diverticulitis vs. mesenteric ischemia) or articulate why CT was chosen over ultrasound or noncontrast CT in the setting of CKD and anticoagulation, though the general intent to find an intra-abdominal source is clear.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788167502-bKgMTkDgoxLS4Cbh0vfe",
+            "usage": {
+              "completion_tokens": 2127,
+              "prompt_tokens": 4357,
+              "total_tokens": 6484,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02671625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02671625,
+                "upstream_inference_prompt_cost": 0.00544625,
+                "upstream_inference_completions_cost": 0.02127
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute intra‑abdominal/intra‑pelvic process causing right lower quadrant abdominal pain and sepsis-like presentation.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome-level working diagnosis (possible intra-abdominal infection/inflammation or other acute surgical abdomen)",
+            "status": "suspected",
+            "evidence": [
+              "“P/w RLQ pain with no radiation and subjective fevers that's been worsening… Pt was found to be tachycardic 122 with Tmax 102.8… Pt was given 1L fluid in clinic, Tylenol and Meropenem and pain, tachycardia and fever improved.”",
+              "“ABDOMEN: obese. no obvious masses. moderate RLQ abdominal tenderness, - rebound tenderness… No N/V/D/C.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is at high risk for serious intra‑abdominal infection or bleeding complications due to aplastic anemia, chronic anticoagulation, and chronic kidney disease.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "patient-level risk/complication frame",
+            "status": "established",
+            "evidence": [
+              "“aplastic anemia… hx of VTE-IVC filter, life long anticoagulation… Of note, pt did not take her Coumadin this AM ___ abdominal pain. INR 2.0.”",
+              "“Estimated GFR = 44 if non African-American… GFR<60 = Chronic Kidney Disease… Platelet Count: 109.0 K/uL (ref 150.0-400.0)”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Pulmonary infection is a concurrent concern but not the primary suspected source of this acute presentation.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "competing syndrome-level source",
+            "status": "suspected",
+            "evidence": [
+              "“She also complains of a productive cough with clear/white sputum for 1 week and new throat pain this morning with DOE above her baseline that resolved with rest… inspiratory and expiratory crackles noted bilaterally at bases, lung sounds coarse.”"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; acute RLQ pain with sepsis concern and high-risk comorbidities define the initial syndrome and risk frame."
+        },
+        "current_question": {
+          "primary": "Is there an acute intra-abdominal or pelvic pathology explaining the right lower quadrant pain and sepsis-like presentation (e.g., appendicitis, diverticulitis, colitis, perforation, abscess, ischemia, or significant intra-abdominal bleeding)?",
+          "target": "acute intra-abdominal or pelvic pathology causing RLQ pain and systemic inflammatory response",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirm a focal abdominal source to direct urgent management such as surgery, percutaneous drainage, targeted antibiotics, or anticoagulation reversal if bleeding.",
+          "negative_answer_changes": "Decrease likelihood of an intra-abdominal source and redirect workup toward alternative sources such as pulmonary infection or other causes of fever and pain.",
+          "secondary_questions": [
+            "If an intra-abdominal process is present, what is its exact anatomic location and extent?",
+            "Is there imaging evidence of intra-abdominal bleeding or perforation in the setting of anticoagulation and aplastic anemia?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of an acute inflammatory, infectious, ischemic, perforated, or hemorrhagic process within the abdomen or pelvis explaining RLQ pain.",
+              "why_required": "Determines whether there is a focal intra-abdominal source that accounts for symptoms and guides urgent therapy."
+            },
+            {
+              "requirement_key": "req_localization",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Anatomic localization of any detected intra-abdominal process (e.g., appendix, cecum, terminal ileum, colon, mesentery, pelvic organs).",
+              "why_required": "Specific site dictates management choices such as surgical approach, need for drainage, or medical therapy alone."
+            },
+            {
+              "requirement_key": "req_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity and extent of any intra-abdominal pathology, including size of collections, presence of perforation, free air, free fluid, or large hematoma.",
+              "why_required": "Extent and complications determine urgency, feasibility of operative vs. nonoperative management, and risk–benefit of continuing anticoagulation."
+            },
+            {
+              "requirement_key": "req_complication",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of complications such as abscess, obstruction, ischemia, or active/recent intra-abdominal bleeding.",
+              "why_required": "Complications require tailored interventions (e.g., drainage, surgery, transfusion, anticoagulation reversal) in this high-risk patient."
+            }
+          ],
+          "evidence": [
+            "“P/w RLQ pain with no radiation and subjective fevers that's been worsening… Pt was found to be tachycardic 122 with Tmax 102.8… Meropenem and pain, tachycardia and fever improved.”",
+            "“ABDOMEN:… moderate RLQ abdominal tenderness, - rebound tenderness… Of note, pt did not take her Coumadin this AM ___ abdominal pain. INR 2.0.”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Imaging resulted before this decision point: (none)”"
+              ],
+              "reason": "No prior imaging or other definitive abdominal diagnostic tests are documented to establish or exclude an acute intra-abdominal process."
+            },
+            {
+              "requirement_key": "req_localization",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“ABDOMEN:… moderate RLQ abdominal tenderness, - rebound tenderness.”"
+              ],
+              "reason": "Clinical exam localizes pain to the RLQ but cannot anatomically localize a specific intra-abdominal lesion or organ source."
+            },
+            {
+              "requirement_key": "req_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Vital signs: “Tmax 102.8… tachycardic 122… improved after fluids and Meropenem.”"
+              ],
+              "reason": "Systemic signs suggest severity but do not quantify intra-abdominal extent, presence of free air/fluid, or size of any collection or hematoma."
+            },
+            {
+              "requirement_key": "req_complication",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“hx of VTE-IVC filter, life long anticoagulation… INR 2.0… Platelet Count: 109.0 K/uL (ref 150.0-400.0)”"
+              ],
+              "reason": "Comorbidities increase risk of abscess or bleeding, but no prior imaging or procedures define whether such complications are present."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key requirements regarding the existence, location, severity, and complications of an acute intra-abdominal process remain unaddressed prior to this first imaging study."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis is well suited to detect, localize, and characterize acute intra-abdominal and pelvic inflammatory, infectious, ischemic, perforated, or hemorrhagic processes and their complications.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not specify exact leading differential diagnoses (e.g., appendicitis vs. cecal diverticulitis vs. mesenteric ischemia) or articulate why CT was chosen over ultrasound or noncontrast CT in the setting of CKD and anticoagulation, though the general intent to find an intra-abdominal source is clear."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

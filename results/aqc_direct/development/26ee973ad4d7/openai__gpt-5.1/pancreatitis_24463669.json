@@ -1,0 +1,551 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 24463669,
+  "source_path": "results/annotation_experiment/full/pancreatitis_24463669.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "2f8fbe21c2bfa16fd61498d1dddef325dcb74a39698321044903387bd9df5845",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "2f8fbe21c2bfa16fd61498d1dddef325dcb74a39698321044903387bd9df5845",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis likely related to recent heavy alcohol use, with possible associated hepatobiliary disease given elevated liver enzymes and prior cholelithiasis.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "specific disease process with suspected cause",
+                  "status": "likely",
+                  "evidence": [
+                    "___ year old male presents with epigastric pain, nausea and dry heaves.",
+                    "He reports going on a drinking binge last week, up to 1  and ___ liters of rum daily.  His pain started ___ morning, which was the time of his last drink.",
+                    "Lipase: 431.0 IU/L (ref 0.0-60.0)",
+                    "Past Medical History: ... 4. Cholelithiasis",
+                    "Alanine Aminotransferase (ALT): 158.0 IU/L (ref 0.0-40.0) ... Asparate Aminotransferase (AST): 375.0 IU/L (ref 0.0-40.0)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "no prior imaging question at this first decision point",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "no prior imaging question or discordant evidence at this step"
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; acute pancreatitis with possible hepatobiliary involvement is inferred from presenting symptoms, heavy alcohol use, elevated lipase, and abnormal liver enzymes with history of cholelithiasis."
+              },
+              "current_question": {
+                "primary": "Is there evidence of gallbladder or biliary pathology (such as cholelithiasis, choledocholithiasis, or cholecystitis) contributing to this episode of pancreatitis and liver enzyme elevation?",
+                "target": "gallbladder and biliary tree pathology",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Support a biliary etiology for pancreatitis and liver test abnormalities, prompting biliary-directed management (e.g., GI/surgical evaluation, possible ERCP or cholecystectomy planning).",
+                "negative_answer_changes": "Make alcoholic pancreatitis more likely and reduce emphasis on acute biliary obstruction as the provoking factor, favoring medical management of alcohol-related pancreatitis.",
+                "secondary_questions": [
+                  "Is there secondary evidence of hepatic parenchymal disease or biliary obstruction (e.g., ductal dilation) that would alter management?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_gb_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones, sludge, or wall thickening in the gallbladder suggesting cholelithiasis or cholecystitis.",
+                    "why_required": "Determining whether gallbladder disease is present is central to establishing a biliary etiology for the current presentation."
+                  },
+                  {
+                    "requirement_key": "req_ducts",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of intrahepatic and extrahepatic biliary ductal dilation indicating obstruction (e.g., choledocholithiasis).",
+                    "why_required": "Biliary obstruction severity/extent helps distinguish simple gallbladder stones from obstructing stones causing pancreatitis or cholestasis."
+                  },
+                  {
+                    "requirement_key": "req_liver_assess",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization of liver parenchyma and biliary tree sufficient to comment on hepatobiliary structural abnormalities.",
+                    "why_required": "Adequate assessment is needed to interpret whether liver enzyme abnormalities reflect structural hepatobiliary disease."
+                  }
+                ],
+                "evidence": [
+                  "___ year old male presents with epigastric pain, nausea and dry heaves.",
+                  "He reports going on a drinking binge last week, up to 1  and ___ liters of rum daily.",
+                  "Lipase: 431.0 IU/L (ref 0.0-60.0)",
+                  "Past Medical History: ... 4. Cholelithiasis",
+                  "Alanine Aminotransferase (ALT): 158.0 IU/L (ref 0.0-40.0)",
+                  "Asparate Aminotransferase (AST): 375.0 IU/L (ref 0.0-40.0)",
+                  "Bilirubin, Direct: 1.3 mg/dL (ref 0.0-0.3)"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_gb_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Past Medical History: ... 4. Cholelithiasis"
+                    ],
+                    "reason": "History confirms prior cholelithiasis but no current imaging has evaluated whether gallstones or acute gallbladder changes are present in this episode."
+                  },
+                  {
+                    "requirement_key": "req_ducts",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Bilirubin, Direct: 1.3 mg/dL (ref 0.0-0.3)",
+                      "Alanine Aminotransferase (ALT): 158.0 IU/L (ref 0.0-40.0)"
+                    ],
+                    "reason": "Laboratory abnormalities suggest possible biliary obstruction but there is no imaging yet assessing ductal caliber or obstruction severity."
+                  },
+                  {
+                    "requirement_key": "req_liver_assess",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No abdominal imaging is documented prior to this order; only a chest radiograph is available."
+                    ],
+                    "reason": "The prior chest radiograph does not visualize the liver or biliary tree, leaving hepatobiliary structural assessment entirely unaddressed."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before this abdominal ultrasound order, there is no imaging that evaluates the hepatobiliary system; all etiologic questions about biliary contribution remain unanswered."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant or targeted liver/gallbladder ultrasound is well-suited to detect gallstones, gallbladder inflammation, ductal dilation, and gross hepatic/biliary structural abnormalities relevant to pancreatitis etiology.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact balance between suspected alcoholic versus biliary pancreatitis as the primary driver of this workup cannot be fully resolved from chart excerpts alone."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis likely related to recent heavy alcohol use, with possible associated hepatobiliary disease given elevated liver enzymes and prior cholelithiasis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease process with suspected cause\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"___ year old male presents with epigastric pain, nausea and dry heaves.\",\n        \"He reports going on a drinking binge last week, up to 1  and ___ liters of rum daily.  His pain started ___ morning, which was the time of his last drink.\",\n        \"Lipase: 431.0 IU/L (ref 0.0-60.0)\",\n        \"Past Medical History: ... 4. Cholelithiasis\",\n        \"Alanine Aminotransferase (ALT): 158.0 IU/L (ref 0.0-40.0) ... Asparate Aminotransferase (AST): 375.0 IU/L (ref 0.0-40.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging question at this first decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"no prior imaging question or discordant evidence at this step\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; acute pancreatitis with possible hepatobiliary involvement is inferred from presenting symptoms, heavy alcohol use, elevated lipase, and abnormal liver enzymes with history of cholelithiasis.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there evidence of gallbladder or biliary pathology (such as cholelithiasis, choledocholithiasis, or cholecystitis) contributing to this episode of pancreatitis and liver enzyme elevation?\",\n    \"target\": \"gallbladder and biliary tree pathology\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Support a biliary etiology for pancreatitis and liver test abnormalities, prompting biliary-directed management (e.g., GI/surgical evaluation, possible ERCP or cholecystectomy planning).\",\n    \"negative_answer_changes\": \"Make alcoholic pancreatitis more likely and reduce emphasis on acute biliary obstruction as the provoking factor, favoring medical management of alcohol-related pancreatitis.\",\n    \"secondary_questions\": [\n      \"Is there secondary evidence of hepatic parenchymal disease or biliary obstruction (e.g., ductal dilation) that would alter management?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_gb_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, sludge, or wall thickening in the gallbladder suggesting cholelithiasis or cholecystitis.\",\n        \"why_required\": \"Determining whether gallbladder disease is present is central to establishing a biliary etiology for the current presentation.\"\n      },\n      {\n        \"requirement_key\": \"req_ducts\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of intrahepatic and extrahepatic biliary ductal dilation indicating obstruction (e.g., choledocholithiasis).\",\n        \"why_required\": \"Biliary obstruction severity/extent helps distinguish simple gallbladder stones from obstructing stones causing pancreatitis or cholestasis.\"\n      },\n      {\n        \"requirement_key\": \"req_liver_assess\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of liver parenchyma and biliary tree sufficient to comment on hepatobiliary structural abnormalities.\",\n        \"why_required\": \"Adequate assessment is needed to interpret whether liver enzyme abnormalities reflect structural hepatobiliary disease.\"\n      }\n    ],\n    \"evidence\": [\n      \"___ year old male presents with epigastric pain, nausea and dry heaves.\",\n      \"He reports going on a drinking binge last week, up to 1  and ___ liters of rum daily.\",\n      \"Lipase: 431.0 IU/L (ref 0.0-60.0)\",\n      \"Past Medical History: ... 4. Cholelithiasis\",\n      \"Alanine Aminotransferase (ALT): 158.0 IU/L (ref 0.0-40.0)\",\n      \"Asparate Aminotransferase (AST): 375.0 IU/L (ref 0.0-40.0)\",\n      \"Bilirubin, Direct: 1.3 mg/dL (ref 0.0-0.3)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_gb_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Past Medical History: ... 4. Cholelithiasis\"\n        ],\n        \"reason\": \"History confirms prior cholelithiasis but no current imaging has evaluated whether gallstones or acute gallbladder changes are present in this episode.\"\n      },\n      {\n        \"requirement_key\": \"req_ducts\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Bilirubin, Direct: 1.3 mg/dL (ref 0.0-0.3)\",\n          \"Alanine Aminotransferase (ALT): 158.0 IU/L (ref 0.0-40.0)\"\n        ],\n        \"reason\": \"Laboratory abnormalities suggest possible biliary obstruction but there is no imaging yet assessing ductal caliber or obstruction severity.\"\n      },\n      {\n        \"requirement_key\": \"req_liver_assess\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No abdominal imaging is documented prior to this order; only a chest radiograph is available.\"\n        ],\n        \"reason\": \"The prior chest radiograph does not visualize the liver or biliary tree, leaving hepatobiliary structural assessment entirely unaddressed.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before this abdominal ultrasound order, there is no imaging that evaluates the hepatobiliary system; all etiologic questions about biliary contribution remain unanswered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant or targeted liver/gallbladder ultrasound is well-suited to detect gallstones, gallbladder inflammation, ductal dilation, and gross hepatic/biliary structural abnormalities relevant to pancreatitis etiology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact balance between suspected alcoholic versus biliary pancreatitis as the primary driver of this workup cannot be fully resolved from chart excerpts alone.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788172331-qYMh8yTwlx1AIKSqb5au",
+            "usage": {
+              "completion_tokens": 1696,
+              "prompt_tokens": 3217,
+              "total_tokens": 4913,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02098125,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02098125,
+                "upstream_inference_prompt_cost": 0.00402125,
+                "upstream_inference_completions_cost": 0.01696
+              }
+            }
+          },
+          "validation_errors": [
+            "assumption_0_bad_evidence_count"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "1a53cba0a6cb47267e0d37db2f419d9d224cdeb3bf6772da7eff92734a642310",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis related to recent heavy alcohol use as the primary cause of his epigastric abdominal pain.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "specific disease mechanism causing current syndrome",
+                  "status": "likely",
+                  "evidence": [
+                    "___ year old male presents with epigastric pain, nausea and dry heaves.  He reports going on a drinking binge last week, up to 1  and ___ liters of rum daily.",
+                    "Lipase: 431.0 IU/L (ref 0.0-60.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Gallstone disease is a possible alternative or contributing etiology for the patient’s pancreatitis and abdominal pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis for cause of pancreatitis",
+                  "status": "suspected",
+                  "evidence": [
+                    "Past Medical History: ... 4. Cholelithiasis",
+                    "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is no established acute pulmonary or cardiac cause for the current presentation that would redirect evaluation away from the abdomen.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "competing cardiopulmonary sources of symptoms",
+                  "status": "excluded",
+                  "evidence": [
+                    "He denies ... cough, chest pain, shortness of breath",
+                    "Pulmonary vasculature is within normal limits.  There are no focal consolidation or large pleural effusion."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First decision point; no prior imaging question to update."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; assumptions are newly inferred from the history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Is there imaging evidence of gallbladder or biliary pathology (e.g., gallstones or obstruction) that could be causing or contributing to this patient’s acute pancreatitis and abdominal pain?",
+                "target": "gallbladder and biliary tree as potential source of pancreatitis",
+                "type": "alternative_source",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If gallstones or biliary obstruction are present, pancreatitis may be attributed to gallstone disease, prompting consideration of biliary-directed management such as ERCP or surgical consultation.",
+                "negative_answer_changes": "If no gallbladder or biliary pathology is seen, alcohol remains the leading etiology for pancreatitis and further biliary imaging or intervention may be deprioritized.",
+                "secondary_questions": [
+                  "Is there biliary ductal dilatation suggesting obstruction?",
+                  "Are there secondary signs of acute cholecystitis that would require urgent surgical evaluation?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization of the gallbladder and proximal biliary tree",
+                    "why_required": "The gallbladder and biliary tree must be adequately seen to determine whether gallstones or obstruction are present as a potential source of pancreatitis."
+                  },
+                  {
+                    "requirement_key": "req_stones",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones or sludge in the gallbladder",
+                    "why_required": "Detection of gallstones would support gallstone pancreatitis or concurrent biliary disease as an etiology."
+                  },
+                  {
+                    "requirement_key": "req_obstruction",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of biliary obstruction such as common bile duct dilatation or obstructing stone",
+                    "why_required": "Obstruction would indicate a potentially reversible biliary cause of pancreatitis and direct need for intervention."
+                  },
+                  {
+                    "requirement_key": "req_chole",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Sonographic signs of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign)",
+                    "why_required": "Concomitant acute cholecystitis would alter urgency and type of surgical management."
+                  }
+                ],
+                "evidence": [
+                  "___ year old male presents with epigastric pain, nausea and dry heaves.",
+                  "Lipase: 431.0 IU/L (ref 0.0-60.0)",
+                  "Past Medical History: 1. DM2 2. HTN 3. Sleep apnea requiring CPAP 4. Cholelithiasis"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No prior abdominal ultrasound or CT imaging is reported before this order."
+                    ],
+                    "reason": "There has been no prior abdominal imaging to visualize the gallbladder or biliary tree."
+                  },
+                  {
+                    "requirement_key": "req_stones",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Past Medical History: ... 4. Cholelithiasis"
+                    ],
+                    "reason": "Gallstones are known from history but no current imaging has assessed for active gallstones or changes since prior diagnosis."
+                  },
+                  {
+                    "requirement_key": "req_obstruction",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Bilirubin, Direct: 1.3 mg/dL (ref 0.0-0.3)",
+                      "Alkaline Phosphatase: 165.0 IU/L (ref 39.0-117.0)"
+                    ],
+                    "reason": "Laboratory abnormalities suggest possible cholestasis, but no imaging has yet assessed the biliary tree for obstruction."
+                  },
+                  {
+                    "requirement_key": "req_chole",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Abd -- obese, soft, epigastric tenderness, +BS"
+                    ],
+                    "reason": "There is abdominal tenderness but no imaging has evaluated gallbladder wall, pericholecystic fluid, or Murphy sign."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before this order, no abdominal imaging has been performed to evaluate the gallbladder or biliary tree, so all requirements related to biliary etiology remain unaddressed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant ultrasound is a first-line study to visualize the gallbladder and biliary tree, detect gallstones, and assess for biliary obstruction or cholecystitis in the setting of pancreatitis.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The choice of single-organ liver/gallbladder ultrasound rather than a more extensive abdominal ultrasound or CT for pancreatitis staging is not fully explained by the chart alone."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis related to recent heavy alcohol use as the primary cause of his epigastric abdominal pain.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease mechanism causing current syndrome\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"___ year old male presents with epigastric pain, nausea and dry heaves.  He reports going on a drinking binge last week, up to 1  and ___ liters of rum daily.\",\n        \"Lipase: 431.0 IU/L (ref 0.0-60.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallstone disease is a possible alternative or contributing etiology for the patient’s pancreatitis and abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis for cause of pancreatitis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Past Medical History: ... 4. Cholelithiasis\",\n        \"Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is no established acute pulmonary or cardiac cause for the current presentation that would redirect evaluation away from the abdomen.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing cardiopulmonary sources of symptoms\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"He denies ... cough, chest pain, shortness of breath\",\n        \"Pulmonary vasculature is within normal limits.  There are no focal consolidation or large pleural effusion.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior imaging question to update.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; assumptions are newly inferred from the history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there imaging evidence of gallbladder or biliary pathology (e.g., gallstones or obstruction) that could be causing or contributing to this patient’s acute pancreatitis and abdominal pain?\",\n    \"target\": \"gallbladder and biliary tree as potential source of pancreatitis\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If gallstones or biliary obstruction are present, pancreatitis may be attributed to gallstone disease, prompting consideration of biliary-directed management such as ERCP or surgical consultation.\",\n    \"negative_answer_changes\": \"If no gallbladder or biliary pathology is seen, alcohol remains the leading etiology for pancreatitis and further biliary imaging or intervention may be deprioritized.\",\n    \"secondary_questions\": [\n      \"Is there biliary ductal dilatation suggesting obstruction?\",\n      \"Are there secondary signs of acute cholecystitis that would require urgent surgical evaluation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of the gallbladder and proximal biliary tree\",\n        \"why_required\": \"The gallbladder and biliary tree must be adequately seen to determine whether gallstones or obstruction are present as a potential source of pancreatitis.\"\n      },\n      {\n        \"requirement_key\": \"req_stones\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones or sludge in the gallbladder\",\n        \"why_required\": \"Detection of gallstones would support gallstone pancreatitis or concurrent biliary disease as an etiology.\"\n      },\n      {\n        \"requirement_key\": \"req_obstruction\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of biliary obstruction such as common bile duct dilatation or obstructing stone\",\n        \"why_required\": \"Obstruction would indicate a potentially reversible biliary cause of pancreatitis and direct need for intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_chole\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Sonographic signs of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign)\",\n        \"why_required\": \"Concomitant acute cholecystitis would alter urgency and type of surgical management.\"\n      }\n    ],\n    \"evidence\": [\n      \"___ year old male presents with epigastric pain, nausea and dry heaves.\",\n      \"Lipase: 431.0 IU/L (ref 0.0-60.0)\",\n      \"Past Medical History: 1. DM2 2. HTN 3. Sleep apnea requiring CPAP 4. Cholelithiasis\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal ultrasound or CT imaging is reported before this order.\"\n        ],\n        \"reason\": \"There has been no prior abdominal imaging to visualize the gallbladder or biliary tree.\"\n      },\n      {\n        \"requirement_key\": \"req_stones\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Past Medical History: ... 4. Cholelithiasis\"\n        ],\n        \"reason\": \"Gallstones are known from history but no current imaging has assessed for active gallstones or changes since prior diagnosis.\"\n      },\n      {\n        \"requirement_key\": \"req_obstruction\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Bilirubin, Direct: 1.3 mg/dL (ref 0.0-0.3)\",\n          \"Alkaline Phosphatase: 165.0 IU/L (ref 39.0-117.0)\"\n        ],\n        \"reason\": \"Laboratory abnormalities suggest possible cholestasis, but no imaging has yet assessed the biliary tree for obstruction.\"\n      },\n      {\n        \"requirement_key\": \"req_chole\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Abd -- obese, soft, epigastric tenderness, +BS\"\n        ],\n        \"reason\": \"There is abdominal tenderness but no imaging has evaluated gallbladder wall, pericholecystic fluid, or Murphy sign.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before this order, no abdominal imaging has been performed to evaluate the gallbladder or biliary tree, so all requirements related to biliary etiology remain unaddressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant ultrasound is a first-line study to visualize the gallbladder and biliary tree, detect gallstones, and assess for biliary obstruction or cholecystitis in the setting of pancreatitis.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of single-organ liver/gallbladder ultrasound rather than a more extensive abdominal ultrasound or CT for pancreatitis staging is not fully explained by the chart alone.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788172361-8SDkyLTA15LIh957Q7vr",
+            "usage": {
+              "completion_tokens": 1876,
+              "prompt_tokens": 3253,
+              "total_tokens": 5129,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3072,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.01937025,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.01937025,
+                "upstream_inference_prompt_cost": 0.00061025,
+                "upstream_inference_completions_cost": 0.01876
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis related to recent heavy alcohol use as the primary cause of his epigastric abdominal pain.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "specific disease mechanism causing current syndrome",
+            "status": "likely",
+            "evidence": [
+              "___ year old male presents with epigastric pain, nausea and dry heaves.  He reports going on a drinking binge last week, up to 1  and ___ liters of rum daily.",
+              "Lipase: 431.0 IU/L (ref 0.0-60.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Gallstone disease is a possible alternative or contributing etiology for the patient’s pancreatitis and abdominal pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "differential diagnosis for cause of pancreatitis",
+            "status": "suspected",
+            "evidence": [
+              "Past Medical History: ... 4. Cholelithiasis",
+              "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is no established acute pulmonary or cardiac cause for the current presentation that would redirect evaluation away from the abdomen.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "competing cardiopulmonary sources of symptoms",
+            "status": "excluded",
+            "evidence": [
+              "He denies ... cough, chest pain, shortness of breath",
+              "Pulmonary vasculature is within normal limits.  There are no focal consolidation or large pleural effusion."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First decision point; no prior imaging question to update."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; assumptions are newly inferred from the history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "Is there imaging evidence of gallbladder or biliary pathology (e.g., gallstones or obstruction) that could be causing or contributing to this patient’s acute pancreatitis and abdominal pain?",
+          "target": "gallbladder and biliary tree as potential source of pancreatitis",
+          "type": "alternative_source",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If gallstones or biliary obstruction are present, pancreatitis may be attributed to gallstone disease, prompting consideration of biliary-directed management such as ERCP or surgical consultation.",
+          "negative_answer_changes": "If no gallbladder or biliary pathology is seen, alcohol remains the leading etiology for pancreatitis and further biliary imaging or intervention may be deprioritized.",
+          "secondary_questions": [
+            "Is there biliary ductal dilatation suggesting obstruction?",
+            "Are there secondary signs of acute cholecystitis that would require urgent surgical evaluation?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization of the gallbladder and proximal biliary tree",
+              "why_required": "The gallbladder and biliary tree must be adequately seen to determine whether gallstones or obstruction are present as a potential source of pancreatitis."
+            },
+            {
+              "requirement_key": "req_stones",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones or sludge in the gallbladder",
+              "why_required": "Detection of gallstones would support gallstone pancreatitis or concurrent biliary disease as an etiology."
+            },
+            {
+              "requirement_key": "req_obstruction",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence of biliary obstruction such as common bile duct dilatation or obstructing stone",
+              "why_required": "Obstruction would indicate a potentially reversible biliary cause of pancreatitis and direct need for intervention."
+            },
+            {
+              "requirement_key": "req_chole",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Sonographic signs of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign)",
+              "why_required": "Concomitant acute cholecystitis would alter urgency and type of surgical management."
+            }
+          ],
+          "evidence": [
+            "___ year old male presents with epigastric pain, nausea and dry heaves.",
+            "Lipase: 431.0 IU/L (ref 0.0-60.0)",
+            "Past Medical History: 1. DM2 2. HTN 3. Sleep apnea requiring CPAP 4. Cholelithiasis"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No prior abdominal ultrasound or CT imaging is reported before this order."
+              ],
+              "reason": "There has been no prior abdominal imaging to visualize the gallbladder or biliary tree."
+            },
+            {
+              "requirement_key": "req_stones",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Past Medical History: ... 4. Cholelithiasis"
+              ],
+              "reason": "Gallstones are known from history but no current imaging has assessed for active gallstones or changes since prior diagnosis."
+            },
+            {
+              "requirement_key": "req_obstruction",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Bilirubin, Direct: 1.3 mg/dL (ref 0.0-0.3)",
+                "Alkaline Phosphatase: 165.0 IU/L (ref 39.0-117.0)"
+              ],
+              "reason": "Laboratory abnormalities suggest possible cholestasis, but no imaging has yet assessed the biliary tree for obstruction."
+            },
+            {
+              "requirement_key": "req_chole",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Abd -- obese, soft, epigastric tenderness, +BS"
+              ],
+              "reason": "There is abdominal tenderness but no imaging has evaluated gallbladder wall, pericholecystic fluid, or Murphy sign."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Before this order, no abdominal imaging has been performed to evaluate the gallbladder or biliary tree, so all requirements related to biliary etiology remain unaddressed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant ultrasound is a first-line study to visualize the gallbladder and biliary tree, detect gallstones, and assess for biliary obstruction or cholecystitis in the setting of pancreatitis.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The choice of single-organ liver/gallbladder ultrasound rather than a more extensive abdominal ultrasound or CT for pancreatitis staging is not fully explained by the chart alone."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

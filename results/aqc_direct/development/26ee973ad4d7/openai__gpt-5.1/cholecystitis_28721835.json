@@ -1,0 +1,833 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 28721835,
+  "source_path": "results/annotation_experiment/full/cholecystitis_28721835.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "42b32553dfdcdebd59cef3ad4ce8ab82a00f83903bbfa665ded8b28953bdb56e",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "42b32553dfdcdebd59cef3ad4ce8ab82a00f83903bbfa665ded8b28953bdb56e",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute, severe intra-abdominal process as the source of her hypotension and leukocytosis.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome level (acute abdominal process causing systemic illness)",
+                  "status": "likely",
+                  "evidence": [
+                    "presents with diffuse abdominal pain most prominent in RUQ since ___.  Patient states that pain has been severe and abruptly began ___ day",
+                    "On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.",
+                    "White Blood Cells: 21.0 K/uL (ref 4.0-11.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The leading anatomic focus of concern is the right upper quadrant, including hepatobiliary and adjacent structures.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "anatomic localization within abdomen",
+                  "status": "suspected",
+                  "evidence": [
+                    "presents with diffuse abdominal pain most prominent in RUQ",
+                    "Abd: Firmness to RUQ with diffusely tender abdomen, no rebound but mild voluntary guarding."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is at high risk for intra-abdominal bleeding or ischemic complications due to supratherapeutic anticoagulation and vascular disease.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic risk factor level",
+                  "status": "likely",
+                  "evidence": [
+                    "on Coumadin for CVA with INR 5",
+                    "INR(PT): 5.6 (ref 0.9-1.1)",
+                    "s/p toe amputation ___ (necrotic), c/b popliteal DVT",
+                    "Chronic Kidney Disease, GFR<60"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First decision point; no prior imaging."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision, so core assumptions are being formulated de novo from history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "What acute intra-abdominal pathology is causing this patient’s severe RUQ-predominant abdominal pain and hypotension?",
+                "target": "intra-abdominal organs and spaces, especially hepatobiliary and adjacent structures",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a specific cause (e.g., perforation, ischemia, abscess, hemorrhage, cholecystitis) would guide urgent interventions such as surgery, drainage, anticoagulation reversal, or targeted medical therapy.",
+                "negative_answer_changes": "If no significant acute intra-abdominal pathology is identified, clinicians would reassess for non-abdominal or microvascular causes of hypotension and pain and may redirect diagnostic workup.",
+                "secondary_questions": [
+                  "Is there imaging evidence of intra-abdominal hemorrhage or ischemia that would be precipitated or worsened by her supratherapeutic INR and vascular disease?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_viscera",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Global assessment of solid organs, bowel, mesentery, and peritoneal cavity for acute pathology.",
+                    "why_required": "A broad survey is needed because the etiology of acute abdominal pain and shock is unclear and could arise from multiple intra-abdominal structures."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of focal inflammatory, obstructive, perforated, ischemic, or mass lesions in the abdomen and pelvis.",
+                    "why_required": "Confirming or excluding specific acute lesions is necessary to determine the identity of the underlying cause."
+                  },
+                  {
+                    "requirement_key": "req_hemo",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of intra-abdominal hemorrhage or vascular catastrophe (e.g., hematoma, active extravasation, mesenteric/vascular compromise).",
+                    "why_required": "Her supratherapeutic INR and hypotension raise concern for bleeding or ischemic complications that would change urgency and reversal strategies."
+                  },
+                  {
+                    "requirement_key": "req_RUQ_loc",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Localization of any detected pathology with respect to the right upper quadrant (liver, gallbladder, biliary tree, proximal duodenum, hepatic flexure).",
+                    "why_required": "Symptoms localize to the RUQ, so determining whether pathology is in this region helps link imaging findings to the clinical syndrome."
+                  }
+                ],
+                "evidence": [
+                  "presents with diffuse abdominal pain most prominent in RUQ since ___.  Patient states that pain has been severe and abruptly began ___ day",
+                  "On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.",
+                  "White Blood Cells: 21.0 K/uL (ref 4.0-11.0)",
+                  "INR(PT): 5.6 (ref 0.9-1.1)"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_viscera",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "No prior abdominal imaging has assessed intra-abdominal organs before this CT order."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "There is no imaging evidence yet to confirm or exclude specific acute intra-abdominal lesions."
+                  },
+                  {
+                    "requirement_key": "req_hemo",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "Potential hemorrhage or ischemic complications have not been evaluated with imaging."
+                  },
+                  {
+                    "requirement_key": "req_RUQ_loc",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "No prior imaging has localized pathology within the RUQ or elsewhere in the abdomen."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before this first CT, no imaging addresses the identity, presence, localization, or complications of the suspected acute intra-abdominal process."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can survey all abdominal organs, detect inflammatory, obstructive, ischemic, hemorrhagic, or perforated processes, and localize them, directly addressing the cause of acute RUQ-predominant pain and hypotension.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The choice of IV contrast despite an eGFR in the 30s is not fully explained but is plausibly justified by the severity of illness and need to detect ischemia or hemorrhage."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute, severe intra-abdominal process as the source of her hypotension and leukocytosis.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome level (acute abdominal process causing systemic illness)\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"presents with diffuse abdominal pain most prominent in RUQ since ___.  Patient states that pain has been severe and abruptly began ___ day\",\n        \"On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.\",\n        \"White Blood Cells: 21.0 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The leading anatomic focus of concern is the right upper quadrant, including hepatobiliary and adjacent structures.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"anatomic localization within abdomen\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"presents with diffuse abdominal pain most prominent in RUQ\",\n        \"Abd: Firmness to RUQ with diffusely tender abdomen, no rebound but mild voluntary guarding.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is at high risk for intra-abdominal bleeding or ischemic complications due to supratherapeutic anticoagulation and vascular disease.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic risk factor level\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"on Coumadin for CVA with INR 5\",\n        \"INR(PT): 5.6 (ref 0.9-1.1)\",\n        \"s/p toe amputation ___ (necrotic), c/b popliteal DVT\",\n        \"Chronic Kidney Disease, GFR<60\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior imaging.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision, so core assumptions are being formulated de novo from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What acute intra-abdominal pathology is causing this patient’s severe RUQ-predominant abdominal pain and hypotension?\",\n    \"target\": \"intra-abdominal organs and spaces, especially hepatobiliary and adjacent structures\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a specific cause (e.g., perforation, ischemia, abscess, hemorrhage, cholecystitis) would guide urgent interventions such as surgery, drainage, anticoagulation reversal, or targeted medical therapy.\",\n    \"negative_answer_changes\": \"If no significant acute intra-abdominal pathology is identified, clinicians would reassess for non-abdominal or microvascular causes of hypotension and pain and may redirect diagnostic workup.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of intra-abdominal hemorrhage or ischemia that would be precipitated or worsened by her supratherapeutic INR and vascular disease?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_viscera\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Global assessment of solid organs, bowel, mesentery, and peritoneal cavity for acute pathology.\",\n        \"why_required\": \"A broad survey is needed because the etiology of acute abdominal pain and shock is unclear and could arise from multiple intra-abdominal structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of focal inflammatory, obstructive, perforated, ischemic, or mass lesions in the abdomen and pelvis.\",\n        \"why_required\": \"Confirming or excluding specific acute lesions is necessary to determine the identity of the underlying cause.\"\n      },\n      {\n        \"requirement_key\": \"req_hemo\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of intra-abdominal hemorrhage or vascular catastrophe (e.g., hematoma, active extravasation, mesenteric/vascular compromise).\",\n        \"why_required\": \"Her supratherapeutic INR and hypotension raise concern for bleeding or ischemic complications that would change urgency and reversal strategies.\"\n      },\n      {\n        \"requirement_key\": \"req_RUQ_loc\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any detected pathology with respect to the right upper quadrant (liver, gallbladder, biliary tree, proximal duodenum, hepatic flexure).\",\n        \"why_required\": \"Symptoms localize to the RUQ, so determining whether pathology is in this region helps link imaging findings to the clinical syndrome.\"\n      }\n    ],\n    \"evidence\": [\n      \"presents with diffuse abdominal pain most prominent in RUQ since ___.  Patient states that pain has been severe and abruptly began ___ day\",\n      \"On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.\",\n      \"White Blood Cells: 21.0 K/uL (ref 4.0-11.0)\",\n      \"INR(PT): 5.6 (ref 0.9-1.1)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_viscera\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior abdominal imaging has assessed intra-abdominal organs before this CT order.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"There is no imaging evidence yet to confirm or exclude specific acute intra-abdominal lesions.\"\n      },\n      {\n        \"requirement_key\": \"req_hemo\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Potential hemorrhage or ischemic complications have not been evaluated with imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_RUQ_loc\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior imaging has localized pathology within the RUQ or elsewhere in the abdomen.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before this first CT, no imaging addresses the identity, presence, localization, or complications of the suspected acute intra-abdominal process.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT of the abdomen and pelvis can survey all abdominal organs, detect inflammatory, obstructive, ischemic, hemorrhagic, or perforated processes, and localize them, directly addressing the cause of acute RUQ-predominant pain and hypotension.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of IV contrast despite an eGFR in the 30s is not fully explained but is plausibly justified by the severity of illness and need to detect ischemia or hemorrhage.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788171553-syh2nVVMEBPMV432izjq",
+            "usage": {
+              "completion_tokens": 1946,
+              "prompt_tokens": 3318,
+              "total_tokens": 5264,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0236075,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0236075,
+                "upstream_inference_prompt_cost": 0.0041475,
+                "upstream_inference_completions_cost": 0.01946
+              }
+            }
+          },
+          "validation_errors": [
+            "assumption_0_bad_evidence_count",
+            "assumption_2_bad_evidence_count"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "9f6f7980b5bfdaeaf6d0c121774912ed688778808da3af458b8e981ff7700a4b",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute intra-abdominal process as the cause of her new severe right upper quadrant–predominant abdominal pain and systemic inflammatory response.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall clinical syndrome level",
+                  "status": "likely",
+                  "evidence": [
+                    "“presents with diffuse abdominal pain most prominent in RUQ since ___… pain has been severe and abruptly began ___ day”",
+                    "“On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.” and “White Blood Cells: 21.0 K/uL (ref 4.0-11.0)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A hepatobiliary source such as acute cholecystitis or biliary pathology is a leading diagnostic consideration for this presentation.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease / organ-system level",
+                  "status": "suspected",
+                  "evidence": [
+                    "“presents with diffuse abdominal pain most prominent in RUQ”",
+                    "“Abd: Firmness to RUQ with diffusely tender abdomen, no rebound but mild voluntary guarding.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Given therapeutic over-anticoagulation and hypotension, an intra-abdominal hemorrhagic complication (e.g., retroperitoneal or visceral hemorrhage) is a significant concern.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "specific complication level",
+                  "status": "suspected",
+                  "evidence": [
+                    "“on Coumadin for CVA with INR 5 presents with diffuse abdominal pain” and “INR(PT): 5.6 (ref 0.9-1.1)”",
+                    "“On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable at first decision point",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No prior imaging or diagnostic question to compare at this initial step."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision so all assumptions are newly introduced from the baseline history, examination, and labs."
+              },
+              "current_question": {
+                "primary": "What is the acute intra-abdominal cause of this patient’s severe RUQ-predominant abdominal pain and sepsis-physiology in the context of supratherapeutic anticoagulation?",
+                "target": "acute intra-abdominal pathology (e.g., biliary disease, bowel pathology, ischemia, or hemorrhage)",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a specific intra-abdominal source (e.g., cholecystitis, perforation, abscess, or hemorrhage) would direct urgent targeted management such as surgery, IR, antibiotics, or reversal of anticoagulation.",
+                "negative_answer_changes": "If CT does not reveal an acute abdominal source, clinicians would need to reassess for non-abdominal causes of shock/sepsis and reconsider the leading assumptions.",
+                "secondary_questions": [
+                  "Is there CT evidence of intra-abdominal or retroperitoneal hemorrhage related to over-anticoagulation?",
+                  "Is there imaging evidence of complications such as perforation, abscess, or bowel ischemia that would demand emergent intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Global assessment of the abdomen and pelvis including solid organs, bowel, mesentery, and retroperitoneum",
+                    "why_required": "The suspected source is not yet localized, so comprehensive visualization is needed to search for any acute intra-abdominal pathology."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of hepatobiliary pathology such as cholecystitis, biliary obstruction, or hepatic lesions",
+                    "why_required": "RUQ pain and RUQ firmness make hepatobiliary disease a leading candidate that must be confirmed or excluded."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, location, and extent of intra-abdominal or retroperitoneal hemorrhage or other acute complications (perforation, abscess, ischemia)",
+                    "why_required": "Marked over-anticoagulation with hypotension raises concern for hemorrhage or other serious complications that critically affect management."
+                  }
+                ],
+                "evidence": [
+                  "“presents with diffuse abdominal pain most prominent in RUQ… Pain at worst in ___ now ___ accompanied with nausea… On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.”",
+                  "“on Coumadin for CVA with INR 5… INR(PT): 5.6 (ref 0.9-1.1)” and “White Blood Cells: 21.0 K/uL (ref 4.0-11.0)”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "No prior abdominal imaging has been performed, so there is no visualization of the abdomen or pelvis yet."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Bilirubin, Total: 0.6 mg/dL (ref 0.0-1.5)” and normal AST/ALT and alkaline phosphatase values"
+                    ],
+                    "reason": "Normal liver enzymes and bilirubin mildly argue against obstructive jaundice but cannot exclude acute cholecystitis or other hepatobiliary pathology without imaging."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "There is no mention of any prior CT, ultrasound, or other abdominal imaging."
+                    ],
+                    "reason": "Despite high INR and hypotension, there is no imaging-based assessment yet for intra-abdominal hemorrhage or other complications."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All critical aspects of the intra-abdominal source question lack imaging evaluation at this first decision point."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize abdominal and pelvic organs, detect inflammatory, ischemic, obstructive, or hemorrhagic pathology, and characterize acute complications.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The rationale for choosing CT rather than initial RUQ ultrasound for suspected biliary disease is not explicitly documented but is plausibly influenced by diffuse pain, hypotension, and concern for non-biliary or hemorrhagic causes."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute intra-abdominal process as the cause of her new severe right upper quadrant–predominant abdominal pain and systemic inflammatory response.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical syndrome level\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“presents with diffuse abdominal pain most prominent in RUQ since ___… pain has been severe and abruptly began ___ day”\",\n        \"“On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.” and “White Blood Cells: 21.0 K/uL (ref 4.0-11.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A hepatobiliary source such as acute cholecystitis or biliary pathology is a leading diagnostic consideration for this presentation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease / organ-system level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“presents with diffuse abdominal pain most prominent in RUQ”\",\n        \"“Abd: Firmness to RUQ with diffusely tender abdomen, no rebound but mild voluntary guarding.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Given therapeutic over-anticoagulation and hypotension, an intra-abdominal hemorrhagic complication (e.g., retroperitoneal or visceral hemorrhage) is a significant concern.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific complication level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“on Coumadin for CVA with INR 5 presents with diffuse abdominal pain” and “INR(PT): 5.6 (ref 0.9-1.1)”\",\n        \"“On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable at first decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging or diagnostic question to compare at this initial step.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision so all assumptions are newly introduced from the baseline history, examination, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the acute intra-abdominal cause of this patient’s severe RUQ-predominant abdominal pain and sepsis-physiology in the context of supratherapeutic anticoagulation?\",\n    \"target\": \"acute intra-abdominal pathology (e.g., biliary disease, bowel pathology, ischemia, or hemorrhage)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a specific intra-abdominal source (e.g., cholecystitis, perforation, abscess, or hemorrhage) would direct urgent targeted management such as surgery, IR, antibiotics, or reversal of anticoagulation.\",\n    \"negative_answer_changes\": \"If CT does not reveal an acute abdominal source, clinicians would need to reassess for non-abdominal causes of shock/sepsis and reconsider the leading assumptions.\",\n    \"secondary_questions\": [\n      \"Is there CT evidence of intra-abdominal or retroperitoneal hemorrhage related to over-anticoagulation?\",\n      \"Is there imaging evidence of complications such as perforation, abscess, or bowel ischemia that would demand emergent intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Global assessment of the abdomen and pelvis including solid organs, bowel, mesentery, and retroperitoneum\",\n        \"why_required\": \"The suspected source is not yet localized, so comprehensive visualization is needed to search for any acute intra-abdominal pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of hepatobiliary pathology such as cholecystitis, biliary obstruction, or hepatic lesions\",\n        \"why_required\": \"RUQ pain and RUQ firmness make hepatobiliary disease a leading candidate that must be confirmed or excluded.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, location, and extent of intra-abdominal or retroperitoneal hemorrhage or other acute complications (perforation, abscess, ischemia)\",\n        \"why_required\": \"Marked over-anticoagulation with hypotension raises concern for hemorrhage or other serious complications that critically affect management.\"\n      }\n    ],\n    \"evidence\": [\n      \"“presents with diffuse abdominal pain most prominent in RUQ… Pain at worst in ___ now ___ accompanied with nausea… On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.”\",\n      \"“on Coumadin for CVA with INR 5… INR(PT): 5.6 (ref 0.9-1.1)” and “White Blood Cells: 21.0 K/uL (ref 4.0-11.0)”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior abdominal imaging has been performed, so there is no visualization of the abdomen or pelvis yet.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Bilirubin, Total: 0.6 mg/dL (ref 0.0-1.5)” and normal AST/ALT and alkaline phosphatase values\"\n        ],\n        \"reason\": \"Normal liver enzymes and bilirubin mildly argue against obstructive jaundice but cannot exclude acute cholecystitis or other hepatobiliary pathology without imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"There is no mention of any prior CT, ultrasound, or other abdominal imaging.\"\n        ],\n        \"reason\": \"Despite high INR and hypotension, there is no imaging-based assessment yet for intra-abdominal hemorrhage or other complications.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All critical aspects of the intra-abdominal source question lack imaging evaluation at this first decision point.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize abdominal and pelvic organs, detect inflammatory, ischemic, obstructive, or hemorrhagic pathology, and characterize acute complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The rationale for choosing CT rather than initial RUQ ultrasound for suspected biliary disease is not explicitly documented but is plausibly influenced by diffuse pain, hypotension, and concern for non-biliary or hemorrhagic causes.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788171578-ZUFKj74BduAwaILakPK9",
+            "usage": {
+              "completion_tokens": 1864,
+              "prompt_tokens": 3363,
+              "total_tokens": 5227,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3200,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.01924375,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.01924375,
+                "upstream_inference_prompt_cost": 0.00060375,
+                "upstream_inference_completions_cost": 0.01864
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute intra-abdominal process as the cause of her new severe right upper quadrant–predominant abdominal pain and systemic inflammatory response.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "overall clinical syndrome level",
+            "status": "likely",
+            "evidence": [
+              "“presents with diffuse abdominal pain most prominent in RUQ since ___… pain has been severe and abruptly began ___ day”",
+              "“On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.” and “White Blood Cells: 21.0 K/uL (ref 4.0-11.0)”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A hepatobiliary source such as acute cholecystitis or biliary pathology is a leading diagnostic consideration for this presentation.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific disease / organ-system level",
+            "status": "suspected",
+            "evidence": [
+              "“presents with diffuse abdominal pain most prominent in RUQ”",
+              "“Abd: Firmness to RUQ with diffusely tender abdomen, no rebound but mild voluntary guarding.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Given therapeutic over-anticoagulation and hypotension, an intra-abdominal hemorrhagic complication (e.g., retroperitoneal or visceral hemorrhage) is a significant concern.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "specific complication level",
+            "status": "suspected",
+            "evidence": [
+              "“on Coumadin for CVA with INR 5 presents with diffuse abdominal pain” and “INR(PT): 5.6 (ref 0.9-1.1)”",
+              "“On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable at first decision point",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "No prior imaging or diagnostic question to compare at this initial step."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision so all assumptions are newly introduced from the baseline history, examination, and labs."
+        },
+        "current_question": {
+          "primary": "What is the acute intra-abdominal cause of this patient’s severe RUQ-predominant abdominal pain and sepsis-physiology in the context of supratherapeutic anticoagulation?",
+          "target": "acute intra-abdominal pathology (e.g., biliary disease, bowel pathology, ischemia, or hemorrhage)",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a specific intra-abdominal source (e.g., cholecystitis, perforation, abscess, or hemorrhage) would direct urgent targeted management such as surgery, IR, antibiotics, or reversal of anticoagulation.",
+          "negative_answer_changes": "If CT does not reveal an acute abdominal source, clinicians would need to reassess for non-abdominal causes of shock/sepsis and reconsider the leading assumptions.",
+          "secondary_questions": [
+            "Is there CT evidence of intra-abdominal or retroperitoneal hemorrhage related to over-anticoagulation?",
+            "Is there imaging evidence of complications such as perforation, abscess, or bowel ischemia that would demand emergent intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Global assessment of the abdomen and pelvis including solid organs, bowel, mesentery, and retroperitoneum",
+              "why_required": "The suspected source is not yet localized, so comprehensive visualization is needed to search for any acute intra-abdominal pathology."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of hepatobiliary pathology such as cholecystitis, biliary obstruction, or hepatic lesions",
+              "why_required": "RUQ pain and RUQ firmness make hepatobiliary disease a leading candidate that must be confirmed or excluded."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, location, and extent of intra-abdominal or retroperitoneal hemorrhage or other acute complications (perforation, abscess, ischemia)",
+              "why_required": "Marked over-anticoagulation with hypotension raises concern for hemorrhage or other serious complications that critically affect management."
+            }
+          ],
+          "evidence": [
+            "“presents with diffuse abdominal pain most prominent in RUQ… Pain at worst in ___ now ___ accompanied with nausea… On presentation to the ED she was hypotensive in the ___ systolic with improvement to 110s with 2 L of fluid.”",
+            "“on Coumadin for CVA with INR 5… INR(PT): 5.6 (ref 0.9-1.1)” and “White Blood Cells: 21.0 K/uL (ref 4.0-11.0)”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "No prior abdominal imaging has been performed, so there is no visualization of the abdomen or pelvis yet."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Bilirubin, Total: 0.6 mg/dL (ref 0.0-1.5)” and normal AST/ALT and alkaline phosphatase values"
+              ],
+              "reason": "Normal liver enzymes and bilirubin mildly argue against obstructive jaundice but cannot exclude acute cholecystitis or other hepatobiliary pathology without imaging."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "There is no mention of any prior CT, ultrasound, or other abdominal imaging."
+              ],
+              "reason": "Despite high INR and hypotension, there is no imaging-based assessment yet for intra-abdominal hemorrhage or other complications."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All critical aspects of the intra-abdominal source question lack imaging evaluation at this first decision point."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize abdominal and pelvic organs, detect inflammatory, ischemic, obstructive, or hemorrhagic pathology, and characterize acute complications.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The rationale for choosing CT rather than initial RUQ ultrasound for suspected biliary disease is not explicitly documented but is plausibly influenced by diffuse pain, hypotension, and concern for non-biliary or hemorrhagic causes."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "Ultrasound Abdomen (RENAL U.S.)",
+      "request_prompt_sha256": "9bc66c0906936b7530a3a9064f2e50ed1f6cc01bbf8a1bc61e86b71c7c83a0b1",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "9bc66c0906936b7530a3a9064f2e50ed1f6cc01bbf8a1bc61e86b71c7c83a0b1",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient with acute RUQ-predominant abdominal pain, sepsis physiology, and CT-proven complicated gallbladder disease may also have concurrent renal/collecting system pathology contributing to her presentation or influencing management (e.g., obstruction, ischemic/medical kidney injury).",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "organ-system level (abdominal / genitourinary involvement within systemic illness)",
+                  "status": "suspected",
+                  "evidence": [
+                    "“Estimated GFR = 34 if non African-American… GFR<60 = Chronic Kidney Disease” and “Creatinine: 1.5 mg/dL (ref 0.4-1.1)”",
+                    "“The kidneys enhance symmetrically, though excretion of contrast is seen which may be related to patient's borderline renal function. Recommendation for hydration post-CT was made…”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What is the acute intra-abdominal cause of this patient’s severe RUQ-predominant abdominal pain and sepsis-physiology in the context of supratherapeutic anticoagulation?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The CT abdomen and pelvis identified acute complicated gallbladder disease with impacted neck stone, wall edema, biliary ductal dilatation, and pericholecystic/free fluid, thereby localizing a likely hepatobiliary source of the acute intra-abdominal process and sepsis physiology; it did not show retroperitoneal or intra-abdominal hemorrhage.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "“A calcified gallstone is noted impacted in the gallbladder neck with marked gallbladder wall edema… findings raise concern for ____ as well as probable Mirizzi syndrome… free fluid tracking inferior to the liver and gallbladder… possibility of early perforation cannot be entirely excluded.”",
+                  "evidence_stream_2": "“presents with diffuse abdominal pain most prominent in RUQ… On presentation to the ED she was hypotensive… White Blood Cells: 21.0 K/uL (ref 4.0-11.0)”",
+                  "reason": "CT findings of severe acute gallbladder pathology with possible early perforation align with the clinical picture of septic RUQ abdominal pain without suggesting an alternative dominant source."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The patient has an acute intra-abdominal process as the cause of her new severe right upper quadrant–predominant abdominal pain and systemic inflammatory response.",
+                "reason": "The CT establishes acute complicated gallbladder disease (impacted neck stone, wall edema, biliary dilation, pericholecystic/free fluid, possible early perforation) as the specific intra-abdominal source, refining the previously nonlocalized acute abdominal process assumption while also documenting borderline renal function."
+              },
+              "current_question": {
+                "primary": "What is the current structural and obstructive status of the kidneys and urinary collecting systems in this septic patient with reduced GFR and recent iodinated contrast exposure?",
+                "target": "renal parenchyma and urinary collecting systems (hydronephrosis, obstruction, size/echogenicity, gross focal lesions, perinephric fluid)",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If renal ultrasound shows obstruction, hydronephrosis, or focal renal/perinephric pathology, clinicians may pursue urologic intervention, modify fluid/antibiotic strategy, and factor this into perioperative/surgical risk and contrast use.",
+                "negative_answer_changes": "If no obstructive or focal renal pathology is found, the renal dysfunction can be attributed more to medical/systemic causes (e.g., sepsis, pre-renal state, contrast effect), supporting conservative renal management while focusing on the biliary source.",
+                "secondary_questions": [
+                  "Is there ultrasound evidence of hydronephrosis or obstructive uropathy that could be worsening renal function or contributing to sepsis?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Bilateral kidneys and bladder including renal size, cortical thickness/echogenicity, and collecting system appearance",
+                    "why_required": "Direct visualization is needed to evaluate for intrinsic renal structural abnormality versus primarily functional or hemodynamic impairment."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of hydronephrosis or other signs of urinary tract obstruction",
+                    "why_required": "Obstructive uropathy is a treatable cause of renal dysfunction and sepsis and would significantly alter acute management if present."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity of any detected renal structural abnormality (e.g., marked cortical thinning, large cysts/masses, significant perinephric fluid)",
+                    "why_required": "The extent of structural abnormality informs prognosis, perioperative and contrast risk, and need for nephrology or urology consultation."
+                  }
+                ],
+                "evidence": [
+                  "“Estimated GFR = 34… GFR<60 = Chronic Kidney Disease, GFR<15 = Kidney Failure.” and “Creatinine: 1.5 mg/dL (ref 0.4-1.1)”",
+                  "“The kidneys enhance symmetrically, though excretion of contrast is seen which may be related to patient's borderline renal function. Recommendation for hydration post-CT was made…”"
+                ]
+              },
+              "question_continuity": "new",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“The kidneys enhance symmetrically, though excretion of contrast is seen which may be related to patient's borderline renal function.”"
+                    ],
+                    "reason": "CT has imaged the kidneys and showed symmetric enhancement but does not provide detailed functional or fine parenchymal characterization typically obtained with dedicated renal ultrasound."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "The CT report does not describe hydronephrosis or obstructing stones and notes: “The kidneys enhance symmetrically…”"
+                    ],
+                    "reason": "Contrast CT would usually depict moderate-to-severe hydronephrosis or large obstructing stones; their absence argues against high-grade obstruction but does not fully assess subtle or evolving obstruction or bladder-outlet issues."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Aside from symmetric enhancement and comment on excretion, there is no description of cortical thickness, echogenicity, or perinephric fluid on CT."
+                    ],
+                    "reason": "CT comments only briefly on enhancement and excretion and does not quantify chronicity or severity of structural renal disease, leaving overall extent of renal structural abnormality unclear."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Prior CT and labs show reduced GFR with symmetric renal enhancement and no obvious obstruction, but they do not comprehensively characterize renal structure, subtle obstruction, or severity of chronic changes, so important aspects remain unresolved."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Renal ultrasound can noninvasively evaluate renal size and parenchyma, detect hydronephrosis and obstructive uropathy, and identify perinephric fluid or focal lesions without further nephrotoxic contrast exposure.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not explicitly state why a renal study was prioritized at this juncture instead of (or in addition to) repeat hepatobiliary imaging or immediate intervention planning, and it is unclear whether specific urinary symptoms or worsening creatinine prompted this order."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "An alternative explanation is that the renal ultrasound was primarily ordered as a non-contrast method to reassess for subtle perinephric or retroperitoneal hemorrhage or fluid collections in a severely anticoagulated, hypotensive patient after initial CT, but this intent is not documented."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient with acute RUQ-predominant abdominal pain, sepsis physiology, and CT-proven complicated gallbladder disease may also have concurrent renal/collecting system pathology contributing to her presentation or influencing management (e.g., obstruction, ischemic/medical kidney injury).\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-system level (abdominal / genitourinary involvement within systemic illness)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“Estimated GFR = 34 if non African-American… GFR<60 = Chronic Kidney Disease” and “Creatinine: 1.5 mg/dL (ref 0.4-1.1)”\",\n        \"“The kidneys enhance symmetrically, though excretion of contrast is seen which may be related to patient's borderline renal function. Recommendation for hydration post-CT was made…”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the acute intra-abdominal cause of this patient’s severe RUQ-predominant abdominal pain and sepsis-physiology in the context of supratherapeutic anticoagulation?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The CT abdomen and pelvis identified acute complicated gallbladder disease with impacted neck stone, wall edema, biliary ductal dilatation, and pericholecystic/free fluid, thereby localizing a likely hepatobiliary source of the acute intra-abdominal process and sepsis physiology; it did not show retroperitoneal or intra-abdominal hemorrhage.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"“A calcified gallstone is noted impacted in the gallbladder neck with marked gallbladder wall edema… findings raise concern for ____ as well as probable Mirizzi syndrome… free fluid tracking inferior to the liver and gallbladder… possibility of early perforation cannot be entirely excluded.”\",\n      \"evidence_stream_2\": \"“presents with diffuse abdominal pain most prominent in RUQ… On presentation to the ED she was hypotensive… White Blood Cells: 21.0 K/uL (ref 4.0-11.0)”\",\n      \"reason\": \"CT findings of severe acute gallbladder pathology with possible early perforation align with the clinical picture of septic RUQ abdominal pain without suggesting an alternative dominant source.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient has an acute intra-abdominal process as the cause of her new severe right upper quadrant–predominant abdominal pain and systemic inflammatory response.\",\n    \"reason\": \"The CT establishes acute complicated gallbladder disease (impacted neck stone, wall edema, biliary dilation, pericholecystic/free fluid, possible early perforation) as the specific intra-abdominal source, refining the previously nonlocalized acute abdominal process assumption while also documenting borderline renal function.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the current structural and obstructive status of the kidneys and urinary collecting systems in this septic patient with reduced GFR and recent iodinated contrast exposure?\",\n    \"target\": \"renal parenchyma and urinary collecting systems (hydronephrosis, obstruction, size/echogenicity, gross focal lesions, perinephric fluid)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If renal ultrasound shows obstruction, hydronephrosis, or focal renal/perinephric pathology, clinicians may pursue urologic intervention, modify fluid/antibiotic strategy, and factor this into perioperative/surgical risk and contrast use.\",\n    \"negative_answer_changes\": \"If no obstructive or focal renal pathology is found, the renal dysfunction can be attributed more to medical/systemic causes (e.g., sepsis, pre-renal state, contrast effect), supporting conservative renal management while focusing on the biliary source.\",\n    \"secondary_questions\": [\n      \"Is there ultrasound evidence of hydronephrosis or obstructive uropathy that could be worsening renal function or contributing to sepsis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Bilateral kidneys and bladder including renal size, cortical thickness/echogenicity, and collecting system appearance\",\n        \"why_required\": \"Direct visualization is needed to evaluate for intrinsic renal structural abnormality versus primarily functional or hemodynamic impairment.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of hydronephrosis or other signs of urinary tract obstruction\",\n        \"why_required\": \"Obstructive uropathy is a treatable cause of renal dysfunction and sepsis and would significantly alter acute management if present.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity of any detected renal structural abnormality (e.g., marked cortical thinning, large cysts/masses, significant perinephric fluid)\",\n        \"why_required\": \"The extent of structural abnormality informs prognosis, perioperative and contrast risk, and need for nephrology or urology consultation.\"\n      }\n    ],\n    \"evidence\": [\n      \"“Estimated GFR = 34… GFR<60 = Chronic Kidney Disease, GFR<15 = Kidney Failure.” and “Creatinine: 1.5 mg/dL (ref 0.4-1.1)”\",\n      \"“The kidneys enhance symmetrically, though excretion of contrast is seen which may be related to patient's borderline renal function. Recommendation for hydration post-CT was made…”\"\n    ]\n  },\n  \"question_continuity\": \"new\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“The kidneys enhance symmetrically, though excretion of contrast is seen which may be related to patient's borderline renal function.”\"\n        ],\n        \"reason\": \"CT has imaged the kidneys and showed symmetric enhancement but does not provide detailed functional or fine parenchymal characterization typically obtained with dedicated renal ultrasound.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"The CT report does not describe hydronephrosis or obstructing stones and notes: “The kidneys enhance symmetrically…”\"\n        ],\n        \"reason\": \"Contrast CT would usually depict moderate-to-severe hydronephrosis or large obstructing stones; their absence argues against high-grade obstruction but does not fully assess subtle or evolving obstruction or bladder-outlet issues.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Aside from symmetric enhancement and comment on excretion, there is no description of cortical thickness, echogenicity, or perinephric fluid on CT.\"\n        ],\n        \"reason\": \"CT comments only briefly on enhancement and excretion and does not quantify chronicity or severity of structural renal disease, leaving overall extent of renal structural abnormality unclear.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Prior CT and labs show reduced GFR with symmetric renal enhancement and no obvious obstruction, but they do not comprehensively characterize renal structure, subtle obstruction, or severity of chronic changes, so important aspects remain unresolved.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Renal ultrasound can noninvasively evaluate renal size and parenchyma, detect hydronephrosis and obstructive uropathy, and identify perinephric fluid or focal lesions without further nephrotoxic contrast exposure.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly state why a renal study was prioritized at this juncture instead of (or in addition to) repeat hepatobiliary imaging or immediate intervention planning, and it is unclear whether specific urinary symptoms or worsening creatinine prompted this order.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"An alternative explanation is that the renal ultrasound was primarily ordered as a non-contrast method to reassess for subtle perinephric or retroperitoneal hemorrhage or fluid collections in a severely anticoagulated, hypotensive patient after initial CT, but this intent is not documented.\"\n}",
+            "request_id": "gen-1788171604-JZofwATzUwgaryf9N7xi",
+            "usage": {
+              "completion_tokens": 2000,
+              "prompt_tokens": 5570,
+              "total_tokens": 7570,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2048,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0246585,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0246585,
+                "upstream_inference_prompt_cost": 0.0046585,
+                "upstream_inference_completions_cost": 0.02
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient with acute RUQ-predominant abdominal pain, sepsis physiology, and CT-proven complicated gallbladder disease may also have concurrent renal/collecting system pathology contributing to her presentation or influencing management (e.g., obstruction, ischemic/medical kidney injury).",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "organ-system level (abdominal / genitourinary involvement within systemic illness)",
+            "status": "suspected",
+            "evidence": [
+              "“Estimated GFR = 34 if non African-American… GFR<60 = Chronic Kidney Disease” and “Creatinine: 1.5 mg/dL (ref 0.4-1.1)”",
+              "“The kidneys enhance symmetrically, though excretion of contrast is seen which may be related to patient's borderline renal function. Recommendation for hydration post-CT was made…”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What is the acute intra-abdominal cause of this patient’s severe RUQ-predominant abdominal pain and sepsis-physiology in the context of supratherapeutic anticoagulation?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The CT abdomen and pelvis identified acute complicated gallbladder disease with impacted neck stone, wall edema, biliary ductal dilatation, and pericholecystic/free fluid, thereby localizing a likely hepatobiliary source of the acute intra-abdominal process and sepsis physiology; it did not show retroperitoneal or intra-abdominal hemorrhage.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "“A calcified gallstone is noted impacted in the gallbladder neck with marked gallbladder wall edema… findings raise concern for ____ as well as probable Mirizzi syndrome… free fluid tracking inferior to the liver and gallbladder… possibility of early perforation cannot be entirely excluded.”",
+            "evidence_stream_2": "“presents with diffuse abdominal pain most prominent in RUQ… On presentation to the ED she was hypotensive… White Blood Cells: 21.0 K/uL (ref 4.0-11.0)”",
+            "reason": "CT findings of severe acute gallbladder pathology with possible early perforation align with the clinical picture of septic RUQ abdominal pain without suggesting an alternative dominant source."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient has an acute intra-abdominal process as the cause of her new severe right upper quadrant–predominant abdominal pain and systemic inflammatory response.",
+          "reason": "The CT establishes acute complicated gallbladder disease (impacted neck stone, wall edema, biliary dilation, pericholecystic/free fluid, possible early perforation) as the specific intra-abdominal source, refining the previously nonlocalized acute abdominal process assumption while also documenting borderline renal function."
+        },
+        "current_question": {
+          "primary": "What is the current structural and obstructive status of the kidneys and urinary collecting systems in this septic patient with reduced GFR and recent iodinated contrast exposure?",
+          "target": "renal parenchyma and urinary collecting systems (hydronephrosis, obstruction, size/echogenicity, gross focal lesions, perinephric fluid)",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If renal ultrasound shows obstruction, hydronephrosis, or focal renal/perinephric pathology, clinicians may pursue urologic intervention, modify fluid/antibiotic strategy, and factor this into perioperative/surgical risk and contrast use.",
+          "negative_answer_changes": "If no obstructive or focal renal pathology is found, the renal dysfunction can be attributed more to medical/systemic causes (e.g., sepsis, pre-renal state, contrast effect), supporting conservative renal management while focusing on the biliary source.",
+          "secondary_questions": [
+            "Is there ultrasound evidence of hydronephrosis or obstructive uropathy that could be worsening renal function or contributing to sepsis?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Bilateral kidneys and bladder including renal size, cortical thickness/echogenicity, and collecting system appearance",
+              "why_required": "Direct visualization is needed to evaluate for intrinsic renal structural abnormality versus primarily functional or hemodynamic impairment."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of hydronephrosis or other signs of urinary tract obstruction",
+              "why_required": "Obstructive uropathy is a treatable cause of renal dysfunction and sepsis and would significantly alter acute management if present."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity of any detected renal structural abnormality (e.g., marked cortical thinning, large cysts/masses, significant perinephric fluid)",
+              "why_required": "The extent of structural abnormality informs prognosis, perioperative and contrast risk, and need for nephrology or urology consultation."
+            }
+          ],
+          "evidence": [
+            "“Estimated GFR = 34… GFR<60 = Chronic Kidney Disease, GFR<15 = Kidney Failure.” and “Creatinine: 1.5 mg/dL (ref 0.4-1.1)”",
+            "“The kidneys enhance symmetrically, though excretion of contrast is seen which may be related to patient's borderline renal function. Recommendation for hydration post-CT was made…”"
+          ]
+        },
+        "question_continuity": "new",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“The kidneys enhance symmetrically, though excretion of contrast is seen which may be related to patient's borderline renal function.”"
+              ],
+              "reason": "CT has imaged the kidneys and showed symmetric enhancement but does not provide detailed functional or fine parenchymal characterization typically obtained with dedicated renal ultrasound."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "The CT report does not describe hydronephrosis or obstructing stones and notes: “The kidneys enhance symmetrically…”"
+              ],
+              "reason": "Contrast CT would usually depict moderate-to-severe hydronephrosis or large obstructing stones; their absence argues against high-grade obstruction but does not fully assess subtle or evolving obstruction or bladder-outlet issues."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Aside from symmetric enhancement and comment on excretion, there is no description of cortical thickness, echogenicity, or perinephric fluid on CT."
+              ],
+              "reason": "CT comments only briefly on enhancement and excretion and does not quantify chronicity or severity of structural renal disease, leaving overall extent of renal structural abnormality unclear."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Prior CT and labs show reduced GFR with symmetric renal enhancement and no obvious obstruction, but they do not comprehensively characterize renal structure, subtle obstruction, or severity of chronic changes, so important aspects remain unresolved."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Renal ultrasound can noninvasively evaluate renal size and parenchyma, detect hydronephrosis and obstructive uropathy, and identify perinephric fluid or focal lesions without further nephrotoxic contrast exposure.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not explicitly state why a renal study was prioritized at this juncture instead of (or in addition to) repeat hepatobiliary imaging or immediate intervention planning, and it is unclear whether specific urinary symptoms or worsening creatinine prompted this order."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "An alternative explanation is that the renal ultrasound was primarily ordered as a non-contrast method to reassess for subtle perinephric or retroperitoneal hemorrhage or fluid collections in a severely anticoagulated, hypotensive patient after initial CT, but this intent is not documented."
+      },
+      "validation_errors": []
+    }
+  ]
+}

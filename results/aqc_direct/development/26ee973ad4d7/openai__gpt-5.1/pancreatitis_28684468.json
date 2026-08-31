@@ -1,0 +1,966 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 28684468,
+  "source_path": "results/annotation_experiment/full/pancreatitis_28684468.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (ABDOMEN U.S. (COMPLETE STUDY))",
+      "request_prompt_sha256": "d79ec576c46abd19951314aa2025cb16b79595d6fcd4eaea9d4f13605b38ad2c",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "d79ec576c46abd19951314aa2025cb16b79595d6fcd4eaea9d4f13605b38ad2c",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis with associated hepatobiliary involvement.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "working clinical diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "Lipase: 6807.0 IU/L (ref 0.0-60.0)",
+                    "Amylase: 1884.0 IU/L (ref 0.0-100.0) ... ALT: 778.0 IU/L ... AST: 616.0 IU/L ... Bilirubin, Total: 3.5 mg/dL ... Bilirubin, Direct: 2.5 mg/dL"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Gallstone disease or biliary obstruction is a suspected etiology of the patient’s acute pancreatitis and liver test abnormalities.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)",
+                    "Alanine Aminotransferase (ALT): 778.0 IU/L (ref 0.0-40.0) ... Asparate Aminotransferase (AST): 616.0 IU/L (ref 0.0-40.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There may be biliary obstruction or choledocholithiasis causing the direct hyperbilirubinemia and transaminitis.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "specific complication and anatomic process",
+                  "status": "suspected",
+                  "evidence": [
+                    "Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)",
+                    "Obese abdomen, with tenderness to palpation in epigastrium."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First imaging decision; no prior imaging to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point; acute pancreatitis with possible biliary etiology is inferred from presenting symptoms and laboratory findings."
+              },
+              "current_question": {
+                "primary": "Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, explaining the acute pancreatitis and cholestatic liver abnormalities?",
+                "target": "gallbladder and biliary tree (including common bile duct) for stones or obstruction",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirm gallstone-related or obstructive etiology for pancreatitis and guide need for ERCP, surgical consultation, or other biliary intervention.",
+                "negative_answer_changes": "Prompt consideration of non-biliary causes of pancreatitis and liver test abnormalities (e.g., alcohol, drugs, other) and potentially different management.",
+                "secondary_questions": [
+                  "What is the severity and structural impact of acute pancreatitis on the pancreas and surrounding structures?",
+                  "Are there acute hepatobiliary complications such as cholecystitis or bile duct dilation that require urgent intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_gb_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the gallbladder, intrahepatic ducts, and common bile duct.",
+                    "why_required": "Determining whether biliary pathology is present requires seeing the gallbladder and biliary tree well enough to assess for stones and dilation."
+                  },
+                  {
+                    "requirement_key": "req_stones_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones or choledocholithiasis.",
+                    "why_required": "Detecting stones establishes a biliary etiology for pancreatitis and guides decisions about ERCP or cholecystectomy."
+                  },
+                  {
+                    "requirement_key": "req_biliary_obstruction",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, degree, and characteristics of biliary obstruction (e.g., bile duct dilation).",
+                    "why_required": "Characterizing obstruction and ductal dilation informs urgency and type of intervention for suspected obstructive jaundice."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent of pancreatic enlargement, peripancreatic fluid, or other sonographically visible signs of pancreatitis severity.",
+                    "why_required": "Severity assessment affects level of care and monitoring, even though ultrasound is limited for full staging."
+                  }
+                ],
+                "evidence": [
+                  "Lipase: 6807.0 IU/L (ref 0.0-60.0) ... Amylase: 1884.0 IU/L (ref 0.0-100.0)",
+                  "ALT: 778.0 IU/L ... AST: 616.0 IU/L ... Bilirubin, Total: 3.5 mg/dL ... Bilirubin, Direct: 2.5 mg/dL",
+                  "Obeses abdomen, with tenderness to palpation in epigastrium."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_gb_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "No prior imaging of the abdomen or biliary system is documented before this ultrasound order, so visualization status is unknown."
+                  },
+                  {
+                    "requirement_key": "req_stones_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Laboratory results and exam suggest pancreatitis and cholestasis but do not confirm or exclude gallstones or choledocholithiasis."
+                  },
+                  {
+                    "requirement_key": "req_biliary_obstruction",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Direct hyperbilirubinemia and transaminitis suggest possible obstruction, but no imaging has assessed ductal dilation or mechanical obstruction."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "The clinical and laboratory data show severe enzyme elevation, but the structural severity and local complications of pancreatitis have not been imaged."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key imaging-related requirements regarding biliary etiology and pancreatitis severity remain unaddressed prior to this first abdominal ultrasound."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Abdominal ultrasound is the first-line imaging modality to evaluate gallbladder stones, bile duct dilation or obstruction, and to provide an initial assessment of the pancreas in suspected biliary pancreatitis with hyperbilirubinemia.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The choice of complete versus limited ultrasound and the absence of an explicit note linking the order to suspected gallstones or obstructive jaundice are not spelled out but are clinically inferred."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis with associated hepatobiliary involvement.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"working clinical diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Lipase: 6807.0 IU/L (ref 0.0-60.0)\",\n        \"Amylase: 1884.0 IU/L (ref 0.0-100.0) ... ALT: 778.0 IU/L ... AST: 616.0 IU/L ... Bilirubin, Total: 3.5 mg/dL ... Bilirubin, Direct: 2.5 mg/dL\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallstone disease or biliary obstruction is a suspected etiology of the patient’s acute pancreatitis and liver test abnormalities.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)\",\n        \"Alanine Aminotransferase (ALT): 778.0 IU/L (ref 0.0-40.0) ... Asparate Aminotransferase (AST): 616.0 IU/L (ref 0.0-40.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There may be biliary obstruction or choledocholithiasis causing the direct hyperbilirubinemia and transaminitis.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific complication and anatomic process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)\",\n        \"Obese abdomen, with tenderness to palpation in epigastrium.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First imaging decision; no prior imaging to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; acute pancreatitis with possible biliary etiology is inferred from presenting symptoms and laboratory findings.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, explaining the acute pancreatitis and cholestatic liver abnormalities?\",\n    \"target\": \"gallbladder and biliary tree (including common bile duct) for stones or obstruction\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirm gallstone-related or obstructive etiology for pancreatitis and guide need for ERCP, surgical consultation, or other biliary intervention.\",\n    \"negative_answer_changes\": \"Prompt consideration of non-biliary causes of pancreatitis and liver test abnormalities (e.g., alcohol, drugs, other) and potentially different management.\",\n    \"secondary_questions\": [\n      \"What is the severity and structural impact of acute pancreatitis on the pancreas and surrounding structures?\",\n      \"Are there acute hepatobiliary complications such as cholecystitis or bile duct dilation that require urgent intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_gb_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder, intrahepatic ducts, and common bile duct.\",\n        \"why_required\": \"Determining whether biliary pathology is present requires seeing the gallbladder and biliary tree well enough to assess for stones and dilation.\"\n      },\n      {\n        \"requirement_key\": \"req_stones_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones or choledocholithiasis.\",\n        \"why_required\": \"Detecting stones establishes a biliary etiology for pancreatitis and guides decisions about ERCP or cholecystectomy.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_obstruction\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, degree, and characteristics of biliary obstruction (e.g., bile duct dilation).\",\n        \"why_required\": \"Characterizing obstruction and ductal dilation informs urgency and type of intervention for suspected obstructive jaundice.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of pancreatic enlargement, peripancreatic fluid, or other sonographically visible signs of pancreatitis severity.\",\n        \"why_required\": \"Severity assessment affects level of care and monitoring, even though ultrasound is limited for full staging.\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase: 6807.0 IU/L (ref 0.0-60.0) ... Amylase: 1884.0 IU/L (ref 0.0-100.0)\",\n      \"ALT: 778.0 IU/L ... AST: 616.0 IU/L ... Bilirubin, Total: 3.5 mg/dL ... Bilirubin, Direct: 2.5 mg/dL\",\n      \"Obeses abdomen, with tenderness to palpation in epigastrium.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_gb_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No prior imaging of the abdomen or biliary system is documented before this ultrasound order, so visualization status is unknown.\"\n      },\n      {\n        \"requirement_key\": \"req_stones_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Laboratory results and exam suggest pancreatitis and cholestasis but do not confirm or exclude gallstones or choledocholithiasis.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_obstruction\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Direct hyperbilirubinemia and transaminitis suggest possible obstruction, but no imaging has assessed ductal dilation or mechanical obstruction.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"The clinical and laboratory data show severe enzyme elevation, but the structural severity and local complications of pancreatitis have not been imaged.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key imaging-related requirements regarding biliary etiology and pancreatitis severity remain unaddressed prior to this first abdominal ultrasound.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Abdominal ultrasound is the first-line imaging modality to evaluate gallbladder stones, bile duct dilation or obstruction, and to provide an initial assessment of the pancreas in suspected biliary pancreatitis with hyperbilirubinemia.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of complete versus limited ultrasound and the absence of an explicit note linking the order to suspected gallstones or obstructive jaundice are not spelled out but are clinically inferred.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788176758-lKO8NqdoWrCSmeesRulH",
+            "usage": {
+              "completion_tokens": 1919,
+              "prompt_tokens": 3084,
+              "total_tokens": 5003,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.023045,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.023045,
+                "upstream_inference_prompt_cost": 0.003855,
+                "upstream_inference_completions_cost": 0.01919
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis with associated hepatobiliary involvement.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "working clinical diagnosis",
+            "status": "likely",
+            "evidence": [
+              "Lipase: 6807.0 IU/L (ref 0.0-60.0)",
+              "Amylase: 1884.0 IU/L (ref 0.0-100.0) ... ALT: 778.0 IU/L ... AST: 616.0 IU/L ... Bilirubin, Total: 3.5 mg/dL ... Bilirubin, Direct: 2.5 mg/dL"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Gallstone disease or biliary obstruction is a suspected etiology of the patient’s acute pancreatitis and liver test abnormalities.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism",
+            "status": "suspected",
+            "evidence": [
+              "Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)",
+              "Alanine Aminotransferase (ALT): 778.0 IU/L (ref 0.0-40.0) ... Asparate Aminotransferase (AST): 616.0 IU/L (ref 0.0-40.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There may be biliary obstruction or choledocholithiasis causing the direct hyperbilirubinemia and transaminitis.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "specific complication and anatomic process",
+            "status": "suspected",
+            "evidence": [
+              "Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)",
+              "Obese abdomen, with tenderness to palpation in epigastrium."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First imaging decision; no prior imaging to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point; acute pancreatitis with possible biliary etiology is inferred from presenting symptoms and laboratory findings."
+        },
+        "current_question": {
+          "primary": "Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, explaining the acute pancreatitis and cholestatic liver abnormalities?",
+          "target": "gallbladder and biliary tree (including common bile duct) for stones or obstruction",
+          "type": "etiology_or_mechanism",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirm gallstone-related or obstructive etiology for pancreatitis and guide need for ERCP, surgical consultation, or other biliary intervention.",
+          "negative_answer_changes": "Prompt consideration of non-biliary causes of pancreatitis and liver test abnormalities (e.g., alcohol, drugs, other) and potentially different management.",
+          "secondary_questions": [
+            "What is the severity and structural impact of acute pancreatitis on the pancreas and surrounding structures?",
+            "Are there acute hepatobiliary complications such as cholecystitis or bile duct dilation that require urgent intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_gb_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the gallbladder, intrahepatic ducts, and common bile duct.",
+              "why_required": "Determining whether biliary pathology is present requires seeing the gallbladder and biliary tree well enough to assess for stones and dilation."
+            },
+            {
+              "requirement_key": "req_stones_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones or choledocholithiasis.",
+              "why_required": "Detecting stones establishes a biliary etiology for pancreatitis and guides decisions about ERCP or cholecystectomy."
+            },
+            {
+              "requirement_key": "req_biliary_obstruction",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, degree, and characteristics of biliary obstruction (e.g., bile duct dilation).",
+              "why_required": "Characterizing obstruction and ductal dilation informs urgency and type of intervention for suspected obstructive jaundice."
+            },
+            {
+              "requirement_key": "req_pancreas_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent of pancreatic enlargement, peripancreatic fluid, or other sonographically visible signs of pancreatitis severity.",
+              "why_required": "Severity assessment affects level of care and monitoring, even though ultrasound is limited for full staging."
+            }
+          ],
+          "evidence": [
+            "Lipase: 6807.0 IU/L (ref 0.0-60.0) ... Amylase: 1884.0 IU/L (ref 0.0-100.0)",
+            "ALT: 778.0 IU/L ... AST: 616.0 IU/L ... Bilirubin, Total: 3.5 mg/dL ... Bilirubin, Direct: 2.5 mg/dL",
+            "Obeses abdomen, with tenderness to palpation in epigastrium."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_gb_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "No prior imaging of the abdomen or biliary system is documented before this ultrasound order, so visualization status is unknown."
+            },
+            {
+              "requirement_key": "req_stones_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Laboratory results and exam suggest pancreatitis and cholestasis but do not confirm or exclude gallstones or choledocholithiasis."
+            },
+            {
+              "requirement_key": "req_biliary_obstruction",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Direct hyperbilirubinemia and transaminitis suggest possible obstruction, but no imaging has assessed ductal dilation or mechanical obstruction."
+            },
+            {
+              "requirement_key": "req_pancreas_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "The clinical and laboratory data show severe enzyme elevation, but the structural severity and local complications of pancreatitis have not been imaged."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key imaging-related requirements regarding biliary etiology and pancreatitis severity remain unaddressed prior to this first abdominal ultrasound."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Abdominal ultrasound is the first-line imaging modality to evaluate gallbladder stones, bile duct dilation or obstruction, and to provide an initial assessment of the pancreas in suspected biliary pancreatitis with hyperbilirubinemia.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The choice of complete versus limited ultrasound and the absence of an explicit note linking the order to suspected gallstones or obstructive jaundice are not spelled out but are clinically inferred."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD W&W/O C)",
+      "request_prompt_sha256": "ed9ba22e8949b97804cde49ba8a13afd0f03e2ce064152e3338559aade25665f",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "ed9ba22e8949b97804cde49ba8a13afd0f03e2ce064152e3338559aade25665f",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute gallstone pancreatitis with associated obstructive jaundice or biliary inflammation.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "specific etiologic mechanism for the pancreatitis syndrome",
+                  "status": "likely",
+                  "evidence": [
+                    "Lipase: 6807.0 IU/L (ref 0.0-60.0) ... Amylase: 1884.0 IU/L (ref 0.0-100.0)",
+                    "A contracted gallbladder is seen containing a 2cm stone and demonstrating wall thickening measuring up to 9 mm. ... There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm. ... Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, explaining the acute pancreatitis and cholestatic liver abnormalities?",
+                "study_adequacy": "limited_but_diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The abdominal ultrasound adequately visualized the gallbladder and bile ducts, confirming a large gallstone and gallbladder wall thickening without ductal dilatation, thereby establishing gallstone-related hepatobiliary disease as the likely etiology while not fully explaining the marked direct hyperbilirubinemia or assessing pancreatic severity because the pancreas was poorly evaluated.",
+                "discordance": {
+                  "label": "indeterminate",
+                  "evidence_stream_1": "There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm.",
+                  "evidence_stream_2": "Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)",
+                  "reason": "Biochemistry suggests significant cholestasis, but ultrasound shows no ductal dilatation; this may reflect early or intermittent obstruction versus non-obstructive hepatocellular injury."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The patient has acute pancreatitis with associated hepatobiliary involvement.",
+                "reason": "Ultrasound demonstrates a 2 cm gallstone and gallbladder wall thickening, refining the prior generic hepatobiliary involvement assumption toward definite gallstone disease as the precipitating mechanism."
+              },
+              "current_question": {
+                "primary": "What is the extent and severity of pancreatitis and are there local complications or alternative intra-abdominal causes for the patient’s pain and cholestatic liver test abnormalities that were not characterized on ultrasound?",
+                "target": "pancreas and adjacent abdominal structures, including peripancreatic tissues and biliary tract",
+                "type": "severity_or_extent",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identification of extensive necrosis, fluid collections, or other complications would escalate level of care, prompt surgical or interventional consultation, and influence timing and type of biliary intervention.",
+                "negative_answer_changes": "Absence of significant local complications would support continued conservative management of pancreatitis and planned cholecystectomy/ERCP timing without emergent surgical or drainage procedures.",
+                "secondary_questions": [
+                  "Is there imaging evidence of acute cholecystitis or persistent/occult biliary obstruction not evident on ultrasound?",
+                  "Is there another intra-abdominal process (e.g., perforation, ischemia, other pathology) contributing to the patient’s presentation?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_pancreas_severity_ct",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Morphologic severity of pancreatitis, including pancreatic enlargement, necrosis, peripancreatic stranding, and fluid collections.",
+                    "why_required": "Determining the structural severity of pancreatitis guides prognosis, level of monitoring, and need for intensive or interventional management."
+                  },
+                  {
+                    "requirement_key": "req_pancreatic_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characteristics of acute local complications such as pseudocysts, hemorrhage, abscess, or vascular complications.",
+                    "why_required": "Local complications may require drainage, surgery, or other targeted interventions beyond standard pancreatitis care."
+                  },
+                  {
+                    "requirement_key": "req_biliary_obstruction_ct",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of biliary obstruction or choledocholithiasis (e.g., ductal dilation, intraductal stones) not fully characterized on ultrasound.",
+                    "why_required": "Clarifying whether obstruction persists influences the urgency and choice of ERCP versus conservative management."
+                  },
+                  {
+                    "requirement_key": "req_alternative_abd_path",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Assessment for alternative or additional intra-abdominal pathology (e.g., perforated viscus, bowel ischemia, other inflammatory processes).",
+                    "why_required": "Excluding other serious abdominal causes helps attribute symptoms to pancreatitis and gallstone disease alone and avoid missed diagnoses."
+                  }
+                ],
+                "evidence": [
+                  "The pancreas is poorly evaluated secondary to bowel gas.",
+                  "A contracted gallbladder is seen containing a 2cm stone and demonstrating wall thickening measuring up to 9 mm. No pericholecystic fluid is detected. There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm."
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_pancreas_severity_ct",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "The pancreas is poorly evaluated secondary to bowel gas."
+                    ],
+                    "reason": "Ultrasound could not adequately assess pancreatic morphology or the extent of inflammation and necrosis, leaving severity essentially uncharacterized."
+                  },
+                  {
+                    "requirement_key": "req_pancreatic_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "The pancreas is poorly evaluated secondary to bowel gas."
+                    ],
+                    "reason": "No prior imaging has visualized the pancreas well enough to assess for peripancreatic collections, necrosis, or other local complications."
+                  },
+                  {
+                    "requirement_key": "req_biliary_obstruction_ct",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm."
+                    ],
+                    "reason": "Ultrasound shows no biliary dilatation, arguing against established obstruction, but cannot fully exclude small stones or dynamic obstruction and does not reconcile with marked direct hyperbilirubinemia."
+                  },
+                  {
+                    "requirement_key": "req_alternative_abd_path",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Prior imaging was focused on hepatobiliary structures and kidneys; there is no comprehensive cross-sectional survey of the abdomen to rule out other potential causes of pain and lab abnormalities."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Key questions regarding pancreatic severity, local complications, and complete exclusion of persistent obstruction or alternative intra-abdominal pathology remain unaddressed or only partially addressed by ultrasound."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen is well suited to stage pancreatitis, detect local complications, better evaluate the pancreas that was poorly seen on ultrasound, and survey for biliary obstruction or alternative abdominal pathology.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The choice of CT with and without contrast rather than contrast-only, and the exact urgency or clinical trigger for escalation (e.g., worsening pain, fevers, or rising labs) are not specified in the chart text."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute gallstone pancreatitis with associated obstructive jaundice or biliary inflammation.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific etiologic mechanism for the pancreatitis syndrome\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Lipase: 6807.0 IU/L (ref 0.0-60.0) ... Amylase: 1884.0 IU/L (ref 0.0-100.0)\",\n        \"A contracted gallbladder is seen containing a 2cm stone and demonstrating wall thickening measuring up to 9 mm. ... There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm. ... Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, explaining the acute pancreatitis and cholestatic liver abnormalities?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The abdominal ultrasound adequately visualized the gallbladder and bile ducts, confirming a large gallstone and gallbladder wall thickening without ductal dilatation, thereby establishing gallstone-related hepatobiliary disease as the likely etiology while not fully explaining the marked direct hyperbilirubinemia or assessing pancreatic severity because the pancreas was poorly evaluated.\",\n    \"discordance\": {\n      \"label\": \"indeterminate\",\n      \"evidence_stream_1\": \"There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm.\",\n      \"evidence_stream_2\": \"Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)\",\n      \"reason\": \"Biochemistry suggests significant cholestasis, but ultrasound shows no ductal dilatation; this may reflect early or intermittent obstruction versus non-obstructive hepatocellular injury.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient has acute pancreatitis with associated hepatobiliary involvement.\",\n    \"reason\": \"Ultrasound demonstrates a 2 cm gallstone and gallbladder wall thickening, refining the prior generic hepatobiliary involvement assumption toward definite gallstone disease as the precipitating mechanism.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the extent and severity of pancreatitis and are there local complications or alternative intra-abdominal causes for the patient’s pain and cholestatic liver test abnormalities that were not characterized on ultrasound?\",\n    \"target\": \"pancreas and adjacent abdominal structures, including peripancreatic tissues and biliary tract\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identification of extensive necrosis, fluid collections, or other complications would escalate level of care, prompt surgical or interventional consultation, and influence timing and type of biliary intervention.\",\n    \"negative_answer_changes\": \"Absence of significant local complications would support continued conservative management of pancreatitis and planned cholecystectomy/ERCP timing without emergent surgical or drainage procedures.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of acute cholecystitis or persistent/occult biliary obstruction not evident on ultrasound?\",\n      \"Is there another intra-abdominal process (e.g., perforation, ischemia, other pathology) contributing to the patient’s presentation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_pancreas_severity_ct\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Morphologic severity of pancreatitis, including pancreatic enlargement, necrosis, peripancreatic stranding, and fluid collections.\",\n        \"why_required\": \"Determining the structural severity of pancreatitis guides prognosis, level of monitoring, and need for intensive or interventional management.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreatic_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characteristics of acute local complications such as pseudocysts, hemorrhage, abscess, or vascular complications.\",\n        \"why_required\": \"Local complications may require drainage, surgery, or other targeted interventions beyond standard pancreatitis care.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_obstruction_ct\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of biliary obstruction or choledocholithiasis (e.g., ductal dilation, intraductal stones) not fully characterized on ultrasound.\",\n        \"why_required\": \"Clarifying whether obstruction persists influences the urgency and choice of ERCP versus conservative management.\"\n      },\n      {\n        \"requirement_key\": \"req_alternative_abd_path\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assessment for alternative or additional intra-abdominal pathology (e.g., perforated viscus, bowel ischemia, other inflammatory processes).\",\n        \"why_required\": \"Excluding other serious abdominal causes helps attribute symptoms to pancreatitis and gallstone disease alone and avoid missed diagnoses.\"\n      }\n    ],\n    \"evidence\": [\n      \"The pancreas is poorly evaluated secondary to bowel gas.\",\n      \"A contracted gallbladder is seen containing a 2cm stone and demonstrating wall thickening measuring up to 9 mm. No pericholecystic fluid is detected. There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_pancreas_severity_ct\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"The pancreas is poorly evaluated secondary to bowel gas.\"\n        ],\n        \"reason\": \"Ultrasound could not adequately assess pancreatic morphology or the extent of inflammation and necrosis, leaving severity essentially uncharacterized.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreatic_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"The pancreas is poorly evaluated secondary to bowel gas.\"\n        ],\n        \"reason\": \"No prior imaging has visualized the pancreas well enough to assess for peripancreatic collections, necrosis, or other local complications.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_obstruction_ct\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm.\"\n        ],\n        \"reason\": \"Ultrasound shows no biliary dilatation, arguing against established obstruction, but cannot fully exclude small stones or dynamic obstruction and does not reconcile with marked direct hyperbilirubinemia.\"\n      },\n      {\n        \"requirement_key\": \"req_alternative_abd_path\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Prior imaging was focused on hepatobiliary structures and kidneys; there is no comprehensive cross-sectional survey of the abdomen to rule out other potential causes of pain and lab abnormalities.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Key questions regarding pancreatic severity, local complications, and complete exclusion of persistent obstruction or alternative intra-abdominal pathology remain unaddressed or only partially addressed by ultrasound.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen is well suited to stage pancreatitis, detect local complications, better evaluate the pancreas that was poorly seen on ultrasound, and survey for biliary obstruction or alternative abdominal pathology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of CT with and without contrast rather than contrast-only, and the exact urgency or clinical trigger for escalation (e.g., worsening pain, fevers, or rising labs) are not specified in the chart text.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788176775-PBdJKJkeagb8TwdMlvX1",
+            "usage": {
+              "completion_tokens": 1993,
+              "prompt_tokens": 4971,
+              "total_tokens": 6964,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1792,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02412775,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02412775,
+                "upstream_inference_prompt_cost": 0.00419775,
+                "upstream_inference_completions_cost": 0.01993
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute gallstone pancreatitis with associated obstructive jaundice or biliary inflammation.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "specific etiologic mechanism for the pancreatitis syndrome",
+            "status": "likely",
+            "evidence": [
+              "Lipase: 6807.0 IU/L (ref 0.0-60.0) ... Amylase: 1884.0 IU/L (ref 0.0-100.0)",
+              "A contracted gallbladder is seen containing a 2cm stone and demonstrating wall thickening measuring up to 9 mm. ... There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm. ... Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, explaining the acute pancreatitis and cholestatic liver abnormalities?",
+          "study_adequacy": "limited_but_diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The abdominal ultrasound adequately visualized the gallbladder and bile ducts, confirming a large gallstone and gallbladder wall thickening without ductal dilatation, thereby establishing gallstone-related hepatobiliary disease as the likely etiology while not fully explaining the marked direct hyperbilirubinemia or assessing pancreatic severity because the pancreas was poorly evaluated.",
+          "discordance": {
+            "label": "indeterminate",
+            "evidence_stream_1": "There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm.",
+            "evidence_stream_2": "Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)",
+            "reason": "Biochemistry suggests significant cholestasis, but ultrasound shows no ductal dilatation; this may reflect early or intermittent obstruction versus non-obstructive hepatocellular injury."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient has acute pancreatitis with associated hepatobiliary involvement.",
+          "reason": "Ultrasound demonstrates a 2 cm gallstone and gallbladder wall thickening, refining the prior generic hepatobiliary involvement assumption toward definite gallstone disease as the precipitating mechanism."
+        },
+        "current_question": {
+          "primary": "What is the extent and severity of pancreatitis and are there local complications or alternative intra-abdominal causes for the patient’s pain and cholestatic liver test abnormalities that were not characterized on ultrasound?",
+          "target": "pancreas and adjacent abdominal structures, including peripancreatic tissues and biliary tract",
+          "type": "severity_or_extent",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identification of extensive necrosis, fluid collections, or other complications would escalate level of care, prompt surgical or interventional consultation, and influence timing and type of biliary intervention.",
+          "negative_answer_changes": "Absence of significant local complications would support continued conservative management of pancreatitis and planned cholecystectomy/ERCP timing without emergent surgical or drainage procedures.",
+          "secondary_questions": [
+            "Is there imaging evidence of acute cholecystitis or persistent/occult biliary obstruction not evident on ultrasound?",
+            "Is there another intra-abdominal process (e.g., perforation, ischemia, other pathology) contributing to the patient’s presentation?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_pancreas_severity_ct",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Morphologic severity of pancreatitis, including pancreatic enlargement, necrosis, peripancreatic stranding, and fluid collections.",
+              "why_required": "Determining the structural severity of pancreatitis guides prognosis, level of monitoring, and need for intensive or interventional management."
+            },
+            {
+              "requirement_key": "req_pancreatic_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and characteristics of acute local complications such as pseudocysts, hemorrhage, abscess, or vascular complications.",
+              "why_required": "Local complications may require drainage, surgery, or other targeted interventions beyond standard pancreatitis care."
+            },
+            {
+              "requirement_key": "req_biliary_obstruction_ct",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence of biliary obstruction or choledocholithiasis (e.g., ductal dilation, intraductal stones) not fully characterized on ultrasound.",
+              "why_required": "Clarifying whether obstruction persists influences the urgency and choice of ERCP versus conservative management."
+            },
+            {
+              "requirement_key": "req_alternative_abd_path",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Assessment for alternative or additional intra-abdominal pathology (e.g., perforated viscus, bowel ischemia, other inflammatory processes).",
+              "why_required": "Excluding other serious abdominal causes helps attribute symptoms to pancreatitis and gallstone disease alone and avoid missed diagnoses."
+            }
+          ],
+          "evidence": [
+            "The pancreas is poorly evaluated secondary to bowel gas.",
+            "A contracted gallbladder is seen containing a 2cm stone and demonstrating wall thickening measuring up to 9 mm. No pericholecystic fluid is detected. There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm."
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_pancreas_severity_ct",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "The pancreas is poorly evaluated secondary to bowel gas."
+              ],
+              "reason": "Ultrasound could not adequately assess pancreatic morphology or the extent of inflammation and necrosis, leaving severity essentially uncharacterized."
+            },
+            {
+              "requirement_key": "req_pancreatic_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "The pancreas is poorly evaluated secondary to bowel gas."
+              ],
+              "reason": "No prior imaging has visualized the pancreas well enough to assess for peripancreatic collections, necrosis, or other local complications."
+            },
+            {
+              "requirement_key": "req_biliary_obstruction_ct",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "There is no intra- or extra-hepatic biliary dilatation. The common duct measures 6 mm."
+              ],
+              "reason": "Ultrasound shows no biliary dilatation, arguing against established obstruction, but cannot fully exclude small stones or dynamic obstruction and does not reconcile with marked direct hyperbilirubinemia."
+            },
+            {
+              "requirement_key": "req_alternative_abd_path",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Prior imaging was focused on hepatobiliary structures and kidneys; there is no comprehensive cross-sectional survey of the abdomen to rule out other potential causes of pain and lab abnormalities."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Key questions regarding pancreatic severity, local complications, and complete exclusion of persistent obstruction or alternative intra-abdominal pathology remain unaddressed or only partially addressed by ultrasound."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen is well suited to stage pancreatitis, detect local complications, better evaluate the pancreas that was poorly seen on ultrasound, and survey for biliary obstruction or alternative abdominal pathology.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The choice of CT with and without contrast rather than contrast-only, and the exact urgency or clinical trigger for escalation (e.g., worsening pain, fevers, or rising labs) are not specified in the chart text."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 3,
+      "ordered": "CT Abdomen (CT ABDOMEN W/CONTRAST)",
+      "request_prompt_sha256": "a01485a9cf35106284a7e53ce94c9dc5b369c20302a1366ee37251627e4598ef",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "a01485a9cf35106284a7e53ce94c9dc5b369c20302a1366ee37251627e4598ef",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute gallstone pancreatitis with associated cholestatic liver injury but without established pancreatic necrosis or organized local collections yet identified.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "specific etiologic mechanism for the acute pancreatitis syndrome",
+                  "status": "likely",
+                  "evidence": [
+                    "Lipase: 6807.0 IU/L (ref 0.0-60.0) ... Amylase: 1884.0 IU/L (ref 0.0-100.0)",
+                    "A contracted gallbladder is seen containing a 2cm stone and demonstrating wall thickening measuring up to 9 mm. ... Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What is the extent and severity of pancreatitis and are there local complications or alternative intra-abdominal causes for the patient’s pain and cholestatic liver test abnormalities that were not characterized on ultrasound?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The contrast CT of the chest, abdomen, and pelvis established diffuse acute pancreatitis with peripancreatic and peritoneal fluid but no necrosis, abscess, or pseudocyst, and showed no additional intra-abdominal source such as perforation or ischemia; biliary ducts were not reported as dilated and no alternative cause for cholestasis was identified, partially answering the prior question about obstruction.",
+                "discordance": {
+                  "label": "indeterminate",
+                  "evidence_stream_1": "There is no intra- or extra-hepatic biliary dilatation.",
+                  "evidence_stream_2": "Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)",
+                  "reason": "Biochemical cholestasis persists despite cross-sectional imaging that does not show biliary dilatation or choledocholithiasis, leaving the exact mechanism of jaundice uncertain."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The patient has moderately severe acute pancreatitis with extensive peripancreatic and peritoneal fluid but without imaging evidence of pancreatic necrosis, abscess, or pseudocyst.",
+                "reason": "CT described a diffusely enlarged, homogeneously enhancing pancreas with peripancreatic and peritoneal fluid, and explicitly noted no necrosis, abscess, or pseudocyst, refining severity characterization without changing the gallstone-related mechanism."
+              },
+              "current_question": {
+                "primary": "Has the extent and distribution of peripancreatic and peritoneal fluid or other local complications of pancreatitis progressed in a way that requires a change in management?",
+                "target": "pancreas and peripancreatic/peritoneal spaces",
+                "type": "severity_or_extent",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Demonstration of increasing or loculated collections, evolving necrosis, or new complications would prompt higher level of care, drainage or surgical consultation, and may alter timing of cholecystectomy or ERCP.",
+                "negative_answer_changes": "Stable or improving inflammatory changes without new collections or necrosis would support continued conservative management and planned interval biliary intervention.",
+                "secondary_questions": [
+                  "Are there new or enlarging peripancreatic or distant fluid collections that might represent early pseudocyst or abscess formation?",
+                  "Is there any new imaging evidence of biliary obstruction or other intra-abdominal pathology contributing to the clinical course?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_pancreas_current_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Current morphologic extent of pancreatic and peripancreatic inflammation and fluid, including any interval increase or spread compared with prior CT.",
+                    "why_required": "Determining whether pancreatitis is radiologically worsening or stabilizing directly informs prognosis and level of monitoring or intervention."
+                  },
+                  {
+                    "requirement_key": "req_new_local_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, size, and character of any organized peripancreatic or distant collections, necrosis, hemorrhage, or abscess not seen or not yet formed on the prior CT.",
+                    "why_required": "New local complications often necessitate procedural drainage, antibiotics, or surgery."
+                  },
+                  {
+                    "requirement_key": "req_biliary_status_interval",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Current status of the biliary tree, including ductal caliber and any visible intraductal stones or mass, to reassess for evolving obstruction in the context of abnormal liver tests.",
+                    "why_required": "Interval development or recognition of biliary obstruction would change the urgency and type of biliary intervention."
+                  }
+                ],
+                "evidence": [
+                  "The pancreas is diffusely enlarged and enhances homogeneously with no evidence of pancreatic necrosis. Fluid is noted within both anterior pararenal spaces , the lesser sac and around the liver. The fluid also extends in to the left flank subcutanous tissues. No localized area of fluid collection is visualized to suggest abscess formation. No pseudocyst is visualized.",
+                  "The gallbladder demonstrates diffusely thickened wall with no evidence of cholecystitis. ... The liver has normal appearance with no focal lesion."
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_pancreas_current_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "sufficiently_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "The pancreas is diffusely enlarged and enhances homogeneously with no evidence of pancreatic necrosis. Fluid is noted within both anterior pararenal spaces , the lesser sac and around the liver. The fluid also extends in to the left flank subcutanous tissues."
+                    ],
+                    "reason": "The prior contrast CT thoroughly characterized the extent of pancreatic enlargement and widespread peripancreatic and peritoneal fluid at that time, providing a baseline for severity."
+                  },
+                  {
+                    "requirement_key": "req_new_local_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "sufficiently_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "No localized area of fluid collection is visualized to suggest abscess formation. No pseudocyst is visualized."
+                    ],
+                    "reason": "Prior CT explicitly reported absence of necrosis, abscess, or pseudocyst, adequately excluding established local collections at that time."
+                  },
+                  {
+                    "requirement_key": "req_biliary_status_interval",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "There is no intra- or extra-hepatic biliary dilatation.",
+                      "The gallbladder demonstrates diffusely thickened wall with no evidence of cholecystitis."
+                    ],
+                    "reason": "Ultrasound and CT both showed no biliary dilatation or obvious obstructing lesion, which argues against fixed obstruction but does not fully explain persistent direct hyperbilirubinemia or exclude small or transient stones."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Baseline severity and absence of initial complications are established, but the interval course and any new biliary obstruction or evolving collections remain unknown."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT abdomen can reassess pancreatic and peripancreatic morphology, detect new or enlarging collections or necrosis, and reevaluate the biliary tree for obstruction.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact clinical trigger prompting repeat CT (e.g., new fever, increasing pain, rising leukocytosis or bilirubin) and the specific timing relative to onset of pancreatitis are not documented in the visible chart."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute gallstone pancreatitis with associated cholestatic liver injury but without established pancreatic necrosis or organized local collections yet identified.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific etiologic mechanism for the acute pancreatitis syndrome\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Lipase: 6807.0 IU/L (ref 0.0-60.0) ... Amylase: 1884.0 IU/L (ref 0.0-100.0)\",\n        \"A contracted gallbladder is seen containing a 2cm stone and demonstrating wall thickening measuring up to 9 mm. ... Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the extent and severity of pancreatitis and are there local complications or alternative intra-abdominal causes for the patient’s pain and cholestatic liver test abnormalities that were not characterized on ultrasound?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The contrast CT of the chest, abdomen, and pelvis established diffuse acute pancreatitis with peripancreatic and peritoneal fluid but no necrosis, abscess, or pseudocyst, and showed no additional intra-abdominal source such as perforation or ischemia; biliary ducts were not reported as dilated and no alternative cause for cholestasis was identified, partially answering the prior question about obstruction.\",\n    \"discordance\": {\n      \"label\": \"indeterminate\",\n      \"evidence_stream_1\": \"There is no intra- or extra-hepatic biliary dilatation.\",\n      \"evidence_stream_2\": \"Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)\",\n      \"reason\": \"Biochemical cholestasis persists despite cross-sectional imaging that does not show biliary dilatation or choledocholithiasis, leaving the exact mechanism of jaundice uncertain.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient has moderately severe acute pancreatitis with extensive peripancreatic and peritoneal fluid but without imaging evidence of pancreatic necrosis, abscess, or pseudocyst.\",\n    \"reason\": \"CT described a diffusely enlarged, homogeneously enhancing pancreas with peripancreatic and peritoneal fluid, and explicitly noted no necrosis, abscess, or pseudocyst, refining severity characterization without changing the gallstone-related mechanism.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Has the extent and distribution of peripancreatic and peritoneal fluid or other local complications of pancreatitis progressed in a way that requires a change in management?\",\n    \"target\": \"pancreas and peripancreatic/peritoneal spaces\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Demonstration of increasing or loculated collections, evolving necrosis, or new complications would prompt higher level of care, drainage or surgical consultation, and may alter timing of cholecystectomy or ERCP.\",\n    \"negative_answer_changes\": \"Stable or improving inflammatory changes without new collections or necrosis would support continued conservative management and planned interval biliary intervention.\",\n    \"secondary_questions\": [\n      \"Are there new or enlarging peripancreatic or distant fluid collections that might represent early pseudocyst or abscess formation?\",\n      \"Is there any new imaging evidence of biliary obstruction or other intra-abdominal pathology contributing to the clinical course?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_pancreas_current_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Current morphologic extent of pancreatic and peripancreatic inflammation and fluid, including any interval increase or spread compared with prior CT.\",\n        \"why_required\": \"Determining whether pancreatitis is radiologically worsening or stabilizing directly informs prognosis and level of monitoring or intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_new_local_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, size, and character of any organized peripancreatic or distant collections, necrosis, hemorrhage, or abscess not seen or not yet formed on the prior CT.\",\n        \"why_required\": \"New local complications often necessitate procedural drainage, antibiotics, or surgery.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_status_interval\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Current status of the biliary tree, including ductal caliber and any visible intraductal stones or mass, to reassess for evolving obstruction in the context of abnormal liver tests.\",\n        \"why_required\": \"Interval development or recognition of biliary obstruction would change the urgency and type of biliary intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"The pancreas is diffusely enlarged and enhances homogeneously with no evidence of pancreatic necrosis. Fluid is noted within both anterior pararenal spaces , the lesser sac and around the liver. The fluid also extends in to the left flank subcutanous tissues. No localized area of fluid collection is visualized to suggest abscess formation. No pseudocyst is visualized.\",\n      \"The gallbladder demonstrates diffusely thickened wall with no evidence of cholecystitis. ... The liver has normal appearance with no focal lesion.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_pancreas_current_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"The pancreas is diffusely enlarged and enhances homogeneously with no evidence of pancreatic necrosis. Fluid is noted within both anterior pararenal spaces , the lesser sac and around the liver. The fluid also extends in to the left flank subcutanous tissues.\"\n        ],\n        \"reason\": \"The prior contrast CT thoroughly characterized the extent of pancreatic enlargement and widespread peripancreatic and peritoneal fluid at that time, providing a baseline for severity.\"\n      },\n      {\n        \"requirement_key\": \"req_new_local_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"No localized area of fluid collection is visualized to suggest abscess formation. No pseudocyst is visualized.\"\n        ],\n        \"reason\": \"Prior CT explicitly reported absence of necrosis, abscess, or pseudocyst, adequately excluding established local collections at that time.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_status_interval\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"There is no intra- or extra-hepatic biliary dilatation.\",\n          \"The gallbladder demonstrates diffusely thickened wall with no evidence of cholecystitis.\"\n        ],\n        \"reason\": \"Ultrasound and CT both showed no biliary dilatation or obvious obstructing lesion, which argues against fixed obstruction but does not fully explain persistent direct hyperbilirubinemia or exclude small or transient stones.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Baseline severity and absence of initial complications are established, but the interval course and any new biliary obstruction or evolving collections remain unknown.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT abdomen can reassess pancreatic and peripancreatic morphology, detect new or enlarging collections or necrosis, and reevaluate the biliary tree for obstruction.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact clinical trigger prompting repeat CT (e.g., new fever, increasing pain, rising leukocytosis or bilirubin) and the specific timing relative to onset of pancreatitis are not documented in the visible chart.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788176791-dAPSfZHugwRPooF3IpY7",
+            "usage": {
+              "completion_tokens": 1940,
+              "prompt_tokens": 5627,
+              "total_tokens": 7567,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1920,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02427375,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02427375,
+                "upstream_inference_prompt_cost": 0.00487375,
+                "upstream_inference_completions_cost": 0.0194
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute gallstone pancreatitis with associated cholestatic liver injury but without established pancreatic necrosis or organized local collections yet identified.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "specific etiologic mechanism for the acute pancreatitis syndrome",
+            "status": "likely",
+            "evidence": [
+              "Lipase: 6807.0 IU/L (ref 0.0-60.0) ... Amylase: 1884.0 IU/L (ref 0.0-100.0)",
+              "A contracted gallbladder is seen containing a 2cm stone and demonstrating wall thickening measuring up to 9 mm. ... Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What is the extent and severity of pancreatitis and are there local complications or alternative intra-abdominal causes for the patient’s pain and cholestatic liver test abnormalities that were not characterized on ultrasound?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The contrast CT of the chest, abdomen, and pelvis established diffuse acute pancreatitis with peripancreatic and peritoneal fluid but no necrosis, abscess, or pseudocyst, and showed no additional intra-abdominal source such as perforation or ischemia; biliary ducts were not reported as dilated and no alternative cause for cholestasis was identified, partially answering the prior question about obstruction.",
+          "discordance": {
+            "label": "indeterminate",
+            "evidence_stream_1": "There is no intra- or extra-hepatic biliary dilatation.",
+            "evidence_stream_2": "Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5) ... Bilirubin, Direct: 2.5 mg/dL (ref 0.0-0.3)",
+            "reason": "Biochemical cholestasis persists despite cross-sectional imaging that does not show biliary dilatation or choledocholithiasis, leaving the exact mechanism of jaundice uncertain."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient has moderately severe acute pancreatitis with extensive peripancreatic and peritoneal fluid but without imaging evidence of pancreatic necrosis, abscess, or pseudocyst.",
+          "reason": "CT described a diffusely enlarged, homogeneously enhancing pancreas with peripancreatic and peritoneal fluid, and explicitly noted no necrosis, abscess, or pseudocyst, refining severity characterization without changing the gallstone-related mechanism."
+        },
+        "current_question": {
+          "primary": "Has the extent and distribution of peripancreatic and peritoneal fluid or other local complications of pancreatitis progressed in a way that requires a change in management?",
+          "target": "pancreas and peripancreatic/peritoneal spaces",
+          "type": "severity_or_extent",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Demonstration of increasing or loculated collections, evolving necrosis, or new complications would prompt higher level of care, drainage or surgical consultation, and may alter timing of cholecystectomy or ERCP.",
+          "negative_answer_changes": "Stable or improving inflammatory changes without new collections or necrosis would support continued conservative management and planned interval biliary intervention.",
+          "secondary_questions": [
+            "Are there new or enlarging peripancreatic or distant fluid collections that might represent early pseudocyst or abscess formation?",
+            "Is there any new imaging evidence of biliary obstruction or other intra-abdominal pathology contributing to the clinical course?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_pancreas_current_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Current morphologic extent of pancreatic and peripancreatic inflammation and fluid, including any interval increase or spread compared with prior CT.",
+              "why_required": "Determining whether pancreatitis is radiologically worsening or stabilizing directly informs prognosis and level of monitoring or intervention."
+            },
+            {
+              "requirement_key": "req_new_local_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, size, and character of any organized peripancreatic or distant collections, necrosis, hemorrhage, or abscess not seen or not yet formed on the prior CT.",
+              "why_required": "New local complications often necessitate procedural drainage, antibiotics, or surgery."
+            },
+            {
+              "requirement_key": "req_biliary_status_interval",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Current status of the biliary tree, including ductal caliber and any visible intraductal stones or mass, to reassess for evolving obstruction in the context of abnormal liver tests.",
+              "why_required": "Interval development or recognition of biliary obstruction would change the urgency and type of biliary intervention."
+            }
+          ],
+          "evidence": [
+            "The pancreas is diffusely enlarged and enhances homogeneously with no evidence of pancreatic necrosis. Fluid is noted within both anterior pararenal spaces , the lesser sac and around the liver. The fluid also extends in to the left flank subcutanous tissues. No localized area of fluid collection is visualized to suggest abscess formation. No pseudocyst is visualized.",
+            "The gallbladder demonstrates diffusely thickened wall with no evidence of cholecystitis. ... The liver has normal appearance with no focal lesion."
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_pancreas_current_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "sufficiently_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "The pancreas is diffusely enlarged and enhances homogeneously with no evidence of pancreatic necrosis. Fluid is noted within both anterior pararenal spaces , the lesser sac and around the liver. The fluid also extends in to the left flank subcutanous tissues."
+              ],
+              "reason": "The prior contrast CT thoroughly characterized the extent of pancreatic enlargement and widespread peripancreatic and peritoneal fluid at that time, providing a baseline for severity."
+            },
+            {
+              "requirement_key": "req_new_local_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "sufficiently_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "No localized area of fluid collection is visualized to suggest abscess formation. No pseudocyst is visualized."
+              ],
+              "reason": "Prior CT explicitly reported absence of necrosis, abscess, or pseudocyst, adequately excluding established local collections at that time."
+            },
+            {
+              "requirement_key": "req_biliary_status_interval",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "There is no intra- or extra-hepatic biliary dilatation.",
+                "The gallbladder demonstrates diffusely thickened wall with no evidence of cholecystitis."
+              ],
+              "reason": "Ultrasound and CT both showed no biliary dilatation or obvious obstructing lesion, which argues against fixed obstruction but does not fully explain persistent direct hyperbilirubinemia or exclude small or transient stones."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Baseline severity and absence of initial complications are established, but the interval course and any new biliary obstruction or evolving collections remain unknown."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT abdomen can reassess pancreatic and peripancreatic morphology, detect new or enlarging collections or necrosis, and reevaluate the biliary tree for obstruction.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The exact clinical trigger prompting repeat CT (e.g., new fever, increasing pain, rising leukocytosis or bilirubin) and the specific timing relative to onset of pancreatitis are not documented in the visible chart."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

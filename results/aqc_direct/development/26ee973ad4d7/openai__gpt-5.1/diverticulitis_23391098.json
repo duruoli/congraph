@@ -1,0 +1,382 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 23391098,
+  "source_path": "results/annotation_experiment/full/diverticulitis_23391098.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "0c33fbebbac0bdad73da76ea4ff56ad93b46c006d82207a0b37cb86a8a61a72e",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "0c33fbebbac0bdad73da76ea4ff56ad93b46c006d82207a0b37cb86a8a61a72e",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute intra‑abdominal inflammatory or infectious process causing left lower quadrant abdominal pain and fever.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome level",
+                  "status": "suspected",
+                  "evidence": [
+                    "“presenting with nearly 1 week of abdominal pain with fevers… pain began several days ago… worsened over the past 24 hours”",
+                    "“focally tender in LLQ, suprapubic region” and “White Blood Cells: 17.6 K/uL (ref 4.0-11.0)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The source of the acute abdominal process is located within the abdomen or pelvis rather than extra‑abdominal causes.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "clinical localization level",
+                  "status": "suspected",
+                  "evidence": [
+                    "“focally tender in LLQ, suprapubic region”",
+                    "Denies extra‑abdominal symptoms: “She otherwise denied nausea or vomiting… She denies a history of constipation or straining and continues to pass flatus and non-bloody stool.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is at risk for colonic or pelvic pathology such as diverticulitis or other sigmoid/colonic disease.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease or structure level",
+                  "status": "suspected",
+                  "evidence": [
+                    "“focally tender in LLQ, suprapubic region”",
+                    "“her last colonoscopy was in ___ here at ___, which apparently was difficult given the angulation of her sigmoid”"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; acute intra‑abdominal inflammatory process with LLQ pain and fever is inferred from the presenting history, exam, and leukocytosis."
+              },
+              "current_question": {
+                "primary": "What is the intra‑abdominal or pelvic source of this patient’s acute left lower quadrant abdominal pain and systemic inflammatory response?",
+                "target": "intra‑abdominal and pelvic viscera (particularly colon, sigmoid, and adjacent structures)",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a specific source (e.g., diverticulitis, abscess, other colitis, or alternative intra‑abdominal pathology) will guide targeted therapy and determine need for surgical vs. medical management.",
+                "negative_answer_changes": "If no sufficient intra‑abdominal source is identified, clinicians must reconsider alternative diagnoses or extra‑abdominal sources and may adjust the diagnostic workup accordingly.",
+                "secondary_questions": [
+                  "Is there evidence of a complication such as abscess, perforation, or obstruction associated with the suspected intra‑abdominal process?",
+                  "What is the extent and exact anatomic localization of any detected inflammatory or infectious process within the abdomen or pelvis?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the abdomen and pelvis, including colon (especially sigmoid), small bowel, mesentery, and pelvic organs.",
+                    "why_required": "The source of pain and inflammation must be assessable across the abdomen and pelvis to localize pathology."
+                  },
+                  {
+                    "requirement_key": "req_source",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of focal inflammatory, infectious, or obstructive pathology within the abdomen or pelvis that could explain LLQ pain and fever (e.g., diverticulitis, colitis, abscess, other visceral inflammation).",
+                    "why_required": "Determining if there is a concrete intra‑abdominal source is central to explaining the patient’s syndrome and directing management."
+                  },
+                  {
+                    "requirement_key": "req_local",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Exact anatomic location of any abnormality relative to colonic segments (particularly sigmoid), small bowel, mesentery, and pelvic structures.",
+                    "why_required": "Localization guides diagnosis (e.g., sigmoid diverticulitis vs. other colitis) and surgical vs. non‑surgical management planning."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, absence, and character of complications such as abscess, perforation, free air, or significant obstruction related to any identified pathology.",
+                    "why_required": "Complications determine urgency, need for intervention, and level of care."
+                  }
+                ],
+                "evidence": [
+                  "“presenting with nearly 1 week of abdominal pain with fevers… pain began several days ago… worsened over the past 24 hours.”",
+                  "“focally tender in LLQ, suprapubic region” and “White Blood Cells: 17.6 K/uL (ref 4.0-11.0)”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      ""
+                    ],
+                    "reason": "No prior imaging has been performed, so visualization of the abdomen and pelvis has not yet occurred."
+                  },
+                  {
+                    "requirement_key": "req_source",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“focally tender in LLQ, suprapubic region”",
+                      "“White Blood Cells: 17.6 K/uL (ref 4.0-11.0)” and “presenting with nearly 1 week of abdominal pain with fevers”"
+                    ],
+                    "reason": "Clinical findings and leukocytosis strongly suggest an intra‑abdominal inflammatory source, but they do not identify a specific lesion or definitively confirm its presence or nature."
+                  },
+                  {
+                    "requirement_key": "req_local",
+                    "requirement_id": "anatomic_localization",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“focally tender in LLQ, suprapubic region”"
+                    ],
+                    "reason": "Exam localizes pain to the LLQ/suprapubic region but cannot define precise anatomic structures or distinguish among adjacent organs."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Lactate: 1.7 mmol/L (ref 0.5-2.0)"
+                    ],
+                    "reason": "Normal lactate and stable vitals do not rule out local complications such as abscess or contained perforation; no imaging or other direct assessment of complications is available."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Clinical data suggest but do not define the source, anatomy, or complications of the acute abdominal process; imaging is needed for definitive localization and characterization."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast‑enhanced CT of the abdomen and pelvis can visualize abdominal and pelvic viscera, identify focal inflammatory or infectious pathology, localize it anatomically, and assess for complications such as abscess, perforation, or obstruction.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not specify particular diagnostic hypotheses (e.g., diverticulitis vs. gynecologic vs. urinary source) or why CT was chosen over ultrasound or MRI, though CT is broadly appropriate for undifferentiated acute LLQ pain with fever and leukocytosis."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute intra‑abdominal inflammatory or infectious process causing left lower quadrant abdominal pain and fever.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“presenting with nearly 1 week of abdominal pain with fevers… pain began several days ago… worsened over the past 24 hours”\",\n        \"“focally tender in LLQ, suprapubic region” and “White Blood Cells: 17.6 K/uL (ref 4.0-11.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The source of the acute abdominal process is located within the abdomen or pelvis rather than extra‑abdominal causes.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical localization level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“focally tender in LLQ, suprapubic region”\",\n        \"Denies extra‑abdominal symptoms: “She otherwise denied nausea or vomiting… She denies a history of constipation or straining and continues to pass flatus and non-bloody stool.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is at risk for colonic or pelvic pathology such as diverticulitis or other sigmoid/colonic disease.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease or structure level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“focally tender in LLQ, suprapubic region”\",\n        \"“her last colonoscopy was in ___ here at ___, which apparently was difficult given the angulation of her sigmoid”\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; acute intra‑abdominal inflammatory process with LLQ pain and fever is inferred from the presenting history, exam, and leukocytosis.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the intra‑abdominal or pelvic source of this patient’s acute left lower quadrant abdominal pain and systemic inflammatory response?\",\n    \"target\": \"intra‑abdominal and pelvic viscera (particularly colon, sigmoid, and adjacent structures)\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a specific source (e.g., diverticulitis, abscess, other colitis, or alternative intra‑abdominal pathology) will guide targeted therapy and determine need for surgical vs. medical management.\",\n    \"negative_answer_changes\": \"If no sufficient intra‑abdominal source is identified, clinicians must reconsider alternative diagnoses or extra‑abdominal sources and may adjust the diagnostic workup accordingly.\",\n    \"secondary_questions\": [\n      \"Is there evidence of a complication such as abscess, perforation, or obstruction associated with the suspected intra‑abdominal process?\",\n      \"What is the extent and exact anatomic localization of any detected inflammatory or infectious process within the abdomen or pelvis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the abdomen and pelvis, including colon (especially sigmoid), small bowel, mesentery, and pelvic organs.\",\n        \"why_required\": \"The source of pain and inflammation must be assessable across the abdomen and pelvis to localize pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_source\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of focal inflammatory, infectious, or obstructive pathology within the abdomen or pelvis that could explain LLQ pain and fever (e.g., diverticulitis, colitis, abscess, other visceral inflammation).\",\n        \"why_required\": \"Determining if there is a concrete intra‑abdominal source is central to explaining the patient’s syndrome and directing management.\"\n      },\n      {\n        \"requirement_key\": \"req_local\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Exact anatomic location of any abnormality relative to colonic segments (particularly sigmoid), small bowel, mesentery, and pelvic structures.\",\n        \"why_required\": \"Localization guides diagnosis (e.g., sigmoid diverticulitis vs. other colitis) and surgical vs. non‑surgical management planning.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, absence, and character of complications such as abscess, perforation, free air, or significant obstruction related to any identified pathology.\",\n        \"why_required\": \"Complications determine urgency, need for intervention, and level of care.\"\n      }\n    ],\n    \"evidence\": [\n      \"“presenting with nearly 1 week of abdominal pain with fevers… pain began several days ago… worsened over the past 24 hours.”\",\n      \"“focally tender in LLQ, suprapubic region” and “White Blood Cells: 17.6 K/uL (ref 4.0-11.0)”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\"\n        ],\n        \"reason\": \"No prior imaging has been performed, so visualization of the abdomen and pelvis has not yet occurred.\"\n      },\n      {\n        \"requirement_key\": \"req_source\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“focally tender in LLQ, suprapubic region”\",\n          \"“White Blood Cells: 17.6 K/uL (ref 4.0-11.0)” and “presenting with nearly 1 week of abdominal pain with fevers”\"\n        ],\n        \"reason\": \"Clinical findings and leukocytosis strongly suggest an intra‑abdominal inflammatory source, but they do not identify a specific lesion or definitively confirm its presence or nature.\"\n      },\n      {\n        \"requirement_key\": \"req_local\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“focally tender in LLQ, suprapubic region”\"\n        ],\n        \"reason\": \"Exam localizes pain to the LLQ/suprapubic region but cannot define precise anatomic structures or distinguish among adjacent organs.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Lactate: 1.7 mmol/L (ref 0.5-2.0)\"\n        ],\n        \"reason\": \"Normal lactate and stable vitals do not rule out local complications such as abscess or contained perforation; no imaging or other direct assessment of complications is available.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Clinical data suggest but do not define the source, anatomy, or complications of the acute abdominal process; imaging is needed for definitive localization and characterization.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast‑enhanced CT of the abdomen and pelvis can visualize abdominal and pelvic viscera, identify focal inflammatory or infectious pathology, localize it anatomically, and assess for complications such as abscess, perforation, or obstruction.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not specify particular diagnostic hypotheses (e.g., diverticulitis vs. gynecologic vs. urinary source) or why CT was chosen over ultrasound or MRI, though CT is broadly appropriate for undifferentiated acute LLQ pain with fever and leukocytosis.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788176858-wwx6JrENkapqNaydEDDk",
+            "usage": {
+              "completion_tokens": 2007,
+              "prompt_tokens": 3142,
+              "total_tokens": 5149,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0239975,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0239975,
+                "upstream_inference_prompt_cost": 0.0039275,
+                "upstream_inference_completions_cost": 0.02007
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute intra‑abdominal inflammatory or infectious process causing left lower quadrant abdominal pain and fever.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome level",
+            "status": "suspected",
+            "evidence": [
+              "“presenting with nearly 1 week of abdominal pain with fevers… pain began several days ago… worsened over the past 24 hours”",
+              "“focally tender in LLQ, suprapubic region” and “White Blood Cells: 17.6 K/uL (ref 4.0-11.0)”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The source of the acute abdominal process is located within the abdomen or pelvis rather than extra‑abdominal causes.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "clinical localization level",
+            "status": "suspected",
+            "evidence": [
+              "“focally tender in LLQ, suprapubic region”",
+              "Denies extra‑abdominal symptoms: “She otherwise denied nausea or vomiting… She denies a history of constipation or straining and continues to pass flatus and non-bloody stool.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is at risk for colonic or pelvic pathology such as diverticulitis or other sigmoid/colonic disease.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific disease or structure level",
+            "status": "suspected",
+            "evidence": [
+              "“focally tender in LLQ, suprapubic region”",
+              "“her last colonoscopy was in ___ here at ___, which apparently was difficult given the angulation of her sigmoid”"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; acute intra‑abdominal inflammatory process with LLQ pain and fever is inferred from the presenting history, exam, and leukocytosis."
+        },
+        "current_question": {
+          "primary": "What is the intra‑abdominal or pelvic source of this patient’s acute left lower quadrant abdominal pain and systemic inflammatory response?",
+          "target": "intra‑abdominal and pelvic viscera (particularly colon, sigmoid, and adjacent structures)",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a specific source (e.g., diverticulitis, abscess, other colitis, or alternative intra‑abdominal pathology) will guide targeted therapy and determine need for surgical vs. medical management.",
+          "negative_answer_changes": "If no sufficient intra‑abdominal source is identified, clinicians must reconsider alternative diagnoses or extra‑abdominal sources and may adjust the diagnostic workup accordingly.",
+          "secondary_questions": [
+            "Is there evidence of a complication such as abscess, perforation, or obstruction associated with the suspected intra‑abdominal process?",
+            "What is the extent and exact anatomic localization of any detected inflammatory or infectious process within the abdomen or pelvis?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the abdomen and pelvis, including colon (especially sigmoid), small bowel, mesentery, and pelvic organs.",
+              "why_required": "The source of pain and inflammation must be assessable across the abdomen and pelvis to localize pathology."
+            },
+            {
+              "requirement_key": "req_source",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of focal inflammatory, infectious, or obstructive pathology within the abdomen or pelvis that could explain LLQ pain and fever (e.g., diverticulitis, colitis, abscess, other visceral inflammation).",
+              "why_required": "Determining if there is a concrete intra‑abdominal source is central to explaining the patient’s syndrome and directing management."
+            },
+            {
+              "requirement_key": "req_local",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Exact anatomic location of any abnormality relative to colonic segments (particularly sigmoid), small bowel, mesentery, and pelvic structures.",
+              "why_required": "Localization guides diagnosis (e.g., sigmoid diverticulitis vs. other colitis) and surgical vs. non‑surgical management planning."
+            },
+            {
+              "requirement_key": "req_comp",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, absence, and character of complications such as abscess, perforation, free air, or significant obstruction related to any identified pathology.",
+              "why_required": "Complications determine urgency, need for intervention, and level of care."
+            }
+          ],
+          "evidence": [
+            "“presenting with nearly 1 week of abdominal pain with fevers… pain began several days ago… worsened over the past 24 hours.”",
+            "“focally tender in LLQ, suprapubic region” and “White Blood Cells: 17.6 K/uL (ref 4.0-11.0)”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                ""
+              ],
+              "reason": "No prior imaging has been performed, so visualization of the abdomen and pelvis has not yet occurred."
+            },
+            {
+              "requirement_key": "req_source",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“focally tender in LLQ, suprapubic region”",
+                "“White Blood Cells: 17.6 K/uL (ref 4.0-11.0)” and “presenting with nearly 1 week of abdominal pain with fevers”"
+              ],
+              "reason": "Clinical findings and leukocytosis strongly suggest an intra‑abdominal inflammatory source, but they do not identify a specific lesion or definitively confirm its presence or nature."
+            },
+            {
+              "requirement_key": "req_local",
+              "requirement_id": "anatomic_localization",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“focally tender in LLQ, suprapubic region”"
+              ],
+              "reason": "Exam localizes pain to the LLQ/suprapubic region but cannot define precise anatomic structures or distinguish among adjacent organs."
+            },
+            {
+              "requirement_key": "req_comp",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Lactate: 1.7 mmol/L (ref 0.5-2.0)"
+              ],
+              "reason": "Normal lactate and stable vitals do not rule out local complications such as abscess or contained perforation; no imaging or other direct assessment of complications is available."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Clinical data suggest but do not define the source, anatomy, or complications of the acute abdominal process; imaging is needed for definitive localization and characterization."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast‑enhanced CT of the abdomen and pelvis can visualize abdominal and pelvic viscera, identify focal inflammatory or infectious pathology, localize it anatomically, and assess for complications such as abscess, perforation, or obstruction.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not specify particular diagnostic hypotheses (e.g., diverticulitis vs. gynecologic vs. urinary source) or why CT was chosen over ultrasound or MRI, though CT is broadly appropriate for undifferentiated acute LLQ pain with fever and leukocytosis."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

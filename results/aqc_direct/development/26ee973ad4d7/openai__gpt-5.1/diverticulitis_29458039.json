@@ -1,0 +1,532 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 29458039,
+  "source_path": "results/annotation_experiment/full/diverticulitis_29458039.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "8c337fe13a7e67cfb6c1da1952b4ed2ea5cf1fb6d7b71ff92f6cb886d045b80d",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "8c337fe13a7e67cfb6c1da1952b4ed2ea5cf1fb6d7b71ff92f6cb886d045b80d",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has known high‑grade triple‑hit B‑cell lymphoma with a large infiltrative pelvic mass involving the left hemipelvis, ilium, sacrum, and adjacent neural foramina, and is now being admitted for cycle 2 DA‑EPOCH/venetoclax on a clinical trial.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "underlying oncologic condition and dominant structural lesion",
+                  "status": "established",
+                  "evidence": [
+                    "“Pelvic MRI with large infiltrative mass of left hemipelvis destroying left ilium, SI joint and sacrum. It infiltrates into adjacent paraspinal, iliacus and gluteus muscles, left L4-5 and L5-S1 neural foramina and greater sciatic foramen.”",
+                    "“Pelvic biopsy was positive for high grade DLBCL… consistent with triple hit lymphoma… She now presents for C2 da-EPOCH/venetoclax.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient recently had abdominal pain with constipation and partial bowel obstruction that improved, with plain abdominal radiographs showing resolution of prior bowel dilation.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "recent symptomatic episode potentially related to abdomen/pelvis",
+                  "status": "established",
+                  "evidence": [
+                    "“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle.”",
+                    "“Previously seen dilatation of the large bowel and multiple air-fluid levels have resolved.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is concern that the extensive pelvic lymphoma or its treatment may cause or predispose to abdominal or pelvic complications (e.g., recurrent/occult obstruction or other intra‑abdominal pathology) as she starts cycle 2 chemotherapy.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "anticipated or evolving treatment‑related/structural complications",
+                  "status": "suspected",
+                  "evidence": [
+                    "“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle.”",
+                    "“Pelvic MRI with large infiltrative mass of left hemipelvis destroying left ilium, SI joint and sacrum… Multiple additional sacral masses…”"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point; assumptions are initialized from the oncologic history, recent bowel obstruction, and current admission context."
+              },
+              "current_question": {
+                "primary": "Is there any active or evolving abdominal or pelvic pathology (including recurrent/occult obstruction or other mass‑related complication) that would affect management as she begins cycle 2 chemotherapy?",
+                "target": "abdomen and pelvis, with emphasis on bowel and known pelvic lymphoma region",
+                "type": "complication",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Detection of obstruction, new mass effect, or other intra‑abdominal complication would prompt modification or delay of chemotherapy and/or targeted intervention (e.g., surgical, GI, or radiation/surgical consultation).",
+                "negative_answer_changes": "Absence of acute abdominal or pelvic complication would support proceeding with planned cycle 2 therapy and conservative monitoring.",
+                "secondary_questions": [
+                  "What is the current extent and appearance of the known pelvic lymphoma and any intra‑abdominal disease burden at this time point?",
+                  "Is there any radiologic explanation for prior abdominal pain and partial obstruction that might recur with chemotherapy?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_bowel_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence and character of bowel obstruction, ileus, perforation, or other acute bowel complications in the abdomen and pelvis",
+                    "why_required": "The clinical concern arises from prior partial obstruction and abdominal pain; determining if any current bowel complication exists is central to deciding if it is safe to proceed with chemotherapy."
+                  },
+                  {
+                    "requirement_key": "req_lymphoma_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Current anatomic extent and bulk of pelvic and intra‑abdominal lymphoma, including mass effect on bowel or adjacent structures",
+                    "why_required": "The large pelvic mass can predispose to obstruction or other complications; understanding its current extent and relationship to bowel informs risk and management."
+                  },
+                  {
+                    "requirement_key": "req_alt_abd_path",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of other non‑bowel acute abdominal or pelvic pathology (e.g., abscess, new lymphadenopathy, organ injury) that could complicate chemotherapy",
+                    "why_required": "Other abdominal or pelvic pathologies could explain symptoms or pose risk with chemotherapy and need to be identified or reasonably excluded."
+                  }
+                ],
+                "evidence": [
+                  "“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle. She was started on empiric ABX then d/c home…”",
+                  "“CT A/P showed large soft tissue mass centered around the left sacroiliac joints invading the ileum, the sacrum and the adjacent musculature.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_bowel_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“Previously seen dilatation of the large bowel and multiple air-fluid levels have resolved.”",
+                      "“There are no abnormally dilated loops of large or small bowel. There is no free intraperitoneal air.”"
+                    ],
+                    "reason": "Recent abdominal radiographs show resolution of prior bowel dilation and no free air, arguing against ongoing high‑grade obstruction or perforation, but radiographs are limited in sensitivity and cannot fully characterize partial obstruction or subtle complications."
+                  },
+                  {
+                    "requirement_key": "req_lymphoma_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Previously noted left iliac bone lesion is not well seen on the current study.”"
+                    ],
+                    "reason": "Plain radiographs cannot adequately depict current soft‑tissue tumor burden or detailed pelvic mass extent; lymphoma extent and its mass effect remain essentially uncharacterized at this time point."
+                  },
+                  {
+                    "requirement_key": "req_alt_abd_path",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“There are no abnormally dilated loops of large or small bowel… There is no free intraperitoneal air… There are no unexplained soft tissue calcifications or radiopaque foreign bodies.”"
+                    ],
+                    "reason": "Radiographs exclude gross obstruction, free air, or radiopaque foreign bodies but cannot reliably detect many soft tissue or inflammatory processes; other acute abdominal pathology is not adequately assessed."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Plain abdominal radiographs reduce concern for severe obstruction or perforation but do not characterize lymphoma extent or fully exclude abdominal/pelvic complications, leaving the main question incompletely answered."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast CT of the abdomen and pelvis can evaluate bowel caliber and transition points, detect obstruction, perforation, abscess, and other complications, and accurately define current pelvic and intra‑abdominal lymphoma extent and mass effect.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not explicitly state new or ongoing abdominal symptoms at this admission, so the relative weighting between routine staging/restaging for the trial versus targeted evaluation of prior obstruction risk remains somewhat inferential."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "An alternative explanation is that this CT was ordered primarily as protocol‑mandated baseline restaging for the clinical trial at the start of cycle 2, with the main question being the current extent of intra‑abdominal and pelvic lymphoma and treatment response rather than acute complication assessment."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has known high‑grade triple‑hit B‑cell lymphoma with a large infiltrative pelvic mass involving the left hemipelvis, ilium, sacrum, and adjacent neural foramina, and is now being admitted for cycle 2 DA‑EPOCH/venetoclax on a clinical trial.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"underlying oncologic condition and dominant structural lesion\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“Pelvic MRI with large infiltrative mass of left hemipelvis destroying left ilium, SI joint and sacrum. It infiltrates into adjacent paraspinal, iliacus and gluteus muscles, left L4-5 and L5-S1 neural foramina and greater sciatic foramen.”\",\n        \"“Pelvic biopsy was positive for high grade DLBCL… consistent with triple hit lymphoma… She now presents for C2 da-EPOCH/venetoclax.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient recently had abdominal pain with constipation and partial bowel obstruction that improved, with plain abdominal radiographs showing resolution of prior bowel dilation.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"recent symptomatic episode potentially related to abdomen/pelvis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle.”\",\n        \"“Previously seen dilatation of the large bowel and multiple air-fluid levels have resolved.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is concern that the extensive pelvic lymphoma or its treatment may cause or predispose to abdominal or pelvic complications (e.g., recurrent/occult obstruction or other intra‑abdominal pathology) as she starts cycle 2 chemotherapy.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"anticipated or evolving treatment‑related/structural complications\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle.”\",\n        \"“Pelvic MRI with large infiltrative mass of left hemipelvis destroying left ilium, SI joint and sacrum… Multiple additional sacral masses…”\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; assumptions are initialized from the oncologic history, recent bowel obstruction, and current admission context.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there any active or evolving abdominal or pelvic pathology (including recurrent/occult obstruction or other mass‑related complication) that would affect management as she begins cycle 2 chemotherapy?\",\n    \"target\": \"abdomen and pelvis, with emphasis on bowel and known pelvic lymphoma region\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Detection of obstruction, new mass effect, or other intra‑abdominal complication would prompt modification or delay of chemotherapy and/or targeted intervention (e.g., surgical, GI, or radiation/surgical consultation).\",\n    \"negative_answer_changes\": \"Absence of acute abdominal or pelvic complication would support proceeding with planned cycle 2 therapy and conservative monitoring.\",\n    \"secondary_questions\": [\n      \"What is the current extent and appearance of the known pelvic lymphoma and any intra‑abdominal disease burden at this time point?\",\n      \"Is there any radiologic explanation for prior abdominal pain and partial obstruction that might recur with chemotherapy?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_bowel_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence and character of bowel obstruction, ileus, perforation, or other acute bowel complications in the abdomen and pelvis\",\n        \"why_required\": \"The clinical concern arises from prior partial obstruction and abdominal pain; determining if any current bowel complication exists is central to deciding if it is safe to proceed with chemotherapy.\"\n      },\n      {\n        \"requirement_key\": \"req_lymphoma_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Current anatomic extent and bulk of pelvic and intra‑abdominal lymphoma, including mass effect on bowel or adjacent structures\",\n        \"why_required\": \"The large pelvic mass can predispose to obstruction or other complications; understanding its current extent and relationship to bowel informs risk and management.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_abd_path\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of other non‑bowel acute abdominal or pelvic pathology (e.g., abscess, new lymphadenopathy, organ injury) that could complicate chemotherapy\",\n        \"why_required\": \"Other abdominal or pelvic pathologies could explain symptoms or pose risk with chemotherapy and need to be identified or reasonably excluded.\"\n      }\n    ],\n    \"evidence\": [\n      \"“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle. She was started on empiric ABX then d/c home…”\",\n      \"“CT A/P showed large soft tissue mass centered around the left sacroiliac joints invading the ileum, the sacrum and the adjacent musculature.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_bowel_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“Previously seen dilatation of the large bowel and multiple air-fluid levels have resolved.”\",\n          \"“There are no abnormally dilated loops of large or small bowel. There is no free intraperitoneal air.”\"\n        ],\n        \"reason\": \"Recent abdominal radiographs show resolution of prior bowel dilation and no free air, arguing against ongoing high‑grade obstruction or perforation, but radiographs are limited in sensitivity and cannot fully characterize partial obstruction or subtle complications.\"\n      },\n      {\n        \"requirement_key\": \"req_lymphoma_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Previously noted left iliac bone lesion is not well seen on the current study.”\"\n        ],\n        \"reason\": \"Plain radiographs cannot adequately depict current soft‑tissue tumor burden or detailed pelvic mass extent; lymphoma extent and its mass effect remain essentially uncharacterized at this time point.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_abd_path\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“There are no abnormally dilated loops of large or small bowel… There is no free intraperitoneal air… There are no unexplained soft tissue calcifications or radiopaque foreign bodies.”\"\n        ],\n        \"reason\": \"Radiographs exclude gross obstruction, free air, or radiopaque foreign bodies but cannot reliably detect many soft tissue or inflammatory processes; other acute abdominal pathology is not adequately assessed.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Plain abdominal radiographs reduce concern for severe obstruction or perforation but do not characterize lymphoma extent or fully exclude abdominal/pelvic complications, leaving the main question incompletely answered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast CT of the abdomen and pelvis can evaluate bowel caliber and transition points, detect obstruction, perforation, abscess, and other complications, and accurately define current pelvic and intra‑abdominal lymphoma extent and mass effect.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly state new or ongoing abdominal symptoms at this admission, so the relative weighting between routine staging/restaging for the trial versus targeted evaluation of prior obstruction risk remains somewhat inferential.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"An alternative explanation is that this CT was ordered primarily as protocol‑mandated baseline restaging for the clinical trial at the start of cycle 2, with the main question being the current extent of intra‑abdominal and pelvic lymphoma and treatment response rather than acute complication assessment.\"\n}",
+            "request_id": "gen-1788177007-HGnVrDOpsrpQXODOk7t0",
+            "usage": {
+              "completion_tokens": 2013,
+              "prompt_tokens": 4152,
+              "total_tokens": 6165,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02532,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02532,
+                "upstream_inference_prompt_cost": 0.00519,
+                "upstream_inference_completions_cost": 0.02013
+              }
+            }
+          },
+          "validation_errors": [
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "9b96cea6f7955898788865373f2206f04974797fc21c7a4b7545f9ce6286b0a2",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has high-grade B-cell (triple-hit) lymphoma with prior pelvic/abdominal involvement and is currently undergoing intensive chemotherapy on a clinical trial.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "underlying disease context",
+                  "status": "established",
+                  "evidence": [
+                    "“Pelvic biopsy was positive for high grade DLBCL. FISH was positive for IGH/BCL2, rearrangement of BCL6, gain of MYC and deletion of 3'MYC… consistent with triple hit lymphoma.”",
+                    "“She now presents for C2 da-EPOCH/venetoclax… consented for clinical trial ___, Phase I Study of Venetoclax plus DA-EPOCH-R for the Treatment of Aggressive B-Cell Lymphomas.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient recently had abdominal pain with partial bowel obstruction and constipation that clinically improved, but underlying intra-abdominal pathology related to lymphoma or its complications may persist or recur.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "current problem/complication",
+                  "status": "suspected",
+                  "evidence": [
+                    "“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle… She was started on empiric ABX… She developed transaminitis… and her symptoms resolved.”",
+                    "“Previously seen dilatation of the large bowel and multiple air-fluid levels have resolved.”"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is concern for residual or recurrent intra-abdominal or pelvic lymphoma involvement that could affect current treatment planning.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "disease burden/extent",
+                  "status": "suspected",
+                  "evidence": [
+                    "“Pelvic MRI with large infiltrative mass of left hemipelvis destroying left ilium, SI joint and sacrum. It infiltrates into adjacent paraspinal, iliacus and gluteus muscles…”",
+                    "“CT A/P showed large soft tissue mass centered around the left sacroiliac joints invading the ileum, the sacrum and the adjacent musculature.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No previous imaging decision to update at this first step."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point so baseline assumptions are being established from the admission history and prior imaging."
+              },
+              "current_question": {
+                "primary": "Is there any current intra-abdominal or pelvic pathology, including lymphoma involvement or complications such as obstruction, that could impact ongoing chemotherapy?",
+                "target": "abdominal and pelvic organs and bowel, including known pelvic lymphoma region",
+                "type": "complication",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would prompt reassessment of chemotherapy safety, need for surgical or GI consultation, or treatment modification.",
+                "negative_answer_changes": "Supports proceeding with planned chemotherapy without additional abdominal intervention.",
+                "secondary_questions": [
+                  "What is the current anatomic extent of lymphoma involvement in the abdomen and pelvis compared with prior studies?",
+                  "Is there any radiologic evidence of bowel obstruction or other acute intra-abdominal complication?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Overall visualization of abdominal and pelvic organs and bowel, including prior pelvic mass region",
+                    "why_required": "Need global assessment of abdomen/pelvis to identify or exclude occult pathology or complications."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of bowel obstruction or other acute bowel pathology",
+                    "why_required": "Determining if obstruction or related complication has recurred or persists is key for chemotherapy safety and symptom evaluation."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Current extent and characteristics of pelvic/abdominal lymphoma involvement",
+                    "why_required": "Extent of disease can influence risk of complications and overall treatment strategy."
+                  }
+                ],
+                "evidence": [
+                  "“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle.”",
+                  "“Pelvic MRI with large infiltrative mass of left hemipelvis destroying left ilium, SI joint and sacrum… CT A/P showed large soft tissue mass centered around the left sacroiliac joints invading the ileum, the sacrum and the adjacent musculature.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Supine and upright abdominal radiographs were obtained.”"
+                    ],
+                    "reason": "Plain abdominal radiographs provide limited visualization of soft tissues and solid organs; they give some overview of gas pattern but not comprehensive assessment of abdominal and pelvic structures."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“There are no abnormally dilated loops of large or small bowel… Previously seen dilatation of the large bowel and multiple air-fluid levels have resolved.”",
+                      "“There are no abnormally dilated loops of large or small bowel… There is no free intraperitoneal air.”"
+                    ],
+                    "reason": "KUBs show no current radiographic obstruction or perforation, but they have limited sensitivity and cannot exclude subtle or early obstruction or other non-gas-related pathology."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Previously noted left iliac bone lesion is not well seen on the current study”"
+                    ],
+                    "reason": "Radiographs do not adequately depict soft tissue lymphoma burden or detailed extent of pelvic/abdominal disease."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Prior KUBs reduce concern for gross obstruction but do not adequately evaluate overall abdominal/pelvic pathology or lymphoma extent."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of abdomen and pelvis can comprehensively visualize abdominal and pelvic structures, detect obstruction and other acute complications, and assess disease extent.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not explicitly state new or recurrent abdominal symptoms at this admission, so the exact trigger for CT timing (routine restaging vs specific symptom concern) remains uncertain."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has high-grade B-cell (triple-hit) lymphoma with prior pelvic/abdominal involvement and is currently undergoing intensive chemotherapy on a clinical trial.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"underlying disease context\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“Pelvic biopsy was positive for high grade DLBCL. FISH was positive for IGH/BCL2, rearrangement of BCL6, gain of MYC and deletion of 3'MYC… consistent with triple hit lymphoma.”\",\n        \"“She now presents for C2 da-EPOCH/venetoclax… consented for clinical trial ___, Phase I Study of Venetoclax plus DA-EPOCH-R for the Treatment of Aggressive B-Cell Lymphomas.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient recently had abdominal pain with partial bowel obstruction and constipation that clinically improved, but underlying intra-abdominal pathology related to lymphoma or its complications may persist or recur.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"current problem/complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle… She was started on empiric ABX… She developed transaminitis… and her symptoms resolved.”\",\n        \"“Previously seen dilatation of the large bowel and multiple air-fluid levels have resolved.”\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is concern for residual or recurrent intra-abdominal or pelvic lymphoma involvement that could affect current treatment planning.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease burden/extent\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“Pelvic MRI with large infiltrative mass of left hemipelvis destroying left ilium, SI joint and sacrum. It infiltrates into adjacent paraspinal, iliacus and gluteus muscles…”\",\n        \"“CT A/P showed large soft tissue mass centered around the left sacroiliac joints invading the ileum, the sacrum and the adjacent musculature.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No previous imaging decision to update at this first step.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point so baseline assumptions are being established from the admission history and prior imaging.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there any current intra-abdominal or pelvic pathology, including lymphoma involvement or complications such as obstruction, that could impact ongoing chemotherapy?\",\n    \"target\": \"abdominal and pelvic organs and bowel, including known pelvic lymphoma region\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would prompt reassessment of chemotherapy safety, need for surgical or GI consultation, or treatment modification.\",\n    \"negative_answer_changes\": \"Supports proceeding with planned chemotherapy without additional abdominal intervention.\",\n    \"secondary_questions\": [\n      \"What is the current anatomic extent of lymphoma involvement in the abdomen and pelvis compared with prior studies?\",\n      \"Is there any radiologic evidence of bowel obstruction or other acute intra-abdominal complication?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Overall visualization of abdominal and pelvic organs and bowel, including prior pelvic mass region\",\n        \"why_required\": \"Need global assessment of abdomen/pelvis to identify or exclude occult pathology or complications.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of bowel obstruction or other acute bowel pathology\",\n        \"why_required\": \"Determining if obstruction or related complication has recurred or persists is key for chemotherapy safety and symptom evaluation.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Current extent and characteristics of pelvic/abdominal lymphoma involvement\",\n        \"why_required\": \"Extent of disease can influence risk of complications and overall treatment strategy.\"\n      }\n    ],\n    \"evidence\": [\n      \"“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle.”\",\n      \"“Pelvic MRI with large infiltrative mass of left hemipelvis destroying left ilium, SI joint and sacrum… CT A/P showed large soft tissue mass centered around the left sacroiliac joints invading the ileum, the sacrum and the adjacent musculature.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Supine and upright abdominal radiographs were obtained.”\"\n        ],\n        \"reason\": \"Plain abdominal radiographs provide limited visualization of soft tissues and solid organs; they give some overview of gas pattern but not comprehensive assessment of abdominal and pelvic structures.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“There are no abnormally dilated loops of large or small bowel… Previously seen dilatation of the large bowel and multiple air-fluid levels have resolved.”\",\n          \"“There are no abnormally dilated loops of large or small bowel… There is no free intraperitoneal air.”\"\n        ],\n        \"reason\": \"KUBs show no current radiographic obstruction or perforation, but they have limited sensitivity and cannot exclude subtle or early obstruction or other non-gas-related pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Previously noted left iliac bone lesion is not well seen on the current study”\"\n        ],\n        \"reason\": \"Radiographs do not adequately depict soft tissue lymphoma burden or detailed extent of pelvic/abdominal disease.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Prior KUBs reduce concern for gross obstruction but do not adequately evaluate overall abdominal/pelvic pathology or lymphoma extent.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of abdomen and pelvis can comprehensively visualize abdominal and pelvic structures, detect obstruction and other acute complications, and assess disease extent.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly state new or recurrent abdominal symptoms at this admission, so the exact trigger for CT timing (routine restaging vs specific symptom concern) remains uncertain.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788177027-MumvrndEesoMQT2f0LKY",
+            "usage": {
+              "completion_tokens": 1744,
+              "prompt_tokens": 4188,
+              "total_tokens": 5932,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3968,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.018211,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.018211,
+                "upstream_inference_prompt_cost": 0.000771,
+                "upstream_inference_completions_cost": 0.01744
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has high-grade B-cell (triple-hit) lymphoma with prior pelvic/abdominal involvement and is currently undergoing intensive chemotherapy on a clinical trial.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "underlying disease context",
+            "status": "established",
+            "evidence": [
+              "“Pelvic biopsy was positive for high grade DLBCL. FISH was positive for IGH/BCL2, rearrangement of BCL6, gain of MYC and deletion of 3'MYC… consistent with triple hit lymphoma.”",
+              "“She now presents for C2 da-EPOCH/venetoclax… consented for clinical trial ___, Phase I Study of Venetoclax plus DA-EPOCH-R for the Treatment of Aggressive B-Cell Lymphomas.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient recently had abdominal pain with partial bowel obstruction and constipation that clinically improved, but underlying intra-abdominal pathology related to lymphoma or its complications may persist or recur.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "current problem/complication",
+            "status": "suspected",
+            "evidence": [
+              "“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle… She was started on empiric ABX… She developed transaminitis… and her symptoms resolved.”",
+              "“Previously seen dilatation of the large bowel and multiple air-fluid levels have resolved.”"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "There is concern for residual or recurrent intra-abdominal or pelvic lymphoma involvement that could affect current treatment planning.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "disease burden/extent",
+            "status": "suspected",
+            "evidence": [
+              "“Pelvic MRI with large infiltrative mass of left hemipelvis destroying left ilium, SI joint and sacrum. It infiltrates into adjacent paraspinal, iliacus and gluteus muscles…”",
+              "“CT A/P showed large soft tissue mass centered around the left sacroiliac joints invading the ileum, the sacrum and the adjacent musculature.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "No previous imaging decision to update at this first step."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point so baseline assumptions are being established from the admission history and prior imaging."
+        },
+        "current_question": {
+          "primary": "Is there any current intra-abdominal or pelvic pathology, including lymphoma involvement or complications such as obstruction, that could impact ongoing chemotherapy?",
+          "target": "abdominal and pelvic organs and bowel, including known pelvic lymphoma region",
+          "type": "complication",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would prompt reassessment of chemotherapy safety, need for surgical or GI consultation, or treatment modification.",
+          "negative_answer_changes": "Supports proceeding with planned chemotherapy without additional abdominal intervention.",
+          "secondary_questions": [
+            "What is the current anatomic extent of lymphoma involvement in the abdomen and pelvis compared with prior studies?",
+            "Is there any radiologic evidence of bowel obstruction or other acute intra-abdominal complication?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Overall visualization of abdominal and pelvic organs and bowel, including prior pelvic mass region",
+              "why_required": "Need global assessment of abdomen/pelvis to identify or exclude occult pathology or complications."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of bowel obstruction or other acute bowel pathology",
+              "why_required": "Determining if obstruction or related complication has recurred or persists is key for chemotherapy safety and symptom evaluation."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Current extent and characteristics of pelvic/abdominal lymphoma involvement",
+              "why_required": "Extent of disease can influence risk of complications and overall treatment strategy."
+            }
+          ],
+          "evidence": [
+            "“She developed abd pain secondary to constipation and partial bowel obstruction in between last cycle.”",
+            "“Pelvic MRI with large infiltrative mass of left hemipelvis destroying left ilium, SI joint and sacrum… CT A/P showed large soft tissue mass centered around the left sacroiliac joints invading the ileum, the sacrum and the adjacent musculature.”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Supine and upright abdominal radiographs were obtained.”"
+              ],
+              "reason": "Plain abdominal radiographs provide limited visualization of soft tissues and solid organs; they give some overview of gas pattern but not comprehensive assessment of abdominal and pelvic structures."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“There are no abnormally dilated loops of large or small bowel… Previously seen dilatation of the large bowel and multiple air-fluid levels have resolved.”",
+                "“There are no abnormally dilated loops of large or small bowel… There is no free intraperitoneal air.”"
+              ],
+              "reason": "KUBs show no current radiographic obstruction or perforation, but they have limited sensitivity and cannot exclude subtle or early obstruction or other non-gas-related pathology."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Previously noted left iliac bone lesion is not well seen on the current study”"
+              ],
+              "reason": "Radiographs do not adequately depict soft tissue lymphoma burden or detailed extent of pelvic/abdominal disease."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Prior KUBs reduce concern for gross obstruction but do not adequately evaluate overall abdominal/pelvic pathology or lymphoma extent."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of abdomen and pelvis can comprehensively visualize abdominal and pelvic structures, detect obstruction and other acute complications, and assess disease extent.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not explicitly state new or recurrent abdominal symptoms at this admission, so the exact trigger for CT timing (routine restaging vs specific symptom concern) remains uncertain."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

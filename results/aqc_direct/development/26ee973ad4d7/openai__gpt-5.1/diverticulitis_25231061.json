@@ -1,0 +1,548 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 25231061,
+  "source_path": "results/annotation_experiment/full/diverticulitis_25231061.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "2f149dd9519b5563141d891b11a2bc820079f4f8e64ce9ba2b4665de5bcb4cc4",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "2f149dd9519b5563141d891b11a2bc820079f4f8e64ce9ba2b4665de5bcb4cc4",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute systemic inflammatory or infectious syndrome with sepsis physiology, rhabdomyolysis, and acute kidney injury of unclear source.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall clinical syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "presents with fever to 102, tachycardia,  and altered mental status",
+                    "Labs were remarkable for WBC 17.8 with left shift, Plt 71 from 575 in ___, Cr 2.3 from a normal baseline, ALT/AST 440/770, LDH 675, CK ___ and UA equivocal for UTI."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The source of the patient’s sepsis or systemic illness is not yet identified after initial chest radiograph, head CT, and urinalysis.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "diagnostic problem representation",
+                  "status": "suspected",
+                  "evidence": [
+                    "UA equivocal for UTI.",
+                    "PA and lateral views of the chest demonstrate ... interval resolution of previously seen right basilar atelectasis and right pleural effusion.",
+                    "There is no intracranial hemorrhage, edema, mass effect, or acute vascular territorial infarction."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Given his history of Crohn's disease with multiple abdominal surgeries and current sepsis, an intra-abdominal or pelvic process (such as abscess, perforation, or other complication) is a plausible occult source.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "organ-system level hypothesis",
+                  "status": "suspected",
+                  "evidence": [
+                    "Crohn's disease s/p multiple surgeries",
+                    "who presents with fever to 102, tachycardia,  and altered mental status.",
+                    "Labs were remarkable for WBC 17.8 with left shift"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; the assumptions frame a sepsis workup with unclear source and possible intra-abdominal origin based on history and labs."
+              },
+              "current_question": {
+                "primary": "Is there an intra-abdominal or pelvic pathology, such as abscess, bowel complication, or other inflammatory focus, that could explain this patient’s sepsis and organ dysfunction?",
+                "target": "intra-abdominal and pelvic organs and spaces",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would localize a treatable source (e.g., abscess, perforation, colitis) and prompt targeted therapy such as surgery, drainage, or source-directed antibiotics.",
+                "negative_answer_changes": "Would lower the likelihood of an abdominal source and redirect further workup toward other infection or inflammatory sources.",
+                "secondary_questions": [
+                  "Is there any acute hepatobiliary, pancreatic, or urinary tract process contributing to his transaminitis, acute kidney injury, or sepsis?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1_target_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of abdominal and pelvic viscera (bowel, mesentery, peritoneal cavity, solid organs, urinary tract).",
+                    "why_required": "Localization of a sepsis source requires clear assessment of intra-abdominal and pelvic structures."
+                  },
+                  {
+                    "requirement_key": "req_2_presence_abscess",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of intra-abdominal or pelvic collections, abscesses, free air, or focal inflammatory changes.",
+                    "why_required": "Detecting or excluding abscess, perforation, or localized inflammation directly addresses whether there is an abdominal source of sepsis."
+                  },
+                  {
+                    "requirement_key": "req_3_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of complications of Crohn’s disease or prior abdominal surgeries (e.g., fistula, obstruction, phlegmon).",
+                    "why_required": "These complications are plausible hidden sources of infection or inflammation given his history."
+                  },
+                  {
+                    "requirement_key": "req_4_solid_organs",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Acute pathology in solid organs such as liver, gallbladder, pancreas, kidneys, or spleen (e.g., cholecystitis, pancreatitis, pyelonephritis).",
+                    "why_required": "Solid organ or biliary/urinary infection could explain sepsis, transaminitis, and AKI and must be assessed as alternative intra-abdominal sources."
+                  }
+                ],
+                "evidence": [
+                  "who presents with fever to 102, tachycardia,  and altered mental status.",
+                  "Crohn's disease s/p multiple surgeries",
+                  "Labs were remarkable for WBC 17.8 with left shift, Plt 71 from 575 in ___, Cr 2.3 from a normal baseline, ALT/AST 440/770"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1_target_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      ""
+                    ],
+                    "reason": "No prior abdominal or pelvic imaging is provided, so visualization of intra-abdominal and pelvic structures has not yet been achieved."
+                  },
+                  {
+                    "requirement_key": "req_2_presence_abscess",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Labs were remarkable for WBC 17.8 with left shift"
+                    ],
+                    "reason": "Clinical and laboratory data suggest infection but do not identify or exclude intra-abdominal collections or perforation."
+                  },
+                  {
+                    "requirement_key": "req_3_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Crohn's disease s/p multiple surgeries"
+                    ],
+                    "reason": "History raises risk of Crohn’s or postoperative complications, but no imaging or exam data specify current abdominal pathology."
+                  },
+                  {
+                    "requirement_key": "req_4_solid_organs",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "ALT/AST 440/770",
+                      "Creatinine: 2.3 mg/dL"
+                    ],
+                    "reason": "Lab abnormalities imply organ injury but do not reveal whether there is localized hepatobiliary, pancreatic, or renal infectious/inflammatory disease."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "No prior studies evaluate the abdomen or pelvis, so the presence, location, and nature of any intra-abdominal source of sepsis remain entirely unresolved."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis is well suited to visualize abdominal/pelvic organs and detect abscesses, perforation, inflammatory bowel disease complications, and solid-organ or urinary sources.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order does not clearly distinguish how much weight is placed on Crohn’s-related complications versus other intra-abdominal sources, and it does not explicitly address whether AKI and high creatinine might limit or modify contrast use; these nuances of intent are not specified in the chart."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute systemic inflammatory or infectious syndrome with sepsis physiology, rhabdomyolysis, and acute kidney injury of unclear source.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"presents with fever to 102, tachycardia,  and altered mental status\",\n        \"Labs were remarkable for WBC 17.8 with left shift, Plt 71 from 575 in ___, Cr 2.3 from a normal baseline, ALT/AST 440/770, LDH 675, CK ___ and UA equivocal for UTI.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The source of the patient’s sepsis or systemic illness is not yet identified after initial chest radiograph, head CT, and urinalysis.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnostic problem representation\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"UA equivocal for UTI.\",\n        \"PA and lateral views of the chest demonstrate ... interval resolution of previously seen right basilar atelectasis and right pleural effusion.\",\n        \"There is no intracranial hemorrhage, edema, mass effect, or acute vascular territorial infarction.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Given his history of Crohn's disease with multiple abdominal surgeries and current sepsis, an intra-abdominal or pelvic process (such as abscess, perforation, or other complication) is a plausible occult source.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-system level hypothesis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Crohn's disease s/p multiple surgeries\",\n        \"who presents with fever to 102, tachycardia,  and altered mental status.\",\n        \"Labs were remarkable for WBC 17.8 with left shift\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the assumptions frame a sepsis workup with unclear source and possible intra-abdominal origin based on history and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an intra-abdominal or pelvic pathology, such as abscess, bowel complication, or other inflammatory focus, that could explain this patient’s sepsis and organ dysfunction?\",\n    \"target\": \"intra-abdominal and pelvic organs and spaces\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would localize a treatable source (e.g., abscess, perforation, colitis) and prompt targeted therapy such as surgery, drainage, or source-directed antibiotics.\",\n    \"negative_answer_changes\": \"Would lower the likelihood of an abdominal source and redirect further workup toward other infection or inflammatory sources.\",\n    \"secondary_questions\": [\n      \"Is there any acute hepatobiliary, pancreatic, or urinary tract process contributing to his transaminitis, acute kidney injury, or sepsis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1_target_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of abdominal and pelvic viscera (bowel, mesentery, peritoneal cavity, solid organs, urinary tract).\",\n        \"why_required\": \"Localization of a sepsis source requires clear assessment of intra-abdominal and pelvic structures.\"\n      },\n      {\n        \"requirement_key\": \"req_2_presence_abscess\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of intra-abdominal or pelvic collections, abscesses, free air, or focal inflammatory changes.\",\n        \"why_required\": \"Detecting or excluding abscess, perforation, or localized inflammation directly addresses whether there is an abdominal source of sepsis.\"\n      },\n      {\n        \"requirement_key\": \"req_3_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of complications of Crohn’s disease or prior abdominal surgeries (e.g., fistula, obstruction, phlegmon).\",\n        \"why_required\": \"These complications are plausible hidden sources of infection or inflammation given his history.\"\n      },\n      {\n        \"requirement_key\": \"req_4_solid_organs\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Acute pathology in solid organs such as liver, gallbladder, pancreas, kidneys, or spleen (e.g., cholecystitis, pancreatitis, pyelonephritis).\",\n        \"why_required\": \"Solid organ or biliary/urinary infection could explain sepsis, transaminitis, and AKI and must be assessed as alternative intra-abdominal sources.\"\n      }\n    ],\n    \"evidence\": [\n      \"who presents with fever to 102, tachycardia,  and altered mental status.\",\n      \"Crohn's disease s/p multiple surgeries\",\n      \"Labs were remarkable for WBC 17.8 with left shift, Plt 71 from 575 in ___, Cr 2.3 from a normal baseline, ALT/AST 440/770\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1_target_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\"\n        ],\n        \"reason\": \"No prior abdominal or pelvic imaging is provided, so visualization of intra-abdominal and pelvic structures has not yet been achieved.\"\n      },\n      {\n        \"requirement_key\": \"req_2_presence_abscess\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Labs were remarkable for WBC 17.8 with left shift\"\n        ],\n        \"reason\": \"Clinical and laboratory data suggest infection but do not identify or exclude intra-abdominal collections or perforation.\"\n      },\n      {\n        \"requirement_key\": \"req_3_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Crohn's disease s/p multiple surgeries\"\n        ],\n        \"reason\": \"History raises risk of Crohn’s or postoperative complications, but no imaging or exam data specify current abdominal pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_4_solid_organs\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"ALT/AST 440/770\",\n          \"Creatinine: 2.3 mg/dL\"\n        ],\n        \"reason\": \"Lab abnormalities imply organ injury but do not reveal whether there is localized hepatobiliary, pancreatic, or renal infectious/inflammatory disease.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No prior studies evaluate the abdomen or pelvis, so the presence, location, and nature of any intra-abdominal source of sepsis remain entirely unresolved.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis is well suited to visualize abdominal/pelvic organs and detect abscesses, perforation, inflammatory bowel disease complications, and solid-organ or urinary sources.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order does not clearly distinguish how much weight is placed on Crohn’s-related complications versus other intra-abdominal sources, and it does not explicitly address whether AKI and high creatinine might limit or modify contrast use; these nuances of intent are not specified in the chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788177111-h8rwgttSol6UzXAzieG3",
+            "usage": {
+              "completion_tokens": 1964,
+              "prompt_tokens": 3805,
+              "total_tokens": 5769,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02439625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02439625,
+                "upstream_inference_prompt_cost": 0.00475625,
+                "upstream_inference_completions_cost": 0.01964
+              }
+            }
+          },
+          "validation_errors": [
+            "assumption_1_bad_evidence_count",
+            "assumption_2_bad_evidence_count"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "61ef140ac4e28464fa054bb871d428696b560f5573d522d016bbf348b06763b9",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has a systemic infectious or inflammatory syndrome causing fever, leukocytosis, and possible sepsis.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall clinical picture / working diagnosis",
+                  "status": "suspected",
+                  "evidence": [
+                    "presents with fever to 102, tachycardia,  and altered mental status",
+                    "Labs were remarkable for WBC 17.8 with left shift"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has acute kidney injury and marked rhabdomyolysis, increasing concern for occult systemic or abdominal pathology.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "organ dysfunction / severity of illness",
+                  "status": "established",
+                  "evidence": [
+                    "Cr 2.3 from a normal baseline",
+                    "Creatine Kinase (CK): 12803.0 IU/L (ref 47.0-322.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Given Crohn's disease with multiple prior surgeries and diverticulosis, there is risk for an abdominal source of infection or complication (e.g. abscess, perforation, obstruction).",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "linking prior disease to current illness",
+                  "status": "suspected",
+                  "evidence": [
+                    "Crohn's disease s/p multiple surgeries - Diverticulosis",
+                    "presents with fever to 102, tachycardia,  and altered mental status"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "no prior questions or imaging decisions to update at this first decision point",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "no prior decision to compare"
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; assumptions are initialized from the presenting history, labs, and exam."
+              },
+              "current_question": {
+                "primary": "Is there an intra-abdominal or pelvic source of infection or surgical complication explaining the patient’s systemic illness?",
+                "target": "intra-abdominal and pelvic organs and potential collections (e.g. abscess, perforation, obstruction) as a source of sepsis",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would support an abdominal source for the systemic syndrome and prompt targeted antimicrobial therapy and/or surgical or interventional management.",
+                "negative_answer_changes": "Would make an abdominal source less likely and shift attention to non-abdominal causes of sepsis or systemic illness.",
+                "secondary_questions": [
+                  "Is there evidence of an abdominal complication of Crohn's disease or prior bowel surgeries (e.g. fistula, obstruction, perforation)?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of abdominal and pelvic viscera (bowel, mesentery, solid organs, peritoneal cavity, retroperitoneum).",
+                    "why_required": "The presence or absence of an abdominal source of infection or complication cannot be determined without assessing these structures."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Detection or exclusion of focal abnormalities such as abscess, free air, bowel wall thickening, obstruction, or collections.",
+                    "why_required": "Identifying or ruling out focal pathology is necessary to decide whether the abdomen is the source of the systemic illness."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Characterization of any Crohn’s-related or postsurgical complications (e.g. fistulas, strictures, perforation, postoperative collections).",
+                    "why_required": "Current systemic illness may be driven by complications of Crohn’s disease or prior surgeries, which would change management."
+                  }
+                ],
+                "evidence": [
+                  "Crohn's disease s/p multiple surgeries - Diverticulosis",
+                  "Labs were remarkable for WBC 17.8 with left shift, Plt 71 from 575 in ___, Cr 2.3 from a normal baseline, ALT/AST  440/770, LDH 675, CK ___ and UA equivocal for UTI."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No abdominal imaging is described prior to this decision."
+                    ],
+                    "reason": "Only chest radiograph and head CT have been performed; no study has visualized abdominal or pelvic organs."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "There is no mention of abdominal or pelvic imaging or focal abdominal findings on imaging."
+                    ],
+                    "reason": "There is no imaging-based assessment of abscess, perforation, obstruction, or collections in the abdomen or pelvis."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Crohn's disease s/p multiple surgeries - Diverticulosis"
+                    ],
+                    "reason": "History indicates risk for complications, but no prior imaging has evaluated for Crohn’s-related or postsurgical abdominal complications in this episode."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Despite systemic illness suggesting possible sepsis, no prior imaging evaluates the abdomen or pelvis, so the presence, location, and nature of any intra-abdominal source remain entirely unaddressed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can visualize abdominal and pelvic organs, detect abscesses, perforation, obstruction, and postsurgical or Crohn’s complications, and thus localize a potential intra-abdominal source.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact trigger for prioritizing CT at this specific time (rather than after additional non-imaging workup) is not fully specified in the chart."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has a systemic infectious or inflammatory syndrome causing fever, leukocytosis, and possible sepsis.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical picture / working diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"presents with fever to 102, tachycardia,  and altered mental status\",\n        \"Labs were remarkable for WBC 17.8 with left shift\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has acute kidney injury and marked rhabdomyolysis, increasing concern for occult systemic or abdominal pathology.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ dysfunction / severity of illness\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Cr 2.3 from a normal baseline\",\n        \"Creatine Kinase (CK): 12803.0 IU/L (ref 47.0-322.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Given Crohn's disease with multiple prior surgeries and diverticulosis, there is risk for an abdominal source of infection or complication (e.g. abscess, perforation, obstruction).\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"linking prior disease to current illness\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Crohn's disease s/p multiple surgeries - Diverticulosis\",\n        \"presents with fever to 102, tachycardia,  and altered mental status\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior questions or imaging decisions to update at this first decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"no prior decision to compare\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; assumptions are initialized from the presenting history, labs, and exam.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an intra-abdominal or pelvic source of infection or surgical complication explaining the patient’s systemic illness?\",\n    \"target\": \"intra-abdominal and pelvic organs and potential collections (e.g. abscess, perforation, obstruction) as a source of sepsis\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would support an abdominal source for the systemic syndrome and prompt targeted antimicrobial therapy and/or surgical or interventional management.\",\n    \"negative_answer_changes\": \"Would make an abdominal source less likely and shift attention to non-abdominal causes of sepsis or systemic illness.\",\n    \"secondary_questions\": [\n      \"Is there evidence of an abdominal complication of Crohn's disease or prior bowel surgeries (e.g. fistula, obstruction, perforation)?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of abdominal and pelvic viscera (bowel, mesentery, solid organs, peritoneal cavity, retroperitoneum).\",\n        \"why_required\": \"The presence or absence of an abdominal source of infection or complication cannot be determined without assessing these structures.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Detection or exclusion of focal abnormalities such as abscess, free air, bowel wall thickening, obstruction, or collections.\",\n        \"why_required\": \"Identifying or ruling out focal pathology is necessary to decide whether the abdomen is the source of the systemic illness.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of any Crohn’s-related or postsurgical complications (e.g. fistulas, strictures, perforation, postoperative collections).\",\n        \"why_required\": \"Current systemic illness may be driven by complications of Crohn’s disease or prior surgeries, which would change management.\"\n      }\n    ],\n    \"evidence\": [\n      \"Crohn's disease s/p multiple surgeries - Diverticulosis\",\n      \"Labs were remarkable for WBC 17.8 with left shift, Plt 71 from 575 in ___, Cr 2.3 from a normal baseline, ALT/AST  440/770, LDH 675, CK ___ and UA equivocal for UTI.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No abdominal imaging is described prior to this decision.\"\n        ],\n        \"reason\": \"Only chest radiograph and head CT have been performed; no study has visualized abdominal or pelvic organs.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"There is no mention of abdominal or pelvic imaging or focal abdominal findings on imaging.\"\n        ],\n        \"reason\": \"There is no imaging-based assessment of abscess, perforation, obstruction, or collections in the abdomen or pelvis.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Crohn's disease s/p multiple surgeries - Diverticulosis\"\n        ],\n        \"reason\": \"History indicates risk for complications, but no prior imaging has evaluated for Crohn’s-related or postsurgical abdominal complications in this episode.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Despite systemic illness suggesting possible sepsis, no prior imaging evaluates the abdomen or pelvis, so the presence, location, and nature of any intra-abdominal source remain entirely unaddressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis can visualize abdominal and pelvic organs, detect abscesses, perforation, obstruction, and postsurgical or Crohn’s complications, and thus localize a potential intra-abdominal source.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact trigger for prioritizing CT at this specific time (rather than after additional non-imaging workup) is not fully specified in the chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788177130-AtsLu2gn774jA0hHajIA",
+            "usage": {
+              "completion_tokens": 1655,
+              "prompt_tokens": 3850,
+              "total_tokens": 5505,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3584,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0173305,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0173305,
+                "upstream_inference_prompt_cost": 0.0007805,
+                "upstream_inference_completions_cost": 0.01655
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has a systemic infectious or inflammatory syndrome causing fever, leukocytosis, and possible sepsis.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "overall clinical picture / working diagnosis",
+            "status": "suspected",
+            "evidence": [
+              "presents with fever to 102, tachycardia,  and altered mental status",
+              "Labs were remarkable for WBC 17.8 with left shift"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has acute kidney injury and marked rhabdomyolysis, increasing concern for occult systemic or abdominal pathology.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "organ dysfunction / severity of illness",
+            "status": "established",
+            "evidence": [
+              "Cr 2.3 from a normal baseline",
+              "Creatine Kinase (CK): 12803.0 IU/L (ref 47.0-322.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Given Crohn's disease with multiple prior surgeries and diverticulosis, there is risk for an abdominal source of infection or complication (e.g. abscess, perforation, obstruction).",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "linking prior disease to current illness",
+            "status": "suspected",
+            "evidence": [
+              "Crohn's disease s/p multiple surgeries - Diverticulosis",
+              "presents with fever to 102, tachycardia,  and altered mental status"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "no prior questions or imaging decisions to update at this first decision point",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "no prior decision to compare"
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; assumptions are initialized from the presenting history, labs, and exam."
+        },
+        "current_question": {
+          "primary": "Is there an intra-abdominal or pelvic source of infection or surgical complication explaining the patient’s systemic illness?",
+          "target": "intra-abdominal and pelvic organs and potential collections (e.g. abscess, perforation, obstruction) as a source of sepsis",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would support an abdominal source for the systemic syndrome and prompt targeted antimicrobial therapy and/or surgical or interventional management.",
+          "negative_answer_changes": "Would make an abdominal source less likely and shift attention to non-abdominal causes of sepsis or systemic illness.",
+          "secondary_questions": [
+            "Is there evidence of an abdominal complication of Crohn's disease or prior bowel surgeries (e.g. fistula, obstruction, perforation)?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of abdominal and pelvic viscera (bowel, mesentery, solid organs, peritoneal cavity, retroperitoneum).",
+              "why_required": "The presence or absence of an abdominal source of infection or complication cannot be determined without assessing these structures."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Detection or exclusion of focal abnormalities such as abscess, free air, bowel wall thickening, obstruction, or collections.",
+              "why_required": "Identifying or ruling out focal pathology is necessary to decide whether the abdomen is the source of the systemic illness."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Characterization of any Crohn’s-related or postsurgical complications (e.g. fistulas, strictures, perforation, postoperative collections).",
+              "why_required": "Current systemic illness may be driven by complications of Crohn’s disease or prior surgeries, which would change management."
+            }
+          ],
+          "evidence": [
+            "Crohn's disease s/p multiple surgeries - Diverticulosis",
+            "Labs were remarkable for WBC 17.8 with left shift, Plt 71 from 575 in ___, Cr 2.3 from a normal baseline, ALT/AST  440/770, LDH 675, CK ___ and UA equivocal for UTI."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No abdominal imaging is described prior to this decision."
+              ],
+              "reason": "Only chest radiograph and head CT have been performed; no study has visualized abdominal or pelvic organs."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "There is no mention of abdominal or pelvic imaging or focal abdominal findings on imaging."
+              ],
+              "reason": "There is no imaging-based assessment of abscess, perforation, obstruction, or collections in the abdomen or pelvis."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Crohn's disease s/p multiple surgeries - Diverticulosis"
+              ],
+              "reason": "History indicates risk for complications, but no prior imaging has evaluated for Crohn’s-related or postsurgical abdominal complications in this episode."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Despite systemic illness suggesting possible sepsis, no prior imaging evaluates the abdomen or pelvis, so the presence, location, and nature of any intra-abdominal source remain entirely unaddressed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can visualize abdominal and pelvic organs, detect abscesses, perforation, obstruction, and postsurgical or Crohn’s complications, and thus localize a potential intra-abdominal source.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The exact trigger for prioritizing CT at this specific time (rather than after additional non-imaging workup) is not fully specified in the chart."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

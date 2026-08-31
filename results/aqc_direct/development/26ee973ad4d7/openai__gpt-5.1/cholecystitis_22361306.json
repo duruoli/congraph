@@ -1,0 +1,501 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 22361306,
+  "source_path": "results/annotation_experiment/full/cholecystitis_22361306.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "4f352ae25c83962b65874ffe92abf622b0612f0509cdc6e202b77de28c07ac4d",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "4f352ae25c83962b65874ffe92abf622b0612f0509cdc6e202b77de28c07ac4d",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute biliary pathology such as choledocholithiasis or acute cholecystitis causing obstructive jaundice and abdominal pain.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level working diagnosis for current presentation",
+                  "status": "likely",
+                  "evidence": [
+                    "His evaluation was notable for elevated LFT's (total bilirun 10), WBC count 12, and a CT of the abdomen that revealed cholelithiasis.",
+                    "He currently notes moderate epigastric pain and RUQ pain. ... ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. ... His common bile duct was 10mm. ... His sclera are icteric. ... Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First decision point; no prior imaging orders."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": "The patient has acute biliary pathology such as choledocholithiasis or acute cholecystitis causing obstructive jaundice and abdominal pain.",
+                "reason": "Initial synthesis of charted abdominal pain, RUQ tenderness, gallstones, dilated common bile duct, leukocytosis, and marked hyperbilirubinemia."
+              },
+              "current_question": {
+                "primary": "Is there imaging evidence of obstructing gallbladder or bile duct pathology that explains the patient’s jaundice and right upper quadrant pain and helps guide the need for ERCP or other intervention?",
+                "target": "gallbladder and biliary tree (especially gallstones, sludge, and ductal dilation/obstruction)",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirmation of obstructing biliary pathology would support proceeding with ERCP or other biliary intervention and continued targeted management for obstructive jaundice/cholecystitis.",
+                "negative_answer_changes": "If no obstructing biliary pathology is seen, clinicians would reconsider the cause of jaundice and pain, potentially delaying or modifying ERCP plans and broadening the diagnostic workup.",
+                "secondary_questions": [
+                  "What is the degree of bile duct dilation and are there features suggesting acute cholecystitis severity?",
+                  "Is there a visible obstructing stone or sludge in the common bile duct that could account for the obstructive pattern of LFTs?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the gallbladder, intrahepatic ducts, and common bile duct.",
+                    "why_required": "The biliary system must be visualized to determine if stones, sludge, or obstruction are present."
+                  },
+                  {
+                    "requirement_key": "req_stone",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones or choledocholithiasis causing obstruction.",
+                    "why_required": "Identifying obstructing stones directly answers whether biliary pathology explains jaundice and directs ERCP planning."
+                  },
+                  {
+                    "requirement_key": "req_dilation",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of bile duct dilation and gallbladder inflammatory changes (wall thickening, pericholecystic fluid).",
+                    "why_required": "Severity of ductal dilation and cholecystitis affects urgency and type of intervention."
+                  }
+                ],
+                "evidence": [
+                  "He currently notes moderate epigastric pain and RUQ pain. ... ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. There was no pericholecystic fluid and equivocal gallbladder wall thickening. His common bile duct was 10mm.",
+                  "His evaluation was notable for elevated LFT's (total bilirun 10) ... Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5) ... he was transferred to ___ for ERCP evaluation."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "In the ED he had an ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. There was no pericholecystic fluid and equivocal gallbladder wall thickening. His common bile duct was 10mm."
+                    ],
+                    "reason": "A prior ED ultrasound visualized the biliary system, but details are limited, some features were equivocal, and the current site may require its own dedicated assessment for procedural planning."
+                  },
+                  {
+                    "requirement_key": "req_stone",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. ... His common bile duct was 10mm.",
+                      "CT of the abdomen that revealed cholelithiasis."
+                    ],
+                    "reason": "Gallstones and sludge have been reported, but the prior study does not clearly document a specific obstructing common bile duct stone at this facility, leaving uncertainty relevant to ERCP planning."
+                  },
+                  {
+                    "requirement_key": "req_dilation",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "His common bile duct was 10mm.",
+                      "There was no pericholecystic fluid and equivocal gallbladder wall thickening."
+                    ],
+                    "reason": "Prior imaging suggests ductal dilation and possible cholecystitis but with equivocal wall findings and no local comparison study; severity and current status remain insufficiently characterized."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Existing ED imaging and CT demonstrate gallstones and duct dilation but incompletely characterize current obstruction and severity for ERCP decision-making, motivating repeat focused ultrasound."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant abdominal ultrasound is a first-line, highly capable test to visualize the gallbladder and bile ducts, detect stones or sludge, and assess ductal dilation and inflammatory changes.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The repeat ultrasound at the receiving hospital rather than relying solely on the outside ED ultrasound is not fully justified by the notes but is plausibly for confirmation, local imaging quality, and procedural planning."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute biliary pathology such as choledocholithiasis or acute cholecystitis causing obstructive jaundice and abdominal pain.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level working diagnosis for current presentation\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"His evaluation was notable for elevated LFT's (total bilirun 10), WBC count 12, and a CT of the abdomen that revealed cholelithiasis.\",\n        \"He currently notes moderate epigastric pain and RUQ pain. ... ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. ... His common bile duct was 10mm. ... His sclera are icteric. ... Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior imaging orders.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": \"The patient has acute biliary pathology such as choledocholithiasis or acute cholecystitis causing obstructive jaundice and abdominal pain.\",\n    \"reason\": \"Initial synthesis of charted abdominal pain, RUQ tenderness, gallstones, dilated common bile duct, leukocytosis, and marked hyperbilirubinemia.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there imaging evidence of obstructing gallbladder or bile duct pathology that explains the patient’s jaundice and right upper quadrant pain and helps guide the need for ERCP or other intervention?\",\n    \"target\": \"gallbladder and biliary tree (especially gallstones, sludge, and ductal dilation/obstruction)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirmation of obstructing biliary pathology would support proceeding with ERCP or other biliary intervention and continued targeted management for obstructive jaundice/cholecystitis.\",\n    \"negative_answer_changes\": \"If no obstructing biliary pathology is seen, clinicians would reconsider the cause of jaundice and pain, potentially delaying or modifying ERCP plans and broadening the diagnostic workup.\",\n    \"secondary_questions\": [\n      \"What is the degree of bile duct dilation and are there features suggesting acute cholecystitis severity?\",\n      \"Is there a visible obstructing stone or sludge in the common bile duct that could account for the obstructive pattern of LFTs?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder, intrahepatic ducts, and common bile duct.\",\n        \"why_required\": \"The biliary system must be visualized to determine if stones, sludge, or obstruction are present.\"\n      },\n      {\n        \"requirement_key\": \"req_stone\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones or choledocholithiasis causing obstruction.\",\n        \"why_required\": \"Identifying obstructing stones directly answers whether biliary pathology explains jaundice and directs ERCP planning.\"\n      },\n      {\n        \"requirement_key\": \"req_dilation\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of bile duct dilation and gallbladder inflammatory changes (wall thickening, pericholecystic fluid).\",\n        \"why_required\": \"Severity of ductal dilation and cholecystitis affects urgency and type of intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"He currently notes moderate epigastric pain and RUQ pain. ... ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. There was no pericholecystic fluid and equivocal gallbladder wall thickening. His common bile duct was 10mm.\",\n      \"His evaluation was notable for elevated LFT's (total bilirun 10) ... Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5) ... he was transferred to ___ for ERCP evaluation.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"In the ED he had an ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. There was no pericholecystic fluid and equivocal gallbladder wall thickening. His common bile duct was 10mm.\"\n        ],\n        \"reason\": \"A prior ED ultrasound visualized the biliary system, but details are limited, some features were equivocal, and the current site may require its own dedicated assessment for procedural planning.\"\n      },\n      {\n        \"requirement_key\": \"req_stone\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. ... His common bile duct was 10mm.\",\n          \"CT of the abdomen that revealed cholelithiasis.\"\n        ],\n        \"reason\": \"Gallstones and sludge have been reported, but the prior study does not clearly document a specific obstructing common bile duct stone at this facility, leaving uncertainty relevant to ERCP planning.\"\n      },\n      {\n        \"requirement_key\": \"req_dilation\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"His common bile duct was 10mm.\",\n          \"There was no pericholecystic fluid and equivocal gallbladder wall thickening.\"\n        ],\n        \"reason\": \"Prior imaging suggests ductal dilation and possible cholecystitis but with equivocal wall findings and no local comparison study; severity and current status remain insufficiently characterized.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Existing ED imaging and CT demonstrate gallstones and duct dilation but incompletely characterize current obstruction and severity for ERCP decision-making, motivating repeat focused ultrasound.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant abdominal ultrasound is a first-line, highly capable test to visualize the gallbladder and bile ducts, detect stones or sludge, and assess ductal dilation and inflammatory changes.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The repeat ultrasound at the receiving hospital rather than relying solely on the outside ED ultrasound is not fully justified by the notes but is plausibly for confirmation, local imaging quality, and procedural planning.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788167454-jeYLZcMmCqvo9FrBt2rI",
+            "usage": {
+              "completion_tokens": 1683,
+              "prompt_tokens": 3458,
+              "total_tokens": 5141,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0211525,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0211525,
+                "upstream_inference_prompt_cost": 0.0043225,
+                "upstream_inference_completions_cost": 0.01683
+              }
+            }
+          },
+          "validation_errors": [
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "ceb6f22ffb1ad872c1bd99f2def143bd7a25ad79c692251ac0f40e3ac5af30b2",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute biliary disease, likely choledocholithiasis with possible acute cholecystitis causing jaundice and right upper quadrant pain.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome level",
+                  "status": "likely",
+                  "evidence": [
+                    "He currently notes moderate epigastric pain and RUQ pain.",
+                    "His evaluation was notable for elevated LFT's (total bilirun 10), WBC count 12, and a CT of the abdomen that revealed cholelithiasis. ... ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. ... His common bile duct was 10mm. ... His sclera are icteric. ... Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First decision point; no previous order."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": "The patient has acute biliary disease, likely choledocholithiasis with possible acute cholecystitis causing jaundice and right upper quadrant pain.",
+                "reason": "Initial framing of the problem from jaundice, RUQ pain, abnormal LFTs, and prior imaging showing gallstones and dilated common bile duct."
+              },
+              "current_question": {
+                "primary": "Is there evidence of obstructing gallstones or other hepatobiliary pathology in the gallbladder and biliary tree to explain this patient’s jaundice and right upper quadrant pain, and to guide need and approach for ERCP or other intervention?",
+                "target": "gallbladder and biliary tree (including common bile duct) in the setting of suspected choledocholithiasis/acute cholecystitis",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming obstructing stones or acute cholecystitis would support proceeding with ERCP and/or cholecystectomy and further biliary intervention planning.",
+                "negative_answer_changes": "If no obstructing stones or acute cholecystitis are seen, clinicians would reconsider the cause of jaundice and abdominal pain or seek alternative imaging such as MRCP/CT and adjust intervention timing.",
+                "secondary_questions": [
+                  "Is there sonographic evidence of acute cholecystitis such as gallbladder wall thickening, pericholecystic fluid, or a positive sonographic Murphy sign?",
+                  "Is there further biliary ductal dilatation or other hepatic abnormality that would alter the risk, urgency, or approach of ERCP?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate sonographic visualization of the gallbladder, cystic duct, and common bile duct.",
+                    "why_required": "Determining the existence of obstructing stones or acute cholecystitis requires clear visualization of the gallbladder and biliary ducts."
+                  },
+                  {
+                    "requirement_key": "req_stones",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones within the gallbladder and visible bile ducts, including ductal stones or obstructing material.",
+                    "why_required": "Identifying stones or obstructing material is central to confirming choledocholithiasis or acute cholecystitis as the cause of jaundice and pain."
+                  },
+                  {
+                    "requirement_key": "req_chole",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Sonographic signs of acute cholecystitis such as wall thickening, pericholecystic fluid, and a sonographic Murphy sign.",
+                    "why_required": "These features indicate inflammatory complications that influence urgency and type of intervention."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of biliary duct dilation and any secondary hepatic parenchymal changes related to obstruction.",
+                    "why_required": "Severity of ductal dilation and hepatic involvement helps gauge the significance of obstruction and guides timing and risk assessment for ERCP."
+                  }
+                ],
+                "evidence": [
+                  "He currently notes moderate epigastric pain and RUQ pain. He has no appetite.",
+                  "His evaluation was notable for elevated LFT's (total bilirun 10) ... CT of the abdomen that revealed cholelithiasis. ... ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. There was no pericholecystic fluid and equivocal gallbladder wall thickening. His common bile duct was 10mm. ... He received cefoxitin and was transferred to ___ for ERCP evaluation.",
+                  "His sclera are icteric. ... Skin: icteric. ... Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5)"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Imaging resulted before this decision point (none)"
+                    ],
+                    "reason": "No prior imaging at this institution is available at this decision point, so current adequacy of gallbladder and duct visualization is unknown."
+                  },
+                  {
+                    "requirement_key": "req_stones",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "a CT of the abdomen that revealed cholelithiasis.",
+                      "ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. His common bile duct was 10mm."
+                    ],
+                    "reason": "Outside CT and ultrasound show gallstones and ductal dilation, supporting biliary stones, but updated local assessment for obstructing stones at this time is not yet available."
+                  },
+                  {
+                    "requirement_key": "req_chole",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. There was no pericholecystic fluid and equivocal gallbladder wall thickening.",
+                      "He currently notes moderate epigastric pain and RUQ pain. ... + ___ sign."
+                    ],
+                    "reason": "Prior ultrasound suggests possible cholecystitis (positive sign, equivocal wall thickening) but no pericholecystic fluid; characterization remains incomplete and may have changed."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "His common bile duct was 10mm.",
+                      "Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5)"
+                    ],
+                    "reason": "Outside ultrasound shows ductal dilation and labs show marked hyperbilirubinemia, but current local imaging quantifying duct size and hepatic effects has not yet been obtained."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Outside imaging and labs strongly suggest biliary obstruction but do not provide up-to-date local visualization and detailed characterization needed to guide immediate ERCP/intervention decisions."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant/hepatobiliary ultrasound can visualize the gallbladder and biliary ducts, detect stones, wall changes, and ductal dilation, thereby addressing existence and severity of obstructing biliary disease.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The precise reason to repeat ultrasound rather than proceed directly to ERCP or use MRCP (e.g., institutional protocol, need to confirm outside imaging quality, or changes since transfer) is not fully specified in the chart."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute biliary disease, likely choledocholithiasis with possible acute cholecystitis causing jaundice and right upper quadrant pain.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome level\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"He currently notes moderate epigastric pain and RUQ pain.\",\n        \"His evaluation was notable for elevated LFT's (total bilirun 10), WBC count 12, and a CT of the abdomen that revealed cholelithiasis. ... ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. ... His common bile duct was 10mm. ... His sclera are icteric. ... Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no previous order.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": \"The patient has acute biliary disease, likely choledocholithiasis with possible acute cholecystitis causing jaundice and right upper quadrant pain.\",\n    \"reason\": \"Initial framing of the problem from jaundice, RUQ pain, abnormal LFTs, and prior imaging showing gallstones and dilated common bile duct.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there evidence of obstructing gallstones or other hepatobiliary pathology in the gallbladder and biliary tree to explain this patient’s jaundice and right upper quadrant pain, and to guide need and approach for ERCP or other intervention?\",\n    \"target\": \"gallbladder and biliary tree (including common bile duct) in the setting of suspected choledocholithiasis/acute cholecystitis\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming obstructing stones or acute cholecystitis would support proceeding with ERCP and/or cholecystectomy and further biliary intervention planning.\",\n    \"negative_answer_changes\": \"If no obstructing stones or acute cholecystitis are seen, clinicians would reconsider the cause of jaundice and abdominal pain or seek alternative imaging such as MRCP/CT and adjust intervention timing.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of acute cholecystitis such as gallbladder wall thickening, pericholecystic fluid, or a positive sonographic Murphy sign?\",\n      \"Is there further biliary ductal dilatation or other hepatic abnormality that would alter the risk, urgency, or approach of ERCP?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate sonographic visualization of the gallbladder, cystic duct, and common bile duct.\",\n        \"why_required\": \"Determining the existence of obstructing stones or acute cholecystitis requires clear visualization of the gallbladder and biliary ducts.\"\n      },\n      {\n        \"requirement_key\": \"req_stones\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones within the gallbladder and visible bile ducts, including ductal stones or obstructing material.\",\n        \"why_required\": \"Identifying stones or obstructing material is central to confirming choledocholithiasis or acute cholecystitis as the cause of jaundice and pain.\"\n      },\n      {\n        \"requirement_key\": \"req_chole\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Sonographic signs of acute cholecystitis such as wall thickening, pericholecystic fluid, and a sonographic Murphy sign.\",\n        \"why_required\": \"These features indicate inflammatory complications that influence urgency and type of intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of biliary duct dilation and any secondary hepatic parenchymal changes related to obstruction.\",\n        \"why_required\": \"Severity of ductal dilation and hepatic involvement helps gauge the significance of obstruction and guides timing and risk assessment for ERCP.\"\n      }\n    ],\n    \"evidence\": [\n      \"He currently notes moderate epigastric pain and RUQ pain. He has no appetite.\",\n      \"His evaluation was notable for elevated LFT's (total bilirun 10) ... CT of the abdomen that revealed cholelithiasis. ... ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. There was no pericholecystic fluid and equivocal gallbladder wall thickening. His common bile duct was 10mm. ... He received cefoxitin and was transferred to ___ for ERCP evaluation.\",\n      \"His sclera are icteric. ... Skin: icteric. ... Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"No prior imaging at this institution is available at this decision point, so current adequacy of gallbladder and duct visualization is unknown.\"\n      },\n      {\n        \"requirement_key\": \"req_stones\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"a CT of the abdomen that revealed cholelithiasis.\",\n          \"ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. His common bile duct was 10mm.\"\n        ],\n        \"reason\": \"Outside CT and ultrasound show gallstones and ductal dilation, supporting biliary stones, but updated local assessment for obstructing stones at this time is not yet available.\"\n      },\n      {\n        \"requirement_key\": \"req_chole\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. There was no pericholecystic fluid and equivocal gallbladder wall thickening.\",\n          \"He currently notes moderate epigastric pain and RUQ pain. ... + ___ sign.\"\n        ],\n        \"reason\": \"Prior ultrasound suggests possible cholecystitis (positive sign, equivocal wall thickening) but no pericholecystic fluid; characterization remains incomplete and may have changed.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"His common bile duct was 10mm.\",\n          \"Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5)\"\n        ],\n        \"reason\": \"Outside ultrasound shows ductal dilation and labs show marked hyperbilirubinemia, but current local imaging quantifying duct size and hepatic effects has not yet been obtained.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Outside imaging and labs strongly suggest biliary obstruction but do not provide up-to-date local visualization and detailed characterization needed to guide immediate ERCP/intervention decisions.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant/hepatobiliary ultrasound can visualize the gallbladder and biliary ducts, detect stones, wall changes, and ductal dilation, thereby addressing existence and severity of obstructing biliary disease.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The precise reason to repeat ultrasound rather than proceed directly to ERCP or use MRCP (e.g., institutional protocol, need to confirm outside imaging quality, or changes since transfer) is not fully specified in the chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788167475-nMYwUAQTXbiHfYbr6o41",
+            "usage": {
+              "completion_tokens": 1998,
+              "prompt_tokens": 3494,
+              "total_tokens": 5492,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3328,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0206035,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0206035,
+                "upstream_inference_prompt_cost": 0.0006235,
+                "upstream_inference_completions_cost": 0.01998
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute biliary disease, likely choledocholithiasis with possible acute cholecystitis causing jaundice and right upper quadrant pain.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome level",
+            "status": "likely",
+            "evidence": [
+              "He currently notes moderate epigastric pain and RUQ pain.",
+              "His evaluation was notable for elevated LFT's (total bilirun 10), WBC count 12, and a CT of the abdomen that revealed cholelithiasis. ... ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. ... His common bile duct was 10mm. ... His sclera are icteric. ... Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5)"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First decision point; no previous order."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": "The patient has acute biliary disease, likely choledocholithiasis with possible acute cholecystitis causing jaundice and right upper quadrant pain.",
+          "reason": "Initial framing of the problem from jaundice, RUQ pain, abnormal LFTs, and prior imaging showing gallstones and dilated common bile duct."
+        },
+        "current_question": {
+          "primary": "Is there evidence of obstructing gallstones or other hepatobiliary pathology in the gallbladder and biliary tree to explain this patient’s jaundice and right upper quadrant pain, and to guide need and approach for ERCP or other intervention?",
+          "target": "gallbladder and biliary tree (including common bile duct) in the setting of suspected choledocholithiasis/acute cholecystitis",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming obstructing stones or acute cholecystitis would support proceeding with ERCP and/or cholecystectomy and further biliary intervention planning.",
+          "negative_answer_changes": "If no obstructing stones or acute cholecystitis are seen, clinicians would reconsider the cause of jaundice and abdominal pain or seek alternative imaging such as MRCP/CT and adjust intervention timing.",
+          "secondary_questions": [
+            "Is there sonographic evidence of acute cholecystitis such as gallbladder wall thickening, pericholecystic fluid, or a positive sonographic Murphy sign?",
+            "Is there further biliary ductal dilatation or other hepatic abnormality that would alter the risk, urgency, or approach of ERCP?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate sonographic visualization of the gallbladder, cystic duct, and common bile duct.",
+              "why_required": "Determining the existence of obstructing stones or acute cholecystitis requires clear visualization of the gallbladder and biliary ducts."
+            },
+            {
+              "requirement_key": "req_stones",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones within the gallbladder and visible bile ducts, including ductal stones or obstructing material.",
+              "why_required": "Identifying stones or obstructing material is central to confirming choledocholithiasis or acute cholecystitis as the cause of jaundice and pain."
+            },
+            {
+              "requirement_key": "req_chole",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Sonographic signs of acute cholecystitis such as wall thickening, pericholecystic fluid, and a sonographic Murphy sign.",
+              "why_required": "These features indicate inflammatory complications that influence urgency and type of intervention."
+            },
+            {
+              "requirement_key": "req_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Degree of biliary duct dilation and any secondary hepatic parenchymal changes related to obstruction.",
+              "why_required": "Severity of ductal dilation and hepatic involvement helps gauge the significance of obstruction and guides timing and risk assessment for ERCP."
+            }
+          ],
+          "evidence": [
+            "He currently notes moderate epigastric pain and RUQ pain. He has no appetite.",
+            "His evaluation was notable for elevated LFT's (total bilirun 10) ... CT of the abdomen that revealed cholelithiasis. ... ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. There was no pericholecystic fluid and equivocal gallbladder wall thickening. His common bile duct was 10mm. ... He received cefoxitin and was transferred to ___ for ERCP evaluation.",
+            "His sclera are icteric. ... Skin: icteric. ... Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5)"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Imaging resulted before this decision point (none)"
+              ],
+              "reason": "No prior imaging at this institution is available at this decision point, so current adequacy of gallbladder and duct visualization is unknown."
+            },
+            {
+              "requirement_key": "req_stones",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "a CT of the abdomen that revealed cholelithiasis.",
+                "ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. His common bile duct was 10mm."
+              ],
+              "reason": "Outside CT and ultrasound show gallstones and ductal dilation, supporting biliary stones, but updated local assessment for obstructing stones at this time is not yet available."
+            },
+            {
+              "requirement_key": "req_chole",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "mixed",
+              "supporting_evidence": [
+                "ultrasound that revealed multiple gallstones and sludge with a positive sonographic ___ sign. There was no pericholecystic fluid and equivocal gallbladder wall thickening.",
+                "He currently notes moderate epigastric pain and RUQ pain. ... + ___ sign."
+              ],
+              "reason": "Prior ultrasound suggests possible cholecystitis (positive sign, equivocal wall thickening) but no pericholecystic fluid; characterization remains incomplete and may have changed."
+            },
+            {
+              "requirement_key": "req_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "His common bile duct was 10mm.",
+                "Bilirubin, Total: 11.1 mg/dL (ref 0.0-1.5)"
+              ],
+              "reason": "Outside ultrasound shows ductal dilation and labs show marked hyperbilirubinemia, but current local imaging quantifying duct size and hepatic effects has not yet been obtained."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Outside imaging and labs strongly suggest biliary obstruction but do not provide up-to-date local visualization and detailed characterization needed to guide immediate ERCP/intervention decisions."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant/hepatobiliary ultrasound can visualize the gallbladder and biliary ducts, detect stones, wall changes, and ductal dilation, thereby addressing existence and severity of obstructing biliary disease.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The precise reason to repeat ultrasound rather than proceed directly to ERCP or use MRCP (e.g., institutional protocol, need to confirm outside imaging quality, or changes since transfer) is not fully specified in the chart."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

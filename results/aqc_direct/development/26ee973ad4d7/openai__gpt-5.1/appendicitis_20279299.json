@@ -6,6 +6,8 @@
   "source_path": "results/annotation_experiment/full/appendicitis_20279299.json",
   "model": "openai/gpt-5.1",
   "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
   "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
   "steps": [
     {
@@ -15,44 +17,45 @@
       "attempts": [
         {
           "attempt": 1,
+          "request_prompt_sha256": "3eade9e0a31684e19a6b5cef5451c874d34749c81575167933f2f4f96faa58b9",
           "call": {
             "parsed": {
               "assumptions": [
                 {
-                  "proposition": "The patient has an acute abdominal/intra‑abdominal inflammatory or surgical process as the source of his right lower quadrant pain and systemic inflammatory findings.",
+                  "proposition": "The patient has an acute undifferentiated abdominal/intra-abdominal process presenting with nausea, vomiting, leukocytosis, mild right lower quadrant pain, and systemic upset despite a benign abdominal exam.",
                   "type": "syndrome_or_source_frame",
                   "other_proposed_type": "",
-                  "level": "syndrome/source level (acute abdominal process)",
+                  "level": "clinical syndrome",
                   "status": "suspected",
                   "evidence": [
-                    "presenting with 4days of nausea, vomiting and one day of RLQ pain",
-                    "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+                    "\"presenting with 4days of nausea, vomiting and one day of RLQ pain\"",
+                    "\"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\""
                   ],
                   "support": "well_supported"
                 },
                 {
-                  "proposition": "Acute appendicitis is a leading diagnostic consideration for the patient’s right lower quadrant abdominal pain.",
+                  "proposition": "A surgical or structurally focal intra-abdominal cause such as appendicitis, colitis, or other acute inflammatory process is a concern in this presentation.",
                   "type": "disease_or_finding_identity",
                   "other_proposed_type": "",
-                  "level": "specific disease level",
+                  "level": "differential diagnostic consideration",
                   "status": "suspected",
                   "evidence": [
-                    "one day of RLQ pain",
-                    "He has mild anorexia with less nausea today. He notes RLQ pain, which is fairly persistent."
-                  ],
-                  "support": "well_supported"
-                },
-                {
-                  "proposition": "The patient may have early sepsis or significant systemic inflammatory response related to an intra‑abdominal source.",
-                  "type": "severity_extent_or_course",
-                  "other_proposed_type": "",
-                  "level": "severity/systemic involvement",
-                  "status": "suspected",
-                  "evidence": [
-                    "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)",
-                    "Lactate: 2.1 mmol/L (ref 0.5-2.0)"
+                    "\"one day of RLQ pain\"",
+                    "\"He had continued symptoms with sweats and RLQ pain today, which heightened his concern.\""
                   ],
                   "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is possible early volume depletion and renal dysfunction, increasing the need to identify any treatable intra-abdominal source.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "physiologic severity",
+                  "status": "established",
+                  "evidence": [
+                    "\"Creatinine: 1.8 mg/dL (ref 0.5-1.2)\"",
+                    "\"Urea Nitrogen: 35.0 mg/dL (ref 6.0-20.0)\""
+                  ],
+                  "support": "well_supported"
                 }
               ],
               "previous_order_update": {
@@ -61,126 +64,126 @@
                 "study_adequacy": "not_applicable",
                 "test_question_capability": "not_applicable",
                 "result_status": "not_applicable",
-                "effect_on_previous_question": "no prior imaging or diagnostic question to update",
+                "effect_on_previous_question": "not_applicable",
                 "discordance": {
                   "label": "not_applicable",
                   "evidence_stream_1": "",
                   "evidence_stream_2": "",
-                  "reason": "first imaging decision; no prior imaging or question"
+                  "reason": "First imaging decision; no prior imaging to compare."
                 }
               },
               "assumption_change": {
                 "label": "initial",
                 "changed_proposition": null,
-                "reason": "This is the first decision point; assumptions are being framed de novo from history, exam, and labs."
+                "reason": "This is the first decision point, so the syndrome and differential assumptions are being articulated for the first time based on history, exam, and labs."
               },
               "current_question": {
-                "primary": "Is there an intra‑abdominal cause, particularly appendicitis, that explains the patient’s acute right lower quadrant pain and systemic inflammatory findings, and what is its extent?",
-                "target": "appendix and other abdominal/pelvic viscera",
+                "primary": "Is there an acute focal intra-abdominal pathology, such as appendicitis or other inflammatory or obstructive process, explaining the patient’s right lower quadrant pain and systemic findings?",
+                "target": "acute focal intra-abdominal pathology (e.g., appendix, bowel, solid organs, mesentery)",
                 "type": "existence_or_identity",
                 "other_proposed_type": "",
-                "positive_answer_changes": "Confirmation of appendicitis or another intra‑abdominal pathology would prompt surgical or targeted medical management and guide urgency of intervention.",
-                "negative_answer_changes": "If no intra‑abdominal source is identified, clinicians would reconsider the diagnosis, pursue alternative causes of pain and leukocytosis, and potentially avoid or delay surgical intervention.",
+                "positive_answer_changes": "Confirmation of a focal surgical or medical intra-abdominal source (e.g., appendicitis, colitis, obstruction) would prompt targeted therapy and possible surgical or interventional management.",
+                "negative_answer_changes": "Absence of acute focal intra-abdominal pathology would shift evaluation toward non-structural or extra-abdominal causes and may defer surgical intervention.",
                 "secondary_questions": [
-                  "Is there evidence of complication such as perforation or abscess related to a possible appendicitis or other intra‑abdominal inflammatory focus?"
+                  "Is there radiologic evidence of complications such as perforation, abscess, or obstruction associated with any detected intra-abdominal pathology?"
                 ],
                 "answer_requirements": [
                   {
-                    "requirement_key": "req_vis",
+                    "requirement_key": "req_1",
                     "id": "target_visualization_or_assessment",
                     "other_proposed_dimension": "",
-                    "dimension": "Visualization and assessment of the appendix and adjacent right lower quadrant structures",
-                    "why_required": "Determining whether the appendix is visualized and assessable is necessary to judge if appendicitis is present or excluded as the pain source."
+                    "dimension": "Adequate visualization of the appendix, bowel, solid organs, mesentery, and pelvis to evaluate for acute pathology.",
+                    "why_required": "Determining whether a focal intra-abdominal process exists requires clear assessment of these structures."
                   },
                   {
-                    "requirement_key": "req_presence",
+                    "requirement_key": "req_2",
                     "id": "presence_or_absence",
                     "other_proposed_dimension": "",
-                    "dimension": "Presence or absence of imaging signs of appendicitis or another focal intra‑abdominal pathology (e.g., colitis, diverticulitis, obstructing lesion)",
-                    "why_required": "The clinical question hinges on whether a concrete intra‑abdominal disease explains the symptoms and inflammatory markers."
+                    "dimension": "Presence or absence of acute inflammatory, obstructive, or other focal pathology (e.g., appendicitis, colitis, obstruction, abscess).",
+                    "why_required": "The core diagnostic need is to establish whether a specific intra-abdominal disease entity explains the presentation."
                   },
                   {
-                    "requirement_key": "req_extent",
-                    "id": "severity_or_extent",
+                    "requirement_key": "req_3",
+                    "id": "anatomic_localization",
                     "other_proposed_dimension": "",
-                    "dimension": "Severity and local extent of any identified intra‑abdominal pathology (e.g., degree of inflammation, phlegmon, abscess size, obstruction)",
-                    "why_required": "Extent of disease determines urgency and type of management (surgical vs conservative, need for drainage)."
+                    "dimension": "Localization of any detected pathology, particularly to the right lower quadrant or adjacent compartments.",
+                    "why_required": "Linking a detected lesion to the patient’s right lower quadrant pain is necessary to attribute causality and plan intervention."
                   },
                   {
-                    "requirement_key": "req_comp",
+                    "requirement_key": "req_4",
                     "id": "complication_presence_or_character",
                     "other_proposed_dimension": "",
-                    "dimension": "Presence and character of complications such as perforation, abscess, or free air/fluid",
-                    "why_required": "Complications would escalate urgency and alter surgical planning and perioperative care."
+                    "dimension": "Presence and characterization of complications such as perforation, abscess, or significant obstruction if pathology is found.",
+                    "why_required": "Complications alter urgency and type of management, including need for surgery, drainage, or higher level of care."
                   }
                 ],
                 "evidence": [
-                  "presenting with 4days of nausea, vomiting and one day of RLQ pain",
-                  "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+                  "\"4days of nausea, vomiting and one day of RLQ pain\"",
+                  "\"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\""
                 ]
               },
               "question_continuity": "initial",
               "coverage": {
                 "requirements": [
                   {
-                    "requirement_key": "req_vis",
+                    "requirement_key": "req_1",
                     "requirement_id": "target_visualization_or_assessment",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "## Imaging resulted before this decision point\n(none)"
+                      "\"Imaging resulted before this decision point (none)\""
                     ],
-                    "reason": "No prior imaging has been performed, so there is no visualization or assessment of the appendix or RLQ structures."
+                    "reason": "No prior imaging has assessed visualization of intra-abdominal structures."
                   },
                   {
-                    "requirement_key": "req_presence",
+                    "requirement_key": "req_2",
                     "requirement_id": "presence_or_absence",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "## Imaging resulted before this decision point\n(none)"
+                      "\"Imaging resulted before this decision point (none)\""
                     ],
-                    "reason": "Clinical data suggest an intra‑abdominal process but cannot establish or exclude appendicitis or other focal pathology without imaging."
+                    "reason": "No test has yet specifically evaluated for or against a focal intra-abdominal pathology such as appendicitis or obstruction."
                   },
                   {
-                    "requirement_key": "req_extent",
-                    "requirement_id": "severity_or_extent",
+                    "requirement_key": "req_3",
+                    "requirement_id": "anatomic_localization",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "## Imaging resulted before this decision point\n(none)"
+                      "\"Imaging resulted before this decision point (none)\""
                     ],
-                    "reason": "No imaging or other modality has characterized the local extent of any intra‑abdominal disease."
+                    "reason": "The location of any possible lesion relative to the right lower quadrant has not been imaged."
                   },
                   {
-                    "requirement_key": "req_comp",
+                    "requirement_key": "req_4",
                     "requirement_id": "complication_presence_or_character",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "## Imaging resulted before this decision point\n(none)"
+                      "\"Imaging resulted before this decision point (none)\""
                     ],
-                    "reason": "Potential complications such as perforation or abscess cannot be assessed from exam and labs alone in this case."
+                    "reason": "There is no imaging information regarding perforation, abscess, or obstruction."
                   }
                 ],
                 "aggregate": "unanswered",
-                "aggregate_reason": "All imaging‑dependent aspects of the question remain unaddressed because no prior imaging has been performed."
+                "aggregate_reason": "No prior imaging exists, so all requirements for answering the current question remain unaddressed."
               },
               "current_order_fit": {
                 "test_question_capability": "capable",
-                "why_this_order_could_answer": "Contrast‑enhanced CT of the abdomen and pelvis is well‑suited to visualize the appendix and other abdominal/pelvic structures, detect intra‑abdominal inflammatory processes, and assess extent and complications.",
+                "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can visualize the appendix, bowel, mesentery, and solid organs, detect acute inflammatory or obstructive pathology, and identify complications such as perforation or abscess.",
                 "intent_support": "well_supported",
-                "unsupported_residual": "The choice of contrast-enhanced CT rather than ultrasound or noncontrast CT is not explicitly justified (e.g., body habitus, local practice, or concern for alternative diagnoses), and mild renal dysfunction (Creatinine: 1.8 mg/dL, Estimated GFR = 44) makes the contrast choice somewhat incompletely explained."
+                "unsupported_residual": "The choice of using IV contrast despite elevated creatinine is not explicitly justified in the chart provided (e.g., risk–benefit discussion for contrast in the setting of reduced GFR is not documented here)."
               },
               "derived_transition": "initial",
               "alternative_reconstruction": ""
             },
-            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal/intra‑abdominal inflammatory or surgical process as the source of his right lower quadrant pain and systemic inflammatory findings.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome/source level (acute abdominal process)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"presenting with 4days of nausea, vomiting and one day of RLQ pain\",\n        \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute appendicitis is a leading diagnostic consideration for the patient’s right lower quadrant abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"one day of RLQ pain\",\n        \"He has mild anorexia with less nausea today. He notes RLQ pain, which is fairly persistent.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient may have early sepsis or significant systemic inflammatory response related to an intra‑abdominal source.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity/systemic involvement\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\",\n        \"Lactate: 2.1 mmol/L (ref 0.5-2.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging or diagnostic question to update\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"first imaging decision; no prior imaging or question\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; assumptions are being framed de novo from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an intra‑abdominal cause, particularly appendicitis, that explains the patient’s acute right lower quadrant pain and systemic inflammatory findings, and what is its extent?\",\n    \"target\": \"appendix and other abdominal/pelvic viscera\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirmation of appendicitis or another intra‑abdominal pathology would prompt surgical or targeted medical management and guide urgency of intervention.\",\n    \"negative_answer_changes\": \"If no intra‑abdominal source is identified, clinicians would reconsider the diagnosis, pursue alternative causes of pain and leukocytosis, and potentially avoid or delay surgical intervention.\",\n    \"secondary_questions\": [\n      \"Is there evidence of complication such as perforation or abscess related to a possible appendicitis or other intra‑abdominal inflammatory focus?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and assessment of the appendix and adjacent right lower quadrant structures\",\n        \"why_required\": \"Determining whether the appendix is visualized and assessable is necessary to judge if appendicitis is present or excluded as the pain source.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of imaging signs of appendicitis or another focal intra‑abdominal pathology (e.g., colitis, diverticulitis, obstructing lesion)\",\n        \"why_required\": \"The clinical question hinges on whether a concrete intra‑abdominal disease explains the symptoms and inflammatory markers.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and local extent of any identified intra‑abdominal pathology (e.g., degree of inflammation, phlegmon, abscess size, obstruction)\",\n        \"why_required\": \"Extent of disease determines urgency and type of management (surgical vs conservative, need for drainage).\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as perforation, abscess, or free air/fluid\",\n        \"why_required\": \"Complications would escalate urgency and alter surgical planning and perioperative care.\"\n      }\n    ],\n    \"evidence\": [\n      \"presenting with 4days of nausea, vomiting and one day of RLQ pain\",\n      \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior imaging has been performed, so there is no visualization or assessment of the appendix or RLQ structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Clinical data suggest an intra‑abdominal process but cannot establish or exclude appendicitis or other focal pathology without imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No imaging or other modality has characterized the local extent of any intra‑abdominal disease.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Potential complications such as perforation or abscess cannot be assessed from exam and labs alone in this case.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All imaging‑dependent aspects of the question remain unaddressed because no prior imaging has been performed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast‑enhanced CT of the abdomen and pelvis is well‑suited to visualize the appendix and other abdominal/pelvic structures, detect intra‑abdominal inflammatory processes, and assess extent and complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of contrast-enhanced CT rather than ultrasound or noncontrast CT is not explicitly justified (e.g., body habitus, local practice, or concern for alternative diagnoses), and mild renal dysfunction (Creatinine: 1.8 mg/dL, Estimated GFR = 44) makes the contrast choice somewhat incompletely explained.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
-            "request_id": "gen-1788156963-UQnFQjzRdnljWrJkO2Fo",
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute undifferentiated abdominal/intra-abdominal process presenting with nausea, vomiting, leukocytosis, mild right lower quadrant pain, and systemic upset despite a benign abdominal exam.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"\\\"presenting with 4days of nausea, vomiting and one day of RLQ pain\\\"\",\n        \"\\\"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A surgical or structurally focal intra-abdominal cause such as appendicitis, colitis, or other acute inflammatory process is a concern in this presentation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnostic consideration\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"\\\"one day of RLQ pain\\\"\",\n        \"\\\"He had continued symptoms with sweats and RLQ pain today, which heightened his concern.\\\"\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is possible early volume depletion and renal dysfunction, increasing the need to identify any treatable intra-abdominal source.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic severity\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"\\\"Creatinine: 1.8 mg/dL (ref 0.5-1.2)\\\"\",\n        \"\\\"Urea Nitrogen: 35.0 mg/dL (ref 6.0-20.0)\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First imaging decision; no prior imaging to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point, so the syndrome and differential assumptions are being articulated for the first time based on history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an acute focal intra-abdominal pathology, such as appendicitis or other inflammatory or obstructive process, explaining the patient’s right lower quadrant pain and systemic findings?\",\n    \"target\": \"acute focal intra-abdominal pathology (e.g., appendix, bowel, solid organs, mesentery)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirmation of a focal surgical or medical intra-abdominal source (e.g., appendicitis, colitis, obstruction) would prompt targeted therapy and possible surgical or interventional management.\",\n    \"negative_answer_changes\": \"Absence of acute focal intra-abdominal pathology would shift evaluation toward non-structural or extra-abdominal causes and may defer surgical intervention.\",\n    \"secondary_questions\": [\n      \"Is there radiologic evidence of complications such as perforation, abscess, or obstruction associated with any detected intra-abdominal pathology?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the appendix, bowel, solid organs, mesentery, and pelvis to evaluate for acute pathology.\",\n        \"why_required\": \"Determining whether a focal intra-abdominal process exists requires clear assessment of these structures.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute inflammatory, obstructive, or other focal pathology (e.g., appendicitis, colitis, obstruction, abscess).\",\n        \"why_required\": \"The core diagnostic need is to establish whether a specific intra-abdominal disease entity explains the presentation.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any detected pathology, particularly to the right lower quadrant or adjacent compartments.\",\n        \"why_required\": \"Linking a detected lesion to the patient’s right lower quadrant pain is necessary to attribute causality and plan intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_4\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characterization of complications such as perforation, abscess, or significant obstruction if pathology is found.\",\n        \"why_required\": \"Complications alter urgency and type of management, including need for surgery, drainage, or higher level of care.\"\n      }\n    ],\n    \"evidence\": [\n      \"\\\"4days of nausea, vomiting and one day of RLQ pain\\\"\",\n      \"\\\"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\\\"\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\\\"Imaging resulted before this decision point (none)\\\"\"\n        ],\n        \"reason\": \"No prior imaging has assessed visualization of intra-abdominal structures.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\\\"Imaging resulted before this decision point (none)\\\"\"\n        ],\n        \"reason\": \"No test has yet specifically evaluated for or against a focal intra-abdominal pathology such as appendicitis or obstruction.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\\\"Imaging resulted before this decision point (none)\\\"\"\n        ],\n        \"reason\": \"The location of any possible lesion relative to the right lower quadrant has not been imaged.\"\n      },\n      {\n        \"requirement_key\": \"req_4\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\\\"Imaging resulted before this decision point (none)\\\"\"\n        ],\n        \"reason\": \"There is no imaging information regarding perforation, abscess, or obstruction.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No prior imaging exists, so all requirements for answering the current question remain unaddressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT of the abdomen and pelvis can visualize the appendix, bowel, mesentery, and solid organs, detect acute inflammatory or obstructive pathology, and identify complications such as perforation or abscess.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of using IV contrast despite elevated creatinine is not explicitly justified in the chart provided (e.g., risk–benefit discussion for contrast in the setting of reduced GFR is not documented here).\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788162586-ub6ECklNRhS8gZMwc5IT",
             "usage": {
-              "completion_tokens": 1784,
+              "completion_tokens": 1796,
               "prompt_tokens": 3126,
-              "total_tokens": 4910,
+              "total_tokens": 4922,
               "completion_tokens_details": {
                 "accepted_prediction_tokens": null,
                 "audio_tokens": 0,
@@ -198,12 +201,12 @@
                 "text_tokens": null,
                 "video_tokens": 0
               },
-              "cost": 0.0217475,
+              "cost": 0.0218675,
               "is_byok": false,
               "cost_details": {
-                "upstream_inference_cost": 0.0217475,
+                "upstream_inference_cost": 0.0218675,
                 "upstream_inference_prompt_cost": 0.0039075,
-                "upstream_inference_completions_cost": 0.01784
+                "upstream_inference_completions_cost": 0.01796
               }
             }
           },
@@ -213,40 +216,40 @@
       "accepted": {
         "assumptions": [
           {
-            "proposition": "The patient has an acute abdominal/intra‑abdominal inflammatory or surgical process as the source of his right lower quadrant pain and systemic inflammatory findings.",
+            "proposition": "The patient has an acute undifferentiated abdominal/intra-abdominal process presenting with nausea, vomiting, leukocytosis, mild right lower quadrant pain, and systemic upset despite a benign abdominal exam.",
             "type": "syndrome_or_source_frame",
             "other_proposed_type": "",
-            "level": "syndrome/source level (acute abdominal process)",
+            "level": "clinical syndrome",
             "status": "suspected",
             "evidence": [
-              "presenting with 4days of nausea, vomiting and one day of RLQ pain",
-              "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+              "\"presenting with 4days of nausea, vomiting and one day of RLQ pain\"",
+              "\"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\""
             ],
             "support": "well_supported"
           },
           {
-            "proposition": "Acute appendicitis is a leading diagnostic consideration for the patient’s right lower quadrant abdominal pain.",
+            "proposition": "A surgical or structurally focal intra-abdominal cause such as appendicitis, colitis, or other acute inflammatory process is a concern in this presentation.",
             "type": "disease_or_finding_identity",
             "other_proposed_type": "",
-            "level": "specific disease level",
+            "level": "differential diagnostic consideration",
             "status": "suspected",
             "evidence": [
-              "one day of RLQ pain",
-              "He has mild anorexia with less nausea today. He notes RLQ pain, which is fairly persistent."
-            ],
-            "support": "well_supported"
-          },
-          {
-            "proposition": "The patient may have early sepsis or significant systemic inflammatory response related to an intra‑abdominal source.",
-            "type": "severity_extent_or_course",
-            "other_proposed_type": "",
-            "level": "severity/systemic involvement",
-            "status": "suspected",
-            "evidence": [
-              "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)",
-              "Lactate: 2.1 mmol/L (ref 0.5-2.0)"
+              "\"one day of RLQ pain\"",
+              "\"He had continued symptoms with sweats and RLQ pain today, which heightened his concern.\""
             ],
             "support": "weakly_supported"
+          },
+          {
+            "proposition": "There is possible early volume depletion and renal dysfunction, increasing the need to identify any treatable intra-abdominal source.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "physiologic severity",
+            "status": "established",
+            "evidence": [
+              "\"Creatinine: 1.8 mg/dL (ref 0.5-1.2)\"",
+              "\"Urea Nitrogen: 35.0 mg/dL (ref 6.0-20.0)\""
+            ],
+            "support": "well_supported"
           }
         ],
         "previous_order_update": {
@@ -255,116 +258,116 @@
           "study_adequacy": "not_applicable",
           "test_question_capability": "not_applicable",
           "result_status": "not_applicable",
-          "effect_on_previous_question": "no prior imaging or diagnostic question to update",
+          "effect_on_previous_question": "not_applicable",
           "discordance": {
             "label": "not_applicable",
             "evidence_stream_1": "",
             "evidence_stream_2": "",
-            "reason": "first imaging decision; no prior imaging or question"
+            "reason": "First imaging decision; no prior imaging to compare."
           }
         },
         "assumption_change": {
           "label": "initial",
           "changed_proposition": null,
-          "reason": "This is the first decision point; assumptions are being framed de novo from history, exam, and labs."
+          "reason": "This is the first decision point, so the syndrome and differential assumptions are being articulated for the first time based on history, exam, and labs."
         },
         "current_question": {
-          "primary": "Is there an intra‑abdominal cause, particularly appendicitis, that explains the patient’s acute right lower quadrant pain and systemic inflammatory findings, and what is its extent?",
-          "target": "appendix and other abdominal/pelvic viscera",
+          "primary": "Is there an acute focal intra-abdominal pathology, such as appendicitis or other inflammatory or obstructive process, explaining the patient’s right lower quadrant pain and systemic findings?",
+          "target": "acute focal intra-abdominal pathology (e.g., appendix, bowel, solid organs, mesentery)",
           "type": "existence_or_identity",
           "other_proposed_type": "",
-          "positive_answer_changes": "Confirmation of appendicitis or another intra‑abdominal pathology would prompt surgical or targeted medical management and guide urgency of intervention.",
-          "negative_answer_changes": "If no intra‑abdominal source is identified, clinicians would reconsider the diagnosis, pursue alternative causes of pain and leukocytosis, and potentially avoid or delay surgical intervention.",
+          "positive_answer_changes": "Confirmation of a focal surgical or medical intra-abdominal source (e.g., appendicitis, colitis, obstruction) would prompt targeted therapy and possible surgical or interventional management.",
+          "negative_answer_changes": "Absence of acute focal intra-abdominal pathology would shift evaluation toward non-structural or extra-abdominal causes and may defer surgical intervention.",
           "secondary_questions": [
-            "Is there evidence of complication such as perforation or abscess related to a possible appendicitis or other intra‑abdominal inflammatory focus?"
+            "Is there radiologic evidence of complications such as perforation, abscess, or obstruction associated with any detected intra-abdominal pathology?"
           ],
           "answer_requirements": [
             {
-              "requirement_key": "req_vis",
+              "requirement_key": "req_1",
               "id": "target_visualization_or_assessment",
               "other_proposed_dimension": "",
-              "dimension": "Visualization and assessment of the appendix and adjacent right lower quadrant structures",
-              "why_required": "Determining whether the appendix is visualized and assessable is necessary to judge if appendicitis is present or excluded as the pain source."
+              "dimension": "Adequate visualization of the appendix, bowel, solid organs, mesentery, and pelvis to evaluate for acute pathology.",
+              "why_required": "Determining whether a focal intra-abdominal process exists requires clear assessment of these structures."
             },
             {
-              "requirement_key": "req_presence",
+              "requirement_key": "req_2",
               "id": "presence_or_absence",
               "other_proposed_dimension": "",
-              "dimension": "Presence or absence of imaging signs of appendicitis or another focal intra‑abdominal pathology (e.g., colitis, diverticulitis, obstructing lesion)",
-              "why_required": "The clinical question hinges on whether a concrete intra‑abdominal disease explains the symptoms and inflammatory markers."
+              "dimension": "Presence or absence of acute inflammatory, obstructive, or other focal pathology (e.g., appendicitis, colitis, obstruction, abscess).",
+              "why_required": "The core diagnostic need is to establish whether a specific intra-abdominal disease entity explains the presentation."
             },
             {
-              "requirement_key": "req_extent",
-              "id": "severity_or_extent",
+              "requirement_key": "req_3",
+              "id": "anatomic_localization",
               "other_proposed_dimension": "",
-              "dimension": "Severity and local extent of any identified intra‑abdominal pathology (e.g., degree of inflammation, phlegmon, abscess size, obstruction)",
-              "why_required": "Extent of disease determines urgency and type of management (surgical vs conservative, need for drainage)."
+              "dimension": "Localization of any detected pathology, particularly to the right lower quadrant or adjacent compartments.",
+              "why_required": "Linking a detected lesion to the patient’s right lower quadrant pain is necessary to attribute causality and plan intervention."
             },
             {
-              "requirement_key": "req_comp",
+              "requirement_key": "req_4",
               "id": "complication_presence_or_character",
               "other_proposed_dimension": "",
-              "dimension": "Presence and character of complications such as perforation, abscess, or free air/fluid",
-              "why_required": "Complications would escalate urgency and alter surgical planning and perioperative care."
+              "dimension": "Presence and characterization of complications such as perforation, abscess, or significant obstruction if pathology is found.",
+              "why_required": "Complications alter urgency and type of management, including need for surgery, drainage, or higher level of care."
             }
           ],
           "evidence": [
-            "presenting with 4days of nausea, vomiting and one day of RLQ pain",
-            "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+            "\"4days of nausea, vomiting and one day of RLQ pain\"",
+            "\"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\""
           ]
         },
         "question_continuity": "initial",
         "coverage": {
           "requirements": [
             {
-              "requirement_key": "req_vis",
+              "requirement_key": "req_1",
               "requirement_id": "target_visualization_or_assessment",
               "status": "unaddressed",
               "direction": "no_direction",
               "supporting_evidence": [
-                "## Imaging resulted before this decision point\n(none)"
+                "\"Imaging resulted before this decision point (none)\""
               ],
-              "reason": "No prior imaging has been performed, so there is no visualization or assessment of the appendix or RLQ structures."
+              "reason": "No prior imaging has assessed visualization of intra-abdominal structures."
             },
             {
-              "requirement_key": "req_presence",
+              "requirement_key": "req_2",
               "requirement_id": "presence_or_absence",
               "status": "unaddressed",
               "direction": "no_direction",
               "supporting_evidence": [
-                "## Imaging resulted before this decision point\n(none)"
+                "\"Imaging resulted before this decision point (none)\""
               ],
-              "reason": "Clinical data suggest an intra‑abdominal process but cannot establish or exclude appendicitis or other focal pathology without imaging."
+              "reason": "No test has yet specifically evaluated for or against a focal intra-abdominal pathology such as appendicitis or obstruction."
             },
             {
-              "requirement_key": "req_extent",
-              "requirement_id": "severity_or_extent",
+              "requirement_key": "req_3",
+              "requirement_id": "anatomic_localization",
               "status": "unaddressed",
               "direction": "no_direction",
               "supporting_evidence": [
-                "## Imaging resulted before this decision point\n(none)"
+                "\"Imaging resulted before this decision point (none)\""
               ],
-              "reason": "No imaging or other modality has characterized the local extent of any intra‑abdominal disease."
+              "reason": "The location of any possible lesion relative to the right lower quadrant has not been imaged."
             },
             {
-              "requirement_key": "req_comp",
+              "requirement_key": "req_4",
               "requirement_id": "complication_presence_or_character",
               "status": "unaddressed",
               "direction": "no_direction",
               "supporting_evidence": [
-                "## Imaging resulted before this decision point\n(none)"
+                "\"Imaging resulted before this decision point (none)\""
               ],
-              "reason": "Potential complications such as perforation or abscess cannot be assessed from exam and labs alone in this case."
+              "reason": "There is no imaging information regarding perforation, abscess, or obstruction."
             }
           ],
           "aggregate": "unanswered",
-          "aggregate_reason": "All imaging‑dependent aspects of the question remain unaddressed because no prior imaging has been performed."
+          "aggregate_reason": "No prior imaging exists, so all requirements for answering the current question remain unaddressed."
         },
         "current_order_fit": {
           "test_question_capability": "capable",
-          "why_this_order_could_answer": "Contrast‑enhanced CT of the abdomen and pelvis is well‑suited to visualize the appendix and other abdominal/pelvic structures, detect intra‑abdominal inflammatory processes, and assess extent and complications.",
+          "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can visualize the appendix, bowel, mesentery, and solid organs, detect acute inflammatory or obstructive pathology, and identify complications such as perforation or abscess.",
           "intent_support": "well_supported",
-          "unsupported_residual": "The choice of contrast-enhanced CT rather than ultrasound or noncontrast CT is not explicitly justified (e.g., body habitus, local practice, or concern for alternative diagnoses), and mild renal dysfunction (Creatinine: 1.8 mg/dL, Estimated GFR = 44) makes the contrast choice somewhat incompletely explained."
+          "unsupported_residual": "The choice of using IV contrast despite elevated creatinine is not explicitly justified in the chart provided (e.g., risk–benefit discussion for contrast in the setting of reduced GFR is not documented here)."
         },
         "derived_transition": "initial",
         "alternative_reconstruction": ""
@@ -374,22 +377,23 @@
     {
       "step": 2,
       "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
-      "request_prompt_sha256": "e2d742c5eed79678c9ddf5e7961b638aaa487817ee307b89a6c1e069bf670641",
+      "request_prompt_sha256": "49353435e920339d71abfad7cf72b617a92e1fd593e9fdce09851eb085536331",
       "attempts": [
         {
           "attempt": 1,
+          "request_prompt_sha256": "49353435e920339d71abfad7cf72b617a92e1fd593e9fdce09851eb085536331",
           "call": {
             "parsed": {
               "assumptions": [
                 {
-                  "proposition": "The patient has an acute intra-abdominal inflammatory or surgical process causing his right lower quadrant pain and systemic inflammatory findings.",
+                  "proposition": "The patient has an acute right-lower-quadrant intra-abdominal inflammatory process causing his symptoms and systemic findings.",
                   "type": "syndrome_or_source_frame",
                   "other_proposed_type": "",
-                  "level": "syndrome/source level (acute abdominal process)",
+                  "level": "clinical syndrome (suspected focal RLQ intra-abdominal source)",
                   "status": "suspected",
                   "evidence": [
-                    "presenting with 4days of nausea, vomiting and one day of RLQ pain",
-                    "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+                    "\"presenting with 4days of nausea, vomiting and one day of RLQ pain\"",
+                    "\"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\""
                   ],
                   "support": "well_supported"
                 }
@@ -400,126 +404,125 @@
                 "study_adequacy": "not_applicable",
                 "test_question_capability": "not_applicable",
                 "result_status": "not_applicable",
-                "effect_on_previous_question": "no prior imaging or diagnostic question to update",
+                "effect_on_previous_question": "not_applicable",
                 "discordance": {
                   "label": "not_applicable",
                   "evidence_stream_1": "",
                   "evidence_stream_2": "",
-                  "reason": "first imaging decision; no prior imaging or question"
+                  "reason": "First imaging decision; no prior imaging to compare."
                 }
               },
               "assumption_change": {
                 "label": "initial",
                 "changed_proposition": null,
-                "reason": "This is the first imaging decision; the acute intra-abdominal process is being framed from presentation and labs."
+                "reason": "This is the first imaging step; the acute RLQ intra-abdominal source is being framed based on history, labs, and mild focal pain despite a benign abdominal exam."
               },
               "current_question": {
-                "primary": "What intra-abdominal pathology, particularly involving the appendix, is causing the acute right lower quadrant pain and systemic inflammatory findings, and how advanced is it?",
-                "target": "appendix and adjacent abdominal/pelvic viscera",
+                "primary": "Is there a focal intra-abdominal pathology, particularly appendicitis or another RLQ inflammatory process, that explains the patient’s pain and systemic findings and requires acute intervention?",
+                "target": "appendix, cecum/right colon, adjacent mesentery, and other intra-abdominal structures",
                 "type": "existence_or_identity",
                 "other_proposed_type": "",
-                "positive_answer_changes": "Identifying appendicitis or another focal intra-abdominal process would support urgent surgical or targeted medical management and guide perioperative planning.",
-                "negative_answer_changes": "If no intra-abdominal source is identified, clinicians would reconsider the diagnosis, broaden the differential, and potentially avoid immediate surgery.",
+                "positive_answer_changes": "Confirmation of a focal process such as appendicitis or colitis would prompt surgical or interventional management and targeted antimicrobial/supportive therapy.",
+                "negative_answer_changes": "If no focal intra-abdominal source is found, attention would shift toward non-surgical or extra-abdominal causes and may avoid operative management.",
                 "secondary_questions": [
-                  "Is there evidence of perforation, abscess, or other complication associated with a suspected appendicitis or intra-abdominal inflammatory focus?"
+                  "Are there complications such as perforation, abscess, or obstruction associated with any detected pathology?"
                 ],
                 "answer_requirements": [
                   {
-                    "requirement_key": "req_vis",
+                    "requirement_key": "req_1",
                     "id": "target_visualization_or_assessment",
                     "other_proposed_dimension": "",
-                    "dimension": "Visualization and assessment of the appendix and right lower quadrant bowel/mesentery",
-                    "why_required": "Visualization is necessary to determine whether appendicitis or another focal RLQ process is present."
+                    "dimension": "Adequate visualization of the appendix, cecum/right colon, small bowel, mesentery, solid organs, and pelvis to look for an acute RLQ source.",
+                    "why_required": "Determining whether a focal RLQ process exists requires clear assessment of these structures."
                   },
                   {
-                    "requirement_key": "req_presence",
+                    "requirement_key": "req_2",
                     "id": "presence_or_absence",
                     "other_proposed_dimension": "",
-                    "dimension": "Presence or absence of imaging signs of appendicitis or alternative intra-abdominal pathology explaining RLQ pain and leukocytosis",
-                    "why_required": "Establishing a concrete disease entity is required to attribute symptoms and plan treatment."
+                    "dimension": "Presence or absence of an acute focal inflammatory, infectious, or obstructive process, especially appendicitis or colitis, to explain the RLQ pain.",
+                    "why_required": "The clinical decision hinges on whether a specific intra-abdominal disease entity is present."
                   },
                   {
-                    "requirement_key": "req_extent",
-                    "id": "severity_or_extent",
+                    "requirement_key": "req_3",
+                    "id": "anatomic_localization",
                     "other_proposed_dimension": "",
-                    "dimension": "Severity and local extent of any identified inflammatory or surgical process (e.g., length of involved bowel, phlegmon, collections)",
-                    "why_required": "Extent informs urgency, operative strategy, and potential need for percutaneous drainage or conservative management."
+                    "dimension": "Localization of any detected lesion to the RLQ or adjacent compartments to link imaging findings with symptoms.",
+                    "why_required": "Causally attributing symptoms and planning surgery or intervention require precise anatomic localization."
                   },
                   {
-                    "requirement_key": "req_comp",
+                    "requirement_key": "req_4",
                     "id": "complication_presence_or_character",
                     "other_proposed_dimension": "",
-                    "dimension": "Presence and character of complications such as perforation, abscess, free air, or diffuse peritonitis",
-                    "why_required": "Complications significantly alter risk, timing, and type of intervention."
+                    "dimension": "Presence and characterization of complications such as perforation, abscess, or significant obstruction if a focal RLQ process is present.",
+                    "why_required": "Complications change urgency, operative approach, and need for drainage or higher level of care."
                   }
                 ],
                 "evidence": [
-                  "presenting with 4days of nausea, vomiting and one day of RLQ pain",
-                  "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+                  "\"presenting with 4days of nausea, vomiting and one day of RLQ pain\""
                 ]
               },
               "question_continuity": "initial",
               "coverage": {
                 "requirements": [
                   {
-                    "requirement_key": "req_vis",
+                    "requirement_key": "req_1",
                     "requirement_id": "target_visualization_or_assessment",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "## Imaging resulted before this decision point\n(none)"
+                      "No prior abdominal imaging is described before this CT order."
                     ],
-                    "reason": "No prior imaging has visualized the appendix or RLQ structures."
+                    "reason": "No imaging study has yet visualized the appendix, RLQ bowel, or other intra-abdominal structures."
                   },
                   {
-                    "requirement_key": "req_presence",
+                    "requirement_key": "req_2",
                     "requirement_id": "presence_or_absence",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "## Imaging resulted before this decision point\n(none)"
+                      "No prior abdominal imaging is described before this CT order."
                     ],
-                    "reason": "Clinical data alone cannot establish or exclude appendicitis or other focal intra-abdominal pathology."
+                    "reason": "No prior test has directly evaluated for appendicitis or another focal intra-abdominal source."
                   },
                   {
-                    "requirement_key": "req_extent",
-                    "requirement_id": "severity_or_extent",
+                    "requirement_key": "req_3",
+                    "requirement_id": "anatomic_localization",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "## Imaging resulted before this decision point\n(none)"
+                      "No prior abdominal imaging is described before this CT order."
                     ],
-                    "reason": "No modality has characterized the local extent of any intra-abdominal disease."
+                    "reason": "The anatomic site of any potential lesion has not been imaged."
                   },
                   {
-                    "requirement_key": "req_comp",
+                    "requirement_key": "req_4",
                     "requirement_id": "complication_presence_or_character",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "## Imaging resulted before this decision point\n(none)"
+                      "No prior abdominal imaging is described before this CT order."
                     ],
-                    "reason": "Possible complications like perforation or abscess cannot be assessed from exam and labs alone despite leukocytosis and mild lactic elevation."
+                    "reason": "There is no information yet about perforation, abscess, or obstruction."
                   }
                 ],
                 "aggregate": "unanswered",
-                "aggregate_reason": "All imaging-dependent aspects of the question remain unaddressed because no prior imaging has been done."
+                "aggregate_reason": "All requirements remain unaddressed because this CT is the first abdominal imaging study."
               },
               "current_order_fit": {
                 "test_question_capability": "capable",
-                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix, identify appendicitis or other intra-abdominal pathology, and assess severity and complications such as perforation or abscess.",
+                "why_this_order_could_answer": "A contrast-enhanced CT abdomen/pelvis can visualize the appendix, RLQ bowel, mesentery, solid organs, and pelvis, detect inflammatory or obstructive pathology, and identify complications such as perforation or abscess.",
                 "intent_support": "well_supported",
-                "unsupported_residual": "The choice of contrast-enhanced CT over ultrasound or noncontrast CT is not explicitly justified given the elevated creatinine and reduced eGFR, though local practice and diagnostic certainty needs may explain it."
+                "unsupported_residual": "The chart excerpt does not document the risk–benefit reasoning for giving IV contrast despite elevated creatinine and reduced estimated GFR."
               },
               "derived_transition": "initial",
               "alternative_reconstruction": ""
             },
-            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute intra-abdominal inflammatory or surgical process causing his right lower quadrant pain and systemic inflammatory findings.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome/source level (acute abdominal process)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"presenting with 4days of nausea, vomiting and one day of RLQ pain\",\n        \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging or diagnostic question to update\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"first imaging decision; no prior imaging or question\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the acute intra-abdominal process is being framed from presentation and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What intra-abdominal pathology, particularly involving the appendix, is causing the acute right lower quadrant pain and systemic inflammatory findings, and how advanced is it?\",\n    \"target\": \"appendix and adjacent abdominal/pelvic viscera\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying appendicitis or another focal intra-abdominal process would support urgent surgical or targeted medical management and guide perioperative planning.\",\n    \"negative_answer_changes\": \"If no intra-abdominal source is identified, clinicians would reconsider the diagnosis, broaden the differential, and potentially avoid immediate surgery.\",\n    \"secondary_questions\": [\n      \"Is there evidence of perforation, abscess, or other complication associated with a suspected appendicitis or intra-abdominal inflammatory focus?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and assessment of the appendix and right lower quadrant bowel/mesentery\",\n        \"why_required\": \"Visualization is necessary to determine whether appendicitis or another focal RLQ process is present.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of imaging signs of appendicitis or alternative intra-abdominal pathology explaining RLQ pain and leukocytosis\",\n        \"why_required\": \"Establishing a concrete disease entity is required to attribute symptoms and plan treatment.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and local extent of any identified inflammatory or surgical process (e.g., length of involved bowel, phlegmon, collections)\",\n        \"why_required\": \"Extent informs urgency, operative strategy, and potential need for percutaneous drainage or conservative management.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as perforation, abscess, free air, or diffuse peritonitis\",\n        \"why_required\": \"Complications significantly alter risk, timing, and type of intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"presenting with 4days of nausea, vomiting and one day of RLQ pain\",\n      \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior imaging has visualized the appendix or RLQ structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Clinical data alone cannot establish or exclude appendicitis or other focal intra-abdominal pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No modality has characterized the local extent of any intra-abdominal disease.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Possible complications like perforation or abscess cannot be assessed from exam and labs alone despite leukocytosis and mild lactic elevation.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All imaging-dependent aspects of the question remain unaddressed because no prior imaging has been done.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix, identify appendicitis or other intra-abdominal pathology, and assess severity and complications such as perforation or abscess.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of contrast-enhanced CT over ultrasound or noncontrast CT is not explicitly justified given the elevated creatinine and reduced eGFR, though local practice and diagnostic certainty needs may explain it.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
-            "request_id": "gen-1788156984-Ip0OaWiSgv909WHGxl50",
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute right-lower-quadrant intra-abdominal inflammatory process causing his symptoms and systemic findings.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome (suspected focal RLQ intra-abdominal source)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"\\\"presenting with 4days of nausea, vomiting and one day of RLQ pain\\\"\",\n        \"\\\"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First imaging decision; no prior imaging to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging step; the acute RLQ intra-abdominal source is being framed based on history, labs, and mild focal pain despite a benign abdominal exam.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a focal intra-abdominal pathology, particularly appendicitis or another RLQ inflammatory process, that explains the patient’s pain and systemic findings and requires acute intervention?\",\n    \"target\": \"appendix, cecum/right colon, adjacent mesentery, and other intra-abdominal structures\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirmation of a focal process such as appendicitis or colitis would prompt surgical or interventional management and targeted antimicrobial/supportive therapy.\",\n    \"negative_answer_changes\": \"If no focal intra-abdominal source is found, attention would shift toward non-surgical or extra-abdominal causes and may avoid operative management.\",\n    \"secondary_questions\": [\n      \"Are there complications such as perforation, abscess, or obstruction associated with any detected pathology?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the appendix, cecum/right colon, small bowel, mesentery, solid organs, and pelvis to look for an acute RLQ source.\",\n        \"why_required\": \"Determining whether a focal RLQ process exists requires clear assessment of these structures.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of an acute focal inflammatory, infectious, or obstructive process, especially appendicitis or colitis, to explain the RLQ pain.\",\n        \"why_required\": \"The clinical decision hinges on whether a specific intra-abdominal disease entity is present.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any detected lesion to the RLQ or adjacent compartments to link imaging findings with symptoms.\",\n        \"why_required\": \"Causally attributing symptoms and planning surgery or intervention require precise anatomic localization.\"\n      },\n      {\n        \"requirement_key\": \"req_4\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characterization of complications such as perforation, abscess, or significant obstruction if a focal RLQ process is present.\",\n        \"why_required\": \"Complications change urgency, operative approach, and need for drainage or higher level of care.\"\n      }\n    ],\n    \"evidence\": [\n      \"\\\"presenting with 4days of nausea, vomiting and one day of RLQ pain\\\"\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal imaging is described before this CT order.\"\n        ],\n        \"reason\": \"No imaging study has yet visualized the appendix, RLQ bowel, or other intra-abdominal structures.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal imaging is described before this CT order.\"\n        ],\n        \"reason\": \"No prior test has directly evaluated for appendicitis or another focal intra-abdominal source.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal imaging is described before this CT order.\"\n        ],\n        \"reason\": \"The anatomic site of any potential lesion has not been imaged.\"\n      },\n      {\n        \"requirement_key\": \"req_4\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal imaging is described before this CT order.\"\n        ],\n        \"reason\": \"There is no information yet about perforation, abscess, or obstruction.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All requirements remain unaddressed because this CT is the first abdominal imaging study.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT abdomen/pelvis can visualize the appendix, RLQ bowel, mesentery, solid organs, and pelvis, detect inflammatory or obstructive pathology, and identify complications such as perforation or abscess.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart excerpt does not document the risk–benefit reasoning for giving IV contrast despite elevated creatinine and reduced estimated GFR.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788162617-hHSBv9xc3t9lnfpIcaj2",
             "usage": {
-              "completion_tokens": 1450,
-              "prompt_tokens": 5486,
-              "total_tokens": 6936,
+              "completion_tokens": 1473,
+              "prompt_tokens": 5494,
+              "total_tokens": 6967,
               "completion_tokens_details": {
                 "accepted_prediction_tokens": null,
                 "audio_tokens": 0,
@@ -537,12 +540,196 @@
                 "text_tokens": null,
                 "video_tokens": 0
               },
-              "cost": 0.0193415,
+              "cost": 0.0195815,
               "is_byok": false,
               "cost_details": {
-                "upstream_inference_cost": 0.0193415,
-                "upstream_inference_prompt_cost": 0.0048415,
-                "upstream_inference_completions_cost": 0.0145
+                "upstream_inference_cost": 0.0195815,
+                "upstream_inference_prompt_cost": 0.0048515,
+                "upstream_inference_completions_cost": 0.01473
+              }
+            }
+          },
+          "validation_errors": [
+            "later_step_question_continuity_initial",
+            "later_step_assumption_change_initial",
+            "later_step_derived_transition_initial",
+            "later_step_previous_order_update_not_applicable"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "eb5d392bd64d8ba1ed1ee4f23a6c253f76883de040257f1b07457f1448d5a421",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute intra-abdominal surgical infection consistent with perforated appendicitis with periappendiceal collections and secondary cecal/ascending colonic inflammation.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "working diagnosis explaining current presentation and management",
+                  "status": "established",
+                  "evidence": [
+                    "\"A 0.5 x 0.5 cm ... appendicolith is seen at the base of the appendix. The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter. Adjacent to the proximal portion of the appendix there is extraluminal free air.\"",
+                    "\"A 2.5 x 1.2 cm ... collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix and may be in continuation with the previously identified collection.\""
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has periappendiceal and mesenteric fluid collections that may represent early or evolving abscesses or phlegmon, with possible risk for progression or treatment failure.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "complicating features of established perforated appendicitis",
+                  "status": "likely",
+                  "evidence": [
+                    "\"An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix and may be in continuation with the previously identified collection.\"",
+                    "\"Mild fat stranding is seen along the distal ileum with a 3.3 x 3.4 cm and 2.4 x 1.8 cm ... pockets of fluid within the mesenteric leaves.\""
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has significant systemic inflammatory response with leukocytosis, hemoconcentration, acute kidney injury, and mild lactic elevation, increasing concern for ongoing or worsening sepsis from the intra-abdominal source.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "physiologic severity and systemic impact of intra-abdominal infection",
+                  "status": "established",
+                  "evidence": [
+                    "\"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"",
+                    "\"Creatinine: 1.8 mg/dL (ref 0.5-1.2)\""
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there an acute focal intra-abdominal pathology, such as appendicitis or other inflammatory or obstructive process, explaining the patient’s right lower quadrant pain and systemic findings?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The initial CT abdomen and pelvis with contrast adequately visualized the appendix, bowel, mesentery, and solid organs, demonstrated perforated appendicitis with periappendiceal collections and secondary colonic inflammation, and therefore answered the prior existence/identity and localization questions while identifying complications.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "\"presenting with 4days of nausea, vomiting and one day of RLQ pain\"",
+                  "evidence_stream_2": "\"A 0.5 x 0.5 cm ... appendicolith is seen at the base of the appendix. The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter. Adjacent to the proximal portion of the appendix there is extraluminal free air.\"",
+                  "reason": "Clinical suspicion of a surgical right lower quadrant process is confirmed by CT evidence of perforated appendicitis; no material conflict is present."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "A surgical or structurally focal intra-abdominal cause such as appendicitis, colitis, or other acute inflammatory process is a concern in this presentation.",
+                "reason": "The prior broad concern for a focal intra-abdominal process has been refined to an established diagnosis of perforated appendicitis with periappendiceal collections based on the CT findings."
+              },
+              "current_question": {
+                "primary": "What is the current extent and complication profile of the perforated appendicitis, including the size, number, and distribution of periappendiceal and mesenteric collections, to guide ongoing operative versus percutaneous versus medical management?",
+                "target": "perforated appendix with periappendiceal and mesenteric collections",
+                "type": "severity_or_extent",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If CT shows sizable or enlarging, loculated collections or new complications, management would favor drainage (surgical or percutaneous), broader or prolonged antibiotics, and possible higher level of monitoring.",
+                "negative_answer_changes": "If CT shows limited, stable, or resolving collections without new complications, clinicians may favor continued nonoperative treatment or more conservative surgical approaches and avoid additional invasive procedures.",
+                "secondary_questions": [
+                  "Are there new or worsening complications such as generalized peritonitis, bowel obstruction, or additional abscesses beyond the periappendiceal region?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the appendix region, periappendiceal space, cecum/ascending colon, distal ileum, and mesentery to reassess the known perforated appendicitis and related collections.",
+                    "why_required": "Accurate reassessment of disease extent and complications requires clear imaging of the prior perforation site and surrounding compartments."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Size, number, and distribution of periappendiceal and mesenteric collections and degree of surrounding inflammatory changes.",
+                    "why_required": "Management decisions (operative, percutaneous, or medical) hinge on how extensive and organized these collections have become."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characterization of additional complications such as new abscesses, generalized peritonitis, bowel obstruction, or worsening ileus.",
+                    "why_required": "New or worsening complications would escalate the urgency and invasiveness of intervention and alter risk stratification."
+                  }
+                ],
+                "evidence": [
+                  "\"Adjacent to the proximal portion of the appendix there is extraluminal free air. A 2.5 x 1.2 cm ... collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix\""
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "sufficiently_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "\"MDCT images were obtained from the lung bases to the pubic symphysis after the administration of 150 cc of intravenous Visipaque.\""
+                    ],
+                    "reason": "The prior CT abdomen and pelvis with contrast provided comprehensive visualization of the appendix region, periappendiceal space, and mesentery sufficient to characterize the perforated appendicitis and associated collections at that time."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "\"A 2.5 x 1.2 cm ... collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix\""
+                    ],
+                    "reason": "The earlier CT quantified several collections and inflammatory changes, but does not reflect any subsequent evolution, so current extent and progression remain uncertain."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "\"Mild fat stranding and wall thickening is seen along the ascending colon predominately along the cecum with thickening of the right lateroconal fascia.\""
+                    ],
+                    "reason": "The prior CT documented localized perforation-related complications but cannot exclude interval development of new abscesses, generalized peritonitis, or obstruction since that scan."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "The existing CT sufficiently established the diagnosis and baseline extent of perforated appendicitis and related collections, but cannot address how the disease and its complications have evolved, which is now the central management question."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A repeat contrast-enhanced CT abdomen and pelvis can re-visualize the appendix region and peritoneal compartments, quantify current collection size and distribution, and detect new or worsening complications relevant to management.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart excerpt does not specify the exact clinical trigger for repeating CT at this time (e.g., new fever, worsening pain, failure to improve), nor does it document deliberation about repeat contrast exposure in the setting of reduced GFR."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute intra-abdominal surgical infection consistent with perforated appendicitis with periappendiceal collections and secondary cecal/ascending colonic inflammation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"working diagnosis explaining current presentation and management\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"\\\"A 0.5 x 0.5 cm ... appendicolith is seen at the base of the appendix. The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter. Adjacent to the proximal portion of the appendix there is extraluminal free air.\\\"\",\n        \"\\\"A 2.5 x 1.2 cm ... collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix and may be in continuation with the previously identified collection.\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has periappendiceal and mesenteric fluid collections that may represent early or evolving abscesses or phlegmon, with possible risk for progression or treatment failure.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complicating features of established perforated appendicitis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"\\\"An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix and may be in continuation with the previously identified collection.\\\"\",\n        \"\\\"Mild fat stranding is seen along the distal ileum with a 3.3 x 3.4 cm and 2.4 x 1.8 cm ... pockets of fluid within the mesenteric leaves.\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has significant systemic inflammatory response with leukocytosis, hemoconcentration, acute kidney injury, and mild lactic elevation, increasing concern for ongoing or worsening sepsis from the intra-abdominal source.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic severity and systemic impact of intra-abdominal infection\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"\\\"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\\\"\",\n        \"\\\"Creatinine: 1.8 mg/dL (ref 0.5-1.2)\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there an acute focal intra-abdominal pathology, such as appendicitis or other inflammatory or obstructive process, explaining the patient’s right lower quadrant pain and systemic findings?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The initial CT abdomen and pelvis with contrast adequately visualized the appendix, bowel, mesentery, and solid organs, demonstrated perforated appendicitis with periappendiceal collections and secondary colonic inflammation, and therefore answered the prior existence/identity and localization questions while identifying complications.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"\\\"presenting with 4days of nausea, vomiting and one day of RLQ pain\\\"\",\n      \"evidence_stream_2\": \"\\\"A 0.5 x 0.5 cm ... appendicolith is seen at the base of the appendix. The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter. Adjacent to the proximal portion of the appendix there is extraluminal free air.\\\"\",\n      \"reason\": \"Clinical suspicion of a surgical right lower quadrant process is confirmed by CT evidence of perforated appendicitis; no material conflict is present.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"A surgical or structurally focal intra-abdominal cause such as appendicitis, colitis, or other acute inflammatory process is a concern in this presentation.\",\n    \"reason\": \"The prior broad concern for a focal intra-abdominal process has been refined to an established diagnosis of perforated appendicitis with periappendiceal collections based on the CT findings.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the current extent and complication profile of the perforated appendicitis, including the size, number, and distribution of periappendiceal and mesenteric collections, to guide ongoing operative versus percutaneous versus medical management?\",\n    \"target\": \"perforated appendix with periappendiceal and mesenteric collections\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If CT shows sizable or enlarging, loculated collections or new complications, management would favor drainage (surgical or percutaneous), broader or prolonged antibiotics, and possible higher level of monitoring.\",\n    \"negative_answer_changes\": \"If CT shows limited, stable, or resolving collections without new complications, clinicians may favor continued nonoperative treatment or more conservative surgical approaches and avoid additional invasive procedures.\",\n    \"secondary_questions\": [\n      \"Are there new or worsening complications such as generalized peritonitis, bowel obstruction, or additional abscesses beyond the periappendiceal region?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the appendix region, periappendiceal space, cecum/ascending colon, distal ileum, and mesentery to reassess the known perforated appendicitis and related collections.\",\n        \"why_required\": \"Accurate reassessment of disease extent and complications requires clear imaging of the prior perforation site and surrounding compartments.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Size, number, and distribution of periappendiceal and mesenteric collections and degree of surrounding inflammatory changes.\",\n        \"why_required\": \"Management decisions (operative, percutaneous, or medical) hinge on how extensive and organized these collections have become.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characterization of additional complications such as new abscesses, generalized peritonitis, bowel obstruction, or worsening ileus.\",\n        \"why_required\": \"New or worsening complications would escalate the urgency and invasiveness of intervention and alter risk stratification.\"\n      }\n    ],\n    \"evidence\": [\n      \"\\\"Adjacent to the proximal portion of the appendix there is extraluminal free air. A 2.5 x 1.2 cm ... collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix\\\"\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"\\\"MDCT images were obtained from the lung bases to the pubic symphysis after the administration of 150 cc of intravenous Visipaque.\\\"\"\n        ],\n        \"reason\": \"The prior CT abdomen and pelvis with contrast provided comprehensive visualization of the appendix region, periappendiceal space, and mesentery sufficient to characterize the perforated appendicitis and associated collections at that time.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"\\\"A 2.5 x 1.2 cm ... collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix\\\"\"\n        ],\n        \"reason\": \"The earlier CT quantified several collections and inflammatory changes, but does not reflect any subsequent evolution, so current extent and progression remain uncertain.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"\\\"Mild fat stranding and wall thickening is seen along the ascending colon predominately along the cecum with thickening of the right lateroconal fascia.\\\"\"\n        ],\n        \"reason\": \"The prior CT documented localized perforation-related complications but cannot exclude interval development of new abscesses, generalized peritonitis, or obstruction since that scan.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"The existing CT sufficiently established the diagnosis and baseline extent of perforated appendicitis and related collections, but cannot address how the disease and its complications have evolved, which is now the central management question.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A repeat contrast-enhanced CT abdomen and pelvis can re-visualize the appendix region and peritoneal compartments, quantify current collection size and distribution, and detect new or worsening complications relevant to management.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart excerpt does not specify the exact clinical trigger for repeating CT at this time (e.g., new fever, worsening pain, failure to improve), nor does it document deliberation about repeat contrast exposure in the setting of reduced GFR.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788162646-2QxxBXRP9Fs9fWHwtEnI",
+            "usage": {
+              "completion_tokens": 2229,
+              "prompt_tokens": 5556,
+              "total_tokens": 7785,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 5376,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.023187,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.023187,
+                "upstream_inference_prompt_cost": 0.000897,
+                "upstream_inference_completions_cost": 0.02229
               }
             }
           },
@@ -552,139 +739,837 @@
       "accepted": {
         "assumptions": [
           {
-            "proposition": "The patient has an acute intra-abdominal inflammatory or surgical process causing his right lower quadrant pain and systemic inflammatory findings.",
-            "type": "syndrome_or_source_frame",
+            "proposition": "The patient has an acute intra-abdominal surgical infection consistent with perforated appendicitis with periappendiceal collections and secondary cecal/ascending colonic inflammation.",
+            "type": "disease_or_finding_identity",
             "other_proposed_type": "",
-            "level": "syndrome/source level (acute abdominal process)",
-            "status": "suspected",
+            "level": "working diagnosis explaining current presentation and management",
+            "status": "established",
             "evidence": [
-              "presenting with 4days of nausea, vomiting and one day of RLQ pain",
-              "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+              "\"A 0.5 x 0.5 cm ... appendicolith is seen at the base of the appendix. The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter. Adjacent to the proximal portion of the appendix there is extraluminal free air.\"",
+              "\"A 2.5 x 1.2 cm ... collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix and may be in continuation with the previously identified collection.\""
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has periappendiceal and mesenteric fluid collections that may represent early or evolving abscesses or phlegmon, with possible risk for progression or treatment failure.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "complicating features of established perforated appendicitis",
+            "status": "likely",
+            "evidence": [
+              "\"An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix and may be in continuation with the previously identified collection.\"",
+              "\"Mild fat stranding is seen along the distal ileum with a 3.3 x 3.4 cm and 2.4 x 1.8 cm ... pockets of fluid within the mesenteric leaves.\""
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has significant systemic inflammatory response with leukocytosis, hemoconcentration, acute kidney injury, and mild lactic elevation, increasing concern for ongoing or worsening sepsis from the intra-abdominal source.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "physiologic severity and systemic impact of intra-abdominal infection",
+            "status": "established",
+            "evidence": [
+              "\"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"",
+              "\"Creatinine: 1.8 mg/dL (ref 0.5-1.2)\""
             ],
             "support": "well_supported"
           }
         ],
         "previous_order_update": {
-          "applicable": false,
-          "previous_question": null,
-          "study_adequacy": "not_applicable",
-          "test_question_capability": "not_applicable",
-          "result_status": "not_applicable",
-          "effect_on_previous_question": "no prior imaging or diagnostic question to update",
+          "applicable": true,
+          "previous_question": "Is there an acute focal intra-abdominal pathology, such as appendicitis or other inflammatory or obstructive process, explaining the patient’s right lower quadrant pain and systemic findings?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The initial CT abdomen and pelvis with contrast adequately visualized the appendix, bowel, mesentery, and solid organs, demonstrated perforated appendicitis with periappendiceal collections and secondary colonic inflammation, and therefore answered the prior existence/identity and localization questions while identifying complications.",
           "discordance": {
-            "label": "not_applicable",
-            "evidence_stream_1": "",
-            "evidence_stream_2": "",
-            "reason": "first imaging decision; no prior imaging or question"
+            "label": "concordant",
+            "evidence_stream_1": "\"presenting with 4days of nausea, vomiting and one day of RLQ pain\"",
+            "evidence_stream_2": "\"A 0.5 x 0.5 cm ... appendicolith is seen at the base of the appendix. The appendix is hyperemic and air-filled measuring 1 cm in maximal diameter. Adjacent to the proximal portion of the appendix there is extraluminal free air.\"",
+            "reason": "Clinical suspicion of a surgical right lower quadrant process is confirmed by CT evidence of perforated appendicitis; no material conflict is present."
           }
         },
         "assumption_change": {
-          "label": "initial",
-          "changed_proposition": null,
-          "reason": "This is the first imaging decision; the acute intra-abdominal process is being framed from presentation and labs."
+          "label": "refine",
+          "changed_proposition": "A surgical or structurally focal intra-abdominal cause such as appendicitis, colitis, or other acute inflammatory process is a concern in this presentation.",
+          "reason": "The prior broad concern for a focal intra-abdominal process has been refined to an established diagnosis of perforated appendicitis with periappendiceal collections based on the CT findings."
         },
         "current_question": {
-          "primary": "What intra-abdominal pathology, particularly involving the appendix, is causing the acute right lower quadrant pain and systemic inflammatory findings, and how advanced is it?",
-          "target": "appendix and adjacent abdominal/pelvic viscera",
-          "type": "existence_or_identity",
+          "primary": "What is the current extent and complication profile of the perforated appendicitis, including the size, number, and distribution of periappendiceal and mesenteric collections, to guide ongoing operative versus percutaneous versus medical management?",
+          "target": "perforated appendix with periappendiceal and mesenteric collections",
+          "type": "severity_or_extent",
           "other_proposed_type": "",
-          "positive_answer_changes": "Identifying appendicitis or another focal intra-abdominal process would support urgent surgical or targeted medical management and guide perioperative planning.",
-          "negative_answer_changes": "If no intra-abdominal source is identified, clinicians would reconsider the diagnosis, broaden the differential, and potentially avoid immediate surgery.",
+          "positive_answer_changes": "If CT shows sizable or enlarging, loculated collections or new complications, management would favor drainage (surgical or percutaneous), broader or prolonged antibiotics, and possible higher level of monitoring.",
+          "negative_answer_changes": "If CT shows limited, stable, or resolving collections without new complications, clinicians may favor continued nonoperative treatment or more conservative surgical approaches and avoid additional invasive procedures.",
           "secondary_questions": [
-            "Is there evidence of perforation, abscess, or other complication associated with a suspected appendicitis or intra-abdominal inflammatory focus?"
+            "Are there new or worsening complications such as generalized peritonitis, bowel obstruction, or additional abscesses beyond the periappendiceal region?"
           ],
           "answer_requirements": [
             {
-              "requirement_key": "req_vis",
+              "requirement_key": "req_1",
               "id": "target_visualization_or_assessment",
               "other_proposed_dimension": "",
-              "dimension": "Visualization and assessment of the appendix and right lower quadrant bowel/mesentery",
-              "why_required": "Visualization is necessary to determine whether appendicitis or another focal RLQ process is present."
+              "dimension": "Adequate visualization of the appendix region, periappendiceal space, cecum/ascending colon, distal ileum, and mesentery to reassess the known perforated appendicitis and related collections.",
+              "why_required": "Accurate reassessment of disease extent and complications requires clear imaging of the prior perforation site and surrounding compartments."
             },
             {
-              "requirement_key": "req_presence",
-              "id": "presence_or_absence",
-              "other_proposed_dimension": "",
-              "dimension": "Presence or absence of imaging signs of appendicitis or alternative intra-abdominal pathology explaining RLQ pain and leukocytosis",
-              "why_required": "Establishing a concrete disease entity is required to attribute symptoms and plan treatment."
-            },
-            {
-              "requirement_key": "req_extent",
+              "requirement_key": "req_2",
               "id": "severity_or_extent",
               "other_proposed_dimension": "",
-              "dimension": "Severity and local extent of any identified inflammatory or surgical process (e.g., length of involved bowel, phlegmon, collections)",
-              "why_required": "Extent informs urgency, operative strategy, and potential need for percutaneous drainage or conservative management."
+              "dimension": "Size, number, and distribution of periappendiceal and mesenteric collections and degree of surrounding inflammatory changes.",
+              "why_required": "Management decisions (operative, percutaneous, or medical) hinge on how extensive and organized these collections have become."
             },
             {
-              "requirement_key": "req_comp",
+              "requirement_key": "req_3",
               "id": "complication_presence_or_character",
               "other_proposed_dimension": "",
-              "dimension": "Presence and character of complications such as perforation, abscess, free air, or diffuse peritonitis",
-              "why_required": "Complications significantly alter risk, timing, and type of intervention."
+              "dimension": "Presence and characterization of additional complications such as new abscesses, generalized peritonitis, bowel obstruction, or worsening ileus.",
+              "why_required": "New or worsening complications would escalate the urgency and invasiveness of intervention and alter risk stratification."
             }
           ],
           "evidence": [
-            "presenting with 4days of nausea, vomiting and one day of RLQ pain",
-            "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+            "\"Adjacent to the proximal portion of the appendix there is extraluminal free air. A 2.5 x 1.2 cm ... collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix\""
           ]
         },
-        "question_continuity": "initial",
+        "question_continuity": "refined",
         "coverage": {
           "requirements": [
             {
-              "requirement_key": "req_vis",
+              "requirement_key": "req_1",
               "requirement_id": "target_visualization_or_assessment",
-              "status": "unaddressed",
-              "direction": "no_direction",
+              "status": "sufficiently_addressed",
+              "direction": "supports",
               "supporting_evidence": [
-                "## Imaging resulted before this decision point\n(none)"
+                "\"MDCT images were obtained from the lung bases to the pubic symphysis after the administration of 150 cc of intravenous Visipaque.\""
               ],
-              "reason": "No prior imaging has visualized the appendix or RLQ structures."
+              "reason": "The prior CT abdomen and pelvis with contrast provided comprehensive visualization of the appendix region, periappendiceal space, and mesentery sufficient to characterize the perforated appendicitis and associated collections at that time."
             },
             {
-              "requirement_key": "req_presence",
-              "requirement_id": "presence_or_absence",
-              "status": "unaddressed",
-              "direction": "no_direction",
-              "supporting_evidence": [
-                "## Imaging resulted before this decision point\n(none)"
-              ],
-              "reason": "Clinical data alone cannot establish or exclude appendicitis or other focal intra-abdominal pathology."
-            },
-            {
-              "requirement_key": "req_extent",
+              "requirement_key": "req_2",
               "requirement_id": "severity_or_extent",
-              "status": "unaddressed",
-              "direction": "no_direction",
+              "status": "partially_addressed",
+              "direction": "supports",
               "supporting_evidence": [
-                "## Imaging resulted before this decision point\n(none)"
+                "\"A 2.5 x 1.2 cm ... collection which is predominately full of air is seen slightly anterior to the appendix. An additional 5.7 x 2.6 cm ... air and fluid filled collection is seen slightly superior to the appendix\""
               ],
-              "reason": "No modality has characterized the local extent of any intra-abdominal disease."
+              "reason": "The earlier CT quantified several collections and inflammatory changes, but does not reflect any subsequent evolution, so current extent and progression remain uncertain."
             },
             {
-              "requirement_key": "req_comp",
+              "requirement_key": "req_3",
               "requirement_id": "complication_presence_or_character",
-              "status": "unaddressed",
-              "direction": "no_direction",
+              "status": "partially_addressed",
+              "direction": "supports",
               "supporting_evidence": [
-                "## Imaging resulted before this decision point\n(none)"
+                "\"Mild fat stranding and wall thickening is seen along the ascending colon predominately along the cecum with thickening of the right lateroconal fascia.\""
               ],
-              "reason": "Possible complications like perforation or abscess cannot be assessed from exam and labs alone despite leukocytosis and mild lactic elevation."
+              "reason": "The prior CT documented localized perforation-related complications but cannot exclude interval development of new abscesses, generalized peritonitis, or obstruction since that scan."
             }
           ],
-          "aggregate": "unanswered",
-          "aggregate_reason": "All imaging-dependent aspects of the question remain unaddressed because no prior imaging has been done."
+          "aggregate": "partially_answered",
+          "aggregate_reason": "The existing CT sufficiently established the diagnosis and baseline extent of perforated appendicitis and related collections, but cannot address how the disease and its complications have evolved, which is now the central management question."
         },
         "current_order_fit": {
           "test_question_capability": "capable",
-          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix, identify appendicitis or other intra-abdominal pathology, and assess severity and complications such as perforation or abscess.",
+          "why_this_order_could_answer": "A repeat contrast-enhanced CT abdomen and pelvis can re-visualize the appendix region and peritoneal compartments, quantify current collection size and distribution, and detect new or worsening complications relevant to management.",
           "intent_support": "well_supported",
-          "unsupported_residual": "The choice of contrast-enhanced CT over ultrasound or noncontrast CT is not explicitly justified given the elevated creatinine and reduced eGFR, though local practice and diagnostic certainty needs may explain it."
+          "unsupported_residual": "The chart excerpt does not specify the exact clinical trigger for repeating CT at this time (e.g., new fever, worsening pain, failure to improve), nor does it document deliberation about repeat contrast exposure in the setting of reduced GFR."
         },
-        "derived_transition": "initial",
+        "derived_transition": "advance",
         "alternative_reconstruction": ""
       },
       "validation_errors": []
+    }
+  ],
+  "superseded_runs": [
+    {
+      "schema_version": "1.0.0-development",
+      "scope": "DIRECT empirical annotation",
+      "disease_stratum_sampling_only": "appendicitis",
+      "hadm_id": 20279299,
+      "source_path": "results/annotation_experiment/full/appendicitis_20279299.json",
+      "model": "openai/gpt-5.1",
+      "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+      "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+      "steps": [
+        {
+          "step": 1,
+          "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+          "request_prompt_sha256": "3eade9e0a31684e19a6b5cef5451c874d34749c81575167933f2f4f96faa58b9",
+          "attempts": [
+            {
+              "attempt": 1,
+              "call": {
+                "parsed": {
+                  "assumptions": [
+                    {
+                      "proposition": "The patient has an acute abdominal/intra‑abdominal inflammatory or surgical process as the source of his right lower quadrant pain and systemic inflammatory findings.",
+                      "type": "syndrome_or_source_frame",
+                      "other_proposed_type": "",
+                      "level": "syndrome/source level (acute abdominal process)",
+                      "status": "suspected",
+                      "evidence": [
+                        "presenting with 4days of nausea, vomiting and one day of RLQ pain",
+                        "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+                      ],
+                      "support": "well_supported"
+                    },
+                    {
+                      "proposition": "Acute appendicitis is a leading diagnostic consideration for the patient’s right lower quadrant abdominal pain.",
+                      "type": "disease_or_finding_identity",
+                      "other_proposed_type": "",
+                      "level": "specific disease level",
+                      "status": "suspected",
+                      "evidence": [
+                        "one day of RLQ pain",
+                        "He has mild anorexia with less nausea today. He notes RLQ pain, which is fairly persistent."
+                      ],
+                      "support": "well_supported"
+                    },
+                    {
+                      "proposition": "The patient may have early sepsis or significant systemic inflammatory response related to an intra‑abdominal source.",
+                      "type": "severity_extent_or_course",
+                      "other_proposed_type": "",
+                      "level": "severity/systemic involvement",
+                      "status": "suspected",
+                      "evidence": [
+                        "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)",
+                        "Lactate: 2.1 mmol/L (ref 0.5-2.0)"
+                      ],
+                      "support": "weakly_supported"
+                    }
+                  ],
+                  "previous_order_update": {
+                    "applicable": false,
+                    "previous_question": null,
+                    "study_adequacy": "not_applicable",
+                    "test_question_capability": "not_applicable",
+                    "result_status": "not_applicable",
+                    "effect_on_previous_question": "no prior imaging or diagnostic question to update",
+                    "discordance": {
+                      "label": "not_applicable",
+                      "evidence_stream_1": "",
+                      "evidence_stream_2": "",
+                      "reason": "first imaging decision; no prior imaging or question"
+                    }
+                  },
+                  "assumption_change": {
+                    "label": "initial",
+                    "changed_proposition": null,
+                    "reason": "This is the first decision point; assumptions are being framed de novo from history, exam, and labs."
+                  },
+                  "current_question": {
+                    "primary": "Is there an intra‑abdominal cause, particularly appendicitis, that explains the patient’s acute right lower quadrant pain and systemic inflammatory findings, and what is its extent?",
+                    "target": "appendix and other abdominal/pelvic viscera",
+                    "type": "existence_or_identity",
+                    "other_proposed_type": "",
+                    "positive_answer_changes": "Confirmation of appendicitis or another intra‑abdominal pathology would prompt surgical or targeted medical management and guide urgency of intervention.",
+                    "negative_answer_changes": "If no intra‑abdominal source is identified, clinicians would reconsider the diagnosis, pursue alternative causes of pain and leukocytosis, and potentially avoid or delay surgical intervention.",
+                    "secondary_questions": [
+                      "Is there evidence of complication such as perforation or abscess related to a possible appendicitis or other intra‑abdominal inflammatory focus?"
+                    ],
+                    "answer_requirements": [
+                      {
+                        "requirement_key": "req_vis",
+                        "id": "target_visualization_or_assessment",
+                        "other_proposed_dimension": "",
+                        "dimension": "Visualization and assessment of the appendix and adjacent right lower quadrant structures",
+                        "why_required": "Determining whether the appendix is visualized and assessable is necessary to judge if appendicitis is present or excluded as the pain source."
+                      },
+                      {
+                        "requirement_key": "req_presence",
+                        "id": "presence_or_absence",
+                        "other_proposed_dimension": "",
+                        "dimension": "Presence or absence of imaging signs of appendicitis or another focal intra‑abdominal pathology (e.g., colitis, diverticulitis, obstructing lesion)",
+                        "why_required": "The clinical question hinges on whether a concrete intra‑abdominal disease explains the symptoms and inflammatory markers."
+                      },
+                      {
+                        "requirement_key": "req_extent",
+                        "id": "severity_or_extent",
+                        "other_proposed_dimension": "",
+                        "dimension": "Severity and local extent of any identified intra‑abdominal pathology (e.g., degree of inflammation, phlegmon, abscess size, obstruction)",
+                        "why_required": "Extent of disease determines urgency and type of management (surgical vs conservative, need for drainage)."
+                      },
+                      {
+                        "requirement_key": "req_comp",
+                        "id": "complication_presence_or_character",
+                        "other_proposed_dimension": "",
+                        "dimension": "Presence and character of complications such as perforation, abscess, or free air/fluid",
+                        "why_required": "Complications would escalate urgency and alter surgical planning and perioperative care."
+                      }
+                    ],
+                    "evidence": [
+                      "presenting with 4days of nausea, vomiting and one day of RLQ pain",
+                      "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+                    ]
+                  },
+                  "question_continuity": "initial",
+                  "coverage": {
+                    "requirements": [
+                      {
+                        "requirement_key": "req_vis",
+                        "requirement_id": "target_visualization_or_assessment",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "## Imaging resulted before this decision point\n(none)"
+                        ],
+                        "reason": "No prior imaging has been performed, so there is no visualization or assessment of the appendix or RLQ structures."
+                      },
+                      {
+                        "requirement_key": "req_presence",
+                        "requirement_id": "presence_or_absence",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "## Imaging resulted before this decision point\n(none)"
+                        ],
+                        "reason": "Clinical data suggest an intra‑abdominal process but cannot establish or exclude appendicitis or other focal pathology without imaging."
+                      },
+                      {
+                        "requirement_key": "req_extent",
+                        "requirement_id": "severity_or_extent",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "## Imaging resulted before this decision point\n(none)"
+                        ],
+                        "reason": "No imaging or other modality has characterized the local extent of any intra‑abdominal disease."
+                      },
+                      {
+                        "requirement_key": "req_comp",
+                        "requirement_id": "complication_presence_or_character",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "## Imaging resulted before this decision point\n(none)"
+                        ],
+                        "reason": "Potential complications such as perforation or abscess cannot be assessed from exam and labs alone in this case."
+                      }
+                    ],
+                    "aggregate": "unanswered",
+                    "aggregate_reason": "All imaging‑dependent aspects of the question remain unaddressed because no prior imaging has been performed."
+                  },
+                  "current_order_fit": {
+                    "test_question_capability": "capable",
+                    "why_this_order_could_answer": "Contrast‑enhanced CT of the abdomen and pelvis is well‑suited to visualize the appendix and other abdominal/pelvic structures, detect intra‑abdominal inflammatory processes, and assess extent and complications.",
+                    "intent_support": "well_supported",
+                    "unsupported_residual": "The choice of contrast-enhanced CT rather than ultrasound or noncontrast CT is not explicitly justified (e.g., body habitus, local practice, or concern for alternative diagnoses), and mild renal dysfunction (Creatinine: 1.8 mg/dL, Estimated GFR = 44) makes the contrast choice somewhat incompletely explained."
+                  },
+                  "derived_transition": "initial",
+                  "alternative_reconstruction": ""
+                },
+                "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal/intra‑abdominal inflammatory or surgical process as the source of his right lower quadrant pain and systemic inflammatory findings.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome/source level (acute abdominal process)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"presenting with 4days of nausea, vomiting and one day of RLQ pain\",\n        \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute appendicitis is a leading diagnostic consideration for the patient’s right lower quadrant abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"one day of RLQ pain\",\n        \"He has mild anorexia with less nausea today. He notes RLQ pain, which is fairly persistent.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient may have early sepsis or significant systemic inflammatory response related to an intra‑abdominal source.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity/systemic involvement\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\",\n        \"Lactate: 2.1 mmol/L (ref 0.5-2.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging or diagnostic question to update\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"first imaging decision; no prior imaging or question\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; assumptions are being framed de novo from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an intra‑abdominal cause, particularly appendicitis, that explains the patient’s acute right lower quadrant pain and systemic inflammatory findings, and what is its extent?\",\n    \"target\": \"appendix and other abdominal/pelvic viscera\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirmation of appendicitis or another intra‑abdominal pathology would prompt surgical or targeted medical management and guide urgency of intervention.\",\n    \"negative_answer_changes\": \"If no intra‑abdominal source is identified, clinicians would reconsider the diagnosis, pursue alternative causes of pain and leukocytosis, and potentially avoid or delay surgical intervention.\",\n    \"secondary_questions\": [\n      \"Is there evidence of complication such as perforation or abscess related to a possible appendicitis or other intra‑abdominal inflammatory focus?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and assessment of the appendix and adjacent right lower quadrant structures\",\n        \"why_required\": \"Determining whether the appendix is visualized and assessable is necessary to judge if appendicitis is present or excluded as the pain source.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of imaging signs of appendicitis or another focal intra‑abdominal pathology (e.g., colitis, diverticulitis, obstructing lesion)\",\n        \"why_required\": \"The clinical question hinges on whether a concrete intra‑abdominal disease explains the symptoms and inflammatory markers.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and local extent of any identified intra‑abdominal pathology (e.g., degree of inflammation, phlegmon, abscess size, obstruction)\",\n        \"why_required\": \"Extent of disease determines urgency and type of management (surgical vs conservative, need for drainage).\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as perforation, abscess, or free air/fluid\",\n        \"why_required\": \"Complications would escalate urgency and alter surgical planning and perioperative care.\"\n      }\n    ],\n    \"evidence\": [\n      \"presenting with 4days of nausea, vomiting and one day of RLQ pain\",\n      \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior imaging has been performed, so there is no visualization or assessment of the appendix or RLQ structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Clinical data suggest an intra‑abdominal process but cannot establish or exclude appendicitis or other focal pathology without imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No imaging or other modality has characterized the local extent of any intra‑abdominal disease.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Potential complications such as perforation or abscess cannot be assessed from exam and labs alone in this case.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All imaging‑dependent aspects of the question remain unaddressed because no prior imaging has been performed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast‑enhanced CT of the abdomen and pelvis is well‑suited to visualize the appendix and other abdominal/pelvic structures, detect intra‑abdominal inflammatory processes, and assess extent and complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of contrast-enhanced CT rather than ultrasound or noncontrast CT is not explicitly justified (e.g., body habitus, local practice, or concern for alternative diagnoses), and mild renal dysfunction (Creatinine: 1.8 mg/dL, Estimated GFR = 44) makes the contrast choice somewhat incompletely explained.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+                "request_id": "gen-1788156963-UQnFQjzRdnljWrJkO2Fo",
+                "usage": {
+                  "completion_tokens": 1784,
+                  "prompt_tokens": 3126,
+                  "total_tokens": 4910,
+                  "completion_tokens_details": {
+                    "accepted_prediction_tokens": null,
+                    "audio_tokens": 0,
+                    "reasoning_tokens": 0,
+                    "rejected_prediction_tokens": null,
+                    "text_tokens": null,
+                    "image_tokens": 0
+                  },
+                  "compute_units": null,
+                  "prompt_tokens_details": {
+                    "audio_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "cached_tokens": 0,
+                    "image_tokens": null,
+                    "text_tokens": null,
+                    "video_tokens": 0
+                  },
+                  "cost": 0.0217475,
+                  "is_byok": false,
+                  "cost_details": {
+                    "upstream_inference_cost": 0.0217475,
+                    "upstream_inference_prompt_cost": 0.0039075,
+                    "upstream_inference_completions_cost": 0.01784
+                  }
+                }
+              },
+              "validation_errors": []
+            }
+          ],
+          "accepted": {
+            "assumptions": [
+              {
+                "proposition": "The patient has an acute abdominal/intra‑abdominal inflammatory or surgical process as the source of his right lower quadrant pain and systemic inflammatory findings.",
+                "type": "syndrome_or_source_frame",
+                "other_proposed_type": "",
+                "level": "syndrome/source level (acute abdominal process)",
+                "status": "suspected",
+                "evidence": [
+                  "presenting with 4days of nausea, vomiting and one day of RLQ pain",
+                  "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+                ],
+                "support": "well_supported"
+              },
+              {
+                "proposition": "Acute appendicitis is a leading diagnostic consideration for the patient’s right lower quadrant abdominal pain.",
+                "type": "disease_or_finding_identity",
+                "other_proposed_type": "",
+                "level": "specific disease level",
+                "status": "suspected",
+                "evidence": [
+                  "one day of RLQ pain",
+                  "He has mild anorexia with less nausea today. He notes RLQ pain, which is fairly persistent."
+                ],
+                "support": "well_supported"
+              },
+              {
+                "proposition": "The patient may have early sepsis or significant systemic inflammatory response related to an intra‑abdominal source.",
+                "type": "severity_extent_or_course",
+                "other_proposed_type": "",
+                "level": "severity/systemic involvement",
+                "status": "suspected",
+                "evidence": [
+                  "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)",
+                  "Lactate: 2.1 mmol/L (ref 0.5-2.0)"
+                ],
+                "support": "weakly_supported"
+              }
+            ],
+            "previous_order_update": {
+              "applicable": false,
+              "previous_question": null,
+              "study_adequacy": "not_applicable",
+              "test_question_capability": "not_applicable",
+              "result_status": "not_applicable",
+              "effect_on_previous_question": "no prior imaging or diagnostic question to update",
+              "discordance": {
+                "label": "not_applicable",
+                "evidence_stream_1": "",
+                "evidence_stream_2": "",
+                "reason": "first imaging decision; no prior imaging or question"
+              }
+            },
+            "assumption_change": {
+              "label": "initial",
+              "changed_proposition": null,
+              "reason": "This is the first decision point; assumptions are being framed de novo from history, exam, and labs."
+            },
+            "current_question": {
+              "primary": "Is there an intra‑abdominal cause, particularly appendicitis, that explains the patient’s acute right lower quadrant pain and systemic inflammatory findings, and what is its extent?",
+              "target": "appendix and other abdominal/pelvic viscera",
+              "type": "existence_or_identity",
+              "other_proposed_type": "",
+              "positive_answer_changes": "Confirmation of appendicitis or another intra‑abdominal pathology would prompt surgical or targeted medical management and guide urgency of intervention.",
+              "negative_answer_changes": "If no intra‑abdominal source is identified, clinicians would reconsider the diagnosis, pursue alternative causes of pain and leukocytosis, and potentially avoid or delay surgical intervention.",
+              "secondary_questions": [
+                "Is there evidence of complication such as perforation or abscess related to a possible appendicitis or other intra‑abdominal inflammatory focus?"
+              ],
+              "answer_requirements": [
+                {
+                  "requirement_key": "req_vis",
+                  "id": "target_visualization_or_assessment",
+                  "other_proposed_dimension": "",
+                  "dimension": "Visualization and assessment of the appendix and adjacent right lower quadrant structures",
+                  "why_required": "Determining whether the appendix is visualized and assessable is necessary to judge if appendicitis is present or excluded as the pain source."
+                },
+                {
+                  "requirement_key": "req_presence",
+                  "id": "presence_or_absence",
+                  "other_proposed_dimension": "",
+                  "dimension": "Presence or absence of imaging signs of appendicitis or another focal intra‑abdominal pathology (e.g., colitis, diverticulitis, obstructing lesion)",
+                  "why_required": "The clinical question hinges on whether a concrete intra‑abdominal disease explains the symptoms and inflammatory markers."
+                },
+                {
+                  "requirement_key": "req_extent",
+                  "id": "severity_or_extent",
+                  "other_proposed_dimension": "",
+                  "dimension": "Severity and local extent of any identified intra‑abdominal pathology (e.g., degree of inflammation, phlegmon, abscess size, obstruction)",
+                  "why_required": "Extent of disease determines urgency and type of management (surgical vs conservative, need for drainage)."
+                },
+                {
+                  "requirement_key": "req_comp",
+                  "id": "complication_presence_or_character",
+                  "other_proposed_dimension": "",
+                  "dimension": "Presence and character of complications such as perforation, abscess, or free air/fluid",
+                  "why_required": "Complications would escalate urgency and alter surgical planning and perioperative care."
+                }
+              ],
+              "evidence": [
+                "presenting with 4days of nausea, vomiting and one day of RLQ pain",
+                "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+              ]
+            },
+            "question_continuity": "initial",
+            "coverage": {
+              "requirements": [
+                {
+                  "requirement_key": "req_vis",
+                  "requirement_id": "target_visualization_or_assessment",
+                  "status": "unaddressed",
+                  "direction": "no_direction",
+                  "supporting_evidence": [
+                    "## Imaging resulted before this decision point\n(none)"
+                  ],
+                  "reason": "No prior imaging has been performed, so there is no visualization or assessment of the appendix or RLQ structures."
+                },
+                {
+                  "requirement_key": "req_presence",
+                  "requirement_id": "presence_or_absence",
+                  "status": "unaddressed",
+                  "direction": "no_direction",
+                  "supporting_evidence": [
+                    "## Imaging resulted before this decision point\n(none)"
+                  ],
+                  "reason": "Clinical data suggest an intra‑abdominal process but cannot establish or exclude appendicitis or other focal pathology without imaging."
+                },
+                {
+                  "requirement_key": "req_extent",
+                  "requirement_id": "severity_or_extent",
+                  "status": "unaddressed",
+                  "direction": "no_direction",
+                  "supporting_evidence": [
+                    "## Imaging resulted before this decision point\n(none)"
+                  ],
+                  "reason": "No imaging or other modality has characterized the local extent of any intra‑abdominal disease."
+                },
+                {
+                  "requirement_key": "req_comp",
+                  "requirement_id": "complication_presence_or_character",
+                  "status": "unaddressed",
+                  "direction": "no_direction",
+                  "supporting_evidence": [
+                    "## Imaging resulted before this decision point\n(none)"
+                  ],
+                  "reason": "Potential complications such as perforation or abscess cannot be assessed from exam and labs alone in this case."
+                }
+              ],
+              "aggregate": "unanswered",
+              "aggregate_reason": "All imaging‑dependent aspects of the question remain unaddressed because no prior imaging has been performed."
+            },
+            "current_order_fit": {
+              "test_question_capability": "capable",
+              "why_this_order_could_answer": "Contrast‑enhanced CT of the abdomen and pelvis is well‑suited to visualize the appendix and other abdominal/pelvic structures, detect intra‑abdominal inflammatory processes, and assess extent and complications.",
+              "intent_support": "well_supported",
+              "unsupported_residual": "The choice of contrast-enhanced CT rather than ultrasound or noncontrast CT is not explicitly justified (e.g., body habitus, local practice, or concern for alternative diagnoses), and mild renal dysfunction (Creatinine: 1.8 mg/dL, Estimated GFR = 44) makes the contrast choice somewhat incompletely explained."
+            },
+            "derived_transition": "initial",
+            "alternative_reconstruction": ""
+          },
+          "validation_errors": []
+        },
+        {
+          "step": 2,
+          "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+          "request_prompt_sha256": "e2d742c5eed79678c9ddf5e7961b638aaa487817ee307b89a6c1e069bf670641",
+          "attempts": [
+            {
+              "attempt": 1,
+              "call": {
+                "parsed": {
+                  "assumptions": [
+                    {
+                      "proposition": "The patient has an acute intra-abdominal inflammatory or surgical process causing his right lower quadrant pain and systemic inflammatory findings.",
+                      "type": "syndrome_or_source_frame",
+                      "other_proposed_type": "",
+                      "level": "syndrome/source level (acute abdominal process)",
+                      "status": "suspected",
+                      "evidence": [
+                        "presenting with 4days of nausea, vomiting and one day of RLQ pain",
+                        "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+                      ],
+                      "support": "well_supported"
+                    }
+                  ],
+                  "previous_order_update": {
+                    "applicable": false,
+                    "previous_question": null,
+                    "study_adequacy": "not_applicable",
+                    "test_question_capability": "not_applicable",
+                    "result_status": "not_applicable",
+                    "effect_on_previous_question": "no prior imaging or diagnostic question to update",
+                    "discordance": {
+                      "label": "not_applicable",
+                      "evidence_stream_1": "",
+                      "evidence_stream_2": "",
+                      "reason": "first imaging decision; no prior imaging or question"
+                    }
+                  },
+                  "assumption_change": {
+                    "label": "initial",
+                    "changed_proposition": null,
+                    "reason": "This is the first imaging decision; the acute intra-abdominal process is being framed from presentation and labs."
+                  },
+                  "current_question": {
+                    "primary": "What intra-abdominal pathology, particularly involving the appendix, is causing the acute right lower quadrant pain and systemic inflammatory findings, and how advanced is it?",
+                    "target": "appendix and adjacent abdominal/pelvic viscera",
+                    "type": "existence_or_identity",
+                    "other_proposed_type": "",
+                    "positive_answer_changes": "Identifying appendicitis or another focal intra-abdominal process would support urgent surgical or targeted medical management and guide perioperative planning.",
+                    "negative_answer_changes": "If no intra-abdominal source is identified, clinicians would reconsider the diagnosis, broaden the differential, and potentially avoid immediate surgery.",
+                    "secondary_questions": [
+                      "Is there evidence of perforation, abscess, or other complication associated with a suspected appendicitis or intra-abdominal inflammatory focus?"
+                    ],
+                    "answer_requirements": [
+                      {
+                        "requirement_key": "req_vis",
+                        "id": "target_visualization_or_assessment",
+                        "other_proposed_dimension": "",
+                        "dimension": "Visualization and assessment of the appendix and right lower quadrant bowel/mesentery",
+                        "why_required": "Visualization is necessary to determine whether appendicitis or another focal RLQ process is present."
+                      },
+                      {
+                        "requirement_key": "req_presence",
+                        "id": "presence_or_absence",
+                        "other_proposed_dimension": "",
+                        "dimension": "Presence or absence of imaging signs of appendicitis or alternative intra-abdominal pathology explaining RLQ pain and leukocytosis",
+                        "why_required": "Establishing a concrete disease entity is required to attribute symptoms and plan treatment."
+                      },
+                      {
+                        "requirement_key": "req_extent",
+                        "id": "severity_or_extent",
+                        "other_proposed_dimension": "",
+                        "dimension": "Severity and local extent of any identified inflammatory or surgical process (e.g., length of involved bowel, phlegmon, collections)",
+                        "why_required": "Extent informs urgency, operative strategy, and potential need for percutaneous drainage or conservative management."
+                      },
+                      {
+                        "requirement_key": "req_comp",
+                        "id": "complication_presence_or_character",
+                        "other_proposed_dimension": "",
+                        "dimension": "Presence and character of complications such as perforation, abscess, free air, or diffuse peritonitis",
+                        "why_required": "Complications significantly alter risk, timing, and type of intervention."
+                      }
+                    ],
+                    "evidence": [
+                      "presenting with 4days of nausea, vomiting and one day of RLQ pain",
+                      "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+                    ]
+                  },
+                  "question_continuity": "initial",
+                  "coverage": {
+                    "requirements": [
+                      {
+                        "requirement_key": "req_vis",
+                        "requirement_id": "target_visualization_or_assessment",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "## Imaging resulted before this decision point\n(none)"
+                        ],
+                        "reason": "No prior imaging has visualized the appendix or RLQ structures."
+                      },
+                      {
+                        "requirement_key": "req_presence",
+                        "requirement_id": "presence_or_absence",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "## Imaging resulted before this decision point\n(none)"
+                        ],
+                        "reason": "Clinical data alone cannot establish or exclude appendicitis or other focal intra-abdominal pathology."
+                      },
+                      {
+                        "requirement_key": "req_extent",
+                        "requirement_id": "severity_or_extent",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "## Imaging resulted before this decision point\n(none)"
+                        ],
+                        "reason": "No modality has characterized the local extent of any intra-abdominal disease."
+                      },
+                      {
+                        "requirement_key": "req_comp",
+                        "requirement_id": "complication_presence_or_character",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "## Imaging resulted before this decision point\n(none)"
+                        ],
+                        "reason": "Possible complications like perforation or abscess cannot be assessed from exam and labs alone despite leukocytosis and mild lactic elevation."
+                      }
+                    ],
+                    "aggregate": "unanswered",
+                    "aggregate_reason": "All imaging-dependent aspects of the question remain unaddressed because no prior imaging has been done."
+                  },
+                  "current_order_fit": {
+                    "test_question_capability": "capable",
+                    "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix, identify appendicitis or other intra-abdominal pathology, and assess severity and complications such as perforation or abscess.",
+                    "intent_support": "well_supported",
+                    "unsupported_residual": "The choice of contrast-enhanced CT over ultrasound or noncontrast CT is not explicitly justified given the elevated creatinine and reduced eGFR, though local practice and diagnostic certainty needs may explain it."
+                  },
+                  "derived_transition": "initial",
+                  "alternative_reconstruction": ""
+                },
+                "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute intra-abdominal inflammatory or surgical process causing his right lower quadrant pain and systemic inflammatory findings.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome/source level (acute abdominal process)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"presenting with 4days of nausea, vomiting and one day of RLQ pain\",\n        \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging or diagnostic question to update\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"first imaging decision; no prior imaging or question\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the acute intra-abdominal process is being framed from presentation and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What intra-abdominal pathology, particularly involving the appendix, is causing the acute right lower quadrant pain and systemic inflammatory findings, and how advanced is it?\",\n    \"target\": \"appendix and adjacent abdominal/pelvic viscera\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying appendicitis or another focal intra-abdominal process would support urgent surgical or targeted medical management and guide perioperative planning.\",\n    \"negative_answer_changes\": \"If no intra-abdominal source is identified, clinicians would reconsider the diagnosis, broaden the differential, and potentially avoid immediate surgery.\",\n    \"secondary_questions\": [\n      \"Is there evidence of perforation, abscess, or other complication associated with a suspected appendicitis or intra-abdominal inflammatory focus?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and assessment of the appendix and right lower quadrant bowel/mesentery\",\n        \"why_required\": \"Visualization is necessary to determine whether appendicitis or another focal RLQ process is present.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of imaging signs of appendicitis or alternative intra-abdominal pathology explaining RLQ pain and leukocytosis\",\n        \"why_required\": \"Establishing a concrete disease entity is required to attribute symptoms and plan treatment.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and local extent of any identified inflammatory or surgical process (e.g., length of involved bowel, phlegmon, collections)\",\n        \"why_required\": \"Extent informs urgency, operative strategy, and potential need for percutaneous drainage or conservative management.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as perforation, abscess, free air, or diffuse peritonitis\",\n        \"why_required\": \"Complications significantly alter risk, timing, and type of intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"presenting with 4days of nausea, vomiting and one day of RLQ pain\",\n      \"White Blood Cells: 18.2 K/uL (ref 4.0-11.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior imaging has visualized the appendix or RLQ structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Clinical data alone cannot establish or exclude appendicitis or other focal intra-abdominal pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No modality has characterized the local extent of any intra-abdominal disease.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Possible complications like perforation or abscess cannot be assessed from exam and labs alone despite leukocytosis and mild lactic elevation.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All imaging-dependent aspects of the question remain unaddressed because no prior imaging has been done.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix, identify appendicitis or other intra-abdominal pathology, and assess severity and complications such as perforation or abscess.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of contrast-enhanced CT over ultrasound or noncontrast CT is not explicitly justified given the elevated creatinine and reduced eGFR, though local practice and diagnostic certainty needs may explain it.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+                "request_id": "gen-1788156984-Ip0OaWiSgv909WHGxl50",
+                "usage": {
+                  "completion_tokens": 1450,
+                  "prompt_tokens": 5486,
+                  "total_tokens": 6936,
+                  "completion_tokens_details": {
+                    "accepted_prediction_tokens": null,
+                    "audio_tokens": 0,
+                    "reasoning_tokens": 0,
+                    "rejected_prediction_tokens": null,
+                    "text_tokens": null,
+                    "image_tokens": 0
+                  },
+                  "compute_units": null,
+                  "prompt_tokens_details": {
+                    "audio_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "cached_tokens": 1792,
+                    "image_tokens": null,
+                    "text_tokens": null,
+                    "video_tokens": 0
+                  },
+                  "cost": 0.0193415,
+                  "is_byok": false,
+                  "cost_details": {
+                    "upstream_inference_cost": 0.0193415,
+                    "upstream_inference_prompt_cost": 0.0048415,
+                    "upstream_inference_completions_cost": 0.0145
+                  }
+                }
+              },
+              "validation_errors": []
+            }
+          ],
+          "accepted": {
+            "assumptions": [
+              {
+                "proposition": "The patient has an acute intra-abdominal inflammatory or surgical process causing his right lower quadrant pain and systemic inflammatory findings.",
+                "type": "syndrome_or_source_frame",
+                "other_proposed_type": "",
+                "level": "syndrome/source level (acute abdominal process)",
+                "status": "suspected",
+                "evidence": [
+                  "presenting with 4days of nausea, vomiting and one day of RLQ pain",
+                  "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+                ],
+                "support": "well_supported"
+              }
+            ],
+            "previous_order_update": {
+              "applicable": false,
+              "previous_question": null,
+              "study_adequacy": "not_applicable",
+              "test_question_capability": "not_applicable",
+              "result_status": "not_applicable",
+              "effect_on_previous_question": "no prior imaging or diagnostic question to update",
+              "discordance": {
+                "label": "not_applicable",
+                "evidence_stream_1": "",
+                "evidence_stream_2": "",
+                "reason": "first imaging decision; no prior imaging or question"
+              }
+            },
+            "assumption_change": {
+              "label": "initial",
+              "changed_proposition": null,
+              "reason": "This is the first imaging decision; the acute intra-abdominal process is being framed from presentation and labs."
+            },
+            "current_question": {
+              "primary": "What intra-abdominal pathology, particularly involving the appendix, is causing the acute right lower quadrant pain and systemic inflammatory findings, and how advanced is it?",
+              "target": "appendix and adjacent abdominal/pelvic viscera",
+              "type": "existence_or_identity",
+              "other_proposed_type": "",
+              "positive_answer_changes": "Identifying appendicitis or another focal intra-abdominal process would support urgent surgical or targeted medical management and guide perioperative planning.",
+              "negative_answer_changes": "If no intra-abdominal source is identified, clinicians would reconsider the diagnosis, broaden the differential, and potentially avoid immediate surgery.",
+              "secondary_questions": [
+                "Is there evidence of perforation, abscess, or other complication associated with a suspected appendicitis or intra-abdominal inflammatory focus?"
+              ],
+              "answer_requirements": [
+                {
+                  "requirement_key": "req_vis",
+                  "id": "target_visualization_or_assessment",
+                  "other_proposed_dimension": "",
+                  "dimension": "Visualization and assessment of the appendix and right lower quadrant bowel/mesentery",
+                  "why_required": "Visualization is necessary to determine whether appendicitis or another focal RLQ process is present."
+                },
+                {
+                  "requirement_key": "req_presence",
+                  "id": "presence_or_absence",
+                  "other_proposed_dimension": "",
+                  "dimension": "Presence or absence of imaging signs of appendicitis or alternative intra-abdominal pathology explaining RLQ pain and leukocytosis",
+                  "why_required": "Establishing a concrete disease entity is required to attribute symptoms and plan treatment."
+                },
+                {
+                  "requirement_key": "req_extent",
+                  "id": "severity_or_extent",
+                  "other_proposed_dimension": "",
+                  "dimension": "Severity and local extent of any identified inflammatory or surgical process (e.g., length of involved bowel, phlegmon, collections)",
+                  "why_required": "Extent informs urgency, operative strategy, and potential need for percutaneous drainage or conservative management."
+                },
+                {
+                  "requirement_key": "req_comp",
+                  "id": "complication_presence_or_character",
+                  "other_proposed_dimension": "",
+                  "dimension": "Presence and character of complications such as perforation, abscess, free air, or diffuse peritonitis",
+                  "why_required": "Complications significantly alter risk, timing, and type of intervention."
+                }
+              ],
+              "evidence": [
+                "presenting with 4days of nausea, vomiting and one day of RLQ pain",
+                "White Blood Cells: 18.2 K/uL (ref 4.0-11.0)"
+              ]
+            },
+            "question_continuity": "initial",
+            "coverage": {
+              "requirements": [
+                {
+                  "requirement_key": "req_vis",
+                  "requirement_id": "target_visualization_or_assessment",
+                  "status": "unaddressed",
+                  "direction": "no_direction",
+                  "supporting_evidence": [
+                    "## Imaging resulted before this decision point\n(none)"
+                  ],
+                  "reason": "No prior imaging has visualized the appendix or RLQ structures."
+                },
+                {
+                  "requirement_key": "req_presence",
+                  "requirement_id": "presence_or_absence",
+                  "status": "unaddressed",
+                  "direction": "no_direction",
+                  "supporting_evidence": [
+                    "## Imaging resulted before this decision point\n(none)"
+                  ],
+                  "reason": "Clinical data alone cannot establish or exclude appendicitis or other focal intra-abdominal pathology."
+                },
+                {
+                  "requirement_key": "req_extent",
+                  "requirement_id": "severity_or_extent",
+                  "status": "unaddressed",
+                  "direction": "no_direction",
+                  "supporting_evidence": [
+                    "## Imaging resulted before this decision point\n(none)"
+                  ],
+                  "reason": "No modality has characterized the local extent of any intra-abdominal disease."
+                },
+                {
+                  "requirement_key": "req_comp",
+                  "requirement_id": "complication_presence_or_character",
+                  "status": "unaddressed",
+                  "direction": "no_direction",
+                  "supporting_evidence": [
+                    "## Imaging resulted before this decision point\n(none)"
+                  ],
+                  "reason": "Possible complications like perforation or abscess cannot be assessed from exam and labs alone despite leukocytosis and mild lactic elevation."
+                }
+              ],
+              "aggregate": "unanswered",
+              "aggregate_reason": "All imaging-dependent aspects of the question remain unaddressed because no prior imaging has been done."
+            },
+            "current_order_fit": {
+              "test_question_capability": "capable",
+              "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix, identify appendicitis or other intra-abdominal pathology, and assess severity and complications such as perforation or abscess.",
+              "intent_support": "well_supported",
+              "unsupported_residual": "The choice of contrast-enhanced CT over ultrasound or noncontrast CT is not explicitly justified given the elevated creatinine and reduced eGFR, though local practice and diagnostic certainty needs may explain it."
+            },
+            "derived_transition": "initial",
+            "alternative_reconstruction": ""
+          },
+          "validation_errors": []
+        }
+      ]
     }
   ]
 }

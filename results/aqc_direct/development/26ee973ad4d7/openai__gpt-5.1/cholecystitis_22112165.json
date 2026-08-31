@@ -1,0 +1,666 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 22112165,
+  "source_path": "results/annotation_experiment/full/cholecystitis_22112165.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABDOMEN W/CONTRAST)",
+      "request_prompt_sha256": "54e032cdb60da124865896107d034a09368becfead16156d4f7f2996e0badd4f",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "54e032cdb60da124865896107d034a09368becfead16156d4f7f2996e0badd4f",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute right upper quadrant abdominal pain syndrome concerning for a hepatobiliary or adjacent intra-abdominal source despite normal labs.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "symptom complex / provisional syndrome",
+                  "status": "likely",
+                  "evidence": [
+                    "___ p/w RUQ abdominal pain x3 days and emesis today x3.",
+                    "Abd S/ND; ttp in RUQ, RLQ, and L epigastrium.  Positive ___ sign."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Common laboratory markers for hepatobiliary inflammation, pancreatitis, and systemic infection are not currently elevated.",
+                  "type": "other",
+                  "other_proposed_type": "laboratory_context",
+                  "level": "data-level clinical context",
+                  "status": "established",
+                  "evidence": [
+                    "White Blood Cells: 5.7 K/uL (ref 4.0-11.0)",
+                    "Alanine Aminotransferase (ALT): 11.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.3 mg/dL (ref 0.0-1.5) ... Lipase: 46.0 IU/L (ref 0.0-60.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Prior pelvic surgery (open left salpingo-oophorectomy) may predispose to intra-abdominal adhesions or alternative nonbiliary sources of abdominal pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "risk factor / potential pain source",
+                  "status": "suspected",
+                  "evidence": [
+                    "PSH: open L salpingo-oopherectomy - ___ (___)",
+                    "Well-healed incision noted in pelvis."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_assessed",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First imaging decision; no prior study."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision, so assumptions are being set de novo from history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "What intra-abdominal structural abnormality explains this patient’s acute right upper quadrant abdominal pain and vomiting despite non-diagnostic laboratory studies?",
+                "target": "hepatobiliary system and adjacent intra-abdominal organs",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If CT shows a specific cause (e.g., cholecystitis, biliary pathology, bowel process, or other intra-abdominal source), proceed with targeted medical, surgical, or interventional management.",
+                "negative_answer_changes": "If CT does not demonstrate an explanation, reconsider the working diagnosis, adjust pain management and further workup, and potentially pursue alternative modalities or non-structural causes.",
+                "secondary_questions": [
+                  "Is there evidence of a nonbiliary intra-abdominal process such as appendicitis, obstruction, perforation, or other pathology that could explain the pain?",
+                  "Is there any complication such as abscess, perforation, or ischemia that would require urgent intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate contrast-enhanced visualization of liver, gallbladder, biliary tree, pancreas, stomach, bowel, and surrounding peritoneal/mesenteric structures.",
+                    "why_required": "Determining the source of pain requires seeing the relevant intra-abdominal organs and surrounding tissues."
+                  },
+                  {
+                    "requirement_key": "req_src",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of structural abnormalities that could explain RUQ pain (e.g., cholecystitis, biliary dilation, hepatic lesion, pancreatitis, bowel pathology, obstruction).",
+                    "why_required": "Identifying or excluding a concrete structural lesion is central to explaining the acute pain and guiding management."
+                  },
+                  {
+                    "requirement_key": "req_loc",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Precise anatomic localization of any detected abnormality relative to RUQ and adjacent regions (hepatobiliary vs bowel vs other).",
+                    "why_required": "Localizing pathology to a specific organ system directs specialty involvement and treatment choices."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of acute complications such as perforation, abscess, or ischemia.",
+                    "why_required": "Detecting complications would escalate urgency and may necessitate emergent surgical or interventional treatment."
+                  }
+                ],
+                "evidence": [
+                  "___ p/w RUQ abdominal pain x3 days and emesis today x3.",
+                  "Abd S/ND; ttp in RUQ, RLQ, and L epigastrium.  Positive ___ sign."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "(none – no prior imaging)"
+                    ],
+                    "reason": "No imaging has yet been performed, so there is no prior visualization of intra-abdominal organs."
+                  },
+                  {
+                    "requirement_key": "req_src",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Lipase: 46.0 IU/L (ref 0.0-60.0)",
+                      "Alanine Aminotransferase (ALT): 11.0 IU/L ... Bilirubin, Total: 0.3 mg/dL"
+                    ],
+                    "reason": "Normal labs argue against some inflammatory processes but cannot rule out structural causes; no imaging has addressed structural presence/absence."
+                  },
+                  {
+                    "requirement_key": "req_loc",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Abd S/ND; ttp in RUQ, RLQ, and L epigastrium."
+                    ],
+                    "reason": "Exam localizes tenderness broadly but does not anatomically localize an internal lesion; no imaging exists."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Lactate: 1.7 mmol/L (ref 0.5-2.0)",
+                      "White Blood Cells: 5.7 K/uL (ref 4.0-11.0)"
+                    ],
+                    "reason": "Normal lactate and WBC make severe complication less likely but do not exclude it; there is no imaging assessment for perforation, abscess, or ischemia."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All critical imaging-based requirements remain unaddressed because no prior imaging has been performed; current data are clinical and laboratory only."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen can visualize hepatobiliary and adjacent intra-abdominal structures, detect structural causes of RUQ pain, and identify complications such as abscess, perforation, or obstruction.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "Choice of CT abdomen with contrast as the first study instead of RUQ ultrasound or CT abdomen/pelvis including full pelvis is not explicitly justified by the note and may reflect local practice patterns or concerns (e.g., broader differential, prior pelvic surgery) that are not fully documented."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute right upper quadrant abdominal pain syndrome concerning for a hepatobiliary or adjacent intra-abdominal source despite normal labs.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"symptom complex / provisional syndrome\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"___ p/w RUQ abdominal pain x3 days and emesis today x3.\",\n        \"Abd S/ND; ttp in RUQ, RLQ, and L epigastrium.  Positive ___ sign.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Common laboratory markers for hepatobiliary inflammation, pancreatitis, and systemic infection are not currently elevated.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"laboratory_context\",\n      \"level\": \"data-level clinical context\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"White Blood Cells: 5.7 K/uL (ref 4.0-11.0)\",\n        \"Alanine Aminotransferase (ALT): 11.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.3 mg/dL (ref 0.0-1.5) ... Lipase: 46.0 IU/L (ref 0.0-60.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Prior pelvic surgery (open left salpingo-oophorectomy) may predispose to intra-abdominal adhesions or alternative nonbiliary sources of abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"risk factor / potential pain source\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"PSH: open L salpingo-oopherectomy - ___ (___)\",\n        \"Well-healed incision noted in pelvis.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_assessed\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First imaging decision; no prior study.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision, so assumptions are being set de novo from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What intra-abdominal structural abnormality explains this patient’s acute right upper quadrant abdominal pain and vomiting despite non-diagnostic laboratory studies?\",\n    \"target\": \"hepatobiliary system and adjacent intra-abdominal organs\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If CT shows a specific cause (e.g., cholecystitis, biliary pathology, bowel process, or other intra-abdominal source), proceed with targeted medical, surgical, or interventional management.\",\n    \"negative_answer_changes\": \"If CT does not demonstrate an explanation, reconsider the working diagnosis, adjust pain management and further workup, and potentially pursue alternative modalities or non-structural causes.\",\n    \"secondary_questions\": [\n      \"Is there evidence of a nonbiliary intra-abdominal process such as appendicitis, obstruction, perforation, or other pathology that could explain the pain?\",\n      \"Is there any complication such as abscess, perforation, or ischemia that would require urgent intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate contrast-enhanced visualization of liver, gallbladder, biliary tree, pancreas, stomach, bowel, and surrounding peritoneal/mesenteric structures.\",\n        \"why_required\": \"Determining the source of pain requires seeing the relevant intra-abdominal organs and surrounding tissues.\"\n      },\n      {\n        \"requirement_key\": \"req_src\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of structural abnormalities that could explain RUQ pain (e.g., cholecystitis, biliary dilation, hepatic lesion, pancreatitis, bowel pathology, obstruction).\",\n        \"why_required\": \"Identifying or excluding a concrete structural lesion is central to explaining the acute pain and guiding management.\"\n      },\n      {\n        \"requirement_key\": \"req_loc\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Precise anatomic localization of any detected abnormality relative to RUQ and adjacent regions (hepatobiliary vs bowel vs other).\",\n        \"why_required\": \"Localizing pathology to a specific organ system directs specialty involvement and treatment choices.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of acute complications such as perforation, abscess, or ischemia.\",\n        \"why_required\": \"Detecting complications would escalate urgency and may necessitate emergent surgical or interventional treatment.\"\n      }\n    ],\n    \"evidence\": [\n      \"___ p/w RUQ abdominal pain x3 days and emesis today x3.\",\n      \"Abd S/ND; ttp in RUQ, RLQ, and L epigastrium.  Positive ___ sign.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"(none – no prior imaging)\"\n        ],\n        \"reason\": \"No imaging has yet been performed, so there is no prior visualization of intra-abdominal organs.\"\n      },\n      {\n        \"requirement_key\": \"req_src\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Lipase: 46.0 IU/L (ref 0.0-60.0)\",\n          \"Alanine Aminotransferase (ALT): 11.0 IU/L ... Bilirubin, Total: 0.3 mg/dL\"\n        ],\n        \"reason\": \"Normal labs argue against some inflammatory processes but cannot rule out structural causes; no imaging has addressed structural presence/absence.\"\n      },\n      {\n        \"requirement_key\": \"req_loc\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Abd S/ND; ttp in RUQ, RLQ, and L epigastrium.\"\n        ],\n        \"reason\": \"Exam localizes tenderness broadly but does not anatomically localize an internal lesion; no imaging exists.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Lactate: 1.7 mmol/L (ref 0.5-2.0)\",\n          \"White Blood Cells: 5.7 K/uL (ref 4.0-11.0)\"\n        ],\n        \"reason\": \"Normal lactate and WBC make severe complication less likely but do not exclude it; there is no imaging assessment for perforation, abscess, or ischemia.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All critical imaging-based requirements remain unaddressed because no prior imaging has been performed; current data are clinical and laboratory only.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen can visualize hepatobiliary and adjacent intra-abdominal structures, detect structural causes of RUQ pain, and identify complications such as abscess, perforation, or obstruction.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"Choice of CT abdomen with contrast as the first study instead of RUQ ultrasound or CT abdomen/pelvis including full pelvis is not explicitly justified by the note and may reflect local practice patterns or concerns (e.g., broader differential, prior pelvic surgery) that are not fully documented.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788171861-ISAdJ3dzTd4MaS2eeChU",
+            "usage": {
+              "completion_tokens": 1974,
+              "prompt_tokens": 2953,
+              "total_tokens": 4927,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02343125,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02343125,
+                "upstream_inference_prompt_cost": 0.00369125,
+                "upstream_inference_completions_cost": 0.01974
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute right upper quadrant abdominal pain syndrome concerning for a hepatobiliary or adjacent intra-abdominal source despite normal labs.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "symptom complex / provisional syndrome",
+            "status": "likely",
+            "evidence": [
+              "___ p/w RUQ abdominal pain x3 days and emesis today x3.",
+              "Abd S/ND; ttp in RUQ, RLQ, and L epigastrium.  Positive ___ sign."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Common laboratory markers for hepatobiliary inflammation, pancreatitis, and systemic infection are not currently elevated.",
+            "type": "other",
+            "other_proposed_type": "laboratory_context",
+            "level": "data-level clinical context",
+            "status": "established",
+            "evidence": [
+              "White Blood Cells: 5.7 K/uL (ref 4.0-11.0)",
+              "Alanine Aminotransferase (ALT): 11.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.3 mg/dL (ref 0.0-1.5) ... Lipase: 46.0 IU/L (ref 0.0-60.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Prior pelvic surgery (open left salpingo-oophorectomy) may predispose to intra-abdominal adhesions or alternative nonbiliary sources of abdominal pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "risk factor / potential pain source",
+            "status": "suspected",
+            "evidence": [
+              "PSH: open L salpingo-oopherectomy - ___ (___)",
+              "Well-healed incision noted in pelvis."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_assessed",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First imaging decision; no prior study."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision, so assumptions are being set de novo from history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "What intra-abdominal structural abnormality explains this patient’s acute right upper quadrant abdominal pain and vomiting despite non-diagnostic laboratory studies?",
+          "target": "hepatobiliary system and adjacent intra-abdominal organs",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If CT shows a specific cause (e.g., cholecystitis, biliary pathology, bowel process, or other intra-abdominal source), proceed with targeted medical, surgical, or interventional management.",
+          "negative_answer_changes": "If CT does not demonstrate an explanation, reconsider the working diagnosis, adjust pain management and further workup, and potentially pursue alternative modalities or non-structural causes.",
+          "secondary_questions": [
+            "Is there evidence of a nonbiliary intra-abdominal process such as appendicitis, obstruction, perforation, or other pathology that could explain the pain?",
+            "Is there any complication such as abscess, perforation, or ischemia that would require urgent intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate contrast-enhanced visualization of liver, gallbladder, biliary tree, pancreas, stomach, bowel, and surrounding peritoneal/mesenteric structures.",
+              "why_required": "Determining the source of pain requires seeing the relevant intra-abdominal organs and surrounding tissues."
+            },
+            {
+              "requirement_key": "req_src",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of structural abnormalities that could explain RUQ pain (e.g., cholecystitis, biliary dilation, hepatic lesion, pancreatitis, bowel pathology, obstruction).",
+              "why_required": "Identifying or excluding a concrete structural lesion is central to explaining the acute pain and guiding management."
+            },
+            {
+              "requirement_key": "req_loc",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Precise anatomic localization of any detected abnormality relative to RUQ and adjacent regions (hepatobiliary vs bowel vs other).",
+              "why_required": "Localizing pathology to a specific organ system directs specialty involvement and treatment choices."
+            },
+            {
+              "requirement_key": "req_comp",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of acute complications such as perforation, abscess, or ischemia.",
+              "why_required": "Detecting complications would escalate urgency and may necessitate emergent surgical or interventional treatment."
+            }
+          ],
+          "evidence": [
+            "___ p/w RUQ abdominal pain x3 days and emesis today x3.",
+            "Abd S/ND; ttp in RUQ, RLQ, and L epigastrium.  Positive ___ sign."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "(none – no prior imaging)"
+              ],
+              "reason": "No imaging has yet been performed, so there is no prior visualization of intra-abdominal organs."
+            },
+            {
+              "requirement_key": "req_src",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Lipase: 46.0 IU/L (ref 0.0-60.0)",
+                "Alanine Aminotransferase (ALT): 11.0 IU/L ... Bilirubin, Total: 0.3 mg/dL"
+              ],
+              "reason": "Normal labs argue against some inflammatory processes but cannot rule out structural causes; no imaging has addressed structural presence/absence."
+            },
+            {
+              "requirement_key": "req_loc",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Abd S/ND; ttp in RUQ, RLQ, and L epigastrium."
+              ],
+              "reason": "Exam localizes tenderness broadly but does not anatomically localize an internal lesion; no imaging exists."
+            },
+            {
+              "requirement_key": "req_comp",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Lactate: 1.7 mmol/L (ref 0.5-2.0)",
+                "White Blood Cells: 5.7 K/uL (ref 4.0-11.0)"
+              ],
+              "reason": "Normal lactate and WBC make severe complication less likely but do not exclude it; there is no imaging assessment for perforation, abscess, or ischemia."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All critical imaging-based requirements remain unaddressed because no prior imaging has been performed; current data are clinical and laboratory only."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen can visualize hepatobiliary and adjacent intra-abdominal structures, detect structural causes of RUQ pain, and identify complications such as abscess, perforation, or obstruction.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "Choice of CT abdomen with contrast as the first study instead of RUQ ultrasound or CT abdomen/pelvis including full pelvis is not explicitly justified by the note and may reflect local practice patterns or concerns (e.g., broader differential, prior pelvic surgery) that are not fully documented."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "a14a295b71c56c1fe8f33fac96e101078f481630f457b817fe0b89e3fb05d9d9",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "a14a295b71c56c1fe8f33fac96e101078f481630f457b817fe0b89e3fb05d9d9",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The CT finding of marked gallbladder wall edema with adjacent fat stranding is believed to represent acute gallbladder inflammation as the leading explanation for this patient’s right upper quadrant pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "provisional disease-level diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).",
+                    "___ p/w RUQ abdominal pain x3 days and emesis today x3.  ... Abd S/ND; ttp in RUQ, RLQ, and L epigastrium.  Positive ___ sign."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What intra-abdominal structural abnormality explains this patient’s acute right upper quadrant abdominal pain and vomiting despite non-diagnostic laboratory studies?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The CT abdomen/pelvis provided adequate visualization of intra-abdominal structures and demonstrated gallbladder wall edema with adjacent fat stranding, supplying a plausible structural source for RUQ pain while not identifying other alternative intra-abdominal causes or complications.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).",
+                  "evidence_stream_2": "___ p/w RUQ abdominal pain x3 days and emesis today x3. ... ttp in RUQ ... Positive ___ sign.",
+                  "reason": "CT findings of gallbladder inflammation agree with the clinical picture of RUQ pain and a positive RUQ sign; normal labs reduce but do not contradict this diagnosis."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The patient has an acute right upper quadrant abdominal pain syndrome concerning for a hepatobiliary or adjacent intra-abdominal source despite normal labs.",
+                "reason": "CT localized a structural abnormality to the gallbladder, refining the prior broad hepatobiliary/adjacent source frame into likely acute gallbladder inflammation."
+              },
+              "current_question": {
+                "primary": "Does the gallbladder show sonographic evidence of acute cholecystitis that confirms it as the cause of this patient’s right upper quadrant pain?",
+                "target": "gallbladder wall, lumen, and sonographic signs of acute cholecystitis",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If ultrasound confirms acute cholecystitis (e.g., stones, wall thickening, pericholecystic fluid, sonographic Murphy sign), the team can solidify the diagnosis and proceed toward definitive gallbladder-directed management such as surgical consultation for cholecystectomy.",
+                "negative_answer_changes": "If ultrasound fails to demonstrate sonographic features of acute cholecystitis, clinicians may question the gallbladder as the sole pain source, weigh alternative explanations, and potentially adjust the need or urgency for gallbladder-specific intervention.",
+                "secondary_questions": [
+                  "Are gallstones or sludge present that would identify a calculous etiology for the CT-detected gallbladder inflammation?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_gb_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "High-quality sonographic visualization of the gallbladder wall, lumen, and pericholecystic region.",
+                    "why_required": "Adequate visualization is necessary to evaluate for cholecystitis and related features such as wall thickening, stones, and pericholecystic fluid."
+                  },
+                  {
+                    "requirement_key": "req_chole_id",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of ultrasound criteria for acute cholecystitis (e.g., stones/sludge, wall thickening, pericholecystic fluid, sonographic Murphy sign).",
+                    "why_required": "Determining whether the CT-detected gallbladder abnormality corresponds to true acute cholecystitis is central to confirming the working diagnosis."
+                  },
+                  {
+                    "requirement_key": "req_calc_id",
+                    "id": "finding_identity",
+                    "other_proposed_dimension": "",
+                    "dimension": "Identification of gallstones or sludge as a specific etiologic substrate for gallbladder inflammation.",
+                    "why_required": "Establishing a calculous versus acalculous etiology guides prognosis and treatment planning, including surgical decision-making."
+                  }
+                ],
+                "evidence": [
+                  "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).",
+                  "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_gb_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39)."
+                    ],
+                    "reason": "CT provided good anatomic visualization and showed an abnormal gallbladder, but CT is not the optimal modality for dynamic or detailed mural and luminal assessment that ultrasound can provide."
+                  },
+                  {
+                    "requirement_key": "req_chole_id",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39)."
+                    ],
+                    "reason": "CT findings strongly suggest gallbladder inflammation but do not fully establish sonographic criteria for acute cholecystitis, leaving some diagnostic uncertainty about the exact syndrome."
+                  },
+                  {
+                    "requirement_key": "req_calc_id",
+                    "requirement_id": "finding_identity",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39)."
+                    ],
+                    "reason": "The CT report does not mention gallstones or sludge, so the specific etiologic substrate (calculous vs acalculous) remains uncharacterized before the ultrasound order."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "CT localized a likely source of pain to the gallbladder but has not yet fully confirmed the cholecystitis syndrome or its calculous etiology, motivating targeted ultrasound."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant ultrasound is well suited to characterize gallbladder wall changes, detect gallstones and sonographic Murphy sign, and thus confirm or refute acute cholecystitis suggested by CT.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not explicitly state why ultrasound followed CT rather than preceding it, or whether surgical planning, concern for calculous versus acalculous disease, or local protocols specifically triggered this additional test."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The CT finding of marked gallbladder wall edema with adjacent fat stranding is believed to represent acute gallbladder inflammation as the leading explanation for this patient’s right upper quadrant pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"provisional disease-level diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).\",\n        \"___ p/w RUQ abdominal pain x3 days and emesis today x3.  ... Abd S/ND; ttp in RUQ, RLQ, and L epigastrium.  Positive ___ sign.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What intra-abdominal structural abnormality explains this patient’s acute right upper quadrant abdominal pain and vomiting despite non-diagnostic laboratory studies?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The CT abdomen/pelvis provided adequate visualization of intra-abdominal structures and demonstrated gallbladder wall edema with adjacent fat stranding, supplying a plausible structural source for RUQ pain while not identifying other alternative intra-abdominal causes or complications.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).\",\n      \"evidence_stream_2\": \"___ p/w RUQ abdominal pain x3 days and emesis today x3. ... ttp in RUQ ... Positive ___ sign.\",\n      \"reason\": \"CT findings of gallbladder inflammation agree with the clinical picture of RUQ pain and a positive RUQ sign; normal labs reduce but do not contradict this diagnosis.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient has an acute right upper quadrant abdominal pain syndrome concerning for a hepatobiliary or adjacent intra-abdominal source despite normal labs.\",\n    \"reason\": \"CT localized a structural abnormality to the gallbladder, refining the prior broad hepatobiliary/adjacent source frame into likely acute gallbladder inflammation.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Does the gallbladder show sonographic evidence of acute cholecystitis that confirms it as the cause of this patient’s right upper quadrant pain?\",\n    \"target\": \"gallbladder wall, lumen, and sonographic signs of acute cholecystitis\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If ultrasound confirms acute cholecystitis (e.g., stones, wall thickening, pericholecystic fluid, sonographic Murphy sign), the team can solidify the diagnosis and proceed toward definitive gallbladder-directed management such as surgical consultation for cholecystectomy.\",\n    \"negative_answer_changes\": \"If ultrasound fails to demonstrate sonographic features of acute cholecystitis, clinicians may question the gallbladder as the sole pain source, weigh alternative explanations, and potentially adjust the need or urgency for gallbladder-specific intervention.\",\n    \"secondary_questions\": [\n      \"Are gallstones or sludge present that would identify a calculous etiology for the CT-detected gallbladder inflammation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_gb_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"High-quality sonographic visualization of the gallbladder wall, lumen, and pericholecystic region.\",\n        \"why_required\": \"Adequate visualization is necessary to evaluate for cholecystitis and related features such as wall thickening, stones, and pericholecystic fluid.\"\n      },\n      {\n        \"requirement_key\": \"req_chole_id\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of ultrasound criteria for acute cholecystitis (e.g., stones/sludge, wall thickening, pericholecystic fluid, sonographic Murphy sign).\",\n        \"why_required\": \"Determining whether the CT-detected gallbladder abnormality corresponds to true acute cholecystitis is central to confirming the working diagnosis.\"\n      },\n      {\n        \"requirement_key\": \"req_calc_id\",\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification of gallstones or sludge as a specific etiologic substrate for gallbladder inflammation.\",\n        \"why_required\": \"Establishing a calculous versus acalculous etiology guides prognosis and treatment planning, including surgical decision-making.\"\n      }\n    ],\n    \"evidence\": [\n      \"There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).\",\n      \"Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_gb_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).\"\n        ],\n        \"reason\": \"CT provided good anatomic visualization and showed an abnormal gallbladder, but CT is not the optimal modality for dynamic or detailed mural and luminal assessment that ultrasound can provide.\"\n      },\n      {\n        \"requirement_key\": \"req_chole_id\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).\"\n        ],\n        \"reason\": \"CT findings strongly suggest gallbladder inflammation but do not fully establish sonographic criteria for acute cholecystitis, leaving some diagnostic uncertainty about the exact syndrome.\"\n      },\n      {\n        \"requirement_key\": \"req_calc_id\",\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).\"\n        ],\n        \"reason\": \"The CT report does not mention gallstones or sludge, so the specific etiologic substrate (calculous vs acalculous) remains uncharacterized before the ultrasound order.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"CT localized a likely source of pain to the gallbladder but has not yet fully confirmed the cholecystitis syndrome or its calculous etiology, motivating targeted ultrasound.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant ultrasound is well suited to characterize gallbladder wall changes, detect gallstones and sonographic Murphy sign, and thus confirm or refute acute cholecystitis suggested by CT.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly state why ultrasound followed CT rather than preceding it, or whether surgical planning, concern for calculous versus acalculous disease, or local protocols specifically triggered this additional test.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788171888-l2LJTbZYVwj82uSKC8PB",
+            "usage": {
+              "completion_tokens": 1842,
+              "prompt_tokens": 5074,
+              "total_tokens": 6916,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1664,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0228905,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0228905,
+                "upstream_inference_prompt_cost": 0.0044705,
+                "upstream_inference_completions_cost": 0.01842
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The CT finding of marked gallbladder wall edema with adjacent fat stranding is believed to represent acute gallbladder inflammation as the leading explanation for this patient’s right upper quadrant pain.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "provisional disease-level diagnosis",
+            "status": "likely",
+            "evidence": [
+              "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).",
+              "___ p/w RUQ abdominal pain x3 days and emesis today x3.  ... Abd S/ND; ttp in RUQ, RLQ, and L epigastrium.  Positive ___ sign."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What intra-abdominal structural abnormality explains this patient’s acute right upper quadrant abdominal pain and vomiting despite non-diagnostic laboratory studies?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The CT abdomen/pelvis provided adequate visualization of intra-abdominal structures and demonstrated gallbladder wall edema with adjacent fat stranding, supplying a plausible structural source for RUQ pain while not identifying other alternative intra-abdominal causes or complications.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).",
+            "evidence_stream_2": "___ p/w RUQ abdominal pain x3 days and emesis today x3. ... ttp in RUQ ... Positive ___ sign.",
+            "reason": "CT findings of gallbladder inflammation agree with the clinical picture of RUQ pain and a positive RUQ sign; normal labs reduce but do not contradict this diagnosis."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient has an acute right upper quadrant abdominal pain syndrome concerning for a hepatobiliary or adjacent intra-abdominal source despite normal labs.",
+          "reason": "CT localized a structural abnormality to the gallbladder, refining the prior broad hepatobiliary/adjacent source frame into likely acute gallbladder inflammation."
+        },
+        "current_question": {
+          "primary": "Does the gallbladder show sonographic evidence of acute cholecystitis that confirms it as the cause of this patient’s right upper quadrant pain?",
+          "target": "gallbladder wall, lumen, and sonographic signs of acute cholecystitis",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If ultrasound confirms acute cholecystitis (e.g., stones, wall thickening, pericholecystic fluid, sonographic Murphy sign), the team can solidify the diagnosis and proceed toward definitive gallbladder-directed management such as surgical consultation for cholecystectomy.",
+          "negative_answer_changes": "If ultrasound fails to demonstrate sonographic features of acute cholecystitis, clinicians may question the gallbladder as the sole pain source, weigh alternative explanations, and potentially adjust the need or urgency for gallbladder-specific intervention.",
+          "secondary_questions": [
+            "Are gallstones or sludge present that would identify a calculous etiology for the CT-detected gallbladder inflammation?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_gb_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "High-quality sonographic visualization of the gallbladder wall, lumen, and pericholecystic region.",
+              "why_required": "Adequate visualization is necessary to evaluate for cholecystitis and related features such as wall thickening, stones, and pericholecystic fluid."
+            },
+            {
+              "requirement_key": "req_chole_id",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of ultrasound criteria for acute cholecystitis (e.g., stones/sludge, wall thickening, pericholecystic fluid, sonographic Murphy sign).",
+              "why_required": "Determining whether the CT-detected gallbladder abnormality corresponds to true acute cholecystitis is central to confirming the working diagnosis."
+            },
+            {
+              "requirement_key": "req_calc_id",
+              "id": "finding_identity",
+              "other_proposed_dimension": "",
+              "dimension": "Identification of gallstones or sludge as a specific etiologic substrate for gallbladder inflammation.",
+              "why_required": "Establishing a calculous versus acalculous etiology guides prognosis and treatment planning, including surgical decision-making."
+            }
+          ],
+          "evidence": [
+            "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39).",
+            "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_gb_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39)."
+              ],
+              "reason": "CT provided good anatomic visualization and showed an abnormal gallbladder, but CT is not the optimal modality for dynamic or detailed mural and luminal assessment that ultrasound can provide."
+            },
+            {
+              "requirement_key": "req_chole_id",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39)."
+              ],
+              "reason": "CT findings strongly suggest gallbladder inflammation but do not fully establish sonographic criteria for acute cholecystitis, leaving some diagnostic uncertainty about the exact syndrome."
+            },
+            {
+              "requirement_key": "req_calc_id",
+              "requirement_id": "finding_identity",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "There is marked gallbladder wall edema (2:19) measuring up to 5 mm.  In addition, there is suggestion of inferior fat stranding to the gallbladder (2:39)."
+              ],
+              "reason": "The CT report does not mention gallstones or sludge, so the specific etiologic substrate (calculous vs acalculous) remains uncharacterized before the ultrasound order."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "CT localized a likely source of pain to the gallbladder but has not yet fully confirmed the cholecystitis syndrome or its calculous etiology, motivating targeted ultrasound."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant ultrasound is well suited to characterize gallbladder wall changes, detect gallstones and sonographic Murphy sign, and thus confirm or refute acute cholecystitis suggested by CT.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not explicitly state why ultrasound followed CT rather than preceding it, or whether surgical planning, concern for calculous versus acalculous disease, or local protocols specifically triggered this additional test."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

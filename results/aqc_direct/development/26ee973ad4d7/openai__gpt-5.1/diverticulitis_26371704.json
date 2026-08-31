@@ -1,0 +1,1404 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 26371704,
+  "source_path": "results/annotation_experiment/full/diverticulitis_26371704.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "1520f7696cd404700a79de1bd91b55c9e7f6c6ddfed12bf0ab334274ca88262a",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "1520f7696cd404700a79de1bd91b55c9e7f6c6ddfed12bf0ab334274ca88262a",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and ileus/obstruction symptoms.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level working diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "“onset of lower abdominal pain that has been progressively worsening. The pain is located specifically in the suprapubic region and worse in the left lower quadrant. She reports associated fevers to 101, chills, nausea and anorexia… increasing abdominal distension with no BM or flatus since the pain started.”",
+                    "White Blood Cells: 12.1 K/uL (ref 4.0-10.0)… C-Reactive Protein: 136.6 mg/L (ref 0.0-5.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Urinary tract infection is not the primary source of the patient’s current symptoms despite recent outpatient treatment.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "disease-level alternative source",
+                  "status": "challenged",
+                  "evidence": [
+                    "“started on oral ciprofloxacin for presumed UTI though her ua today is clean.”",
+                    "Nitrite: NEG.… Leukocytes: NEG.… Bacteria: NONE."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is concern for a serious intra‑abdominal complication such as perforated viscus, abscess, or bowel obstruction that may require urgent intervention.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "complication-level concern",
+                  "status": "suspected",
+                  "evidence": [
+                    "“increasing abdominal distension with no BM or flatus since the pain started.”",
+                    "Abdomen- soft, appropriately tender, mildly distended.… White Blood Cells: 12.1 K/uL… C-Reactive Protein: 136.6 mg/L"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; the acute abdominal syndrome and non-urinary source are inferred from the baseline presentation."
+              },
+              "current_question": {
+                "primary": "What is the intra‑abdominal source and severity of the patient’s acute left‑sided lower abdominal process causing pain, fever, and obstructive symptoms, and is there any complication such as abscess, perforation, or obstruction requiring intervention?",
+                "target": "colon and adjacent intra‑abdominal structures in the left lower quadrant and pelvis",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming a specific source (e.g., diverticulitis with or without abscess, colitis, obstruction) will guide targeted medical therapy versus surgical or interventional management.",
+                "negative_answer_changes": "If no intra‑abdominal source or complication is identified, clinicians will reconsider alternative diagnoses (e.g., non-abdominal, gynecologic, functional) and adjust the management plan away from urgent abdominal intervention.",
+                "secondary_questions": [
+                  "Is there evidence of bowel obstruction or ileus explaining the lack of bowel movements and flatus?",
+                  "Is there a drainable collection, perforation, or other complication that would require procedural or surgical intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_source_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of a focal inflammatory or structural intra‑abdominal process in the left lower quadrant/pelvis (e.g., diverticulitis, colitis, mass, phlegmon).",
+                    "why_required": "Determining if a focal process exists is essential to establish an anatomic source for the acute syndrome."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Exact anatomic localization of any identified process within bowel and adjacent organs (e.g., sigmoid colon, small bowel, bladder, adnexa).",
+                    "why_required": "Precise localization is needed to distinguish among potential sources (colonic, small bowel, urinary, gynecologic) and plan appropriate therapy."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of any intra‑abdominal inflammatory process, including wall thickening, length of involvement, and degree of surrounding fat stranding or fluid.",
+                    "why_required": "Severity informs whether conservative management is reasonable or whether more aggressive treatment is required."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characteristics of complications such as abscess, free air, free fluid, or mechanical bowel obstruction.",
+                    "why_required": "Detecting complications changes urgency and type of intervention (e.g., percutaneous drainage, emergent surgery)."
+                  }
+                ],
+                "evidence": [
+                  "“onset of lower abdominal pain… worse in the left lower quadrant… associated fevers to 101, chills, nausea and anorexia… increasing abdominal distension with no BM or flatus since the pain started.”",
+                  "“ua today is clean.… Foley placed in the ER for urinary retention.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_source_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "The only prior imaging is a chest radiograph, which does not evaluate the abdomen or pelvis."
+                    ],
+                    "reason": "No abdominal imaging has been performed; there is no direct assessment of any focal intra‑abdominal process."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "TECHNIQUE: AP and lateral views the chest.… FINDINGS: The lungs are clear…"
+                    ],
+                    "reason": "Chest radiography provides no anatomic information about abdominal or pelvic structures."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No prior CT or ultrasound of the abdomen is documented."
+                    ],
+                    "reason": "Clinical data suggest severity but there is no imaging to grade the extent of inflammation or structural abnormality."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No imaging description of free air, abscess, or bowel obstruction is present prior to this order."
+                    ],
+                    "reason": "Potential complications are suspected from symptoms but not evaluated by any abdominal imaging."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key dimensions regarding the intra‑abdominal source, localization, severity, and complications remain unaddressed by prior studies."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can depict bowel wall, mesentery, adjacent organs, and detect abscess, perforation, obstruction, or other pathology in the left lower quadrant and pelvis.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact pre-test leading differential (e.g., diverticulitis vs malignancy vs gynecologic source) is not explicitly documented, so the specific disease-level intent remains partly inferred rather than stated."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and ileus/obstruction symptoms.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level working diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“onset of lower abdominal pain that has been progressively worsening. The pain is located specifically in the suprapubic region and worse in the left lower quadrant. She reports associated fevers to 101, chills, nausea and anorexia… increasing abdominal distension with no BM or flatus since the pain started.”\",\n        \"White Blood Cells: 12.1 K/uL (ref 4.0-10.0)… C-Reactive Protein: 136.6 mg/L (ref 0.0-5.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Urinary tract infection is not the primary source of the patient’s current symptoms despite recent outpatient treatment.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease-level alternative source\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"“started on oral ciprofloxacin for presumed UTI though her ua today is clean.”\",\n        \"Nitrite: NEG.… Leukocytes: NEG.… Bacteria: NONE.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is concern for a serious intra‑abdominal complication such as perforated viscus, abscess, or bowel obstruction that may require urgent intervention.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication-level concern\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“increasing abdominal distension with no BM or flatus since the pain started.”\",\n        \"Abdomen- soft, appropriately tender, mildly distended.… White Blood Cells: 12.1 K/uL… C-Reactive Protein: 136.6 mg/L\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the acute abdominal syndrome and non-urinary source are inferred from the baseline presentation.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the intra‑abdominal source and severity of the patient’s acute left‑sided lower abdominal process causing pain, fever, and obstructive symptoms, and is there any complication such as abscess, perforation, or obstruction requiring intervention?\",\n    \"target\": \"colon and adjacent intra‑abdominal structures in the left lower quadrant and pelvis\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming a specific source (e.g., diverticulitis with or without abscess, colitis, obstruction) will guide targeted medical therapy versus surgical or interventional management.\",\n    \"negative_answer_changes\": \"If no intra‑abdominal source or complication is identified, clinicians will reconsider alternative diagnoses (e.g., non-abdominal, gynecologic, functional) and adjust the management plan away from urgent abdominal intervention.\",\n    \"secondary_questions\": [\n      \"Is there evidence of bowel obstruction or ileus explaining the lack of bowel movements and flatus?\",\n      \"Is there a drainable collection, perforation, or other complication that would require procedural or surgical intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_source_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of a focal inflammatory or structural intra‑abdominal process in the left lower quadrant/pelvis (e.g., diverticulitis, colitis, mass, phlegmon).\",\n        \"why_required\": \"Determining if a focal process exists is essential to establish an anatomic source for the acute syndrome.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Exact anatomic localization of any identified process within bowel and adjacent organs (e.g., sigmoid colon, small bowel, bladder, adnexa).\",\n        \"why_required\": \"Precise localization is needed to distinguish among potential sources (colonic, small bowel, urinary, gynecologic) and plan appropriate therapy.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of any intra‑abdominal inflammatory process, including wall thickening, length of involvement, and degree of surrounding fat stranding or fluid.\",\n        \"why_required\": \"Severity informs whether conservative management is reasonable or whether more aggressive treatment is required.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characteristics of complications such as abscess, free air, free fluid, or mechanical bowel obstruction.\",\n        \"why_required\": \"Detecting complications changes urgency and type of intervention (e.g., percutaneous drainage, emergent surgery).\"\n      }\n    ],\n    \"evidence\": [\n      \"“onset of lower abdominal pain… worse in the left lower quadrant… associated fevers to 101, chills, nausea and anorexia… increasing abdominal distension with no BM or flatus since the pain started.”\",\n      \"“ua today is clean.… Foley placed in the ER for urinary retention.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_source_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"The only prior imaging is a chest radiograph, which does not evaluate the abdomen or pelvis.\"\n        ],\n        \"reason\": \"No abdominal imaging has been performed; there is no direct assessment of any focal intra‑abdominal process.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"TECHNIQUE: AP and lateral views the chest.… FINDINGS: The lungs are clear…\"\n        ],\n        \"reason\": \"Chest radiography provides no anatomic information about abdominal or pelvic structures.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior CT or ultrasound of the abdomen is documented.\"\n        ],\n        \"reason\": \"Clinical data suggest severity but there is no imaging to grade the extent of inflammation or structural abnormality.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No imaging description of free air, abscess, or bowel obstruction is present prior to this order.\"\n        ],\n        \"reason\": \"Potential complications are suspected from symptoms but not evaluated by any abdominal imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key dimensions regarding the intra‑abdominal source, localization, severity, and complications remain unaddressed by prior studies.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis can depict bowel wall, mesentery, adjacent organs, and detect abscess, perforation, obstruction, or other pathology in the left lower quadrant and pelvis.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact pre-test leading differential (e.g., diverticulitis vs malignancy vs gynecologic source) is not explicitly documented, so the specific disease-level intent remains partly inferred rather than stated.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788171915-dFILP3zH8g416EBdNhdP",
+            "usage": {
+              "completion_tokens": 1961,
+              "prompt_tokens": 3293,
+              "total_tokens": 5254,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02372625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02372625,
+                "upstream_inference_prompt_cost": 0.00411625,
+                "upstream_inference_completions_cost": 0.01961
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and ileus/obstruction symptoms.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome-level working diagnosis",
+            "status": "likely",
+            "evidence": [
+              "“onset of lower abdominal pain that has been progressively worsening. The pain is located specifically in the suprapubic region and worse in the left lower quadrant. She reports associated fevers to 101, chills, nausea and anorexia… increasing abdominal distension with no BM or flatus since the pain started.”",
+              "White Blood Cells: 12.1 K/uL (ref 4.0-10.0)… C-Reactive Protein: 136.6 mg/L (ref 0.0-5.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Urinary tract infection is not the primary source of the patient’s current symptoms despite recent outpatient treatment.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "disease-level alternative source",
+            "status": "challenged",
+            "evidence": [
+              "“started on oral ciprofloxacin for presumed UTI though her ua today is clean.”",
+              "Nitrite: NEG.… Leukocytes: NEG.… Bacteria: NONE."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is concern for a serious intra‑abdominal complication such as perforated viscus, abscess, or bowel obstruction that may require urgent intervention.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "complication-level concern",
+            "status": "suspected",
+            "evidence": [
+              "“increasing abdominal distension with no BM or flatus since the pain started.”",
+              "Abdomen- soft, appropriately tender, mildly distended.… White Blood Cells: 12.1 K/uL… C-Reactive Protein: 136.6 mg/L"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; the acute abdominal syndrome and non-urinary source are inferred from the baseline presentation."
+        },
+        "current_question": {
+          "primary": "What is the intra‑abdominal source and severity of the patient’s acute left‑sided lower abdominal process causing pain, fever, and obstructive symptoms, and is there any complication such as abscess, perforation, or obstruction requiring intervention?",
+          "target": "colon and adjacent intra‑abdominal structures in the left lower quadrant and pelvis",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming a specific source (e.g., diverticulitis with or without abscess, colitis, obstruction) will guide targeted medical therapy versus surgical or interventional management.",
+          "negative_answer_changes": "If no intra‑abdominal source or complication is identified, clinicians will reconsider alternative diagnoses (e.g., non-abdominal, gynecologic, functional) and adjust the management plan away from urgent abdominal intervention.",
+          "secondary_questions": [
+            "Is there evidence of bowel obstruction or ileus explaining the lack of bowel movements and flatus?",
+            "Is there a drainable collection, perforation, or other complication that would require procedural or surgical intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_source_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of a focal inflammatory or structural intra‑abdominal process in the left lower quadrant/pelvis (e.g., diverticulitis, colitis, mass, phlegmon).",
+              "why_required": "Determining if a focal process exists is essential to establish an anatomic source for the acute syndrome."
+            },
+            {
+              "requirement_key": "req_localization",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Exact anatomic localization of any identified process within bowel and adjacent organs (e.g., sigmoid colon, small bowel, bladder, adnexa).",
+              "why_required": "Precise localization is needed to distinguish among potential sources (colonic, small bowel, urinary, gynecologic) and plan appropriate therapy."
+            },
+            {
+              "requirement_key": "req_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity and extent of any intra‑abdominal inflammatory process, including wall thickening, length of involvement, and degree of surrounding fat stranding or fluid.",
+              "why_required": "Severity informs whether conservative management is reasonable or whether more aggressive treatment is required."
+            },
+            {
+              "requirement_key": "req_complication",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and characteristics of complications such as abscess, free air, free fluid, or mechanical bowel obstruction.",
+              "why_required": "Detecting complications changes urgency and type of intervention (e.g., percutaneous drainage, emergent surgery)."
+            }
+          ],
+          "evidence": [
+            "“onset of lower abdominal pain… worse in the left lower quadrant… associated fevers to 101, chills, nausea and anorexia… increasing abdominal distension with no BM or flatus since the pain started.”",
+            "“ua today is clean.… Foley placed in the ER for urinary retention.”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_source_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "The only prior imaging is a chest radiograph, which does not evaluate the abdomen or pelvis."
+              ],
+              "reason": "No abdominal imaging has been performed; there is no direct assessment of any focal intra‑abdominal process."
+            },
+            {
+              "requirement_key": "req_localization",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "TECHNIQUE: AP and lateral views the chest.… FINDINGS: The lungs are clear…"
+              ],
+              "reason": "Chest radiography provides no anatomic information about abdominal or pelvic structures."
+            },
+            {
+              "requirement_key": "req_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No prior CT or ultrasound of the abdomen is documented."
+              ],
+              "reason": "Clinical data suggest severity but there is no imaging to grade the extent of inflammation or structural abnormality."
+            },
+            {
+              "requirement_key": "req_complication",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No imaging description of free air, abscess, or bowel obstruction is present prior to this order."
+              ],
+              "reason": "Potential complications are suspected from symptoms but not evaluated by any abdominal imaging."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key dimensions regarding the intra‑abdominal source, localization, severity, and complications remain unaddressed by prior studies."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can depict bowel wall, mesentery, adjacent organs, and detect abscess, perforation, obstruction, or other pathology in the left lower quadrant and pelvis.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The exact pre-test leading differential (e.g., diverticulitis vs malignancy vs gynecologic source) is not explicitly documented, so the specific disease-level intent remains partly inferred rather than stated."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "0996cf9f75a45f9dbd287986ae9c86761009eed90f0685d980b69e8fe515cc35",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "0996cf9f75a45f9dbd287986ae9c86761009eed90f0685d980b69e8fe515cc35",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute left‑sided lower abdominal inflammatory/infectious process with systemic inflammatory response and obstructive symptoms that may represent complicated diverticulitis or another serious intra‑abdominal pathology.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level working diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "“onset of lower abdominal pain that has been progressively worsening. The pain is located specifically in the suprapubic region and worse in the left lower quadrant. She reports associated fevers to  101, chills, nausea and anorexia… increasing abdominal distension with no BM or flatus since the pain started.”",
+                    "White Blood Cells: 12.1 K/uL (ref 4.0-10.0)… C-Reactive Protein: 136.6 mg/L (ref 0.0-5.0)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first abdominal imaging; the acute left lower quadrant intra‑abdominal inflammatory syndrome is inferred from history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "What is the specific intra‑abdominal source, anatomic location, and severity of the acute left lower quadrant process, and is there any complication such as abscess, perforation, or obstruction requiring urgent intervention?",
+                "target": "colon and adjacent intra‑abdominal structures in the left lower quadrant and pelvis",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying and characterizing a focal process (e.g., diverticulitis with or without abscess, perforation, or obstruction) will guide targeted antibiotics, need for percutaneous drainage versus emergent surgery, and level of monitoring.",
+                "negative_answer_changes": "If no focal intra‑abdominal source or complication is found, clinicians will reconsider the diagnosis (e.g., gynecologic, urinary, or other non-abdominal causes) and may de-escalate plans for urgent abdominal intervention.",
+                "secondary_questions": [
+                  "Is there a drainable collection, free air, or other complication that would necessitate interventional radiology or surgical management?",
+                  "Is there evidence of bowel obstruction or ileus explaining the lack of bowel movements and flatus?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of a focal inflammatory or structural intra‑abdominal process in the left lower quadrant/pelvis (e.g., diverticulitis, colitis, mass, phlegmon).",
+                    "why_required": "Determining whether a focal process exists is essential to confirm an anatomic source for the acute syndrome and guide therapy."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Exact anatomic localization of any identified process within bowel and adjacent organs (e.g., sigmoid colon, small bowel, bladder, adnexa).",
+                    "why_required": "Localization distinguishes among colonic, urinary, and gynecologic sources and informs procedural or surgical planning."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of any inflammatory process, including length of involved bowel, degree of wall thickening, surrounding fat stranding, and any associated fluid or collections.",
+                    "why_required": "Severity grading helps decide between conservative management and more aggressive or invasive treatment."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characteristics of complications such as abscess, free intraperitoneal air, free fluid, or mechanical bowel obstruction.",
+                    "why_required": "Detecting and characterizing complications determines urgency and type of intervention (e.g., percutaneous drainage, emergent surgery)."
+                  }
+                ],
+                "evidence": [
+                  "“onset of lower abdominal pain that has been progressively worsening. The pain is located specifically in the suprapubic region and worse in the left lower quadrant.… increasing abdominal distension with no BM or flatus since the pain started.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "The only prior imaging is a chest radiograph, which does not evaluate the abdomen or pelvis."
+                    ],
+                    "reason": "No abdominal imaging has yet been performed, so the presence of any focal intra‑abdominal source remains unassessed."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "TECHNIQUE:\nAP and lateral views the chest.\n\nFINDINGS:\nThe lungs are clear…"
+                    ],
+                    "reason": "Chest radiography provides no anatomic information regarding abdominal or pelvic structures."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No CT or ultrasound of the abdomen is documented before this order."
+                    ],
+                    "reason": "Clinical data suggest a severe process, but there is no imaging to quantify the extent or grade severity of intra‑abdominal inflammation."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No imaging description of free air, abscess, or bowel obstruction is present prior to this order."
+                    ],
+                    "reason": "Potential complications are suspected clinically but have not been evaluated by any abdominal imaging."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key dimensions regarding source, localization, severity, and complications of the intra‑abdominal process remain unaddressed prior to this CT."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can visualize bowel, mesentery, adjacent organs, and detect diverticulitis, abscess, perforation, or obstruction in the left lower quadrant and pelvis.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact pre-test weighting of specific disease-level etiologies (e.g., diverticulitis versus malignancy or gynecologic pathology) is not explicitly documented and must be inferred from presentation."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute left‑sided lower abdominal inflammatory/infectious process with systemic inflammatory response and obstructive symptoms that may represent complicated diverticulitis or another serious intra‑abdominal pathology.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level working diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“onset of lower abdominal pain that has been progressively worsening. The pain is located specifically in the suprapubic region and worse in the left lower quadrant. She reports associated fevers to  101, chills, nausea and anorexia… increasing abdominal distension with no BM or flatus since the pain started.”\",\n        \"White Blood Cells: 12.1 K/uL (ref 4.0-10.0)… C-Reactive Protein: 136.6 mg/L (ref 0.0-5.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first abdominal imaging; the acute left lower quadrant intra‑abdominal inflammatory syndrome is inferred from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the specific intra‑abdominal source, anatomic location, and severity of the acute left lower quadrant process, and is there any complication such as abscess, perforation, or obstruction requiring urgent intervention?\",\n    \"target\": \"colon and adjacent intra‑abdominal structures in the left lower quadrant and pelvis\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying and characterizing a focal process (e.g., diverticulitis with or without abscess, perforation, or obstruction) will guide targeted antibiotics, need for percutaneous drainage versus emergent surgery, and level of monitoring.\",\n    \"negative_answer_changes\": \"If no focal intra‑abdominal source or complication is found, clinicians will reconsider the diagnosis (e.g., gynecologic, urinary, or other non-abdominal causes) and may de-escalate plans for urgent abdominal intervention.\",\n    \"secondary_questions\": [\n      \"Is there a drainable collection, free air, or other complication that would necessitate interventional radiology or surgical management?\",\n      \"Is there evidence of bowel obstruction or ileus explaining the lack of bowel movements and flatus?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of a focal inflammatory or structural intra‑abdominal process in the left lower quadrant/pelvis (e.g., diverticulitis, colitis, mass, phlegmon).\",\n        \"why_required\": \"Determining whether a focal process exists is essential to confirm an anatomic source for the acute syndrome and guide therapy.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Exact anatomic localization of any identified process within bowel and adjacent organs (e.g., sigmoid colon, small bowel, bladder, adnexa).\",\n        \"why_required\": \"Localization distinguishes among colonic, urinary, and gynecologic sources and informs procedural or surgical planning.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of any inflammatory process, including length of involved bowel, degree of wall thickening, surrounding fat stranding, and any associated fluid or collections.\",\n        \"why_required\": \"Severity grading helps decide between conservative management and more aggressive or invasive treatment.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characteristics of complications such as abscess, free intraperitoneal air, free fluid, or mechanical bowel obstruction.\",\n        \"why_required\": \"Detecting and characterizing complications determines urgency and type of intervention (e.g., percutaneous drainage, emergent surgery).\"\n      }\n    ],\n    \"evidence\": [\n      \"“onset of lower abdominal pain that has been progressively worsening. The pain is located specifically in the suprapubic region and worse in the left lower quadrant.… increasing abdominal distension with no BM or flatus since the pain started.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"The only prior imaging is a chest radiograph, which does not evaluate the abdomen or pelvis.\"\n        ],\n        \"reason\": \"No abdominal imaging has yet been performed, so the presence of any focal intra‑abdominal source remains unassessed.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"TECHNIQUE:\\nAP and lateral views the chest.\\n\\nFINDINGS:\\nThe lungs are clear…\"\n        ],\n        \"reason\": \"Chest radiography provides no anatomic information regarding abdominal or pelvic structures.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No CT or ultrasound of the abdomen is documented before this order.\"\n        ],\n        \"reason\": \"Clinical data suggest a severe process, but there is no imaging to quantify the extent or grade severity of intra‑abdominal inflammation.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No imaging description of free air, abscess, or bowel obstruction is present prior to this order.\"\n        ],\n        \"reason\": \"Potential complications are suspected clinically but have not been evaluated by any abdominal imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key dimensions regarding source, localization, severity, and complications of the intra‑abdominal process remain unaddressed prior to this CT.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis can visualize bowel, mesentery, adjacent organs, and detect diverticulitis, abscess, perforation, or obstruction in the left lower quadrant and pelvis.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact pre-test weighting of specific disease-level etiologies (e.g., diverticulitis versus malignancy or gynecologic pathology) is not explicitly documented and must be inferred from presentation.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788171943-D88Jjo8icwTJxgwjEtaC",
+            "usage": {
+              "completion_tokens": 1717,
+              "prompt_tokens": 5860,
+              "total_tokens": 7577,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2048,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.022191,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.022191,
+                "upstream_inference_prompt_cost": 0.005021,
+                "upstream_inference_completions_cost": 0.01717
+              }
+            }
+          },
+          "validation_errors": [
+            "later_step_question_continuity_initial",
+            "later_step_assumption_change_initial",
+            "later_step_derived_transition_initial",
+            "later_step_previous_order_update_not_applicable"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "192f60f8b1e832eefb3912d79d753d98d9b485955a2de0f580bd5f7d7abee52e",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and obstructive symptoms that now has imaging evidence of a complicated sigmoid diverticular process with an adjacent air–fluid collection.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level working diagnosis incorporating new imaging information",
+                  "status": "likely",
+                  "evidence": [
+                    "“onset of lower abdominal pain that has been progressively worsening. The pain is located specifically in the suprapubic region and worse in the left lower quadrant. She reports associated fevers to  101, chills, nausea and anorexia… increasing abdominal distension with no BM or flatus since the pain started.”",
+                    "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch… These findings are suggestive of complicated ____.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What is the intra‑abdominal source and severity of the patient’s acute left‑sided lower abdominal process causing pain, fever, and obstructive symptoms, and is there any complication such as abscess, perforation, or obstruction requiring intervention?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The contrast-enhanced CT abdomen/pelvis identified a thickened sigmoid segment with diverticuli and a sizable adjacent air–fluid collection, establishing a focal complicated sigmoid diverticular process with associated collection as the likely source and confirming a significant complication.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "“worse in the left lower quadrant… increasing abdominal distension with no BM or flatus since the pain started.”",
+                  "evidence_stream_2": "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch… These findings are suggestive of complicated ____.”",
+                  "reason": "Imaging findings align with the clinically suspected left‑sided inflammatory intra‑abdominal process and its potential complications."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and ileus/obstruction symptoms.",
+                "reason": "The CT localizes the syndrome to a complicated sigmoid diverticular process with an adjacent air–fluid collection, refining a nonspecific intra‑abdominal concern into a more specific source and complication pattern."
+              },
+              "current_question": {
+                "primary": "What are the exact anatomic extent and characteristics of the complicated sigmoid diverticular process and associated air–fluid collection to guide decisions about medical therapy versus drainage or surgical intervention?",
+                "target": "sigmoid colon and the adjacent pelvic air–fluid collection in the retrouterine pouch and superior pelvis",
+                "type": "severity_or_extent",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If CT shows a sizable, well‑formed, or multiloculated collection consistent with an abscess and clearly defines its relationship to surrounding organs, clinicians may pursue percutaneous drainage or surgery in addition to antibiotics.",
+                "negative_answer_changes": "If CT shows only limited pericolic inflammation without a substantial or drainable collection and no other complications, clinicians may favor conservative medical management without procedural intervention.",
+                "secondary_questions": [
+                  "Is the air–fluid collection a mature drainable abscess or another type of collection (e.g., contained perforation) and how closely does it abut adjacent organs such as uterus, adnexa, or bowel?",
+                  "Is there any evidence of frank perforation, generalized peritonitis, or bowel obstruction that would mandate urgent operative management?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_assessment",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Clear visualization of the sigmoid colon and the pelvic air–fluid collection, including retrouterine and superior components.",
+                    "why_required": "Adequate depiction of the involved segment and collection is necessary to judge extent, morphology, and relationship to adjacent structures."
+                  },
+                  {
+                    "requirement_key": "req_extent_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Size, configuration, and craniocaudal extent of the air–fluid collection and length and thickness of involved sigmoid colon.",
+                    "why_required": "These features determine whether the process is limited or extensive and inform the feasibility and urgency of intervention."
+                  },
+                  {
+                    "requirement_key": "req_complication_character",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Characterization of the collection (e.g., abscess vs phlegmon vs contained perforation) and presence of additional complications such as free intraperitoneal air, generalized fluid, or bowel obstruction.",
+                    "why_required": "Knowing the exact nature of complications guides selection between antibiotics alone, percutaneous drainage, or operative management."
+                  },
+                  {
+                    "requirement_key": "req_local_relationships",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Precise anatomic relationship of the collection to the retrouterine pouch, cervix, uterus, adnexa, and adjacent bowel loops.",
+                    "why_required": "These relationships affect technical approach and risk profile for any drainage or surgical procedure."
+                  }
+                ],
+                "evidence": [
+                  "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch posteriorly and superiorly and above portion of the sigmoid colon.… These findings are suggestive of complicated ____.”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_assessment",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "sufficiently_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch posteriorly and superiorly and above portion of the sigmoid colon.”"
+                    ],
+                    "reason": "The CT clearly visualizes the sigmoid colon and describes a sizable air–fluid collection and its extension in the pelvis, indicating adequate assessment of the target structures."
+                  },
+                  {
+                    "requirement_key": "req_extent_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“The portion inferiorly posterior to the cervix measures approximately 2.8 x 1.2 by 3.6 cm.  The component superiorly measures 8.1 x 2.3 x 5.5 cm.”"
+                    ],
+                    "reason": "The report provides specific measurements of two components of the collection but does not fully detail the length of colonic involvement or comprehensive severity grading."
+                  },
+                  {
+                    "requirement_key": "req_complication_character",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“There is a sizable air in fluid collection… These findings are suggestive of complicated ____.”"
+                    ],
+                    "reason": "The CT confirms a sizable air–fluid collection consistent with a complication of diverticular disease, but the report stops short of explicitly labeling it as an abscess versus another specific type of collection."
+                  },
+                  {
+                    "requirement_key": "req_local_relationships",
+                    "requirement_id": "anatomic_localization",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“air in fluid collection seen extending from the retrouterine pouch posteriorly and superiorly and above portion of the sigmoid colon.  The portion inferiorly posterior to the cervix measures approximately 2.8 x 1.2 by 3.6 cm.  The component superiorly measures 8.1 x 2.3 x 5.5 cm.”"
+                    ],
+                    "reason": "The report localizes the collection to the retrouterine pouch and posterior to the cervix with superior extension, but does not fully describe its relationship to all nearby organs (e.g., adnexa) in procedural planning terms."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "The prior CT establishes the presence and general extent of a complicated sigmoid diverticular process with a sizable pelvic air–fluid collection, but leaves some details of severity, exact characterization, and relationships incompletely specified for planning interventions."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT abdomen and pelvis can delineate the size, configuration, and exact pelvic relationships of a diverticular-related air–fluid collection and assess for perforation or obstruction.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "It is not fully explicit whether this CT is intended as an initial characterization versus follow-up after a prior intervention such as drainage; the note mentioning a removed drain suggests a prior procedure, but the exact temporal relationship to this CT is not detailed."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and obstructive symptoms that now has imaging evidence of a complicated sigmoid diverticular process with an adjacent air–fluid collection.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level working diagnosis incorporating new imaging information\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“onset of lower abdominal pain that has been progressively worsening. The pain is located specifically in the suprapubic region and worse in the left lower quadrant. She reports associated fevers to  101, chills, nausea and anorexia… increasing abdominal distension with no BM or flatus since the pain started.”\",\n        \"“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch… These findings are suggestive of complicated ____.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the intra‑abdominal source and severity of the patient’s acute left‑sided lower abdominal process causing pain, fever, and obstructive symptoms, and is there any complication such as abscess, perforation, or obstruction requiring intervention?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The contrast-enhanced CT abdomen/pelvis identified a thickened sigmoid segment with diverticuli and a sizable adjacent air–fluid collection, establishing a focal complicated sigmoid diverticular process with associated collection as the likely source and confirming a significant complication.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"“worse in the left lower quadrant… increasing abdominal distension with no BM or flatus since the pain started.”\",\n      \"evidence_stream_2\": \"“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch… These findings are suggestive of complicated ____.”\",\n      \"reason\": \"Imaging findings align with the clinically suspected left‑sided inflammatory intra‑abdominal process and its potential complications.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and ileus/obstruction symptoms.\",\n    \"reason\": \"The CT localizes the syndrome to a complicated sigmoid diverticular process with an adjacent air–fluid collection, refining a nonspecific intra‑abdominal concern into a more specific source and complication pattern.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What are the exact anatomic extent and characteristics of the complicated sigmoid diverticular process and associated air–fluid collection to guide decisions about medical therapy versus drainage or surgical intervention?\",\n    \"target\": \"sigmoid colon and the adjacent pelvic air–fluid collection in the retrouterine pouch and superior pelvis\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If CT shows a sizable, well‑formed, or multiloculated collection consistent with an abscess and clearly defines its relationship to surrounding organs, clinicians may pursue percutaneous drainage or surgery in addition to antibiotics.\",\n    \"negative_answer_changes\": \"If CT shows only limited pericolic inflammation without a substantial or drainable collection and no other complications, clinicians may favor conservative medical management without procedural intervention.\",\n    \"secondary_questions\": [\n      \"Is the air–fluid collection a mature drainable abscess or another type of collection (e.g., contained perforation) and how closely does it abut adjacent organs such as uterus, adnexa, or bowel?\",\n      \"Is there any evidence of frank perforation, generalized peritonitis, or bowel obstruction that would mandate urgent operative management?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_assessment\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Clear visualization of the sigmoid colon and the pelvic air–fluid collection, including retrouterine and superior components.\",\n        \"why_required\": \"Adequate depiction of the involved segment and collection is necessary to judge extent, morphology, and relationship to adjacent structures.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Size, configuration, and craniocaudal extent of the air–fluid collection and length and thickness of involved sigmoid colon.\",\n        \"why_required\": \"These features determine whether the process is limited or extensive and inform the feasibility and urgency of intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_complication_character\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of the collection (e.g., abscess vs phlegmon vs contained perforation) and presence of additional complications such as free intraperitoneal air, generalized fluid, or bowel obstruction.\",\n        \"why_required\": \"Knowing the exact nature of complications guides selection between antibiotics alone, percutaneous drainage, or operative management.\"\n      },\n      {\n        \"requirement_key\": \"req_local_relationships\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Precise anatomic relationship of the collection to the retrouterine pouch, cervix, uterus, adnexa, and adjacent bowel loops.\",\n        \"why_required\": \"These relationships affect technical approach and risk profile for any drainage or surgical procedure.\"\n      }\n    ],\n    \"evidence\": [\n      \"“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch posteriorly and superiorly and above portion of the sigmoid colon.… These findings are suggestive of complicated ____.”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_assessment\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch posteriorly and superiorly and above portion of the sigmoid colon.”\"\n        ],\n        \"reason\": \"The CT clearly visualizes the sigmoid colon and describes a sizable air–fluid collection and its extension in the pelvis, indicating adequate assessment of the target structures.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“The portion inferiorly posterior to the cervix measures approximately 2.8 x 1.2 by 3.6 cm.  The component superiorly measures 8.1 x 2.3 x 5.5 cm.”\"\n        ],\n        \"reason\": \"The report provides specific measurements of two components of the collection but does not fully detail the length of colonic involvement or comprehensive severity grading.\"\n      },\n      {\n        \"requirement_key\": \"req_complication_character\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“There is a sizable air in fluid collection… These findings are suggestive of complicated ____.”\"\n        ],\n        \"reason\": \"The CT confirms a sizable air–fluid collection consistent with a complication of diverticular disease, but the report stops short of explicitly labeling it as an abscess versus another specific type of collection.\"\n      },\n      {\n        \"requirement_key\": \"req_local_relationships\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“air in fluid collection seen extending from the retrouterine pouch posteriorly and superiorly and above portion of the sigmoid colon.  The portion inferiorly posterior to the cervix measures approximately 2.8 x 1.2 by 3.6 cm.  The component superiorly measures 8.1 x 2.3 x 5.5 cm.”\"\n        ],\n        \"reason\": \"The report localizes the collection to the retrouterine pouch and posterior to the cervix with superior extension, but does not fully describe its relationship to all nearby organs (e.g., adnexa) in procedural planning terms.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"The prior CT establishes the presence and general extent of a complicated sigmoid diverticular process with a sizable pelvic air–fluid collection, but leaves some details of severity, exact characterization, and relationships incompletely specified for planning interventions.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT abdomen and pelvis can delineate the size, configuration, and exact pelvic relationships of a diverticular-related air–fluid collection and assess for perforation or obstruction.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"It is not fully explicit whether this CT is intended as an initial characterization versus follow-up after a prior intervention such as drainage; the note mentioning a removed drain suggests a prior procedure, but the exact temporal relationship to this CT is not detailed.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788171967-tcPHkci0EgNkm5tjk2dF",
+            "usage": {
+              "completion_tokens": 2180,
+              "prompt_tokens": 5922,
+              "total_tokens": 8102,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 5632,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0228665,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0228665,
+                "upstream_inference_prompt_cost": 0.0010665,
+                "upstream_inference_completions_cost": 0.0218
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and obstructive symptoms that now has imaging evidence of a complicated sigmoid diverticular process with an adjacent air–fluid collection.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome-level working diagnosis incorporating new imaging information",
+            "status": "likely",
+            "evidence": [
+              "“onset of lower abdominal pain that has been progressively worsening. The pain is located specifically in the suprapubic region and worse in the left lower quadrant. She reports associated fevers to  101, chills, nausea and anorexia… increasing abdominal distension with no BM or flatus since the pain started.”",
+              "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch… These findings are suggestive of complicated ____.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What is the intra‑abdominal source and severity of the patient’s acute left‑sided lower abdominal process causing pain, fever, and obstructive symptoms, and is there any complication such as abscess, perforation, or obstruction requiring intervention?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The contrast-enhanced CT abdomen/pelvis identified a thickened sigmoid segment with diverticuli and a sizable adjacent air–fluid collection, establishing a focal complicated sigmoid diverticular process with associated collection as the likely source and confirming a significant complication.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "“worse in the left lower quadrant… increasing abdominal distension with no BM or flatus since the pain started.”",
+            "evidence_stream_2": "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch… These findings are suggestive of complicated ____.”",
+            "reason": "Imaging findings align with the clinically suspected left‑sided inflammatory intra‑abdominal process and its potential complications."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and ileus/obstruction symptoms.",
+          "reason": "The CT localizes the syndrome to a complicated sigmoid diverticular process with an adjacent air–fluid collection, refining a nonspecific intra‑abdominal concern into a more specific source and complication pattern."
+        },
+        "current_question": {
+          "primary": "What are the exact anatomic extent and characteristics of the complicated sigmoid diverticular process and associated air–fluid collection to guide decisions about medical therapy versus drainage or surgical intervention?",
+          "target": "sigmoid colon and the adjacent pelvic air–fluid collection in the retrouterine pouch and superior pelvis",
+          "type": "severity_or_extent",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If CT shows a sizable, well‑formed, or multiloculated collection consistent with an abscess and clearly defines its relationship to surrounding organs, clinicians may pursue percutaneous drainage or surgery in addition to antibiotics.",
+          "negative_answer_changes": "If CT shows only limited pericolic inflammation without a substantial or drainable collection and no other complications, clinicians may favor conservative medical management without procedural intervention.",
+          "secondary_questions": [
+            "Is the air–fluid collection a mature drainable abscess or another type of collection (e.g., contained perforation) and how closely does it abut adjacent organs such as uterus, adnexa, or bowel?",
+            "Is there any evidence of frank perforation, generalized peritonitis, or bowel obstruction that would mandate urgent operative management?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_assessment",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Clear visualization of the sigmoid colon and the pelvic air–fluid collection, including retrouterine and superior components.",
+              "why_required": "Adequate depiction of the involved segment and collection is necessary to judge extent, morphology, and relationship to adjacent structures."
+            },
+            {
+              "requirement_key": "req_extent_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Size, configuration, and craniocaudal extent of the air–fluid collection and length and thickness of involved sigmoid colon.",
+              "why_required": "These features determine whether the process is limited or extensive and inform the feasibility and urgency of intervention."
+            },
+            {
+              "requirement_key": "req_complication_character",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Characterization of the collection (e.g., abscess vs phlegmon vs contained perforation) and presence of additional complications such as free intraperitoneal air, generalized fluid, or bowel obstruction.",
+              "why_required": "Knowing the exact nature of complications guides selection between antibiotics alone, percutaneous drainage, or operative management."
+            },
+            {
+              "requirement_key": "req_local_relationships",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Precise anatomic relationship of the collection to the retrouterine pouch, cervix, uterus, adnexa, and adjacent bowel loops.",
+              "why_required": "These relationships affect technical approach and risk profile for any drainage or surgical procedure."
+            }
+          ],
+          "evidence": [
+            "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch posteriorly and superiorly and above portion of the sigmoid colon.… These findings are suggestive of complicated ____.”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_assessment",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "sufficiently_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch posteriorly and superiorly and above portion of the sigmoid colon.”"
+              ],
+              "reason": "The CT clearly visualizes the sigmoid colon and describes a sizable air–fluid collection and its extension in the pelvis, indicating adequate assessment of the target structures."
+            },
+            {
+              "requirement_key": "req_extent_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“The portion inferiorly posterior to the cervix measures approximately 2.8 x 1.2 by 3.6 cm.  The component superiorly measures 8.1 x 2.3 x 5.5 cm.”"
+              ],
+              "reason": "The report provides specific measurements of two components of the collection but does not fully detail the length of colonic involvement or comprehensive severity grading."
+            },
+            {
+              "requirement_key": "req_complication_character",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“There is a sizable air in fluid collection… These findings are suggestive of complicated ____.”"
+              ],
+              "reason": "The CT confirms a sizable air–fluid collection consistent with a complication of diverticular disease, but the report stops short of explicitly labeling it as an abscess versus another specific type of collection."
+            },
+            {
+              "requirement_key": "req_local_relationships",
+              "requirement_id": "anatomic_localization",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“air in fluid collection seen extending from the retrouterine pouch posteriorly and superiorly and above portion of the sigmoid colon.  The portion inferiorly posterior to the cervix measures approximately 2.8 x 1.2 by 3.6 cm.  The component superiorly measures 8.1 x 2.3 x 5.5 cm.”"
+              ],
+              "reason": "The report localizes the collection to the retrouterine pouch and posterior to the cervix with superior extension, but does not fully describe its relationship to all nearby organs (e.g., adnexa) in procedural planning terms."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "The prior CT establishes the presence and general extent of a complicated sigmoid diverticular process with a sizable pelvic air–fluid collection, but leaves some details of severity, exact characterization, and relationships incompletely specified for planning interventions."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT abdomen and pelvis can delineate the size, configuration, and exact pelvic relationships of a diverticular-related air–fluid collection and assess for perforation or obstruction.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "It is not fully explicit whether this CT is intended as an initial characterization versus follow-up after a prior intervention such as drainage; the note mentioning a removed drain suggests a prior procedure, but the exact temporal relationship to this CT is not detailed."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 3,
+      "ordered": "Ultrasound Abdomen (US ABD LIMIT, SINGLE ORGAN)",
+      "request_prompt_sha256": "e03df2dadbd0fce603ae8cf00e2f77fd9ac32c3b1cae0fec9dbcc27176b46bd3",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "e03df2dadbd0fce603ae8cf00e2f77fd9ac32c3b1cae0fec9dbcc27176b46bd3",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has a complicated sigmoid diverticular process with pelvic air–fluid collections that has been managed with percutaneous drainage, and her current clinical course requires reassessment for possible ongoing or new intra‑abdominal complications.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level working diagnosis incorporating course and treatment",
+                  "status": "likely",
+                  "evidence": [
+                    "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch… These findings are suggestive of complicated ____.”",
+                    "“There has been interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What are the extent and characteristics of the complicated sigmoid diverticular process and associated pelvic air–fluid collection, and how have these changed after percutaneous drainage?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The follow-up CT abdomen/pelvis demonstrated persistent but slightly decreased size of the main pelvic air–fluid collection after drain placement and identified a new small intramural abscess along the sigmoid colon, refining understanding of disease extent and response to drainage.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection…”",
+                  "evidence_stream_2": "“There is extensive diverticulosis, with redemonstration of inflammation surrounding the sigmoid colon.  There has been interval placement of a percutaneous pigtail drainage catheter… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess…”",
+                  "reason": "The interval CT confirms ongoing complicated diverticulitis at the same location and shows expected post‑drain changes with additional small abscess formation, which is consistent with the prior diagnosis and treatment course."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and obstructive symptoms that now has imaging evidence of a complicated sigmoid diverticular process with an adjacent air–fluid collection.",
+                "reason": "Subsequent CT shows persistent sigmoid inflammation with a drain in place and a new small intramural abscess, refining the process as ongoing complicated diverticulitis with evolving collections despite intervention."
+              },
+              "current_question": {
+                "primary": "Is there persistent or new abnormal fluid collection or biliary/hepatic complication in the upper abdomen that could explain ongoing systemic inflammation or abdominal findings after drainage of the pelvic diverticular abscess?",
+                "target": "upper abdominal organs and spaces, particularly liver, biliary tree, and upper abdominal fluid collections",
+                "type": "complication",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If ultrasound shows a significant upper abdominal fluid collection, biliary pathology, or hepatic abscess, clinicians may broaden or change antibiotics, consider additional drainage, or adjust overall management beyond the pelvic diverticular focus.",
+                "negative_answer_changes": "If ultrasound does not reveal a new or persistent upper abdominal collection or hepatobiliary source, clinicians may attribute current symptoms primarily to the known complicated sigmoid disease and its pelvic collections and continue the existing management trajectory without adding an upper abdominal intervention.",
+                "secondary_questions": [
+                  "Is there any evidence of new ascites or localized upper abdominal fluid that might represent spread of infection beyond the pelvis?",
+                  "Are the liver and biliary system normal, or is there coexisting pathology such as cholecystitis that could contribute to fever and pain?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_us_target",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization of the selected upper abdominal organ (e.g., liver, gallbladder, or upper abdominal fluid spaces) for which the limited ultrasound is ordered.",
+                    "why_required": "Adequate imaging of the chosen organ or region is needed to determine whether any new or persistent collection or hepatobiliary abnormality is present."
+                  },
+                  {
+                    "requirement_key": "req_presence_collection",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of abnormal fluid collections, abscess, or biliary pathology in the examined upper abdominal region.",
+                    "why_required": "Detection or exclusion of a new or persistent upper abdominal complication directly affects decisions about additional drainage, surgery, or antibiotic changes."
+                  }
+                ],
+                "evidence": [
+                  "“There has been interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess, measuring 2.2 x 1.0 cm.”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_us_target",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Prior CTs assessed the entire abdomen, but the limited ultrasound’s specific target organ in the upper abdomen is not yet known and has not been separately evaluated by ultrasound."
+                  },
+                  {
+                    "requirement_key": "req_presence_collection",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“The liver demonstrates homogenous attenuation throughout.  There is no evidence of focal lesions.  There is no evidence of intrahepatic or extrahepatic biliary dilatation.  The gallbladder is notable for focal adenomyomatosis at the gallbladder fundus.”",
+                      "“There is no free fluid in the pelvis.”"
+                    ],
+                    "reason": "CT reports exclude significant hepatobiliary pathology and do not describe upper abdominal abscess or ascites, but ultrasound may still be sought for more focused or interval evaluation that CT, performed earlier and primarily for diverticulitis, might not fully settle at the current time point."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "CT imaging provides a broad assessment suggesting no major upper abdominal complication, yet it may not fully address new interval changes or subtle hepatobiliary or fluid-collection questions that a targeted limited ultrasound is intended to clarify."
+              },
+              "current_order_fit": {
+                "test_question_capability": "partially_capable",
+                "why_this_order_could_answer": "A limited abdominal ultrasound can evaluate the chosen upper abdominal organ and detect or exclude many fluid collections or hepatobiliary complications that could contribute to ongoing systemic illness in a patient with complicated diverticulitis.",
+                "intent_support": "weakly_supported",
+                "unsupported_residual": "The chart does not explicitly specify new upper abdominal symptoms, abnormal liver tests, or right upper quadrant tenderness that would clearly motivate a focused single-organ ultrasound rather than repeat CT or pelvic-focused imaging; the precise clinical trigger and the exact organ targeted by this limited study remain unclear."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "The limited abdominal ultrasound could instead have been ordered to reassess for bladder distension or pelvic fluid after Foley and drain removal, but this is less consistent with the usual coding of a single-organ upper abdominal ultrasound and is not clearly supported by the available documentation."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has a complicated sigmoid diverticular process with pelvic air–fluid collections that has been managed with percutaneous drainage, and her current clinical course requires reassessment for possible ongoing or new intra‑abdominal complications.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level working diagnosis incorporating course and treatment\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch… These findings are suggestive of complicated ____.”\",\n        \"“There has been interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What are the extent and characteristics of the complicated sigmoid diverticular process and associated pelvic air–fluid collection, and how have these changed after percutaneous drainage?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The follow-up CT abdomen/pelvis demonstrated persistent but slightly decreased size of the main pelvic air–fluid collection after drain placement and identified a new small intramural abscess along the sigmoid colon, refining understanding of disease extent and response to drainage.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection…”\",\n      \"evidence_stream_2\": \"“There is extensive diverticulosis, with redemonstration of inflammation surrounding the sigmoid colon.  There has been interval placement of a percutaneous pigtail drainage catheter… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess…”\",\n      \"reason\": \"The interval CT confirms ongoing complicated diverticulitis at the same location and shows expected post‑drain changes with additional small abscess formation, which is consistent with the prior diagnosis and treatment course.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and obstructive symptoms that now has imaging evidence of a complicated sigmoid diverticular process with an adjacent air–fluid collection.\",\n    \"reason\": \"Subsequent CT shows persistent sigmoid inflammation with a drain in place and a new small intramural abscess, refining the process as ongoing complicated diverticulitis with evolving collections despite intervention.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there persistent or new abnormal fluid collection or biliary/hepatic complication in the upper abdomen that could explain ongoing systemic inflammation or abdominal findings after drainage of the pelvic diverticular abscess?\",\n    \"target\": \"upper abdominal organs and spaces, particularly liver, biliary tree, and upper abdominal fluid collections\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If ultrasound shows a significant upper abdominal fluid collection, biliary pathology, or hepatic abscess, clinicians may broaden or change antibiotics, consider additional drainage, or adjust overall management beyond the pelvic diverticular focus.\",\n    \"negative_answer_changes\": \"If ultrasound does not reveal a new or persistent upper abdominal collection or hepatobiliary source, clinicians may attribute current symptoms primarily to the known complicated sigmoid disease and its pelvic collections and continue the existing management trajectory without adding an upper abdominal intervention.\",\n    \"secondary_questions\": [\n      \"Is there any evidence of new ascites or localized upper abdominal fluid that might represent spread of infection beyond the pelvis?\",\n      \"Are the liver and biliary system normal, or is there coexisting pathology such as cholecystitis that could contribute to fever and pain?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_us_target\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of the selected upper abdominal organ (e.g., liver, gallbladder, or upper abdominal fluid spaces) for which the limited ultrasound is ordered.\",\n        \"why_required\": \"Adequate imaging of the chosen organ or region is needed to determine whether any new or persistent collection or hepatobiliary abnormality is present.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_collection\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of abnormal fluid collections, abscess, or biliary pathology in the examined upper abdominal region.\",\n        \"why_required\": \"Detection or exclusion of a new or persistent upper abdominal complication directly affects decisions about additional drainage, surgery, or antibiotic changes.\"\n      }\n    ],\n    \"evidence\": [\n      \"“There has been interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess, measuring 2.2 x 1.0 cm.”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_us_target\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Prior CTs assessed the entire abdomen, but the limited ultrasound’s specific target organ in the upper abdomen is not yet known and has not been separately evaluated by ultrasound.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_collection\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“The liver demonstrates homogenous attenuation throughout.  There is no evidence of focal lesions.  There is no evidence of intrahepatic or extrahepatic biliary dilatation.  The gallbladder is notable for focal adenomyomatosis at the gallbladder fundus.”\",\n          \"“There is no free fluid in the pelvis.”\"\n        ],\n        \"reason\": \"CT reports exclude significant hepatobiliary pathology and do not describe upper abdominal abscess or ascites, but ultrasound may still be sought for more focused or interval evaluation that CT, performed earlier and primarily for diverticulitis, might not fully settle at the current time point.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"CT imaging provides a broad assessment suggesting no major upper abdominal complication, yet it may not fully address new interval changes or subtle hepatobiliary or fluid-collection questions that a targeted limited ultrasound is intended to clarify.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"partially_capable\",\n    \"why_this_order_could_answer\": \"A limited abdominal ultrasound can evaluate the chosen upper abdominal organ and detect or exclude many fluid collections or hepatobiliary complications that could contribute to ongoing systemic illness in a patient with complicated diverticulitis.\",\n    \"intent_support\": \"weakly_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly specify new upper abdominal symptoms, abnormal liver tests, or right upper quadrant tenderness that would clearly motivate a focused single-organ ultrasound rather than repeat CT or pelvic-focused imaging; the precise clinical trigger and the exact organ targeted by this limited study remain unclear.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"The limited abdominal ultrasound could instead have been ordered to reassess for bladder distension or pelvic fluid after Foley and drain removal, but this is less consistent with the usual coding of a single-organ upper abdominal ultrasound and is not clearly supported by the available documentation.\"\n}",
+            "request_id": "gen-1788171999-WibnYNAh3AbVAOS6cfXI",
+            "usage": {
+              "completion_tokens": 1771,
+              "prompt_tokens": 6982,
+              "total_tokens": 8753,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2816,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0232695,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0232695,
+                "upstream_inference_prompt_cost": 0.0055595,
+                "upstream_inference_completions_cost": 0.01771
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has a complicated sigmoid diverticular process with pelvic air–fluid collections that has been managed with percutaneous drainage, and her current clinical course requires reassessment for possible ongoing or new intra‑abdominal complications.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome-level working diagnosis incorporating course and treatment",
+            "status": "likely",
+            "evidence": [
+              "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection seen extending from the retrouterine pouch… These findings are suggestive of complicated ____.”",
+              "“There has been interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What are the extent and characteristics of the complicated sigmoid diverticular process and associated pelvic air–fluid collection, and how have these changed after percutaneous drainage?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The follow-up CT abdomen/pelvis demonstrated persistent but slightly decreased size of the main pelvic air–fluid collection after drain placement and identified a new small intramural abscess along the sigmoid colon, refining understanding of disease extent and response to drainage.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection…”",
+            "evidence_stream_2": "“There is extensive diverticulosis, with redemonstration of inflammation surrounding the sigmoid colon.  There has been interval placement of a percutaneous pigtail drainage catheter… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess…”",
+            "reason": "The interval CT confirms ongoing complicated diverticulitis at the same location and shows expected post‑drain changes with additional small abscess formation, which is consistent with the prior diagnosis and treatment course."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient has an acute left‑sided lower abdominal/intra‑abdominal inflammatory or infectious process causing pain, fever, leukocytosis, and obstructive symptoms that now has imaging evidence of a complicated sigmoid diverticular process with an adjacent air–fluid collection.",
+          "reason": "Subsequent CT shows persistent sigmoid inflammation with a drain in place and a new small intramural abscess, refining the process as ongoing complicated diverticulitis with evolving collections despite intervention."
+        },
+        "current_question": {
+          "primary": "Is there persistent or new abnormal fluid collection or biliary/hepatic complication in the upper abdomen that could explain ongoing systemic inflammation or abdominal findings after drainage of the pelvic diverticular abscess?",
+          "target": "upper abdominal organs and spaces, particularly liver, biliary tree, and upper abdominal fluid collections",
+          "type": "complication",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If ultrasound shows a significant upper abdominal fluid collection, biliary pathology, or hepatic abscess, clinicians may broaden or change antibiotics, consider additional drainage, or adjust overall management beyond the pelvic diverticular focus.",
+          "negative_answer_changes": "If ultrasound does not reveal a new or persistent upper abdominal collection or hepatobiliary source, clinicians may attribute current symptoms primarily to the known complicated sigmoid disease and its pelvic collections and continue the existing management trajectory without adding an upper abdominal intervention.",
+          "secondary_questions": [
+            "Is there any evidence of new ascites or localized upper abdominal fluid that might represent spread of infection beyond the pelvis?",
+            "Are the liver and biliary system normal, or is there coexisting pathology such as cholecystitis that could contribute to fever and pain?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_us_target",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization of the selected upper abdominal organ (e.g., liver, gallbladder, or upper abdominal fluid spaces) for which the limited ultrasound is ordered.",
+              "why_required": "Adequate imaging of the chosen organ or region is needed to determine whether any new or persistent collection or hepatobiliary abnormality is present."
+            },
+            {
+              "requirement_key": "req_presence_collection",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of abnormal fluid collections, abscess, or biliary pathology in the examined upper abdominal region.",
+              "why_required": "Detection or exclusion of a new or persistent upper abdominal complication directly affects decisions about additional drainage, surgery, or antibiotic changes."
+            }
+          ],
+          "evidence": [
+            "“There has been interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess, measuring 2.2 x 1.0 cm.”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_us_target",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Prior CTs assessed the entire abdomen, but the limited ultrasound’s specific target organ in the upper abdomen is not yet known and has not been separately evaluated by ultrasound."
+            },
+            {
+              "requirement_key": "req_presence_collection",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“The liver demonstrates homogenous attenuation throughout.  There is no evidence of focal lesions.  There is no evidence of intrahepatic or extrahepatic biliary dilatation.  The gallbladder is notable for focal adenomyomatosis at the gallbladder fundus.”",
+                "“There is no free fluid in the pelvis.”"
+              ],
+              "reason": "CT reports exclude significant hepatobiliary pathology and do not describe upper abdominal abscess or ascites, but ultrasound may still be sought for more focused or interval evaluation that CT, performed earlier and primarily for diverticulitis, might not fully settle at the current time point."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "CT imaging provides a broad assessment suggesting no major upper abdominal complication, yet it may not fully address new interval changes or subtle hepatobiliary or fluid-collection questions that a targeted limited ultrasound is intended to clarify."
+        },
+        "current_order_fit": {
+          "test_question_capability": "partially_capable",
+          "why_this_order_could_answer": "A limited abdominal ultrasound can evaluate the chosen upper abdominal organ and detect or exclude many fluid collections or hepatobiliary complications that could contribute to ongoing systemic illness in a patient with complicated diverticulitis.",
+          "intent_support": "weakly_supported",
+          "unsupported_residual": "The chart does not explicitly specify new upper abdominal symptoms, abnormal liver tests, or right upper quadrant tenderness that would clearly motivate a focused single-organ ultrasound rather than repeat CT or pelvic-focused imaging; the precise clinical trigger and the exact organ targeted by this limited study remain unclear."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "The limited abdominal ultrasound could instead have been ordered to reassess for bladder distension or pelvic fluid after Foley and drain removal, but this is less consistent with the usual coding of a single-organ upper abdominal ultrasound and is not clearly supported by the available documentation."
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 4,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "e331180f8a01acec46c691aa12d2fef8440a0135a0849a4c08ccab6074cf9b9a",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "e331180f8a01acec46c691aa12d2fef8440a0135a0849a4c08ccab6074cf9b9a",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has ongoing complicated sigmoid diverticulitis with pelvic abscesses and a percutaneous drain in place, and there is concern that the disease and collections may be persisting or evolving despite drainage and antibiotics.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level working diagnosis incorporating course and treatment response",
+                  "status": "likely",
+                  "evidence": [
+                    "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection… These findings are suggestive of complicated ____.”",
+                    "“There has been interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there persistent or new abnormal fluid collection or biliary/hepatic complication in the upper abdomen that could explain ongoing systemic inflammation or abdominal findings after drainage of the pelvic diverticular abscess?",
+                "study_adequacy": "limited_but_diagnostic",
+                "test_question_capability": "partially_capable",
+                "result_status": "indeterminate",
+                "effect_on_previous_question": "The limited ultrasound of the left lower quadrant was unable to visualize the drain and did not adequately assess the known abscess or other collections, so the prior question about ongoing or new collections remained essentially unanswered.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "“Numerous loops of bowel are visualized which obscure the ability of ultrasound to visualize the drain.  No fluid collection identified however ultrasound is not suitable to visualize the abscess seen on the prior CT.”",
+                  "evidence_stream_2": "“There has been interval placement of a percutaneous pigtail drainage catheter… collection… now measures 7.6 x 1.1 x 4.9 cm… intramural abscess, measuring 2.2 x 1.0 cm.”",
+                  "reason": "Ultrasound acknowledged technical limitations and explicitly stated it could not visualize the abscess that CT had shown, so it does not contradict but rather defers to the CT findings."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The patient’s complicated sigmoid diverticulitis with pelvic abscess and drain remains incompletely characterized in terms of current abscess size and response to drainage, because the most recent ultrasound could not adequately assess the known collection.",
+                "reason": "The LLQ ultrasound was unable to visualize the drain or abscess due to overlying bowel, leaving uncertainty about current abscess status and prompting the need for repeat cross-sectional imaging."
+              },
+              "current_question": {
+                "primary": "What is the current size, extent, and character of the sigmoid diverticulitis-related pelvic abscesses and surrounding inflammation after percutaneous drainage, and have any new intra-abdominal complications developed?",
+                "target": "sigmoid colon region, pelvic diverticular abscesses, and adjacent intra-abdominal compartments",
+                "type": "severity_or_extent",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If CT shows persistent or enlarging collections, new intramural or distant abscesses, or worsening inflammation, clinicians may escalate care with additional or revised drainage, surgical consultation, and adjustment of antibiotics or supportive management.",
+                "negative_answer_changes": "If CT shows interval decrease or resolution of collections and no new complications, clinicians may continue current nonoperative management, consider drain removal when appropriate, and avoid further invasive interventions.",
+                "secondary_questions": [
+                  "Are there any new or worsening complications such as intramural abscess extension, free perforation, or new distant collections?",
+                  "Is the percutaneous drain appropriately positioned relative to the targeted collection?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_extent_collections",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Current size, number, and distribution of pelvic and perisigmoid fluid/air collections related to diverticulitis, including comparison to prior CT measurements.",
+                    "why_required": "Determining whether collections are improving, stable, or worsening is essential to judge response to drainage and guide decisions about further intervention."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of new or evolving complications such as intramural abscess extension, free perforation, or distant intra-abdominal abscesses.",
+                    "why_required": "New or progressive complications would materially change management, potentially requiring urgent surgical or interventional radiology input."
+                  },
+                  {
+                    "requirement_key": "req_drain_position",
+                    "id": "device_position_or_integrity",
+                    "other_proposed_dimension": "",
+                    "dimension": "Position of the percutaneous drain relative to the primary collection and assessment for obvious malposition or migration.",
+                    "why_required": "Suboptimal drain position may explain inadequate source control and would prompt repositioning or replacement."
+                  }
+                ],
+                "evidence": [
+                  "“Numerous loops of bowel are visualized which obscure the ability of ultrasound to visualize the drain.  No fluid collection identified however ultrasound is not suitable to visualize the abscess seen on the prior CT.”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_extent_collections",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“collection… now measures 7.6 x 1.1 x 4.9 cm (2:63), previously 8.1 x 2.3 x 5.5 cm… retrouterine collection… previously 2.8 x 1.2 x 3.6 cm.”"
+                    ],
+                    "reason": "The prior CT quantified abscess size and showed slight interval decrease, but it is temporally prior to the current decision and does not reflect the most recent clinical status; the nondiagnostic ultrasound leaves current extent uncertain."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess, measuring 2.2 x 1.0 cm (2:65).”"
+                    ],
+                    "reason": "The last CT documented a new intramural abscess but no free perforation or distant abscesses; however, the subsequent ultrasound could not evaluate these complications, so new evolution cannot be excluded."
+                  },
+                  {
+                    "requirement_key": "req_drain_position",
+                    "requirement_id": "device_position_or_integrity",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection”",
+                      "“ultrasound is not suitable to visualize the abscess seen on the prior CT.”"
+                    ],
+                    "reason": "Prior CT confirmed initial drain position, but ultrasound could not re-visualize the drain, so its current position relative to the collection is not well assessed."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Existing CT gives baseline post-drain anatomy and complications, but the intervening nondiagnostic ultrasound leaves key aspects of current abscess extent, complications, and drain position unresolved at this decision point."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT abdomen and pelvis can comprehensively visualize the sigmoid region, pelvic collections, and percutaneous drain, and detect new or evolving intra-abdominal complications with comparison to prior CT.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not explicitly describe new worsening symptoms (e.g., recurrent fever spike, rising WBC, increased pain) at the exact time of ordering this CT, so the precise clinical trigger for repeat cross-sectional imaging beyond nondiagnostic ultrasound remains unstated."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "An alternative is that the CT was ordered primarily to evaluate for a new small bowel or colonic obstruction given the patient’s abdominal distension, lack of bowel movements or flatus, and known pelvic inflammatory process, with abscess reassessment as an additional objective."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has ongoing complicated sigmoid diverticulitis with pelvic abscesses and a percutaneous drain in place, and there is concern that the disease and collections may be persisting or evolving despite drainage and antibiotics.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level working diagnosis incorporating course and treatment response\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection… These findings are suggestive of complicated ____.”\",\n        \"“There has been interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there persistent or new abnormal fluid collection or biliary/hepatic complication in the upper abdomen that could explain ongoing systemic inflammation or abdominal findings after drainage of the pelvic diverticular abscess?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"partially_capable\",\n    \"result_status\": \"indeterminate\",\n    \"effect_on_previous_question\": \"The limited ultrasound of the left lower quadrant was unable to visualize the drain and did not adequately assess the known abscess or other collections, so the prior question about ongoing or new collections remained essentially unanswered.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"“Numerous loops of bowel are visualized which obscure the ability of ultrasound to visualize the drain.  No fluid collection identified however ultrasound is not suitable to visualize the abscess seen on the prior CT.”\",\n      \"evidence_stream_2\": \"“There has been interval placement of a percutaneous pigtail drainage catheter… collection… now measures 7.6 x 1.1 x 4.9 cm… intramural abscess, measuring 2.2 x 1.0 cm.”\",\n      \"reason\": \"Ultrasound acknowledged technical limitations and explicitly stated it could not visualize the abscess that CT had shown, so it does not contradict but rather defers to the CT findings.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient’s complicated sigmoid diverticulitis with pelvic abscess and drain remains incompletely characterized in terms of current abscess size and response to drainage, because the most recent ultrasound could not adequately assess the known collection.\",\n    \"reason\": \"The LLQ ultrasound was unable to visualize the drain or abscess due to overlying bowel, leaving uncertainty about current abscess status and prompting the need for repeat cross-sectional imaging.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the current size, extent, and character of the sigmoid diverticulitis-related pelvic abscesses and surrounding inflammation after percutaneous drainage, and have any new intra-abdominal complications developed?\",\n    \"target\": \"sigmoid colon region, pelvic diverticular abscesses, and adjacent intra-abdominal compartments\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If CT shows persistent or enlarging collections, new intramural or distant abscesses, or worsening inflammation, clinicians may escalate care with additional or revised drainage, surgical consultation, and adjustment of antibiotics or supportive management.\",\n    \"negative_answer_changes\": \"If CT shows interval decrease or resolution of collections and no new complications, clinicians may continue current nonoperative management, consider drain removal when appropriate, and avoid further invasive interventions.\",\n    \"secondary_questions\": [\n      \"Are there any new or worsening complications such as intramural abscess extension, free perforation, or new distant collections?\",\n      \"Is the percutaneous drain appropriately positioned relative to the targeted collection?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_extent_collections\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Current size, number, and distribution of pelvic and perisigmoid fluid/air collections related to diverticulitis, including comparison to prior CT measurements.\",\n        \"why_required\": \"Determining whether collections are improving, stable, or worsening is essential to judge response to drainage and guide decisions about further intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of new or evolving complications such as intramural abscess extension, free perforation, or distant intra-abdominal abscesses.\",\n        \"why_required\": \"New or progressive complications would materially change management, potentially requiring urgent surgical or interventional radiology input.\"\n      },\n      {\n        \"requirement_key\": \"req_drain_position\",\n        \"id\": \"device_position_or_integrity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Position of the percutaneous drain relative to the primary collection and assessment for obvious malposition or migration.\",\n        \"why_required\": \"Suboptimal drain position may explain inadequate source control and would prompt repositioning or replacement.\"\n      }\n    ],\n    \"evidence\": [\n      \"“Numerous loops of bowel are visualized which obscure the ability of ultrasound to visualize the drain.  No fluid collection identified however ultrasound is not suitable to visualize the abscess seen on the prior CT.”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_extent_collections\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“collection… now measures 7.6 x 1.1 x 4.9 cm (2:63), previously 8.1 x 2.3 x 5.5 cm… retrouterine collection… previously 2.8 x 1.2 x 3.6 cm.”\"\n        ],\n        \"reason\": \"The prior CT quantified abscess size and showed slight interval decrease, but it is temporally prior to the current decision and does not reflect the most recent clinical status; the nondiagnostic ultrasound leaves current extent uncertain.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess, measuring 2.2 x 1.0 cm (2:65).”\"\n        ],\n        \"reason\": \"The last CT documented a new intramural abscess but no free perforation or distant abscesses; however, the subsequent ultrasound could not evaluate these complications, so new evolution cannot be excluded.\"\n      },\n      {\n        \"requirement_key\": \"req_drain_position\",\n        \"requirement_id\": \"device_position_or_integrity\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection”\",\n          \"“ultrasound is not suitable to visualize the abscess seen on the prior CT.”\"\n        ],\n        \"reason\": \"Prior CT confirmed initial drain position, but ultrasound could not re-visualize the drain, so its current position relative to the collection is not well assessed.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Existing CT gives baseline post-drain anatomy and complications, but the intervening nondiagnostic ultrasound leaves key aspects of current abscess extent, complications, and drain position unresolved at this decision point.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT abdomen and pelvis can comprehensively visualize the sigmoid region, pelvic collections, and percutaneous drain, and detect new or evolving intra-abdominal complications with comparison to prior CT.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly describe new worsening symptoms (e.g., recurrent fever spike, rising WBC, increased pain) at the exact time of ordering this CT, so the precise clinical trigger for repeat cross-sectional imaging beyond nondiagnostic ultrasound remains unstated.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"An alternative is that the CT was ordered primarily to evaluate for a new small bowel or colonic obstruction given the patient’s abdominal distension, lack of bowel movements or flatus, and known pelvic inflammatory process, with abscess reassessment as an additional objective.\"\n}",
+            "request_id": "gen-1788172032-etDgFUI4GKC8fmEvF6x7",
+            "usage": {
+              "completion_tokens": 1959,
+              "prompt_tokens": 6727,
+              "total_tokens": 8686,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3712,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02382275,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02382275,
+                "upstream_inference_prompt_cost": 0.00423275,
+                "upstream_inference_completions_cost": 0.01959
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has ongoing complicated sigmoid diverticulitis with pelvic abscesses and a percutaneous drain in place, and there is concern that the disease and collections may be persisting or evolving despite drainage and antibiotics.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome-level working diagnosis incorporating course and treatment response",
+            "status": "likely",
+            "evidence": [
+              "“Multiple diverticuli in the distal thickened sigmoid associated with significant stranding.  There is a sizable air in fluid collection… These findings are suggestive of complicated ____.”",
+              "“There has been interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection… A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there persistent or new abnormal fluid collection or biliary/hepatic complication in the upper abdomen that could explain ongoing systemic inflammation or abdominal findings after drainage of the pelvic diverticular abscess?",
+          "study_adequacy": "limited_but_diagnostic",
+          "test_question_capability": "partially_capable",
+          "result_status": "indeterminate",
+          "effect_on_previous_question": "The limited ultrasound of the left lower quadrant was unable to visualize the drain and did not adequately assess the known abscess or other collections, so the prior question about ongoing or new collections remained essentially unanswered.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "“Numerous loops of bowel are visualized which obscure the ability of ultrasound to visualize the drain.  No fluid collection identified however ultrasound is not suitable to visualize the abscess seen on the prior CT.”",
+            "evidence_stream_2": "“There has been interval placement of a percutaneous pigtail drainage catheter… collection… now measures 7.6 x 1.1 x 4.9 cm… intramural abscess, measuring 2.2 x 1.0 cm.”",
+            "reason": "Ultrasound acknowledged technical limitations and explicitly stated it could not visualize the abscess that CT had shown, so it does not contradict but rather defers to the CT findings."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient’s complicated sigmoid diverticulitis with pelvic abscess and drain remains incompletely characterized in terms of current abscess size and response to drainage, because the most recent ultrasound could not adequately assess the known collection.",
+          "reason": "The LLQ ultrasound was unable to visualize the drain or abscess due to overlying bowel, leaving uncertainty about current abscess status and prompting the need for repeat cross-sectional imaging."
+        },
+        "current_question": {
+          "primary": "What is the current size, extent, and character of the sigmoid diverticulitis-related pelvic abscesses and surrounding inflammation after percutaneous drainage, and have any new intra-abdominal complications developed?",
+          "target": "sigmoid colon region, pelvic diverticular abscesses, and adjacent intra-abdominal compartments",
+          "type": "severity_or_extent",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If CT shows persistent or enlarging collections, new intramural or distant abscesses, or worsening inflammation, clinicians may escalate care with additional or revised drainage, surgical consultation, and adjustment of antibiotics or supportive management.",
+          "negative_answer_changes": "If CT shows interval decrease or resolution of collections and no new complications, clinicians may continue current nonoperative management, consider drain removal when appropriate, and avoid further invasive interventions.",
+          "secondary_questions": [
+            "Are there any new or worsening complications such as intramural abscess extension, free perforation, or new distant collections?",
+            "Is the percutaneous drain appropriately positioned relative to the targeted collection?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_extent_collections",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Current size, number, and distribution of pelvic and perisigmoid fluid/air collections related to diverticulitis, including comparison to prior CT measurements.",
+              "why_required": "Determining whether collections are improving, stable, or worsening is essential to judge response to drainage and guide decisions about further intervention."
+            },
+            {
+              "requirement_key": "req_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of new or evolving complications such as intramural abscess extension, free perforation, or distant intra-abdominal abscesses.",
+              "why_required": "New or progressive complications would materially change management, potentially requiring urgent surgical or interventional radiology input."
+            },
+            {
+              "requirement_key": "req_drain_position",
+              "id": "device_position_or_integrity",
+              "other_proposed_dimension": "",
+              "dimension": "Position of the percutaneous drain relative to the primary collection and assessment for obvious malposition or migration.",
+              "why_required": "Suboptimal drain position may explain inadequate source control and would prompt repositioning or replacement."
+            }
+          ],
+          "evidence": [
+            "“Numerous loops of bowel are visualized which obscure the ability of ultrasound to visualize the drain.  No fluid collection identified however ultrasound is not suitable to visualize the abscess seen on the prior CT.”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_extent_collections",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“collection… now measures 7.6 x 1.1 x 4.9 cm (2:63), previously 8.1 x 2.3 x 5.5 cm… retrouterine collection… previously 2.8 x 1.2 x 3.6 cm.”"
+              ],
+              "reason": "The prior CT quantified abscess size and showed slight interval decrease, but it is temporally prior to the current decision and does not reflect the most recent clinical status; the nondiagnostic ultrasound leaves current extent uncertain."
+            },
+            {
+              "requirement_key": "req_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“A small amount of fluid and air along the sigmoid colon is new from prior and likely represents intramural abscess, measuring 2.2 x 1.0 cm (2:65).”"
+              ],
+              "reason": "The last CT documented a new intramural abscess but no free perforation or distant abscesses; however, the subsequent ultrasound could not evaluate these complications, so new evolution cannot be excluded."
+            },
+            {
+              "requirement_key": "req_drain_position",
+              "requirement_id": "device_position_or_integrity",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“interval placement of a percutaneous pigtail drainage catheter, with tip in the superior portion the fluid and air collection”",
+                "“ultrasound is not suitable to visualize the abscess seen on the prior CT.”"
+              ],
+              "reason": "Prior CT confirmed initial drain position, but ultrasound could not re-visualize the drain, so its current position relative to the collection is not well assessed."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Existing CT gives baseline post-drain anatomy and complications, but the intervening nondiagnostic ultrasound leaves key aspects of current abscess extent, complications, and drain position unresolved at this decision point."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT abdomen and pelvis can comprehensively visualize the sigmoid region, pelvic collections, and percutaneous drain, and detect new or evolving intra-abdominal complications with comparison to prior CT.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not explicitly describe new worsening symptoms (e.g., recurrent fever spike, rising WBC, increased pain) at the exact time of ordering this CT, so the precise clinical trigger for repeat cross-sectional imaging beyond nondiagnostic ultrasound remains unstated."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "An alternative is that the CT was ordered primarily to evaluate for a new small bowel or colonic obstruction given the patient’s abdominal distension, lack of bowel movements or flatus, and known pelvic inflammatory process, with abscess reassessment as an additional objective."
+      },
+      "validation_errors": []
+    }
+  ]
+}

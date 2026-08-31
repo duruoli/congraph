@@ -1,0 +1,565 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 21076457,
+  "source_path": "results/annotation_experiment/full/pancreatitis_21076457.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "213b6bac7c19ef2a8a88caadbc9bfbd4e7fd653c4df64992a3254373d2bd6bd7",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "213b6bac7c19ef2a8a88caadbc9bfbd4e7fd653c4df64992a3254373d2bd6bd7",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute systemic illness manifested by hypothermia, chills, weakness, and facial flushing with unclear source after initial ED evaluation.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall clinical syndrome framing the admission",
+                  "status": "established",
+                  "evidence": [
+                    "presenting with  weakness and feeling cold x1 day. Patient states that she in her usual state of health until the afternoon ... when she began to feel weak. Her sister noted that she was diffusely red. She describes feeling bilateral ___ weakness, cold, shivers, and palpitations.",
+                    "Initial infectious w/u was negative with negative UA and negative CXR. She was admitted for further monitoring given the unclear etiology of her presentation."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "An intra-abdominal or pelvic process remains a plausible but unlocalized source of the patient’s acute systemic symptoms.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "candidate anatomic source of systemic illness",
+                  "status": "suspected",
+                  "evidence": [
+                    "Initial infectious w/u was negative with negative UA and negative CXR.",
+                    "Denies cough, chest pain, abdominal pain... Denies dysuria... She was admitted for further monitoring given the unclear etiology of her presentation."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient’s history of Roux-en-Y gastric bypass and prior cholecystectomy increases concern for occult intra-abdominal complications despite minimal abdominal symptoms.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "risk/causal context for possible abdominal pathology",
+                  "status": "suspected",
+                  "evidence": [
+                    "S/P RNY bypass - ___ ___ ... CHOLECYSTITIS s/p CCY",
+                    "Denies ... abdominal pain ... GI: +bs, obese, soft, NT, ND, no guarding or rebound, no hepatomegaly"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point; the acute undifferentiated systemic illness and possible intra-abdominal source are inferred from the presenting history and incomplete initial workup."
+              },
+              "current_question": {
+                "primary": "Is there an intra-abdominal or pelvic pathology that could explain this patient’s acute systemic symptoms after negative chest and urine evaluation?",
+                "target": "intra-abdominal and pelvic viscera and spaces (e.g., bowel, solid organs, postoperative anatomy, collections)",
+                "type": "alternative_source",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would identify a likely source for the systemic syndrome and direct targeted management such as surgery, antibiotics, or other interventions.",
+                "negative_answer_changes": "Would make an intra-abdominal source less likely and shift diagnostic focus to non-abdominal causes (cardiac, neurologic, metabolic, toxicologic).",
+                "secondary_questions": [
+                  "Are there postoperative complications related to prior Roux-en-Y gastric bypass or cholecystectomy contributing to the current presentation?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comprehensive visualization of abdominal and pelvic organs and postoperative anatomy",
+                    "why_required": "A potential intra-abdominal or pelvic source must be adequately surveyed to determine whether such a source exists."
+                  },
+                  {
+                    "requirement_key": "req_src",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of acute abdominal or pelvic pathology such as inflammation, obstruction, ischemia, perforation, abscess, or fluid collection",
+                    "why_required": "Determining whether any acute pathology is present is essential to decide if the abdomen is the source of systemic illness."
+                  },
+                  {
+                    "requirement_key": "req_alt",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Distinguishing an intra-abdominal source from non-abdominal sources after negative chest imaging and urine testing",
+                    "why_required": "The clinical problem is an unexplained systemic syndrome; identifying or excluding an abdominal source helps discriminate it from other potential sources."
+                  }
+                ],
+                "evidence": [
+                  "Initial infectious w/u was negative with negative UA and negative CXR.",
+                  "She was admitted for further monitoring given the unclear etiology of her presentation."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Initial infectious w/u was negative with negative UA and negative CXR."
+                    ],
+                    "reason": "Only chest radiograph and urine studies are documented prior to this order; no prior abdominal or pelvic imaging is described."
+                  },
+                  {
+                    "requirement_key": "req_src",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "GI: +bs, obese, soft, NT, ND, no guarding or rebound, no hepatomegaly"
+                    ],
+                    "reason": "Benign abdominal exam and negative UA do not definitively confirm or exclude occult intra-abdominal pathology, and no imaging has addressed this."
+                  },
+                  {
+                    "requirement_key": "req_alt",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "Initial infectious w/u was negative with negative UA and negative CXR.",
+                      "No focal consolidation is seen.  There is no pleural effusion or pneumothorax."
+                    ],
+                    "reason": "Negative chest radiograph and urine studies make pulmonary and urinary sources less likely, partially narrowing toward other sources but not specifically addressing abdominal vs non-abdominal alternatives."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Pulmonary and urinary sources have been partially evaluated, but no direct assessment of the abdomen/pelvis has occurred, so the question of an intra-abdominal source remains essentially unanswered."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT abdomen and pelvis can comprehensively visualize abdominal and pelvic organs and detect many acute pathologies or collections that could serve as an occult source.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not document localized abdominal symptoms or specific clinical triggers (e.g., rising WBC, lactate, focal tenderness) that would more strongly justify CT, so the exact threshold for ordering imaging versus continued observation remains partly inferential."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute systemic illness manifested by hypothermia, chills, weakness, and facial flushing with unclear source after initial ED evaluation.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical syndrome framing the admission\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"presenting with  weakness and feeling cold x1 day. Patient states that she in her usual state of health until the afternoon ... when she began to feel weak. Her sister noted that she was diffusely red. She describes feeling bilateral ___ weakness, cold, shivers, and palpitations.\",\n        \"Initial infectious w/u was negative with negative UA and negative CXR. She was admitted for further monitoring given the unclear etiology of her presentation.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"An intra-abdominal or pelvic process remains a plausible but unlocalized source of the patient’s acute systemic symptoms.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"candidate anatomic source of systemic illness\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Initial infectious w/u was negative with negative UA and negative CXR.\",\n        \"Denies cough, chest pain, abdominal pain... Denies dysuria... She was admitted for further monitoring given the unclear etiology of her presentation.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient’s history of Roux-en-Y gastric bypass and prior cholecystectomy increases concern for occult intra-abdominal complications despite minimal abdominal symptoms.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"risk/causal context for possible abdominal pathology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"S/P RNY bypass - ___ ___ ... CHOLECYSTITIS s/p CCY\",\n        \"Denies ... abdominal pain ... GI: +bs, obese, soft, NT, ND, no guarding or rebound, no hepatomegaly\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; the acute undifferentiated systemic illness and possible intra-abdominal source are inferred from the presenting history and incomplete initial workup.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an intra-abdominal or pelvic pathology that could explain this patient’s acute systemic symptoms after negative chest and urine evaluation?\",\n    \"target\": \"intra-abdominal and pelvic viscera and spaces (e.g., bowel, solid organs, postoperative anatomy, collections)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would identify a likely source for the systemic syndrome and direct targeted management such as surgery, antibiotics, or other interventions.\",\n    \"negative_answer_changes\": \"Would make an intra-abdominal source less likely and shift diagnostic focus to non-abdominal causes (cardiac, neurologic, metabolic, toxicologic).\",\n    \"secondary_questions\": [\n      \"Are there postoperative complications related to prior Roux-en-Y gastric bypass or cholecystectomy contributing to the current presentation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comprehensive visualization of abdominal and pelvic organs and postoperative anatomy\",\n        \"why_required\": \"A potential intra-abdominal or pelvic source must be adequately surveyed to determine whether such a source exists.\"\n      },\n      {\n        \"requirement_key\": \"req_src\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute abdominal or pelvic pathology such as inflammation, obstruction, ischemia, perforation, abscess, or fluid collection\",\n        \"why_required\": \"Determining whether any acute pathology is present is essential to decide if the abdomen is the source of systemic illness.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Distinguishing an intra-abdominal source from non-abdominal sources after negative chest imaging and urine testing\",\n        \"why_required\": \"The clinical problem is an unexplained systemic syndrome; identifying or excluding an abdominal source helps discriminate it from other potential sources.\"\n      }\n    ],\n    \"evidence\": [\n      \"Initial infectious w/u was negative with negative UA and negative CXR.\",\n      \"She was admitted for further monitoring given the unclear etiology of her presentation.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Initial infectious w/u was negative with negative UA and negative CXR.\"\n        ],\n        \"reason\": \"Only chest radiograph and urine studies are documented prior to this order; no prior abdominal or pelvic imaging is described.\"\n      },\n      {\n        \"requirement_key\": \"req_src\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"GI: +bs, obese, soft, NT, ND, no guarding or rebound, no hepatomegaly\"\n        ],\n        \"reason\": \"Benign abdominal exam and negative UA do not definitively confirm or exclude occult intra-abdominal pathology, and no imaging has addressed this.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Initial infectious w/u was negative with negative UA and negative CXR.\",\n          \"No focal consolidation is seen.  There is no pleural effusion or pneumothorax.\"\n        ],\n        \"reason\": \"Negative chest radiograph and urine studies make pulmonary and urinary sources less likely, partially narrowing toward other sources but not specifically addressing abdominal vs non-abdominal alternatives.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Pulmonary and urinary sources have been partially evaluated, but no direct assessment of the abdomen/pelvis has occurred, so the question of an intra-abdominal source remains essentially unanswered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT abdomen and pelvis can comprehensively visualize abdominal and pelvic organs and detect many acute pathologies or collections that could serve as an occult source.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not document localized abdominal symptoms or specific clinical triggers (e.g., rising WBC, lactate, focal tenderness) that would more strongly justify CT, so the exact threshold for ordering imaging versus continued observation remains partly inferential.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788171655-WwuFIGDa7zBD6CKGYMnm",
+            "usage": {
+              "completion_tokens": 1713,
+              "prompt_tokens": 3660,
+              "total_tokens": 5373,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.021705,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.021705,
+                "upstream_inference_prompt_cost": 0.004575,
+                "upstream_inference_completions_cost": 0.01713
+              }
+            }
+          },
+          "validation_errors": [
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "7d94c4bf71df539875395ed44baeaecafc4f50ef168876663b7bb4adf17b6d40",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute, unexplained systemic syndrome characterized by weakness, chills, and hypothermia without a clear infectious or cardiopulmonary source on initial ED workup.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall clinical syndrome level",
+                  "status": "established",
+                  "evidence": [
+                    "presenting with  weakness and feeling cold x1 day",
+                    "Initial infectious w/u was negative with negative UA and negative CXR."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "An intra-abdominal process remains a possible occult source of the patient’s acute systemic symptoms despite nonfocal abdominal exam and initial negative testing.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "organ-system source of syndrome",
+                  "status": "suspected",
+                  "evidence": [
+                    "Denies cough, chest pain, abdominal pain",
+                    "Initial infectious w/u was negative with negative UA and negative CXR."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient has a history of Roux-en-Y gastric bypass and cholecystectomy, which increases risk for atypical or occult intra-abdominal pathology.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "risk factor and mechanism level",
+                  "status": "established",
+                  "evidence": [
+                    "S/P RNY bypass - ___ ___",
+                    "CHOLECYSTITIS s/p CCY"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "This is the first decision point, so there is no prior question or discordance to assess."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision, so the syndrome frame and possible intra-abdominal source are being established de novo."
+              },
+              "current_question": {
+                "primary": "Is there an occult intra-abdominal pathology acting as the source of this patient’s acute systemic weakness, chills, and hypothermia?",
+                "target": "occult intra-abdominal pathology (e.g., infection, inflammatory process, ischemia, or other acute abdominal cause)",
+                "type": "alternative_source",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identify a treatable abdominal source for the systemic syndrome and direct targeted management (e.g., antibiotics, intervention, or surgery).",
+                "negative_answer_changes": "Reduce the likelihood of an abdominal source and redirect further workup toward non-abdominal etiologies of the systemic syndrome.",
+                "secondary_questions": [
+                  "If an intra-abdominal process is present, what is its anatomic location and nature (e.g., abscess, obstruction, ischemia)?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate contrast-enhanced visualization of abdominal and pelvic viscera and vasculature (solid organs, bowel, mesentery, peritoneum).",
+                    "why_required": "The presence or absence of an occult intra-abdominal source can only be determined if the relevant abdominal and pelvic structures are well assessed."
+                  },
+                  {
+                    "requirement_key": "req_pres",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of acute intra-abdominal abnormalities such as inflammatory changes, fluid collections, obstruction, ischemia, or perforation.",
+                    "why_required": "Determining whether an occult abdominal source exists requires establishing whether any acute pathologic findings are present."
+                  },
+                  {
+                    "requirement_key": "req_loc",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Anatomic localization of any detected intra-abdominal abnormality (e.g., bowel, liver, biliary tree, post-surgical Roux-en-Y anatomy, pelvis).",
+                    "why_required": "Localizing a detected process is necessary to connect it plausibly to the systemic syndrome and to guide specific therapy or intervention."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of complications such as abscess, perforation, or ischemia that could explain systemic manifestations.",
+                    "why_required": "Systemic weakness, chills, and hypothermia are more likely if an intra-abdominal process is complicated, so characterization of such complications is needed."
+                  }
+                ],
+                "evidence": [
+                  "Initial infectious w/u was negative with negative UA and negative CXR.",
+                  "Denies cough, chest pain, abdominal pain",
+                  "She was admitted for further monitoring given the unclear etiology of her presentation."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Initial infectious w/u was negative with negative UA and negative CXR."
+                    ],
+                    "reason": "Only a chest radiograph and urinalysis are documented; no prior cross-sectional imaging of the abdomen or pelvis has been performed, so abdominal and pelvic structures have not been visualized."
+                  },
+                  {
+                    "requirement_key": "req_pres",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "GI: +bs, obese, soft, NT, ND, no guarding or rebound, no  hepatomegaly"
+                    ],
+                    "reason": "The abdominal exam is benign, but clinical examination alone cannot reliably exclude occult intra-abdominal pathology; no imaging has yet assessed the presence or absence of such abnormalities."
+                  },
+                  {
+                    "requirement_key": "req_loc",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "S/P RNY bypass - ___ ___",
+                      "CHOLECYSTITIS s/p CCY"
+                    ],
+                    "reason": "There is no prior imaging-based localization of any current intra-abdominal abnormality; only prior surgical history is known, not current pathology."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "She was admitted for further monitoring given the unclear  etiology of her presentation."
+                    ],
+                    "reason": "No study has evaluated for intra-abdominal complications such as abscess, perforation, or ischemia that could explain systemic signs."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before the CT abdomen/pelvis, no imaging or tests specifically evaluate for or characterize an occult intra-abdominal source of the systemic syndrome."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize abdominal and pelvic organs, detect acute pathology, localize abnormalities, and identify complications that could serve as an occult source of systemic symptoms.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not specify any focal abdominal symptoms or specific suspicion (e.g., small bowel obstruction, mesenteric ischemia), so the precise differential diagnosis driving this CT beyond a broad search for an occult abdominal source remains unclear."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute, unexplained systemic syndrome characterized by weakness, chills, and hypothermia without a clear infectious or cardiopulmonary source on initial ED workup.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical syndrome level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"presenting with  weakness and feeling cold x1 day\",\n        \"Initial infectious w/u was negative with negative UA and negative CXR.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"An intra-abdominal process remains a possible occult source of the patient’s acute systemic symptoms despite nonfocal abdominal exam and initial negative testing.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-system source of syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Denies cough, chest pain, abdominal pain\",\n        \"Initial infectious w/u was negative with negative UA and negative CXR.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient has a history of Roux-en-Y gastric bypass and cholecystectomy, which increases risk for atypical or occult intra-abdominal pathology.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"risk factor and mechanism level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"S/P RNY bypass - ___ ___\",\n        \"CHOLECYSTITIS s/p CCY\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"This is the first decision point, so there is no prior question or discordance to assess.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision, so the syndrome frame and possible intra-abdominal source are being established de novo.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an occult intra-abdominal pathology acting as the source of this patient’s acute systemic weakness, chills, and hypothermia?\",\n    \"target\": \"occult intra-abdominal pathology (e.g., infection, inflammatory process, ischemia, or other acute abdominal cause)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identify a treatable abdominal source for the systemic syndrome and direct targeted management (e.g., antibiotics, intervention, or surgery).\",\n    \"negative_answer_changes\": \"Reduce the likelihood of an abdominal source and redirect further workup toward non-abdominal etiologies of the systemic syndrome.\",\n    \"secondary_questions\": [\n      \"If an intra-abdominal process is present, what is its anatomic location and nature (e.g., abscess, obstruction, ischemia)?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate contrast-enhanced visualization of abdominal and pelvic viscera and vasculature (solid organs, bowel, mesentery, peritoneum).\",\n        \"why_required\": \"The presence or absence of an occult intra-abdominal source can only be determined if the relevant abdominal and pelvic structures are well assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_pres\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute intra-abdominal abnormalities such as inflammatory changes, fluid collections, obstruction, ischemia, or perforation.\",\n        \"why_required\": \"Determining whether an occult abdominal source exists requires establishing whether any acute pathologic findings are present.\"\n      },\n      {\n        \"requirement_key\": \"req_loc\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Anatomic localization of any detected intra-abdominal abnormality (e.g., bowel, liver, biliary tree, post-surgical Roux-en-Y anatomy, pelvis).\",\n        \"why_required\": \"Localizing a detected process is necessary to connect it plausibly to the systemic syndrome and to guide specific therapy or intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as abscess, perforation, or ischemia that could explain systemic manifestations.\",\n        \"why_required\": \"Systemic weakness, chills, and hypothermia are more likely if an intra-abdominal process is complicated, so characterization of such complications is needed.\"\n      }\n    ],\n    \"evidence\": [\n      \"Initial infectious w/u was negative with negative UA and negative CXR.\",\n      \"Denies cough, chest pain, abdominal pain\",\n      \"She was admitted for further monitoring given the unclear etiology of her presentation.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Initial infectious w/u was negative with negative UA and negative CXR.\"\n        ],\n        \"reason\": \"Only a chest radiograph and urinalysis are documented; no prior cross-sectional imaging of the abdomen or pelvis has been performed, so abdominal and pelvic structures have not been visualized.\"\n      },\n      {\n        \"requirement_key\": \"req_pres\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"GI: +bs, obese, soft, NT, ND, no guarding or rebound, no  hepatomegaly\"\n        ],\n        \"reason\": \"The abdominal exam is benign, but clinical examination alone cannot reliably exclude occult intra-abdominal pathology; no imaging has yet assessed the presence or absence of such abnormalities.\"\n      },\n      {\n        \"requirement_key\": \"req_loc\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"S/P RNY bypass - ___ ___\",\n          \"CHOLECYSTITIS s/p CCY\"\n        ],\n        \"reason\": \"There is no prior imaging-based localization of any current intra-abdominal abnormality; only prior surgical history is known, not current pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"She was admitted for further monitoring given the unclear  etiology of her presentation.\"\n        ],\n        \"reason\": \"No study has evaluated for intra-abdominal complications such as abscess, perforation, or ischemia that could explain systemic signs.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before the CT abdomen/pelvis, no imaging or tests specifically evaluate for or characterize an occult intra-abdominal source of the systemic syndrome.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize abdominal and pelvic organs, detect acute pathology, localize abnormalities, and identify complications that could serve as an occult source of systemic symptoms.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not specify any focal abdominal symptoms or specific suspicion (e.g., small bowel obstruction, mesenteric ischemia), so the precise differential diagnosis driving this CT beyond a broad search for an occult abdominal source remains unclear.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788171679-FtHa7VOnPKk50I3j6rPN",
+            "usage": {
+              "completion_tokens": 1864,
+              "prompt_tokens": 3696,
+              "total_tokens": 5560,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3456,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.019372,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.019372,
+                "upstream_inference_prompt_cost": 0.000732,
+                "upstream_inference_completions_cost": 0.01864
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute, unexplained systemic syndrome characterized by weakness, chills, and hypothermia without a clear infectious or cardiopulmonary source on initial ED workup.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "overall clinical syndrome level",
+            "status": "established",
+            "evidence": [
+              "presenting with  weakness and feeling cold x1 day",
+              "Initial infectious w/u was negative with negative UA and negative CXR."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "An intra-abdominal process remains a possible occult source of the patient’s acute systemic symptoms despite nonfocal abdominal exam and initial negative testing.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "organ-system source of syndrome",
+            "status": "suspected",
+            "evidence": [
+              "Denies cough, chest pain, abdominal pain",
+              "Initial infectious w/u was negative with negative UA and negative CXR."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient has a history of Roux-en-Y gastric bypass and cholecystectomy, which increases risk for atypical or occult intra-abdominal pathology.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "risk factor and mechanism level",
+            "status": "established",
+            "evidence": [
+              "S/P RNY bypass - ___ ___",
+              "CHOLECYSTITIS s/p CCY"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "This is the first decision point, so there is no prior question or discordance to assess."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision, so the syndrome frame and possible intra-abdominal source are being established de novo."
+        },
+        "current_question": {
+          "primary": "Is there an occult intra-abdominal pathology acting as the source of this patient’s acute systemic weakness, chills, and hypothermia?",
+          "target": "occult intra-abdominal pathology (e.g., infection, inflammatory process, ischemia, or other acute abdominal cause)",
+          "type": "alternative_source",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identify a treatable abdominal source for the systemic syndrome and direct targeted management (e.g., antibiotics, intervention, or surgery).",
+          "negative_answer_changes": "Reduce the likelihood of an abdominal source and redirect further workup toward non-abdominal etiologies of the systemic syndrome.",
+          "secondary_questions": [
+            "If an intra-abdominal process is present, what is its anatomic location and nature (e.g., abscess, obstruction, ischemia)?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate contrast-enhanced visualization of abdominal and pelvic viscera and vasculature (solid organs, bowel, mesentery, peritoneum).",
+              "why_required": "The presence or absence of an occult intra-abdominal source can only be determined if the relevant abdominal and pelvic structures are well assessed."
+            },
+            {
+              "requirement_key": "req_pres",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of acute intra-abdominal abnormalities such as inflammatory changes, fluid collections, obstruction, ischemia, or perforation.",
+              "why_required": "Determining whether an occult abdominal source exists requires establishing whether any acute pathologic findings are present."
+            },
+            {
+              "requirement_key": "req_loc",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Anatomic localization of any detected intra-abdominal abnormality (e.g., bowel, liver, biliary tree, post-surgical Roux-en-Y anatomy, pelvis).",
+              "why_required": "Localizing a detected process is necessary to connect it plausibly to the systemic syndrome and to guide specific therapy or intervention."
+            },
+            {
+              "requirement_key": "req_comp",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of complications such as abscess, perforation, or ischemia that could explain systemic manifestations.",
+              "why_required": "Systemic weakness, chills, and hypothermia are more likely if an intra-abdominal process is complicated, so characterization of such complications is needed."
+            }
+          ],
+          "evidence": [
+            "Initial infectious w/u was negative with negative UA and negative CXR.",
+            "Denies cough, chest pain, abdominal pain",
+            "She was admitted for further monitoring given the unclear etiology of her presentation."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Initial infectious w/u was negative with negative UA and negative CXR."
+              ],
+              "reason": "Only a chest radiograph and urinalysis are documented; no prior cross-sectional imaging of the abdomen or pelvis has been performed, so abdominal and pelvic structures have not been visualized."
+            },
+            {
+              "requirement_key": "req_pres",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "GI: +bs, obese, soft, NT, ND, no guarding or rebound, no  hepatomegaly"
+              ],
+              "reason": "The abdominal exam is benign, but clinical examination alone cannot reliably exclude occult intra-abdominal pathology; no imaging has yet assessed the presence or absence of such abnormalities."
+            },
+            {
+              "requirement_key": "req_loc",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "S/P RNY bypass - ___ ___",
+                "CHOLECYSTITIS s/p CCY"
+              ],
+              "reason": "There is no prior imaging-based localization of any current intra-abdominal abnormality; only prior surgical history is known, not current pathology."
+            },
+            {
+              "requirement_key": "req_comp",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "She was admitted for further monitoring given the unclear  etiology of her presentation."
+              ],
+              "reason": "No study has evaluated for intra-abdominal complications such as abscess, perforation, or ischemia that could explain systemic signs."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Before the CT abdomen/pelvis, no imaging or tests specifically evaluate for or characterize an occult intra-abdominal source of the systemic syndrome."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize abdominal and pelvic organs, detect acute pathology, localize abnormalities, and identify complications that could serve as an occult source of systemic symptoms.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not specify any focal abdominal symptoms or specific suspicion (e.g., small bowel obstruction, mesenteric ischemia), so the precise differential diagnosis driving this CT beyond a broad search for an occult abdominal source remains unclear."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

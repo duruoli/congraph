@@ -6,6 +6,8 @@
   "source_path": "results/annotation_experiment/full/appendicitis_20276429.json",
   "model": "openai/gpt-5.1",
   "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
   "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
   "steps": [
     {
@@ -15,43 +17,44 @@
       "attempts": [
         {
           "attempt": 1,
+          "request_prompt_sha256": "2168553b9d5613f6c47989f9bdf63e8c95995a4fa035d204384281aa3d7a769d",
           "call": {
             "parsed": {
               "assumptions": [
                 {
-                  "proposition": "The patient has an acute undifferentiated abdominal pain syndrome with current right‑lower‑quadrant involvement and systemic symptoms.",
+                  "proposition": "The patient has an acute abdominal pain syndrome with possible right lower quadrant involvement of unclear etiology.",
                   "type": "syndrome_or_source_frame",
                   "other_proposed_type": "",
-                  "level": "clinical presentation/syndrome",
+                  "level": "clinical syndrome level (abdominal pain with RLQ component)",
                   "status": "established",
                   "evidence": [
-                    "presents to the ED w/ acute onset abdominal pain, this AM",
-                    "she now has RLQ pain as well. ... subjective fevers at home (not measured)"
+                    "“presents to the ED w/ acute onset abdominal pain, this AM. The patient states that she awakened from sleep because of pain this am, primarily superior to her umbilicus, and associated nausea/vomiting.”",
+                    "“although she now has RLQ pain as well.”"
                   ],
                   "support": "well_supported"
                 },
                 {
-                  "proposition": "Pregnancy is effectively excluded as a cause of pelvic or abdominal pain.",
+                  "proposition": "Pregnancy is not the cause of the patient’s symptoms.",
                   "type": "alternative_source",
                   "other_proposed_type": "",
-                  "level": "competing-etiology level",
-                  "status": "established",
+                  "level": "alternative diagnosis/source level",
+                  "status": "excluded",
                   "evidence": [
-                    "HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG."
+                    "“HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG.”"
                   ],
                   "support": "well_supported"
                 },
                 {
-                  "proposition": "Initial laboratory evaluation does not indicate hepatobiliary, pancreatic, or urinary tract inflammatory pathology.",
-                  "type": "alternative_source",
+                  "proposition": "A hepatobiliary or pancreatic etiology for the abdominal pain is currently unlikely based on normal liver enzymes and lipase.",
+                  "type": "etiology_or_mechanism",
                   "other_proposed_type": "",
-                  "level": "competing-etiology level",
-                  "status": "established",
+                  "level": "etiologic mechanism level (hepatobiliary/pancreatic source)",
+                  "status": "challenged",
                   "evidence": [
-                    "Lipase: 29.0 IU/L (ref 0.0-60.0)",
-                    "Alanine Aminotransferase (ALT): 16.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.3 mg/dL (ref 0.0-1.5) ... Nitrite: NEG. ... Leukocytes: NEG."
+                    "“Alanine Aminotransferase (ALT): 16.0 IU/L (ref 0.0-40.0)”",
+                    "“Lipase: 29.0 IU/L (ref 0.0-60.0)”"
                   ],
-                  "support": "well_supported"
+                  "support": "weakly_supported"
                 }
               ],
               "previous_order_update": {
@@ -71,98 +74,98 @@
               "assumption_change": {
                 "label": "initial",
                 "changed_proposition": null,
-                "reason": "This is the first decision point; assumptions are newly inferred from the presenting history, exam, and labs."
+                "reason": "This is the first imaging decision; the acute abdominal pain syndrome frame and exclusion of pregnancy are established from the initial history, exam, and labs."
               },
               "current_question": {
-                "primary": "Is there a pelvic gynecologic or other pelvic source of the patient’s acute abdominal and right‑lower‑quadrant pain?",
-                "target": "pelvic organs (uterus, adnexa/ovaries, and adjacent pelvic structures)",
-                "type": "alternative_source",
+                "primary": "Is there a pelvic cause of this patient’s acute abdominal and right lower quadrant pain, such as an adnexal or other gynecologic abnormality?",
+                "target": "female pelvic organs (uterus, ovaries, adnexa, pelvic free fluid/collections)",
+                "type": "existence_or_identity",
                 "other_proposed_type": "",
-                "positive_answer_changes": "Would shift management toward treating the identified pelvic source (e.g., gynecologic pathology or other pelvic process) and away from purely gastric/GERD explanations.",
-                "negative_answer_changes": "Would make a pelvic structural etiology less likely and redirect workup toward other abdominal sources or nonstructural causes.",
+                "positive_answer_changes": "Identify a specific pelvic pathology (e.g., ovarian cyst, torsion-suggestive findings, pelvic inflammatory process, fluid collection) to direct targeted management or consultation.",
+                "negative_answer_changes": "Decrease the likelihood of a gynecologic/pelvic source and prompt consideration of alternative intra-abdominal causes or different imaging modalities.",
                 "secondary_questions": [
-                  "Is there any gross structural abnormality in the adnexa or uterus that could account for acute pain (e.g., mass, torsion, cyst complication)?"
+                  "Is there free fluid, abscess, or other pelvic collection that could explain the acute symptoms?"
                 ],
                 "answer_requirements": [
                   {
-                    "requirement_key": "req_vis",
+                    "requirement_key": "req_vis_pelvis",
                     "id": "target_visualization_or_assessment",
                     "other_proposed_dimension": "",
-                    "dimension": "Visualization and basic structural assessment of uterus, ovaries/adnexa, and adjacent pelvic compartments.",
-                    "why_required": "Adequate visualization of pelvic organs is necessary to determine whether a pelvic source of pain exists."
+                    "dimension": "Adequate visualization of the uterus, ovaries/adnexa, and surrounding pelvic spaces.",
+                    "why_required": "Pelvic pathology can only be confirmed or excluded if the key pelvic organs and spaces are adequately assessed."
                   },
                   {
-                    "requirement_key": "req_pres",
+                    "requirement_key": "req_presence_gyne",
                     "id": "presence_or_absence",
                     "other_proposed_dimension": "",
-                    "dimension": "Presence or absence of acute-appearing pelvic pathology such as adnexal mass, complex ovarian cyst, free fluid suggestive of rupture, or other focal abnormality.",
-                    "why_required": "Identifying or excluding acute pelvic pathology is central to establishing a pelvic source for the symptoms."
+                    "dimension": "Presence or absence of focal gynecologic pathology such as masses, torsion-suggestive changes, or inflammatory findings.",
+                    "why_required": "Determining whether a concrete pelvic lesion exists is necessary to decide if the pelvis is the source of pain."
                   },
                   {
-                    "requirement_key": "req_loc",
-                    "id": "anatomic_localization",
+                    "requirement_key": "req_presence_fluid",
+                    "id": "complication_presence_or_character",
                     "other_proposed_dimension": "",
-                    "dimension": "Localization of any detected abnormality to the pelvis versus other abdominal regions.",
-                    "why_required": "Localizing a lesion to the pelvis is required to attribute the patient’s pain to a pelvic source rather than another abdominal origin."
+                    "dimension": "Presence, amount, and character of pelvic free fluid or fluid collections.",
+                    "why_required": "Free fluid or collections may indicate complicated pelvic disease (e.g., rupture, abscess) that would change urgency and management."
                   }
                 ],
                 "evidence": [
-                  "presents to the ED w/ acute onset abdominal pain ... she now has RLQ pain as well",
-                  "Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)"
+                  "“presents to the ED w/ acute onset abdominal pain… primarily superior to her umbilicus… although she now has RLQ pain as well.”",
+                  "“Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)”"
                 ]
               },
               "question_continuity": "initial",
               "coverage": {
                 "requirements": [
                   {
-                    "requirement_key": "req_vis",
+                    "requirement_key": "req_vis_pelvis",
                     "requirement_id": "target_visualization_or_assessment",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "Imaging resulted before this decision point (none)"
+                      "No prior imaging resulted before this decision point."
                     ],
-                    "reason": "No prior imaging of the pelvis has been performed, so pelvic organs have not yet been visually assessed."
+                    "reason": "There has been no imaging of the pelvis, so visualization of the pelvic organs has not been assessed."
                   },
                   {
-                    "requirement_key": "req_pres",
+                    "requirement_key": "req_presence_gyne",
                     "requirement_id": "presence_or_absence",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "Imaging resulted before this decision point (none)"
+                      "History, exam, and labs do not describe or exclude specific pelvic/gynecologic lesions."
                     ],
-                    "reason": "Without prior imaging, the presence or absence of acute pelvic pathology remains unknown."
+                    "reason": "No data specifically addresses whether gynecologic pathology is present or absent; only symptom location is known."
                   },
                   {
-                    "requirement_key": "req_loc",
-                    "requirement_id": "anatomic_localization",
+                    "requirement_key": "req_presence_fluid",
+                    "requirement_id": "complication_presence_or_character",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "presents to the ED w/ acute onset abdominal pain ... she now has RLQ pain as well"
+                      "Physical exam: “ABD: Soft, nondistended, nontender, no rebound or guarding…”"
                     ],
-                    "reason": "Pain is clinically localized to the abdomen/RLQ, but no anatomic lesion has been localized by imaging or other objective means."
+                    "reason": "Physical exam does not characterize intra-pelvic free fluid or collections; imaging is needed for this dimension."
                   }
                 ],
                 "aggregate": "unanswered",
-                "aggregate_reason": "Before this first imaging, the existence and localization of a pelvic source for pain have not been objectively assessed."
+                "aggregate_reason": "No prior imaging is available, so none of the pelvic-focused information requirements have been addressed."
               },
               "current_order_fit": {
                 "test_question_capability": "capable",
-                "why_this_order_could_answer": "A non-obstetric pelvic ultrasound is a standard, sensitive test to visualize pelvic organs and detect or exclude gynecologic and related pelvic pathology as a source of pain.",
+                "why_this_order_could_answer": "A non-obstetric pelvic ultrasound is an appropriate first-line modality to visualize uterus, ovaries/adnexa, and pelvic fluid, and to detect many gynecologic causes of acute RLQ or pelvic pain.",
                 "intent_support": "well_supported",
-                "unsupported_residual": "The choice of pelvic ultrasound over a dedicated RLQ/appendiceal CT or ultrasound for appendicitis is not fully explained by the chart, leaving some uncertainty about the relative weight placed on gynecologic versus appendiceal or other abdominal causes."
+                "unsupported_residual": "The chart does not explicitly document gynecologic symptoms (e.g., vaginal bleeding, discharge) or a pelvic exam that would more directly motivate a pelvic-focused study; part of the rationale relies on typical practice for RLQ pain in a woman with negative pregnancy test."
               },
-              "derived_transition": "remedy",
+              "derived_transition": "initial",
               "alternative_reconstruction": ""
             },
-            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute undifferentiated abdominal pain syndrome with current right‑lower‑quadrant involvement and systemic symptoms.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation/syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"presents to the ED w/ acute onset abdominal pain, this AM\",\n        \"she now has RLQ pain as well. ... subjective fevers at home (not measured)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Pregnancy is effectively excluded as a cause of pelvic or abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing-etiology level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Initial laboratory evaluation does not indicate hepatobiliary, pancreatic, or urinary tract inflammatory pathology.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing-etiology level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 29.0 IU/L (ref 0.0-60.0)\",\n        \"Alanine Aminotransferase (ALT): 16.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.3 mg/dL (ref 0.0-1.5) ... Nitrite: NEG. ... Leukocytes: NEG.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; assumptions are newly inferred from the presenting history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a pelvic gynecologic or other pelvic source of the patient’s acute abdominal and right‑lower‑quadrant pain?\",\n    \"target\": \"pelvic organs (uterus, adnexa/ovaries, and adjacent pelvic structures)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would shift management toward treating the identified pelvic source (e.g., gynecologic pathology or other pelvic process) and away from purely gastric/GERD explanations.\",\n    \"negative_answer_changes\": \"Would make a pelvic structural etiology less likely and redirect workup toward other abdominal sources or nonstructural causes.\",\n    \"secondary_questions\": [\n      \"Is there any gross structural abnormality in the adnexa or uterus that could account for acute pain (e.g., mass, torsion, cyst complication)?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and basic structural assessment of uterus, ovaries/adnexa, and adjacent pelvic compartments.\",\n        \"why_required\": \"Adequate visualization of pelvic organs is necessary to determine whether a pelvic source of pain exists.\"\n      },\n      {\n        \"requirement_key\": \"req_pres\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute-appearing pelvic pathology such as adnexal mass, complex ovarian cyst, free fluid suggestive of rupture, or other focal abnormality.\",\n        \"why_required\": \"Identifying or excluding acute pelvic pathology is central to establishing a pelvic source for the symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_loc\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any detected abnormality to the pelvis versus other abdominal regions.\",\n        \"why_required\": \"Localizing a lesion to the pelvis is required to attribute the patient’s pain to a pelvic source rather than another abdominal origin.\"\n      }\n    ],\n    \"evidence\": [\n      \"presents to the ED w/ acute onset abdominal pain ... she now has RLQ pain as well\",\n      \"Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"No prior imaging of the pelvis has been performed, so pelvic organs have not yet been visually assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_pres\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"Without prior imaging, the presence or absence of acute pelvic pathology remains unknown.\"\n      },\n      {\n        \"requirement_key\": \"req_loc\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"presents to the ED w/ acute onset abdominal pain ... she now has RLQ pain as well\"\n        ],\n        \"reason\": \"Pain is clinically localized to the abdomen/RLQ, but no anatomic lesion has been localized by imaging or other objective means.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before this first imaging, the existence and localization of a pelvic source for pain have not been objectively assessed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A non-obstetric pelvic ultrasound is a standard, sensitive test to visualize pelvic organs and detect or exclude gynecologic and related pelvic pathology as a source of pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of pelvic ultrasound over a dedicated RLQ/appendiceal CT or ultrasound for appendicitis is not fully explained by the chart, leaving some uncertainty about the relative weight placed on gynecologic versus appendiceal or other abdominal causes.\"\n  },\n  \"derived_transition\": \"remedy\",\n  \"alternative_reconstruction\": \"\"\n}",
-            "request_id": "gen-1788156902-ODtVNvdyNuZNaJWMahzE",
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal pain syndrome with possible right lower quadrant involvement of unclear etiology.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome level (abdominal pain with RLQ component)\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“presents to the ED w/ acute onset abdominal pain, this AM. The patient states that she awakened from sleep because of pain this am, primarily superior to her umbilicus, and associated nausea/vomiting.”\",\n        \"“although she now has RLQ pain as well.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Pregnancy is not the cause of the patient’s symptoms.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative diagnosis/source level\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"“HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A hepatobiliary or pancreatic etiology for the abdominal pain is currently unlikely based on normal liver enzymes and lipase.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism level (hepatobiliary/pancreatic source)\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"“Alanine Aminotransferase (ALT): 16.0 IU/L (ref 0.0-40.0)”\",\n        \"“Lipase: 29.0 IU/L (ref 0.0-60.0)”\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the acute abdominal pain syndrome frame and exclusion of pregnancy are established from the initial history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a pelvic cause of this patient’s acute abdominal and right lower quadrant pain, such as an adnexal or other gynecologic abnormality?\",\n    \"target\": \"female pelvic organs (uterus, ovaries, adnexa, pelvic free fluid/collections)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identify a specific pelvic pathology (e.g., ovarian cyst, torsion-suggestive findings, pelvic inflammatory process, fluid collection) to direct targeted management or consultation.\",\n    \"negative_answer_changes\": \"Decrease the likelihood of a gynecologic/pelvic source and prompt consideration of alternative intra-abdominal causes or different imaging modalities.\",\n    \"secondary_questions\": [\n      \"Is there free fluid, abscess, or other pelvic collection that could explain the acute symptoms?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis_pelvis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the uterus, ovaries/adnexa, and surrounding pelvic spaces.\",\n        \"why_required\": \"Pelvic pathology can only be confirmed or excluded if the key pelvic organs and spaces are adequately assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_gyne\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of focal gynecologic pathology such as masses, torsion-suggestive changes, or inflammatory findings.\",\n        \"why_required\": \"Determining whether a concrete pelvic lesion exists is necessary to decide if the pelvis is the source of pain.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_fluid\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, amount, and character of pelvic free fluid or fluid collections.\",\n        \"why_required\": \"Free fluid or collections may indicate complicated pelvic disease (e.g., rupture, abscess) that would change urgency and management.\"\n      }\n    ],\n    \"evidence\": [\n      \"“presents to the ED w/ acute onset abdominal pain… primarily superior to her umbilicus… although she now has RLQ pain as well.”\",\n      \"“Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis_pelvis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior imaging resulted before this decision point.\"\n        ],\n        \"reason\": \"There has been no imaging of the pelvis, so visualization of the pelvic organs has not been assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_gyne\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"History, exam, and labs do not describe or exclude specific pelvic/gynecologic lesions.\"\n        ],\n        \"reason\": \"No data specifically addresses whether gynecologic pathology is present or absent; only symptom location is known.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_fluid\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Physical exam: “ABD: Soft, nondistended, nontender, no rebound or guarding…”\"\n        ],\n        \"reason\": \"Physical exam does not characterize intra-pelvic free fluid or collections; imaging is needed for this dimension.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No prior imaging is available, so none of the pelvic-focused information requirements have been addressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A non-obstetric pelvic ultrasound is an appropriate first-line modality to visualize uterus, ovaries/adnexa, and pelvic fluid, and to detect many gynecologic causes of acute RLQ or pelvic pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly document gynecologic symptoms (e.g., vaginal bleeding, discharge) or a pelvic exam that would more directly motivate a pelvic-focused study; part of the rationale relies on typical practice for RLQ pain in a woman with negative pregnancy test.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788162515-OLIcqNfKhWqTjADPA47Y",
             "usage": {
-              "completion_tokens": 1579,
+              "completion_tokens": 1635,
               "prompt_tokens": 2980,
-              "total_tokens": 4559,
+              "total_tokens": 4615,
               "completion_tokens_details": {
                 "accepted_prediction_tokens": null,
                 "audio_tokens": 0,
@@ -180,172 +183,312 @@
                 "text_tokens": null,
                 "video_tokens": 0
               },
-              "cost": 0.019515,
+              "cost": 0.020075,
               "is_byok": false,
               "cost_details": {
-                "upstream_inference_cost": 0.019515,
+                "upstream_inference_cost": 0.020075,
                 "upstream_inference_prompt_cost": 0.003725,
-                "upstream_inference_completions_cost": 0.01579
+                "upstream_inference_completions_cost": 0.01635
               }
             }
           },
-          "validation_errors": [
-            "first_step_derived_transition_not_initial"
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute abdominal pain syndrome with possible right lower quadrant involvement of unclear etiology.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome level (abdominal pain with RLQ component)",
+            "status": "established",
+            "evidence": [
+              "“presents to the ED w/ acute onset abdominal pain, this AM. The patient states that she awakened from sleep because of pain this am, primarily superior to her umbilicus, and associated nausea/vomiting.”",
+              "“although she now has RLQ pain as well.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Pregnancy is not the cause of the patient’s symptoms.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "alternative diagnosis/source level",
+            "status": "excluded",
+            "evidence": [
+              "“HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A hepatobiliary or pancreatic etiology for the abdominal pain is currently unlikely based on normal liver enzymes and lipase.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism level (hepatobiliary/pancreatic source)",
+            "status": "challenged",
+            "evidence": [
+              "“Alanine Aminotransferase (ALT): 16.0 IU/L (ref 0.0-40.0)”",
+              "“Lipase: 29.0 IU/L (ref 0.0-60.0)”"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; the acute abdominal pain syndrome frame and exclusion of pregnancy are established from the initial history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "Is there a pelvic cause of this patient’s acute abdominal and right lower quadrant pain, such as an adnexal or other gynecologic abnormality?",
+          "target": "female pelvic organs (uterus, ovaries, adnexa, pelvic free fluid/collections)",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identify a specific pelvic pathology (e.g., ovarian cyst, torsion-suggestive findings, pelvic inflammatory process, fluid collection) to direct targeted management or consultation.",
+          "negative_answer_changes": "Decrease the likelihood of a gynecologic/pelvic source and prompt consideration of alternative intra-abdominal causes or different imaging modalities.",
+          "secondary_questions": [
+            "Is there free fluid, abscess, or other pelvic collection that could explain the acute symptoms?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis_pelvis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the uterus, ovaries/adnexa, and surrounding pelvic spaces.",
+              "why_required": "Pelvic pathology can only be confirmed or excluded if the key pelvic organs and spaces are adequately assessed."
+            },
+            {
+              "requirement_key": "req_presence_gyne",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of focal gynecologic pathology such as masses, torsion-suggestive changes, or inflammatory findings.",
+              "why_required": "Determining whether a concrete pelvic lesion exists is necessary to decide if the pelvis is the source of pain."
+            },
+            {
+              "requirement_key": "req_presence_fluid",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, amount, and character of pelvic free fluid or fluid collections.",
+              "why_required": "Free fluid or collections may indicate complicated pelvic disease (e.g., rupture, abscess) that would change urgency and management."
+            }
+          ],
+          "evidence": [
+            "“presents to the ED w/ acute onset abdominal pain… primarily superior to her umbilicus… although she now has RLQ pain as well.”",
+            "“Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)”"
           ]
         },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis_pelvis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No prior imaging resulted before this decision point."
+              ],
+              "reason": "There has been no imaging of the pelvis, so visualization of the pelvic organs has not been assessed."
+            },
+            {
+              "requirement_key": "req_presence_gyne",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "History, exam, and labs do not describe or exclude specific pelvic/gynecologic lesions."
+              ],
+              "reason": "No data specifically addresses whether gynecologic pathology is present or absent; only symptom location is known."
+            },
+            {
+              "requirement_key": "req_presence_fluid",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Physical exam: “ABD: Soft, nondistended, nontender, no rebound or guarding…”"
+              ],
+              "reason": "Physical exam does not characterize intra-pelvic free fluid or collections; imaging is needed for this dimension."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "No prior imaging is available, so none of the pelvic-focused information requirements have been addressed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A non-obstetric pelvic ultrasound is an appropriate first-line modality to visualize uterus, ovaries/adnexa, and pelvic fluid, and to detect many gynecologic causes of acute RLQ or pelvic pain.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not explicitly document gynecologic symptoms (e.g., vaginal bleeding, discharge) or a pelvic exam that would more directly motivate a pelvic-focused study; part of the rationale relies on typical practice for RLQ pain in a woman with negative pregnancy test."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "17229fd5a3ad70100a826927f40bb9fcbfdf3b4f9de9c0b2270a1c94f6ca46e3",
+      "attempts": [
         {
-          "attempt": 2,
+          "attempt": 1,
+          "request_prompt_sha256": "17229fd5a3ad70100a826927f40bb9fcbfdf3b4f9de9c0b2270a1c94f6ca46e3",
           "call": {
             "parsed": {
               "assumptions": [
                 {
-                  "proposition": "The patient has an acute abdominal pain syndrome with possible right-lower-quadrant involvement requiring evaluation for pelvic or appendiceal pathology.",
+                  "proposition": "The patient has acute abdominal pain with right lower quadrant involvement that is now strongly suspected to be acute appendicitis with possible complications.",
                   "type": "syndrome_or_source_frame",
                   "other_proposed_type": "",
-                  "level": "symptom complex / syndrome",
-                  "status": "suspected",
+                  "level": "clinical syndrome level (suspected acute appendicitis as the source of abdominal/RLQ pain)",
+                  "status": "likely",
                   "evidence": [
-                    "“presents to the ED w/ acute onset abdominal pain, this AM… primarily superior to her umbilicus… although she now has RLQ pain as well.”",
-                    "“associated nausea/vomiting… She has had subjective fevers at home (not measured).”"
-                  ],
-                  "support": "well_supported"
-                },
-                {
-                  "proposition": "A gynecologic or other pelvic source is a plausible cause of the patient’s abdominal and right-lower-quadrant pain.",
-                  "type": "alternative_source",
-                  "other_proposed_type": "",
-                  "level": "possible specific disease category / source of pain",
-                  "status": "suspected",
-                  "evidence": [
-                    "“now has RLQ pain as well.”",
-                    "Imaging order: “Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)”"
-                  ],
-                  "support": "weakly_supported"
-                },
-                {
-                  "proposition": "Non-gynecologic upper abdominal causes such as pancreatitis or hepatobiliary disease are less likely based on initial laboratory evaluation.",
-                  "type": "alternative_source",
-                  "other_proposed_type": "",
-                  "level": "competing causes within abdominal pain workup",
-                  "status": "challenged",
-                  "evidence": [
-                    "“Lipase: 29.0 IU/L (ref 0.0-60.0)”",
-                    "“Alanine Aminotransferase (ALT): 16.0 IU/L… Asparate Aminotransferase (AST): 27.0 IU/L… Bilirubin, Total: 0.3 mg/dL… Alkaline Phosphatase: 68.0 IU/L”"
+                    "“presents to the ED w/ acute onset abdominal pain… although she now has RLQ pain as well.”",
+                    "“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat. The patient had pain while the appendix was being scanned.”"
                   ],
                   "support": "well_supported"
                 }
               ],
               "previous_order_update": {
-                "applicable": false,
-                "previous_question": null,
-                "study_adequacy": "not_applicable",
-                "test_question_capability": "not_applicable",
-                "result_status": "not_applicable",
-                "effect_on_previous_question": "not_applicable",
+                "applicable": true,
+                "previous_question": "Is there a pelvic cause of this patient’s acute abdominal and right lower quadrant pain, such as an adnexal or other gynecologic abnormality?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "negative",
+                "effect_on_previous_question": "The pelvic ultrasound adequately visualized the uterus and ovaries, showed normal arterial and venous waveforms in both ovaries, and no free fluid, thereby effectively excluding a primary gynecologic/adnexal cause of the acute pain and shifting diagnostic focus to a non-gynecologic intra-abdominal source, specifically the abnormal appendix seen in the right lower quadrant.",
                 "discordance": {
-                  "label": "not_applicable",
-                  "evidence_stream_1": "",
-                  "evidence_stream_2": "",
-                  "reason": "First decision point; no prior imaging or question to compare."
+                  "label": "concordant",
+                  "evidence_stream_1": "“The uterus measures 7.4 x 3.0 x 8 x 5.1 cm and appears normal. The endometrium is homogeneous and measures 5 mm.  The ovaries are normal with arterial and venous waveforms seen in both ovaries.  There is no free fluid.”",
+                  "evidence_stream_2": "“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”",
+                  "reason": "Normal pelvic organs with an abnormal, enlarged, noncompressible, hyperemic appendix are mutually reinforcing: they exclude a gynecologic source and support appendicitis as the intra-abdominal source."
                 }
               },
               "assumption_change": {
-                "label": "initial",
-                "changed_proposition": null,
-                "reason": "This is the first imaging decision; the abdominal pain syndrome and possible pelvic source are newly formulated from the presenting history, exam, labs, and chosen study."
+                "label": "refine",
+                "changed_proposition": "The patient has an acute abdominal pain syndrome with possible right lower quadrant involvement of unclear etiology.",
+                "reason": "Pelvic ultrasound has excluded a gynecologic source and demonstrated an enlarged, noncompressible, hyperemic appendix with periappendiceal fat stranding, refining the prior nonspecific abdominal pain frame to suspected acute appendicitis and raising concern for possible complications that might not be fully assessed by sonography."
               },
               "current_question": {
-                "primary": "Is there a pelvic cause of this patient’s acute abdominal and right-lower-quadrant pain?",
-                "target": "pelvic organs and adjacent structures (uterus, ovaries, adnexa, pelvic free fluid, and visualizable appendix region)",
-                "type": "alternative_source",
+                "primary": "What is the severity and extent of the suspected acute appendicitis and are there appendiceal or other intra-abdominal complications that require surgical or urgent intervention?",
+                "target": "appendix and surrounding intra-abdominal structures (periappendiceal tissues, adjacent bowel, peritoneal cavity, other abdominal organs)",
+                "type": "severity_or_extent",
                 "other_proposed_type": "",
-                "positive_answer_changes": "Would support a pelvic or gynecologic diagnosis (e.g., ovarian pathology, pelvic inflammatory process, or visible appendicitis) and direct management away from purely gastric/GERD explanations.",
-                "negative_answer_changes": "Would make a pelvic source less likely and prompt consideration of other intra-abdominal or functional causes of pain.",
+                "positive_answer_changes": "If CT shows complicated appendicitis (e.g., perforation, abscess, phlegmon, obstruction) or alternative urgent intra-abdominal pathology, this will prompt operative planning or other urgent intervention and guide the surgical approach.",
+                "negative_answer_changes": "If CT shows uncomplicated appendicitis without other intra-abdominal pathology, this supports standard appendectomy or potential nonoperative management and reassures against other emergent abdominal processes.",
                 "secondary_questions": [
-                  "Is there imaging evidence of appendicitis or periappendiceal inflammatory change explaining the RLQ pain?",
-                  "Is there pelvic free fluid or a mass that would indicate an acute gynecologic process?"
+                  "Is there an alternative intra-abdominal cause of the patient’s symptoms beyond the abnormal appendix, such as colitis, small bowel pathology, or other inflammatory or obstructive process?",
+                  "Is there free intraperitoneal air or diffuse peritonitis suggesting perforation not fully characterized on ultrasound?"
                 ],
                 "answer_requirements": [
                   {
-                    "requirement_key": "req_vis",
+                    "requirement_key": "req_vis_appendix_ct",
                     "id": "target_visualization_or_assessment",
                     "other_proposed_dimension": "",
-                    "dimension": "Adequate visualization of uterus, ovaries/adnexa, pelvic cul-de-sac, and any portion of bowel/appendix accessible to pelvic ultrasound.",
-                    "why_required": "These structures must be seen well enough to determine whether a pelvic or appendiceal source of pain is present."
+                    "dimension": "Adequate cross-sectional visualization of the appendix, periappendiceal region, and overall abdomen/pelvis.",
+                    "why_required": "Comprehensive assessment of the appendix and surrounding structures is needed to determine whether disease is localized or complicated and to detect alternative sources of pain."
                   },
                   {
-                    "requirement_key": "req_pres",
-                    "id": "presence_or_absence",
+                    "requirement_key": "req_severity_appendicitis",
+                    "id": "severity_or_extent",
                     "other_proposed_dimension": "",
-                    "dimension": "Presence or absence of pelvic masses, ovarian cyst/torsion features, pelvic inflammatory changes, or free fluid suggesting a pelvic source.",
-                    "why_required": "Detecting or excluding an acute pelvic process is necessary to determine if the pelvis explains the symptoms."
+                    "dimension": "Degree and extent of appendiceal inflammation, including size, wall changes, and any involvement of adjacent bowel or mesentery.",
+                    "why_required": "Determining how advanced the appendicitis is helps distinguish early from advanced disease and informs urgency and type of management."
                   },
                   {
-                    "requirement_key": "req_alt",
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of complications such as abscess, phlegmon, perforation, free fluid, or free intraperitoneal air.",
+                    "why_required": "Detecting or excluding complications is critical for surgical planning, need for drainage, and risk stratification."
+                  },
+                  {
+                    "requirement_key": "req_alt_intraabdominal",
                     "id": "alternative_source_discrimination",
                     "other_proposed_dimension": "",
-                    "dimension": "Discrimination between a pelvic/gynecologic source versus non-pelvic causes of abdominal and RLQ pain.",
-                    "why_required": "The clinician must decide whether to focus management on a pelvic etiology versus continuing to search for another abdominal source."
+                    "dimension": "Evaluation for alternative or additional intra-abdominal sources of pain (e.g., colitis, bowel obstruction, other inflammatory or infectious processes).",
+                    "why_required": "Even with a sonographically abnormal appendix, CT is often used to exclude or confirm other concurrent or alternative intra-abdominal pathology that would alter management."
                   }
                 ],
                 "evidence": [
-                  "“presents to the ED w/ acute onset abdominal pain… primarily superior to her umbilicus… although she now has RLQ pain as well.”",
-                  "Order placed: “Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)”"
+                  "“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”",
+                  "Current order: “CT Abdomen (CT ABD & PELVIS WITH CONTRAST)”"
                 ]
               },
-              "question_continuity": "initial",
+              "question_continuity": "refined",
               "coverage": {
                 "requirements": [
                   {
-                    "requirement_key": "req_vis",
+                    "requirement_key": "req_vis_appendix_ct",
                     "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“The appendix is identified as a blind-ending tubular structure which connects to the cecum.  The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”"
+                    ],
+                    "reason": "Ultrasound visualized the appendix and showed inflammatory changes, but sonographic assessment is limited in global evaluation of the entire abdomen/pelvis and in full characterization of complications or alternative processes."
+                  },
+                  {
+                    "requirement_key": "req_severity_appendicitis",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”"
+                    ],
+                    "reason": "US shows an enlarged, noncompressible, hyperemic appendix with periappendiceal fat edema, indicating active inflammation, but does not fully grade the extent of disease or involvement of adjacent structures as CT can."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "No prior imaging listed: “Imaging resulted before this decision point (none)”"
+                      "The pelvic/right lower quadrant ultrasound report does not mention abscess, perforation, or free intraperitoneal air."
                     ],
-                    "reason": "No previous imaging has assessed visualization of the pelvic organs or appendix region."
+                    "reason": "Ultrasound did not describe or systematically assess for appendiceal abscess, perforation, or free air; these complications cannot be confidently excluded."
                   },
                   {
-                    "requirement_key": "req_pres",
-                    "requirement_id": "presence_or_absence",
-                    "status": "unaddressed",
-                    "direction": "no_direction",
-                    "supporting_evidence": [
-                      "Physical exam: “ABD: Soft, nondistended, nontender, no rebound or guarding, normoactive bowel sounds, no palpable masses”"
-                    ],
-                    "reason": "Physical exam alone does not establish presence or absence of internal pelvic pathology or appendicitis."
-                  },
-                  {
-                    "requirement_key": "req_alt",
+                    "requirement_key": "req_alt_intraabdominal",
                     "requirement_id": "alternative_source_discrimination",
                     "status": "unaddressed",
                     "direction": "no_direction",
                     "supporting_evidence": [
-                      "“now has RLQ pain as well.”",
-                      "“Lipase: 29.0 IU/L… ALT: 16.0… AST: 27.0… Bilirubin, Total: 0.3 mg/dL”"
+                      "Ultrasound focused on pelvis and right lower quadrant; no CT or broader abdominal imaging reported before this order."
                     ],
-                    "reason": "Laboratory tests reduce likelihood of some upper abdominal causes but do not distinguish pelvic from other lower abdominal sources; no prior imaging has adjudicated this."
+                    "reason": "Only the pelvis and RLQ were imaged, without comprehensive evaluation of other abdominal organs or bowel loops for alternative causes of pain."
                   }
                 ],
-                "aggregate": "unanswered",
-                "aggregate_reason": "No imaging had been performed, and exam/labs cannot adequately confirm or exclude a pelvic cause for the acute abdominal and RLQ pain."
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Prior ultrasound establishes the presence of appendiceal inflammation but does not fully define severity, complications, or alternative intra-abdominal pathology, leaving key management-directed questions incompletely addressed."
               },
               "current_order_fit": {
                 "test_question_capability": "capable",
-                "why_this_order_could_answer": "A non-obstetric pelvic ultrasound can visualize pelvic organs, detect masses, torsion features, inflammatory changes, and free fluid, thereby identifying or excluding a pelvic source of pain.",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can comprehensively evaluate the appendix, detect or exclude perforation, abscess, and other complications, and survey the entire abdomen/pelvis for alternative causes of acute pain.",
                 "intent_support": "well_supported",
-                "unsupported_residual": "The choice of pelvic ultrasound instead of, or prior to, a CT abdomen/pelvis for RLQ pain is not explicitly justified by age, reproductive status, or local protocol in the visible chart."
+                "unsupported_residual": "The chart does not explicitly document surgical consultation recommendations, concern for perforation, or failure of conservative management as reasons for CT; motivation is inferred from standard practice to stage suspected appendicitis and rule out complications after a positive but scope-limited ultrasound."
               },
               "derived_transition": "advance",
               "alternative_reconstruction": ""
             },
-            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal pain syndrome with possible right-lower-quadrant involvement requiring evaluation for pelvic or appendiceal pathology.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"symptom complex / syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“presents to the ED w/ acute onset abdominal pain, this AM… primarily superior to her umbilicus… although she now has RLQ pain as well.”\",\n        \"“associated nausea/vomiting… She has had subjective fevers at home (not measured).”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A gynecologic or other pelvic source is a plausible cause of the patient’s abdominal and right-lower-quadrant pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"possible specific disease category / source of pain\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“now has RLQ pain as well.”\",\n        \"Imaging order: “Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)”\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Non-gynecologic upper abdominal causes such as pancreatitis or hepatobiliary disease are less likely based on initial laboratory evaluation.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing causes within abdominal pain workup\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"“Lipase: 29.0 IU/L (ref 0.0-60.0)”\",\n        \"“Alanine Aminotransferase (ALT): 16.0 IU/L… Asparate Aminotransferase (AST): 27.0 IU/L… Bilirubin, Total: 0.3 mg/dL… Alkaline Phosphatase: 68.0 IU/L”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior imaging or question to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the abdominal pain syndrome and possible pelvic source are newly formulated from the presenting history, exam, labs, and chosen study.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a pelvic cause of this patient’s acute abdominal and right-lower-quadrant pain?\",\n    \"target\": \"pelvic organs and adjacent structures (uterus, ovaries, adnexa, pelvic free fluid, and visualizable appendix region)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would support a pelvic or gynecologic diagnosis (e.g., ovarian pathology, pelvic inflammatory process, or visible appendicitis) and direct management away from purely gastric/GERD explanations.\",\n    \"negative_answer_changes\": \"Would make a pelvic source less likely and prompt consideration of other intra-abdominal or functional causes of pain.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of appendicitis or periappendiceal inflammatory change explaining the RLQ pain?\",\n      \"Is there pelvic free fluid or a mass that would indicate an acute gynecologic process?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of uterus, ovaries/adnexa, pelvic cul-de-sac, and any portion of bowel/appendix accessible to pelvic ultrasound.\",\n        \"why_required\": \"These structures must be seen well enough to determine whether a pelvic or appendiceal source of pain is present.\"\n      },\n      {\n        \"requirement_key\": \"req_pres\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of pelvic masses, ovarian cyst/torsion features, pelvic inflammatory changes, or free fluid suggesting a pelvic source.\",\n        \"why_required\": \"Detecting or excluding an acute pelvic process is necessary to determine if the pelvis explains the symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Discrimination between a pelvic/gynecologic source versus non-pelvic causes of abdominal and RLQ pain.\",\n        \"why_required\": \"The clinician must decide whether to focus management on a pelvic etiology versus continuing to search for another abdominal source.\"\n      }\n    ],\n    \"evidence\": [\n      \"“presents to the ED w/ acute onset abdominal pain… primarily superior to her umbilicus… although she now has RLQ pain as well.”\",\n      \"Order placed: “Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior imaging listed: “Imaging resulted before this decision point (none)”\"\n        ],\n        \"reason\": \"No previous imaging has assessed visualization of the pelvic organs or appendix region.\"\n      },\n      {\n        \"requirement_key\": \"req_pres\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Physical exam: “ABD: Soft, nondistended, nontender, no rebound or guarding, normoactive bowel sounds, no palpable masses”\"\n        ],\n        \"reason\": \"Physical exam alone does not establish presence or absence of internal pelvic pathology or appendicitis.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“now has RLQ pain as well.”\",\n          \"“Lipase: 29.0 IU/L… ALT: 16.0… AST: 27.0… Bilirubin, Total: 0.3 mg/dL”\"\n        ],\n        \"reason\": \"Laboratory tests reduce likelihood of some upper abdominal causes but do not distinguish pelvic from other lower abdominal sources; no prior imaging has adjudicated this.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No imaging had been performed, and exam/labs cannot adequately confirm or exclude a pelvic cause for the acute abdominal and RLQ pain.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A non-obstetric pelvic ultrasound can visualize pelvic organs, detect masses, torsion features, inflammatory changes, and free fluid, thereby identifying or excluding a pelvic source of pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of pelvic ultrasound instead of, or prior to, a CT abdomen/pelvis for RLQ pain is not explicitly justified by age, reproductive status, or local protocol in the visible chart.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
-            "request_id": "gen-1788156921-GEDRrEipBxpkQaQjhMyJ",
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute abdominal pain with right lower quadrant involvement that is now strongly suspected to be acute appendicitis with possible complications.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome level (suspected acute appendicitis as the source of abdominal/RLQ pain)\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“presents to the ED w/ acute onset abdominal pain… although she now has RLQ pain as well.”\",\n        \"“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat. The patient had pain while the appendix was being scanned.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there a pelvic cause of this patient’s acute abdominal and right lower quadrant pain, such as an adnexal or other gynecologic abnormality?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"negative\",\n    \"effect_on_previous_question\": \"The pelvic ultrasound adequately visualized the uterus and ovaries, showed normal arterial and venous waveforms in both ovaries, and no free fluid, thereby effectively excluding a primary gynecologic/adnexal cause of the acute pain and shifting diagnostic focus to a non-gynecologic intra-abdominal source, specifically the abnormal appendix seen in the right lower quadrant.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"“The uterus measures 7.4 x 3.0 x 8 x 5.1 cm and appears normal. The endometrium is homogeneous and measures 5 mm.  The ovaries are normal with arterial and venous waveforms seen in both ovaries.  There is no free fluid.”\",\n      \"evidence_stream_2\": \"“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”\",\n      \"reason\": \"Normal pelvic organs with an abnormal, enlarged, noncompressible, hyperemic appendix are mutually reinforcing: they exclude a gynecologic source and support appendicitis as the intra-abdominal source.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient has an acute abdominal pain syndrome with possible right lower quadrant involvement of unclear etiology.\",\n    \"reason\": \"Pelvic ultrasound has excluded a gynecologic source and demonstrated an enlarged, noncompressible, hyperemic appendix with periappendiceal fat stranding, refining the prior nonspecific abdominal pain frame to suspected acute appendicitis and raising concern for possible complications that might not be fully assessed by sonography.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the severity and extent of the suspected acute appendicitis and are there appendiceal or other intra-abdominal complications that require surgical or urgent intervention?\",\n    \"target\": \"appendix and surrounding intra-abdominal structures (periappendiceal tissues, adjacent bowel, peritoneal cavity, other abdominal organs)\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If CT shows complicated appendicitis (e.g., perforation, abscess, phlegmon, obstruction) or alternative urgent intra-abdominal pathology, this will prompt operative planning or other urgent intervention and guide the surgical approach.\",\n    \"negative_answer_changes\": \"If CT shows uncomplicated appendicitis without other intra-abdominal pathology, this supports standard appendectomy or potential nonoperative management and reassures against other emergent abdominal processes.\",\n    \"secondary_questions\": [\n      \"Is there an alternative intra-abdominal cause of the patient’s symptoms beyond the abnormal appendix, such as colitis, small bowel pathology, or other inflammatory or obstructive process?\",\n      \"Is there free intraperitoneal air or diffuse peritonitis suggesting perforation not fully characterized on ultrasound?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis_appendix_ct\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate cross-sectional visualization of the appendix, periappendiceal region, and overall abdomen/pelvis.\",\n        \"why_required\": \"Comprehensive assessment of the appendix and surrounding structures is needed to determine whether disease is localized or complicated and to detect alternative sources of pain.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_appendicitis\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree and extent of appendiceal inflammation, including size, wall changes, and any involvement of adjacent bowel or mesentery.\",\n        \"why_required\": \"Determining how advanced the appendicitis is helps distinguish early from advanced disease and informs urgency and type of management.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as abscess, phlegmon, perforation, free fluid, or free intraperitoneal air.\",\n        \"why_required\": \"Detecting or excluding complications is critical for surgical planning, need for drainage, and risk stratification.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_intraabdominal\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evaluation for alternative or additional intra-abdominal sources of pain (e.g., colitis, bowel obstruction, other inflammatory or infectious processes).\",\n        \"why_required\": \"Even with a sonographically abnormal appendix, CT is often used to exclude or confirm other concurrent or alternative intra-abdominal pathology that would alter management.\"\n      }\n    ],\n    \"evidence\": [\n      \"“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”\",\n      \"Current order: “CT Abdomen (CT ABD & PELVIS WITH CONTRAST)”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis_appendix_ct\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“The appendix is identified as a blind-ending tubular structure which connects to the cecum.  The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”\"\n        ],\n        \"reason\": \"Ultrasound visualized the appendix and showed inflammatory changes, but sonographic assessment is limited in global evaluation of the entire abdomen/pelvis and in full characterization of complications or alternative processes.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_appendicitis\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”\"\n        ],\n        \"reason\": \"US shows an enlarged, noncompressible, hyperemic appendix with periappendiceal fat edema, indicating active inflammation, but does not fully grade the extent of disease or involvement of adjacent structures as CT can.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"The pelvic/right lower quadrant ultrasound report does not mention abscess, perforation, or free intraperitoneal air.\"\n        ],\n        \"reason\": \"Ultrasound did not describe or systematically assess for appendiceal abscess, perforation, or free air; these complications cannot be confidently excluded.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_intraabdominal\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Ultrasound focused on pelvis and right lower quadrant; no CT or broader abdominal imaging reported before this order.\"\n        ],\n        \"reason\": \"Only the pelvis and RLQ were imaged, without comprehensive evaluation of other abdominal organs or bowel loops for alternative causes of pain.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Prior ultrasound establishes the presence of appendiceal inflammation but does not fully define severity, complications, or alternative intra-abdominal pathology, leaving key management-directed questions incompletely addressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis can comprehensively evaluate the appendix, detect or exclude perforation, abscess, and other complications, and survey the entire abdomen/pelvis for alternative causes of acute pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly document surgical consultation recommendations, concern for perforation, or failure of conservative management as reasons for CT; motivation is inferred from standard practice to stage suspected appendicitis and rule out complications after a positive but scope-limited ultrasound.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788162549-3QsIWw9xSlh1GmVIMZN2",
             "usage": {
-              "completion_tokens": 1759,
-              "prompt_tokens": 2980,
-              "total_tokens": 4739,
+              "completion_tokens": 2124,
+              "prompt_tokens": 4618,
+              "total_tokens": 6742,
               "completion_tokens_details": {
                 "accepted_prediction_tokens": null,
                 "audio_tokens": 0,
@@ -358,212 +501,731 @@
               "prompt_tokens_details": {
                 "audio_tokens": 0,
                 "cache_write_tokens": 0,
-                "cached_tokens": 2816,
+                "cached_tokens": 1664,
                 "image_tokens": null,
                 "text_tokens": null,
                 "video_tokens": 0
               },
-              "cost": 0.018147,
+              "cost": 0.0251405,
               "is_byok": false,
               "cost_details": {
-                "upstream_inference_cost": 0.018147,
-                "upstream_inference_prompt_cost": 0.000557,
-                "upstream_inference_completions_cost": 0.01759
+                "upstream_inference_cost": 0.0251405,
+                "upstream_inference_prompt_cost": 0.0039005,
+                "upstream_inference_completions_cost": 0.02124
               }
             }
           },
-          "validation_errors": [
-            "first_step_derived_transition_not_initial"
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute abdominal pain with right lower quadrant involvement that is now strongly suspected to be acute appendicitis with possible complications.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome level (suspected acute appendicitis as the source of abdominal/RLQ pain)",
+            "status": "likely",
+            "evidence": [
+              "“presents to the ED w/ acute onset abdominal pain… although she now has RLQ pain as well.”",
+              "“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat. The patient had pain while the appendix was being scanned.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there a pelvic cause of this patient’s acute abdominal and right lower quadrant pain, such as an adnexal or other gynecologic abnormality?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "negative",
+          "effect_on_previous_question": "The pelvic ultrasound adequately visualized the uterus and ovaries, showed normal arterial and venous waveforms in both ovaries, and no free fluid, thereby effectively excluding a primary gynecologic/adnexal cause of the acute pain and shifting diagnostic focus to a non-gynecologic intra-abdominal source, specifically the abnormal appendix seen in the right lower quadrant.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "“The uterus measures 7.4 x 3.0 x 8 x 5.1 cm and appears normal. The endometrium is homogeneous and measures 5 mm.  The ovaries are normal with arterial and venous waveforms seen in both ovaries.  There is no free fluid.”",
+            "evidence_stream_2": "“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”",
+            "reason": "Normal pelvic organs with an abnormal, enlarged, noncompressible, hyperemic appendix are mutually reinforcing: they exclude a gynecologic source and support appendicitis as the intra-abdominal source."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient has an acute abdominal pain syndrome with possible right lower quadrant involvement of unclear etiology.",
+          "reason": "Pelvic ultrasound has excluded a gynecologic source and demonstrated an enlarged, noncompressible, hyperemic appendix with periappendiceal fat stranding, refining the prior nonspecific abdominal pain frame to suspected acute appendicitis and raising concern for possible complications that might not be fully assessed by sonography."
+        },
+        "current_question": {
+          "primary": "What is the severity and extent of the suspected acute appendicitis and are there appendiceal or other intra-abdominal complications that require surgical or urgent intervention?",
+          "target": "appendix and surrounding intra-abdominal structures (periappendiceal tissues, adjacent bowel, peritoneal cavity, other abdominal organs)",
+          "type": "severity_or_extent",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If CT shows complicated appendicitis (e.g., perforation, abscess, phlegmon, obstruction) or alternative urgent intra-abdominal pathology, this will prompt operative planning or other urgent intervention and guide the surgical approach.",
+          "negative_answer_changes": "If CT shows uncomplicated appendicitis without other intra-abdominal pathology, this supports standard appendectomy or potential nonoperative management and reassures against other emergent abdominal processes.",
+          "secondary_questions": [
+            "Is there an alternative intra-abdominal cause of the patient’s symptoms beyond the abnormal appendix, such as colitis, small bowel pathology, or other inflammatory or obstructive process?",
+            "Is there free intraperitoneal air or diffuse peritonitis suggesting perforation not fully characterized on ultrasound?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis_appendix_ct",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate cross-sectional visualization of the appendix, periappendiceal region, and overall abdomen/pelvis.",
+              "why_required": "Comprehensive assessment of the appendix and surrounding structures is needed to determine whether disease is localized or complicated and to detect alternative sources of pain."
+            },
+            {
+              "requirement_key": "req_severity_appendicitis",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Degree and extent of appendiceal inflammation, including size, wall changes, and any involvement of adjacent bowel or mesentery.",
+              "why_required": "Determining how advanced the appendicitis is helps distinguish early from advanced disease and informs urgency and type of management."
+            },
+            {
+              "requirement_key": "req_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of complications such as abscess, phlegmon, perforation, free fluid, or free intraperitoneal air.",
+              "why_required": "Detecting or excluding complications is critical for surgical planning, need for drainage, and risk stratification."
+            },
+            {
+              "requirement_key": "req_alt_intraabdominal",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Evaluation for alternative or additional intra-abdominal sources of pain (e.g., colitis, bowel obstruction, other inflammatory or infectious processes).",
+              "why_required": "Even with a sonographically abnormal appendix, CT is often used to exclude or confirm other concurrent or alternative intra-abdominal pathology that would alter management."
+            }
+          ],
+          "evidence": [
+            "“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”",
+            "Current order: “CT Abdomen (CT ABD & PELVIS WITH CONTRAST)”"
           ]
         },
-        {
-          "attempt": 3,
-          "call": {
-            "parsed": {
-              "assumptions": [
-                {
-                  "proposition": "The patient has an acute abdominal pain syndrome with evolving right-lower-quadrant involvement and systemic symptoms requiring evaluation for intra-abdominal/pelvic pathology.",
-                  "type": "syndrome_or_source_frame",
-                  "other_proposed_type": "",
-                  "level": "clinical presentation/syndrome",
-                  "status": "established",
-                  "evidence": [
-                    "presents to the ED w/ acute onset abdominal pain, this AM",
-                    "she now has RLQ pain as well",
-                    "She has had subjective fevers at home (not measured)."
-                  ],
-                  "support": "well_supported"
-                },
-                {
-                  "proposition": "Gynecologic or pelvic pathology (e.g., ovarian or uterine/adnexal source) is a plausible cause of this patient’s acute abdominal/RLQ pain.",
-                  "type": "alternative_source",
-                  "other_proposed_type": "",
-                  "level": "differential diagnosis element",
-                  "status": "suspected",
-                  "evidence": [
-                    "Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)",
-                    "___ F w/ h/o HPylori s/p treatment 2 mos ago presents to the ED w/ acute onset abdominal pain"
-                  ],
-                  "support": "weakly_supported"
-                },
-                {
-                  "proposition": "Prior H. pylori gastritis and GERD-like symptoms raise concern for a possible upper abdominal/gastric source of pain, but do not fully explain new RLQ pain.",
-                  "type": "etiology_or_mechanism",
-                  "other_proposed_type": "",
-                  "level": "etiologic factor",
-                  "status": "challenged",
-                  "evidence": [
-                    "h/o HPylori s/p treatment 2 mos ago",
-                    "She states  that her pain was initially similar to her previous GERD symptoms, although she now has RLQ pain as well."
-                  ],
-                  "support": "well_supported"
-                }
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis_appendix_ct",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“The appendix is identified as a blind-ending tubular structure which connects to the cecum.  The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”"
               ],
-              "previous_order_update": {
-                "applicable": false,
-                "previous_question": null,
-                "study_adequacy": "not_applicable",
-                "test_question_capability": "not_applicable",
-                "result_status": "not_applicable",
-                "effect_on_previous_question": "not_applicable",
-                "discordance": {
-                  "label": "not_applicable",
-                  "evidence_stream_1": "",
-                  "evidence_stream_2": "",
-                  "reason": ""
+              "reason": "Ultrasound visualized the appendix and showed inflammatory changes, but sonographic assessment is limited in global evaluation of the entire abdomen/pelvis and in full characterization of complications or alternative processes."
+            },
+            {
+              "requirement_key": "req_severity_appendicitis",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“The appendix measures 1 cm and does not compress.  There is hyperemia of the wall of the appendix, and there is edema of the surrounding fat.”"
+              ],
+              "reason": "US shows an enlarged, noncompressible, hyperemic appendix with periappendiceal fat edema, indicating active inflammation, but does not fully grade the extent of disease or involvement of adjacent structures as CT can."
+            },
+            {
+              "requirement_key": "req_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "The pelvic/right lower quadrant ultrasound report does not mention abscess, perforation, or free intraperitoneal air."
+              ],
+              "reason": "Ultrasound did not describe or systematically assess for appendiceal abscess, perforation, or free air; these complications cannot be confidently excluded."
+            },
+            {
+              "requirement_key": "req_alt_intraabdominal",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Ultrasound focused on pelvis and right lower quadrant; no CT or broader abdominal imaging reported before this order."
+              ],
+              "reason": "Only the pelvis and RLQ were imaged, without comprehensive evaluation of other abdominal organs or bowel loops for alternative causes of pain."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Prior ultrasound establishes the presence of appendiceal inflammation but does not fully define severity, complications, or alternative intra-abdominal pathology, leaving key management-directed questions incompletely addressed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can comprehensively evaluate the appendix, detect or exclude perforation, abscess, and other complications, and survey the entire abdomen/pelvis for alternative causes of acute pain.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not explicitly document surgical consultation recommendations, concern for perforation, or failure of conservative management as reasons for CT; motivation is inferred from standard practice to stage suspected appendicitis and rule out complications after a positive but scope-limited ultrasound."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ],
+  "superseded_runs": [
+    {
+      "schema_version": "1.0.0-development",
+      "scope": "DIRECT empirical annotation",
+      "disease_stratum_sampling_only": "appendicitis",
+      "hadm_id": 20276429,
+      "source_path": "results/annotation_experiment/full/appendicitis_20276429.json",
+      "model": "openai/gpt-5.1",
+      "prompt_version_sha256": "26ee973ad4d741310c5cbf29682e15891b70d9fd7195e6fe774df54d88adb536",
+      "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+      "steps": [
+        {
+          "step": 1,
+          "ordered": "Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)",
+          "request_prompt_sha256": "2168553b9d5613f6c47989f9bdf63e8c95995a4fa035d204384281aa3d7a769d",
+          "attempts": [
+            {
+              "attempt": 1,
+              "call": {
+                "parsed": {
+                  "assumptions": [
+                    {
+                      "proposition": "The patient has an acute undifferentiated abdominal pain syndrome with current right‑lower‑quadrant involvement and systemic symptoms.",
+                      "type": "syndrome_or_source_frame",
+                      "other_proposed_type": "",
+                      "level": "clinical presentation/syndrome",
+                      "status": "established",
+                      "evidence": [
+                        "presents to the ED w/ acute onset abdominal pain, this AM",
+                        "she now has RLQ pain as well. ... subjective fevers at home (not measured)"
+                      ],
+                      "support": "well_supported"
+                    },
+                    {
+                      "proposition": "Pregnancy is effectively excluded as a cause of pelvic or abdominal pain.",
+                      "type": "alternative_source",
+                      "other_proposed_type": "",
+                      "level": "competing-etiology level",
+                      "status": "established",
+                      "evidence": [
+                        "HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG."
+                      ],
+                      "support": "well_supported"
+                    },
+                    {
+                      "proposition": "Initial laboratory evaluation does not indicate hepatobiliary, pancreatic, or urinary tract inflammatory pathology.",
+                      "type": "alternative_source",
+                      "other_proposed_type": "",
+                      "level": "competing-etiology level",
+                      "status": "established",
+                      "evidence": [
+                        "Lipase: 29.0 IU/L (ref 0.0-60.0)",
+                        "Alanine Aminotransferase (ALT): 16.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.3 mg/dL (ref 0.0-1.5) ... Nitrite: NEG. ... Leukocytes: NEG."
+                      ],
+                      "support": "well_supported"
+                    }
+                  ],
+                  "previous_order_update": {
+                    "applicable": false,
+                    "previous_question": null,
+                    "study_adequacy": "not_applicable",
+                    "test_question_capability": "not_applicable",
+                    "result_status": "not_applicable",
+                    "effect_on_previous_question": "not_applicable",
+                    "discordance": {
+                      "label": "not_applicable",
+                      "evidence_stream_1": "",
+                      "evidence_stream_2": "",
+                      "reason": ""
+                    }
+                  },
+                  "assumption_change": {
+                    "label": "initial",
+                    "changed_proposition": null,
+                    "reason": "This is the first decision point; assumptions are newly inferred from the presenting history, exam, and labs."
+                  },
+                  "current_question": {
+                    "primary": "Is there a pelvic gynecologic or other pelvic source of the patient’s acute abdominal and right‑lower‑quadrant pain?",
+                    "target": "pelvic organs (uterus, adnexa/ovaries, and adjacent pelvic structures)",
+                    "type": "alternative_source",
+                    "other_proposed_type": "",
+                    "positive_answer_changes": "Would shift management toward treating the identified pelvic source (e.g., gynecologic pathology or other pelvic process) and away from purely gastric/GERD explanations.",
+                    "negative_answer_changes": "Would make a pelvic structural etiology less likely and redirect workup toward other abdominal sources or nonstructural causes.",
+                    "secondary_questions": [
+                      "Is there any gross structural abnormality in the adnexa or uterus that could account for acute pain (e.g., mass, torsion, cyst complication)?"
+                    ],
+                    "answer_requirements": [
+                      {
+                        "requirement_key": "req_vis",
+                        "id": "target_visualization_or_assessment",
+                        "other_proposed_dimension": "",
+                        "dimension": "Visualization and basic structural assessment of uterus, ovaries/adnexa, and adjacent pelvic compartments.",
+                        "why_required": "Adequate visualization of pelvic organs is necessary to determine whether a pelvic source of pain exists."
+                      },
+                      {
+                        "requirement_key": "req_pres",
+                        "id": "presence_or_absence",
+                        "other_proposed_dimension": "",
+                        "dimension": "Presence or absence of acute-appearing pelvic pathology such as adnexal mass, complex ovarian cyst, free fluid suggestive of rupture, or other focal abnormality.",
+                        "why_required": "Identifying or excluding acute pelvic pathology is central to establishing a pelvic source for the symptoms."
+                      },
+                      {
+                        "requirement_key": "req_loc",
+                        "id": "anatomic_localization",
+                        "other_proposed_dimension": "",
+                        "dimension": "Localization of any detected abnormality to the pelvis versus other abdominal regions.",
+                        "why_required": "Localizing a lesion to the pelvis is required to attribute the patient’s pain to a pelvic source rather than another abdominal origin."
+                      }
+                    ],
+                    "evidence": [
+                      "presents to the ED w/ acute onset abdominal pain ... she now has RLQ pain as well",
+                      "Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)"
+                    ]
+                  },
+                  "question_continuity": "initial",
+                  "coverage": {
+                    "requirements": [
+                      {
+                        "requirement_key": "req_vis",
+                        "requirement_id": "target_visualization_or_assessment",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "Imaging resulted before this decision point (none)"
+                        ],
+                        "reason": "No prior imaging of the pelvis has been performed, so pelvic organs have not yet been visually assessed."
+                      },
+                      {
+                        "requirement_key": "req_pres",
+                        "requirement_id": "presence_or_absence",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "Imaging resulted before this decision point (none)"
+                        ],
+                        "reason": "Without prior imaging, the presence or absence of acute pelvic pathology remains unknown."
+                      },
+                      {
+                        "requirement_key": "req_loc",
+                        "requirement_id": "anatomic_localization",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "presents to the ED w/ acute onset abdominal pain ... she now has RLQ pain as well"
+                        ],
+                        "reason": "Pain is clinically localized to the abdomen/RLQ, but no anatomic lesion has been localized by imaging or other objective means."
+                      }
+                    ],
+                    "aggregate": "unanswered",
+                    "aggregate_reason": "Before this first imaging, the existence and localization of a pelvic source for pain have not been objectively assessed."
+                  },
+                  "current_order_fit": {
+                    "test_question_capability": "capable",
+                    "why_this_order_could_answer": "A non-obstetric pelvic ultrasound is a standard, sensitive test to visualize pelvic organs and detect or exclude gynecologic and related pelvic pathology as a source of pain.",
+                    "intent_support": "well_supported",
+                    "unsupported_residual": "The choice of pelvic ultrasound over a dedicated RLQ/appendiceal CT or ultrasound for appendicitis is not fully explained by the chart, leaving some uncertainty about the relative weight placed on gynecologic versus appendiceal or other abdominal causes."
+                  },
+                  "derived_transition": "remedy",
+                  "alternative_reconstruction": ""
+                },
+                "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute undifferentiated abdominal pain syndrome with current right‑lower‑quadrant involvement and systemic symptoms.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation/syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"presents to the ED w/ acute onset abdominal pain, this AM\",\n        \"she now has RLQ pain as well. ... subjective fevers at home (not measured)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Pregnancy is effectively excluded as a cause of pelvic or abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing-etiology level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"HCG, Urine, Qualitative: NEGATIVE.  FOR QUANTITATION OF POSITIVES, SEND SERUM FOR HCG.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Initial laboratory evaluation does not indicate hepatobiliary, pancreatic, or urinary tract inflammatory pathology.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing-etiology level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 29.0 IU/L (ref 0.0-60.0)\",\n        \"Alanine Aminotransferase (ALT): 16.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.3 mg/dL (ref 0.0-1.5) ... Nitrite: NEG. ... Leukocytes: NEG.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; assumptions are newly inferred from the presenting history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a pelvic gynecologic or other pelvic source of the patient’s acute abdominal and right‑lower‑quadrant pain?\",\n    \"target\": \"pelvic organs (uterus, adnexa/ovaries, and adjacent pelvic structures)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would shift management toward treating the identified pelvic source (e.g., gynecologic pathology or other pelvic process) and away from purely gastric/GERD explanations.\",\n    \"negative_answer_changes\": \"Would make a pelvic structural etiology less likely and redirect workup toward other abdominal sources or nonstructural causes.\",\n    \"secondary_questions\": [\n      \"Is there any gross structural abnormality in the adnexa or uterus that could account for acute pain (e.g., mass, torsion, cyst complication)?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and basic structural assessment of uterus, ovaries/adnexa, and adjacent pelvic compartments.\",\n        \"why_required\": \"Adequate visualization of pelvic organs is necessary to determine whether a pelvic source of pain exists.\"\n      },\n      {\n        \"requirement_key\": \"req_pres\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute-appearing pelvic pathology such as adnexal mass, complex ovarian cyst, free fluid suggestive of rupture, or other focal abnormality.\",\n        \"why_required\": \"Identifying or excluding acute pelvic pathology is central to establishing a pelvic source for the symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_loc\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any detected abnormality to the pelvis versus other abdominal regions.\",\n        \"why_required\": \"Localizing a lesion to the pelvis is required to attribute the patient’s pain to a pelvic source rather than another abdominal origin.\"\n      }\n    ],\n    \"evidence\": [\n      \"presents to the ED w/ acute onset abdominal pain ... she now has RLQ pain as well\",\n      \"Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"No prior imaging of the pelvis has been performed, so pelvic organs have not yet been visually assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_pres\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"Without prior imaging, the presence or absence of acute pelvic pathology remains unknown.\"\n      },\n      {\n        \"requirement_key\": \"req_loc\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"presents to the ED w/ acute onset abdominal pain ... she now has RLQ pain as well\"\n        ],\n        \"reason\": \"Pain is clinically localized to the abdomen/RLQ, but no anatomic lesion has been localized by imaging or other objective means.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before this first imaging, the existence and localization of a pelvic source for pain have not been objectively assessed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A non-obstetric pelvic ultrasound is a standard, sensitive test to visualize pelvic organs and detect or exclude gynecologic and related pelvic pathology as a source of pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of pelvic ultrasound over a dedicated RLQ/appendiceal CT or ultrasound for appendicitis is not fully explained by the chart, leaving some uncertainty about the relative weight placed on gynecologic versus appendiceal or other abdominal causes.\"\n  },\n  \"derived_transition\": \"remedy\",\n  \"alternative_reconstruction\": \"\"\n}",
+                "request_id": "gen-1788156902-ODtVNvdyNuZNaJWMahzE",
+                "usage": {
+                  "completion_tokens": 1579,
+                  "prompt_tokens": 2980,
+                  "total_tokens": 4559,
+                  "completion_tokens_details": {
+                    "accepted_prediction_tokens": null,
+                    "audio_tokens": 0,
+                    "reasoning_tokens": 0,
+                    "rejected_prediction_tokens": null,
+                    "text_tokens": null,
+                    "image_tokens": 0
+                  },
+                  "compute_units": null,
+                  "prompt_tokens_details": {
+                    "audio_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "cached_tokens": 0,
+                    "image_tokens": null,
+                    "text_tokens": null,
+                    "video_tokens": 0
+                  },
+                  "cost": 0.019515,
+                  "is_byok": false,
+                  "cost_details": {
+                    "upstream_inference_cost": 0.019515,
+                    "upstream_inference_prompt_cost": 0.003725,
+                    "upstream_inference_completions_cost": 0.01579
+                  }
                 }
               },
-              "assumption_change": {
-                "label": "initial",
-                "changed_proposition": null,
-                "reason": "This is the first imaging decision; the acute abdominal pain syndrome and possible alternative pelvic source are inferred from the presentation and the choice of pelvic ultrasound."
-              },
-              "current_question": {
-                "primary": "Is there a pelvic or adnexal gynecologic source of this patient’s acute abdominal and right-lower-quadrant pain?",
-                "target": "pelvic organs (uterus, ovaries, adnexa, and adjacent pelvic structures)",
-                "type": "alternative_source",
-                "other_proposed_type": "",
-                "positive_answer_changes": "Identification of a pelvic/gynecologic lesion (e.g., ovarian cyst, torsion, adnexal mass, pelvic collection) would focus management on gynecologic or pelvic intervention rather than solely gastrointestinal causes.",
-                "negative_answer_changes": "If no significant pelvic or adnexal pathology is found, attention and further workup would shift toward non-gynecologic intra-abdominal sources such as appendiceal or gastrointestinal disease.",
-                "secondary_questions": [
-                  "Is there any fluid collection or pelvic free fluid that could indicate an acute inflammatory or hemorrhagic process?",
-                  "Are the uterus and ovaries structurally normal in size and morphology for this patient?"
-                ],
-                "answer_requirements": [
-                  {
-                    "requirement_key": "req_pelvis_visual",
-                    "id": "target_visualization_or_assessment",
-                    "other_proposed_dimension": "",
-                    "dimension": "Adequate sonographic visualization and assessment of the uterus, ovaries, adnexa, and pelvic cul-de-sac.",
-                    "why_required": "Determining whether a pelvic source exists requires that the pelvic organs and adjacent spaces be adequately imaged."
-                  },
-                  {
-                    "requirement_key": "req_adnexal_presence",
-                    "id": "presence_or_absence",
-                    "other_proposed_dimension": "",
-                    "dimension": "Presence or absence of focal adnexal or uterine abnormalities (e.g., masses, cysts, torsion signs, thickened or abnormal structures).",
-                    "why_required": "Focal lesions or abnormal morphology would support a gynecologic pelvic source of the acute pain."
-                  },
-                  {
-                    "requirement_key": "req_fluid_alt_source",
-                    "id": "alternative_source_discrimination",
-                    "other_proposed_dimension": "",
-                    "dimension": "Characterization of pelvic free fluid or collections and whether they support a gynecologic/pelvic versus other intra-abdominal source.",
-                    "why_required": "Fluid or collections may help discriminate a pelvic etiology (e.g., ruptured cyst, pelvic inflammatory process) from non-pelvic causes."
-                  }
-                ],
-                "evidence": [
-                  "Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)",
-                  "___ F w/ h/o HPylori s/p treatment 2 mos ago presents to the ED w/ acute onset abdominal pain, this AM.",
-                  "she now has RLQ pain as well"
-                ]
-              },
-              "question_continuity": "initial",
-              "coverage": {
-                "requirements": [
-                  {
-                    "requirement_key": "req_pelvis_visual",
-                    "requirement_id": "target_visualization_or_assessment",
-                    "status": "unaddressed",
-                    "direction": "no_direction",
-                    "supporting_evidence": [
-                      "Imaging resulted before this decision point (none)"
-                    ],
-                    "reason": "No prior imaging of the pelvis is documented, so visualization of pelvic organs has not yet been achieved."
-                  },
-                  {
-                    "requirement_key": "req_adnexal_presence",
-                    "requirement_id": "presence_or_absence",
-                    "status": "unaddressed",
-                    "direction": "no_direction",
-                    "supporting_evidence": [
-                      "Imaging resulted before this decision point (none)"
-                    ],
-                    "reason": "There is no imaging or other objective assessment of adnexal or uterine structural abnormalities before this order."
-                  },
-                  {
-                    "requirement_key": "req_fluid_alt_source",
-                    "requirement_id": "alternative_source_discrimination",
-                    "status": "unaddressed",
-                    "direction": "no_direction",
-                    "supporting_evidence": [
-                      "Imaging resulted before this decision point (none)"
-                    ],
-                    "reason": "No prior imaging is available to characterize pelvic free fluid or collections that might implicate a pelvic versus another intra-abdominal source."
-                  }
-                ],
-                "aggregate": "unanswered",
-                "aggregate_reason": "All pelvic-specific requirements remain unaddressed because no imaging of the pelvis has yet been obtained."
-              },
-              "current_order_fit": {
-                "test_question_capability": "capable",
-                "why_this_order_could_answer": "A non-obstetric pelvic ultrasound is well-suited to visualize the uterus, ovaries, adnexa, and pelvic free fluid, allowing assessment for gynecologic sources of acute abdominal/RLQ pain.",
-                "intent_support": "well_supported",
-                "unsupported_residual": "The chart does not explicitly state gynecologic symptoms (e.g., vaginal bleeding, discharge) or the patient’s exact age, so the specific strength of suspicion for pelvic versus appendiceal or other gastrointestinal sources remains uncertain."
-              },
-              "derived_transition": "initial",
-              "alternative_reconstruction": ""
+              "validation_errors": [
+                "first_step_derived_transition_not_initial"
+              ]
             },
-            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal pain syndrome with evolving right-lower-quadrant involvement and systemic symptoms requiring evaluation for intra-abdominal/pelvic pathology.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation/syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"presents to the ED w/ acute onset abdominal pain, this AM\",\n        \"she now has RLQ pain as well\",\n        \"She has had subjective fevers at home (not measured).\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gynecologic or pelvic pathology (e.g., ovarian or uterine/adnexal source) is a plausible cause of this patient’s acute abdominal/RLQ pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis element\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)\",\n        \"___ F w/ h/o HPylori s/p treatment 2 mos ago presents to the ED w/ acute onset abdominal pain\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Prior H. pylori gastritis and GERD-like symptoms raise concern for a possible upper abdominal/gastric source of pain, but do not fully explain new RLQ pain.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic factor\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"h/o HPylori s/p treatment 2 mos ago\",\n        \"She states  that her pain was initially similar to her previous GERD symptoms, although she now has RLQ pain as well.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the acute abdominal pain syndrome and possible alternative pelvic source are inferred from the presentation and the choice of pelvic ultrasound.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a pelvic or adnexal gynecologic source of this patient’s acute abdominal and right-lower-quadrant pain?\",\n    \"target\": \"pelvic organs (uterus, ovaries, adnexa, and adjacent pelvic structures)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identification of a pelvic/gynecologic lesion (e.g., ovarian cyst, torsion, adnexal mass, pelvic collection) would focus management on gynecologic or pelvic intervention rather than solely gastrointestinal causes.\",\n    \"negative_answer_changes\": \"If no significant pelvic or adnexal pathology is found, attention and further workup would shift toward non-gynecologic intra-abdominal sources such as appendiceal or gastrointestinal disease.\",\n    \"secondary_questions\": [\n      \"Is there any fluid collection or pelvic free fluid that could indicate an acute inflammatory or hemorrhagic process?\",\n      \"Are the uterus and ovaries structurally normal in size and morphology for this patient?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_pelvis_visual\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate sonographic visualization and assessment of the uterus, ovaries, adnexa, and pelvic cul-de-sac.\",\n        \"why_required\": \"Determining whether a pelvic source exists requires that the pelvic organs and adjacent spaces be adequately imaged.\"\n      },\n      {\n        \"requirement_key\": \"req_adnexal_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of focal adnexal or uterine abnormalities (e.g., masses, cysts, torsion signs, thickened or abnormal structures).\",\n        \"why_required\": \"Focal lesions or abnormal morphology would support a gynecologic pelvic source of the acute pain.\"\n      },\n      {\n        \"requirement_key\": \"req_fluid_alt_source\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of pelvic free fluid or collections and whether they support a gynecologic/pelvic versus other intra-abdominal source.\",\n        \"why_required\": \"Fluid or collections may help discriminate a pelvic etiology (e.g., ruptured cyst, pelvic inflammatory process) from non-pelvic causes.\"\n      }\n    ],\n    \"evidence\": [\n      \"Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)\",\n      \"___ F w/ h/o HPylori s/p treatment 2 mos ago presents to the ED w/ acute onset abdominal pain, this AM.\",\n      \"she now has RLQ pain as well\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_pelvis_visual\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"No prior imaging of the pelvis is documented, so visualization of pelvic organs has not yet been achieved.\"\n      },\n      {\n        \"requirement_key\": \"req_adnexal_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"There is no imaging or other objective assessment of adnexal or uterine structural abnormalities before this order.\"\n      },\n      {\n        \"requirement_key\": \"req_fluid_alt_source\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"No prior imaging is available to characterize pelvic free fluid or collections that might implicate a pelvic versus another intra-abdominal source.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All pelvic-specific requirements remain unaddressed because no imaging of the pelvis has yet been obtained.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A non-obstetric pelvic ultrasound is well-suited to visualize the uterus, ovaries, adnexa, and pelvic free fluid, allowing assessment for gynecologic sources of acute abdominal/RLQ pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly state gynecologic symptoms (e.g., vaginal bleeding, discharge) or the patient’s exact age, so the specific strength of suspicion for pelvic versus appendiceal or other gastrointestinal sources remains uncertain.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
-            "request_id": "gen-1788156942-VZ92hlntxSXWV58lrv1n",
-            "usage": {
-              "completion_tokens": 1700,
-              "prompt_tokens": 2980,
-              "total_tokens": 4680,
-              "completion_tokens_details": {
-                "accepted_prediction_tokens": null,
-                "audio_tokens": 0,
-                "reasoning_tokens": 0,
-                "rejected_prediction_tokens": null,
-                "text_tokens": null,
-                "image_tokens": 0
+            {
+              "attempt": 2,
+              "call": {
+                "parsed": {
+                  "assumptions": [
+                    {
+                      "proposition": "The patient has an acute abdominal pain syndrome with possible right-lower-quadrant involvement requiring evaluation for pelvic or appendiceal pathology.",
+                      "type": "syndrome_or_source_frame",
+                      "other_proposed_type": "",
+                      "level": "symptom complex / syndrome",
+                      "status": "suspected",
+                      "evidence": [
+                        "“presents to the ED w/ acute onset abdominal pain, this AM… primarily superior to her umbilicus… although she now has RLQ pain as well.”",
+                        "“associated nausea/vomiting… She has had subjective fevers at home (not measured).”"
+                      ],
+                      "support": "well_supported"
+                    },
+                    {
+                      "proposition": "A gynecologic or other pelvic source is a plausible cause of the patient’s abdominal and right-lower-quadrant pain.",
+                      "type": "alternative_source",
+                      "other_proposed_type": "",
+                      "level": "possible specific disease category / source of pain",
+                      "status": "suspected",
+                      "evidence": [
+                        "“now has RLQ pain as well.”",
+                        "Imaging order: “Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)”"
+                      ],
+                      "support": "weakly_supported"
+                    },
+                    {
+                      "proposition": "Non-gynecologic upper abdominal causes such as pancreatitis or hepatobiliary disease are less likely based on initial laboratory evaluation.",
+                      "type": "alternative_source",
+                      "other_proposed_type": "",
+                      "level": "competing causes within abdominal pain workup",
+                      "status": "challenged",
+                      "evidence": [
+                        "“Lipase: 29.0 IU/L (ref 0.0-60.0)”",
+                        "“Alanine Aminotransferase (ALT): 16.0 IU/L… Asparate Aminotransferase (AST): 27.0 IU/L… Bilirubin, Total: 0.3 mg/dL… Alkaline Phosphatase: 68.0 IU/L”"
+                      ],
+                      "support": "well_supported"
+                    }
+                  ],
+                  "previous_order_update": {
+                    "applicable": false,
+                    "previous_question": null,
+                    "study_adequacy": "not_applicable",
+                    "test_question_capability": "not_applicable",
+                    "result_status": "not_applicable",
+                    "effect_on_previous_question": "not_applicable",
+                    "discordance": {
+                      "label": "not_applicable",
+                      "evidence_stream_1": "",
+                      "evidence_stream_2": "",
+                      "reason": "First decision point; no prior imaging or question to compare."
+                    }
+                  },
+                  "assumption_change": {
+                    "label": "initial",
+                    "changed_proposition": null,
+                    "reason": "This is the first imaging decision; the abdominal pain syndrome and possible pelvic source are newly formulated from the presenting history, exam, labs, and chosen study."
+                  },
+                  "current_question": {
+                    "primary": "Is there a pelvic cause of this patient’s acute abdominal and right-lower-quadrant pain?",
+                    "target": "pelvic organs and adjacent structures (uterus, ovaries, adnexa, pelvic free fluid, and visualizable appendix region)",
+                    "type": "alternative_source",
+                    "other_proposed_type": "",
+                    "positive_answer_changes": "Would support a pelvic or gynecologic diagnosis (e.g., ovarian pathology, pelvic inflammatory process, or visible appendicitis) and direct management away from purely gastric/GERD explanations.",
+                    "negative_answer_changes": "Would make a pelvic source less likely and prompt consideration of other intra-abdominal or functional causes of pain.",
+                    "secondary_questions": [
+                      "Is there imaging evidence of appendicitis or periappendiceal inflammatory change explaining the RLQ pain?",
+                      "Is there pelvic free fluid or a mass that would indicate an acute gynecologic process?"
+                    ],
+                    "answer_requirements": [
+                      {
+                        "requirement_key": "req_vis",
+                        "id": "target_visualization_or_assessment",
+                        "other_proposed_dimension": "",
+                        "dimension": "Adequate visualization of uterus, ovaries/adnexa, pelvic cul-de-sac, and any portion of bowel/appendix accessible to pelvic ultrasound.",
+                        "why_required": "These structures must be seen well enough to determine whether a pelvic or appendiceal source of pain is present."
+                      },
+                      {
+                        "requirement_key": "req_pres",
+                        "id": "presence_or_absence",
+                        "other_proposed_dimension": "",
+                        "dimension": "Presence or absence of pelvic masses, ovarian cyst/torsion features, pelvic inflammatory changes, or free fluid suggesting a pelvic source.",
+                        "why_required": "Detecting or excluding an acute pelvic process is necessary to determine if the pelvis explains the symptoms."
+                      },
+                      {
+                        "requirement_key": "req_alt",
+                        "id": "alternative_source_discrimination",
+                        "other_proposed_dimension": "",
+                        "dimension": "Discrimination between a pelvic/gynecologic source versus non-pelvic causes of abdominal and RLQ pain.",
+                        "why_required": "The clinician must decide whether to focus management on a pelvic etiology versus continuing to search for another abdominal source."
+                      }
+                    ],
+                    "evidence": [
+                      "“presents to the ED w/ acute onset abdominal pain… primarily superior to her umbilicus… although she now has RLQ pain as well.”",
+                      "Order placed: “Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)”"
+                    ]
+                  },
+                  "question_continuity": "initial",
+                  "coverage": {
+                    "requirements": [
+                      {
+                        "requirement_key": "req_vis",
+                        "requirement_id": "target_visualization_or_assessment",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "No prior imaging listed: “Imaging resulted before this decision point (none)”"
+                        ],
+                        "reason": "No previous imaging has assessed visualization of the pelvic organs or appendix region."
+                      },
+                      {
+                        "requirement_key": "req_pres",
+                        "requirement_id": "presence_or_absence",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "Physical exam: “ABD: Soft, nondistended, nontender, no rebound or guarding, normoactive bowel sounds, no palpable masses”"
+                        ],
+                        "reason": "Physical exam alone does not establish presence or absence of internal pelvic pathology or appendicitis."
+                      },
+                      {
+                        "requirement_key": "req_alt",
+                        "requirement_id": "alternative_source_discrimination",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "“now has RLQ pain as well.”",
+                          "“Lipase: 29.0 IU/L… ALT: 16.0… AST: 27.0… Bilirubin, Total: 0.3 mg/dL”"
+                        ],
+                        "reason": "Laboratory tests reduce likelihood of some upper abdominal causes but do not distinguish pelvic from other lower abdominal sources; no prior imaging has adjudicated this."
+                      }
+                    ],
+                    "aggregate": "unanswered",
+                    "aggregate_reason": "No imaging had been performed, and exam/labs cannot adequately confirm or exclude a pelvic cause for the acute abdominal and RLQ pain."
+                  },
+                  "current_order_fit": {
+                    "test_question_capability": "capable",
+                    "why_this_order_could_answer": "A non-obstetric pelvic ultrasound can visualize pelvic organs, detect masses, torsion features, inflammatory changes, and free fluid, thereby identifying or excluding a pelvic source of pain.",
+                    "intent_support": "well_supported",
+                    "unsupported_residual": "The choice of pelvic ultrasound instead of, or prior to, a CT abdomen/pelvis for RLQ pain is not explicitly justified by age, reproductive status, or local protocol in the visible chart."
+                  },
+                  "derived_transition": "advance",
+                  "alternative_reconstruction": ""
+                },
+                "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal pain syndrome with possible right-lower-quadrant involvement requiring evaluation for pelvic or appendiceal pathology.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"symptom complex / syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“presents to the ED w/ acute onset abdominal pain, this AM… primarily superior to her umbilicus… although she now has RLQ pain as well.”\",\n        \"“associated nausea/vomiting… She has had subjective fevers at home (not measured).”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A gynecologic or other pelvic source is a plausible cause of the patient’s abdominal and right-lower-quadrant pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"possible specific disease category / source of pain\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“now has RLQ pain as well.”\",\n        \"Imaging order: “Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)”\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Non-gynecologic upper abdominal causes such as pancreatitis or hepatobiliary disease are less likely based on initial laboratory evaluation.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing causes within abdominal pain workup\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"“Lipase: 29.0 IU/L (ref 0.0-60.0)”\",\n        \"“Alanine Aminotransferase (ALT): 16.0 IU/L… Asparate Aminotransferase (AST): 27.0 IU/L… Bilirubin, Total: 0.3 mg/dL… Alkaline Phosphatase: 68.0 IU/L”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior imaging or question to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the abdominal pain syndrome and possible pelvic source are newly formulated from the presenting history, exam, labs, and chosen study.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a pelvic cause of this patient’s acute abdominal and right-lower-quadrant pain?\",\n    \"target\": \"pelvic organs and adjacent structures (uterus, ovaries, adnexa, pelvic free fluid, and visualizable appendix region)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would support a pelvic or gynecologic diagnosis (e.g., ovarian pathology, pelvic inflammatory process, or visible appendicitis) and direct management away from purely gastric/GERD explanations.\",\n    \"negative_answer_changes\": \"Would make a pelvic source less likely and prompt consideration of other intra-abdominal or functional causes of pain.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of appendicitis or periappendiceal inflammatory change explaining the RLQ pain?\",\n      \"Is there pelvic free fluid or a mass that would indicate an acute gynecologic process?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of uterus, ovaries/adnexa, pelvic cul-de-sac, and any portion of bowel/appendix accessible to pelvic ultrasound.\",\n        \"why_required\": \"These structures must be seen well enough to determine whether a pelvic or appendiceal source of pain is present.\"\n      },\n      {\n        \"requirement_key\": \"req_pres\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of pelvic masses, ovarian cyst/torsion features, pelvic inflammatory changes, or free fluid suggesting a pelvic source.\",\n        \"why_required\": \"Detecting or excluding an acute pelvic process is necessary to determine if the pelvis explains the symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Discrimination between a pelvic/gynecologic source versus non-pelvic causes of abdominal and RLQ pain.\",\n        \"why_required\": \"The clinician must decide whether to focus management on a pelvic etiology versus continuing to search for another abdominal source.\"\n      }\n    ],\n    \"evidence\": [\n      \"“presents to the ED w/ acute onset abdominal pain… primarily superior to her umbilicus… although she now has RLQ pain as well.”\",\n      \"Order placed: “Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior imaging listed: “Imaging resulted before this decision point (none)”\"\n        ],\n        \"reason\": \"No previous imaging has assessed visualization of the pelvic organs or appendix region.\"\n      },\n      {\n        \"requirement_key\": \"req_pres\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Physical exam: “ABD: Soft, nondistended, nontender, no rebound or guarding, normoactive bowel sounds, no palpable masses”\"\n        ],\n        \"reason\": \"Physical exam alone does not establish presence or absence of internal pelvic pathology or appendicitis.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“now has RLQ pain as well.”\",\n          \"“Lipase: 29.0 IU/L… ALT: 16.0… AST: 27.0… Bilirubin, Total: 0.3 mg/dL”\"\n        ],\n        \"reason\": \"Laboratory tests reduce likelihood of some upper abdominal causes but do not distinguish pelvic from other lower abdominal sources; no prior imaging has adjudicated this.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No imaging had been performed, and exam/labs cannot adequately confirm or exclude a pelvic cause for the acute abdominal and RLQ pain.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A non-obstetric pelvic ultrasound can visualize pelvic organs, detect masses, torsion features, inflammatory changes, and free fluid, thereby identifying or excluding a pelvic source of pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of pelvic ultrasound instead of, or prior to, a CT abdomen/pelvis for RLQ pain is not explicitly justified by age, reproductive status, or local protocol in the visible chart.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+                "request_id": "gen-1788156921-GEDRrEipBxpkQaQjhMyJ",
+                "usage": {
+                  "completion_tokens": 1759,
+                  "prompt_tokens": 2980,
+                  "total_tokens": 4739,
+                  "completion_tokens_details": {
+                    "accepted_prediction_tokens": null,
+                    "audio_tokens": 0,
+                    "reasoning_tokens": 0,
+                    "rejected_prediction_tokens": null,
+                    "text_tokens": null,
+                    "image_tokens": 0
+                  },
+                  "compute_units": null,
+                  "prompt_tokens_details": {
+                    "audio_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "cached_tokens": 2816,
+                    "image_tokens": null,
+                    "text_tokens": null,
+                    "video_tokens": 0
+                  },
+                  "cost": 0.018147,
+                  "is_byok": false,
+                  "cost_details": {
+                    "upstream_inference_cost": 0.018147,
+                    "upstream_inference_prompt_cost": 0.000557,
+                    "upstream_inference_completions_cost": 0.01759
+                  }
+                }
               },
-              "compute_units": null,
-              "prompt_tokens_details": {
-                "audio_tokens": 0,
-                "cache_write_tokens": 0,
-                "cached_tokens": 2816,
-                "image_tokens": null,
-                "text_tokens": null,
-                "video_tokens": 0
+              "validation_errors": [
+                "first_step_derived_transition_not_initial"
+              ]
+            },
+            {
+              "attempt": 3,
+              "call": {
+                "parsed": {
+                  "assumptions": [
+                    {
+                      "proposition": "The patient has an acute abdominal pain syndrome with evolving right-lower-quadrant involvement and systemic symptoms requiring evaluation for intra-abdominal/pelvic pathology.",
+                      "type": "syndrome_or_source_frame",
+                      "other_proposed_type": "",
+                      "level": "clinical presentation/syndrome",
+                      "status": "established",
+                      "evidence": [
+                        "presents to the ED w/ acute onset abdominal pain, this AM",
+                        "she now has RLQ pain as well",
+                        "She has had subjective fevers at home (not measured)."
+                      ],
+                      "support": "well_supported"
+                    },
+                    {
+                      "proposition": "Gynecologic or pelvic pathology (e.g., ovarian or uterine/adnexal source) is a plausible cause of this patient’s acute abdominal/RLQ pain.",
+                      "type": "alternative_source",
+                      "other_proposed_type": "",
+                      "level": "differential diagnosis element",
+                      "status": "suspected",
+                      "evidence": [
+                        "Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)",
+                        "___ F w/ h/o HPylori s/p treatment 2 mos ago presents to the ED w/ acute onset abdominal pain"
+                      ],
+                      "support": "weakly_supported"
+                    },
+                    {
+                      "proposition": "Prior H. pylori gastritis and GERD-like symptoms raise concern for a possible upper abdominal/gastric source of pain, but do not fully explain new RLQ pain.",
+                      "type": "etiology_or_mechanism",
+                      "other_proposed_type": "",
+                      "level": "etiologic factor",
+                      "status": "challenged",
+                      "evidence": [
+                        "h/o HPylori s/p treatment 2 mos ago",
+                        "She states  that her pain was initially similar to her previous GERD symptoms, although she now has RLQ pain as well."
+                      ],
+                      "support": "well_supported"
+                    }
+                  ],
+                  "previous_order_update": {
+                    "applicable": false,
+                    "previous_question": null,
+                    "study_adequacy": "not_applicable",
+                    "test_question_capability": "not_applicable",
+                    "result_status": "not_applicable",
+                    "effect_on_previous_question": "not_applicable",
+                    "discordance": {
+                      "label": "not_applicable",
+                      "evidence_stream_1": "",
+                      "evidence_stream_2": "",
+                      "reason": ""
+                    }
+                  },
+                  "assumption_change": {
+                    "label": "initial",
+                    "changed_proposition": null,
+                    "reason": "This is the first imaging decision; the acute abdominal pain syndrome and possible alternative pelvic source are inferred from the presentation and the choice of pelvic ultrasound."
+                  },
+                  "current_question": {
+                    "primary": "Is there a pelvic or adnexal gynecologic source of this patient’s acute abdominal and right-lower-quadrant pain?",
+                    "target": "pelvic organs (uterus, ovaries, adnexa, and adjacent pelvic structures)",
+                    "type": "alternative_source",
+                    "other_proposed_type": "",
+                    "positive_answer_changes": "Identification of a pelvic/gynecologic lesion (e.g., ovarian cyst, torsion, adnexal mass, pelvic collection) would focus management on gynecologic or pelvic intervention rather than solely gastrointestinal causes.",
+                    "negative_answer_changes": "If no significant pelvic or adnexal pathology is found, attention and further workup would shift toward non-gynecologic intra-abdominal sources such as appendiceal or gastrointestinal disease.",
+                    "secondary_questions": [
+                      "Is there any fluid collection or pelvic free fluid that could indicate an acute inflammatory or hemorrhagic process?",
+                      "Are the uterus and ovaries structurally normal in size and morphology for this patient?"
+                    ],
+                    "answer_requirements": [
+                      {
+                        "requirement_key": "req_pelvis_visual",
+                        "id": "target_visualization_or_assessment",
+                        "other_proposed_dimension": "",
+                        "dimension": "Adequate sonographic visualization and assessment of the uterus, ovaries, adnexa, and pelvic cul-de-sac.",
+                        "why_required": "Determining whether a pelvic source exists requires that the pelvic organs and adjacent spaces be adequately imaged."
+                      },
+                      {
+                        "requirement_key": "req_adnexal_presence",
+                        "id": "presence_or_absence",
+                        "other_proposed_dimension": "",
+                        "dimension": "Presence or absence of focal adnexal or uterine abnormalities (e.g., masses, cysts, torsion signs, thickened or abnormal structures).",
+                        "why_required": "Focal lesions or abnormal morphology would support a gynecologic pelvic source of the acute pain."
+                      },
+                      {
+                        "requirement_key": "req_fluid_alt_source",
+                        "id": "alternative_source_discrimination",
+                        "other_proposed_dimension": "",
+                        "dimension": "Characterization of pelvic free fluid or collections and whether they support a gynecologic/pelvic versus other intra-abdominal source.",
+                        "why_required": "Fluid or collections may help discriminate a pelvic etiology (e.g., ruptured cyst, pelvic inflammatory process) from non-pelvic causes."
+                      }
+                    ],
+                    "evidence": [
+                      "Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)",
+                      "___ F w/ h/o HPylori s/p treatment 2 mos ago presents to the ED w/ acute onset abdominal pain, this AM.",
+                      "she now has RLQ pain as well"
+                    ]
+                  },
+                  "question_continuity": "initial",
+                  "coverage": {
+                    "requirements": [
+                      {
+                        "requirement_key": "req_pelvis_visual",
+                        "requirement_id": "target_visualization_or_assessment",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "Imaging resulted before this decision point (none)"
+                        ],
+                        "reason": "No prior imaging of the pelvis is documented, so visualization of pelvic organs has not yet been achieved."
+                      },
+                      {
+                        "requirement_key": "req_adnexal_presence",
+                        "requirement_id": "presence_or_absence",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "Imaging resulted before this decision point (none)"
+                        ],
+                        "reason": "There is no imaging or other objective assessment of adnexal or uterine structural abnormalities before this order."
+                      },
+                      {
+                        "requirement_key": "req_fluid_alt_source",
+                        "requirement_id": "alternative_source_discrimination",
+                        "status": "unaddressed",
+                        "direction": "no_direction",
+                        "supporting_evidence": [
+                          "Imaging resulted before this decision point (none)"
+                        ],
+                        "reason": "No prior imaging is available to characterize pelvic free fluid or collections that might implicate a pelvic versus another intra-abdominal source."
+                      }
+                    ],
+                    "aggregate": "unanswered",
+                    "aggregate_reason": "All pelvic-specific requirements remain unaddressed because no imaging of the pelvis has yet been obtained."
+                  },
+                  "current_order_fit": {
+                    "test_question_capability": "capable",
+                    "why_this_order_could_answer": "A non-obstetric pelvic ultrasound is well-suited to visualize the uterus, ovaries, adnexa, and pelvic free fluid, allowing assessment for gynecologic sources of acute abdominal/RLQ pain.",
+                    "intent_support": "well_supported",
+                    "unsupported_residual": "The chart does not explicitly state gynecologic symptoms (e.g., vaginal bleeding, discharge) or the patient’s exact age, so the specific strength of suspicion for pelvic versus appendiceal or other gastrointestinal sources remains uncertain."
+                  },
+                  "derived_transition": "initial",
+                  "alternative_reconstruction": ""
+                },
+                "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal pain syndrome with evolving right-lower-quadrant involvement and systemic symptoms requiring evaluation for intra-abdominal/pelvic pathology.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation/syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"presents to the ED w/ acute onset abdominal pain, this AM\",\n        \"she now has RLQ pain as well\",\n        \"She has had subjective fevers at home (not measured).\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gynecologic or pelvic pathology (e.g., ovarian or uterine/adnexal source) is a plausible cause of this patient’s acute abdominal/RLQ pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis element\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)\",\n        \"___ F w/ h/o HPylori s/p treatment 2 mos ago presents to the ED w/ acute onset abdominal pain\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Prior H. pylori gastritis and GERD-like symptoms raise concern for a possible upper abdominal/gastric source of pain, but do not fully explain new RLQ pain.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic factor\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"h/o HPylori s/p treatment 2 mos ago\",\n        \"She states  that her pain was initially similar to her previous GERD symptoms, although she now has RLQ pain as well.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the acute abdominal pain syndrome and possible alternative pelvic source are inferred from the presentation and the choice of pelvic ultrasound.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a pelvic or adnexal gynecologic source of this patient’s acute abdominal and right-lower-quadrant pain?\",\n    \"target\": \"pelvic organs (uterus, ovaries, adnexa, and adjacent pelvic structures)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identification of a pelvic/gynecologic lesion (e.g., ovarian cyst, torsion, adnexal mass, pelvic collection) would focus management on gynecologic or pelvic intervention rather than solely gastrointestinal causes.\",\n    \"negative_answer_changes\": \"If no significant pelvic or adnexal pathology is found, attention and further workup would shift toward non-gynecologic intra-abdominal sources such as appendiceal or gastrointestinal disease.\",\n    \"secondary_questions\": [\n      \"Is there any fluid collection or pelvic free fluid that could indicate an acute inflammatory or hemorrhagic process?\",\n      \"Are the uterus and ovaries structurally normal in size and morphology for this patient?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_pelvis_visual\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate sonographic visualization and assessment of the uterus, ovaries, adnexa, and pelvic cul-de-sac.\",\n        \"why_required\": \"Determining whether a pelvic source exists requires that the pelvic organs and adjacent spaces be adequately imaged.\"\n      },\n      {\n        \"requirement_key\": \"req_adnexal_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of focal adnexal or uterine abnormalities (e.g., masses, cysts, torsion signs, thickened or abnormal structures).\",\n        \"why_required\": \"Focal lesions or abnormal morphology would support a gynecologic pelvic source of the acute pain.\"\n      },\n      {\n        \"requirement_key\": \"req_fluid_alt_source\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of pelvic free fluid or collections and whether they support a gynecologic/pelvic versus other intra-abdominal source.\",\n        \"why_required\": \"Fluid or collections may help discriminate a pelvic etiology (e.g., ruptured cyst, pelvic inflammatory process) from non-pelvic causes.\"\n      }\n    ],\n    \"evidence\": [\n      \"Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)\",\n      \"___ F w/ h/o HPylori s/p treatment 2 mos ago presents to the ED w/ acute onset abdominal pain, this AM.\",\n      \"she now has RLQ pain as well\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_pelvis_visual\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"No prior imaging of the pelvis is documented, so visualization of pelvic organs has not yet been achieved.\"\n      },\n      {\n        \"requirement_key\": \"req_adnexal_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"There is no imaging or other objective assessment of adnexal or uterine structural abnormalities before this order.\"\n      },\n      {\n        \"requirement_key\": \"req_fluid_alt_source\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"No prior imaging is available to characterize pelvic free fluid or collections that might implicate a pelvic versus another intra-abdominal source.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All pelvic-specific requirements remain unaddressed because no imaging of the pelvis has yet been obtained.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A non-obstetric pelvic ultrasound is well-suited to visualize the uterus, ovaries, adnexa, and pelvic free fluid, allowing assessment for gynecologic sources of acute abdominal/RLQ pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly state gynecologic symptoms (e.g., vaginal bleeding, discharge) or the patient’s exact age, so the specific strength of suspicion for pelvic versus appendiceal or other gastrointestinal sources remains uncertain.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+                "request_id": "gen-1788156942-VZ92hlntxSXWV58lrv1n",
+                "usage": {
+                  "completion_tokens": 1700,
+                  "prompt_tokens": 2980,
+                  "total_tokens": 4680,
+                  "completion_tokens_details": {
+                    "accepted_prediction_tokens": null,
+                    "audio_tokens": 0,
+                    "reasoning_tokens": 0,
+                    "rejected_prediction_tokens": null,
+                    "text_tokens": null,
+                    "image_tokens": 0
+                  },
+                  "compute_units": null,
+                  "prompt_tokens_details": {
+                    "audio_tokens": 0,
+                    "cache_write_tokens": 0,
+                    "cached_tokens": 2816,
+                    "image_tokens": null,
+                    "text_tokens": null,
+                    "video_tokens": 0
+                  },
+                  "cost": 0.017557,
+                  "is_byok": false,
+                  "cost_details": {
+                    "upstream_inference_cost": 0.017557,
+                    "upstream_inference_prompt_cost": 0.000557,
+                    "upstream_inference_completions_cost": 0.017
+                  }
+                }
               },
-              "cost": 0.017557,
-              "is_byok": false,
-              "cost_details": {
-                "upstream_inference_cost": 0.017557,
-                "upstream_inference_prompt_cost": 0.000557,
-                "upstream_inference_completions_cost": 0.017
-              }
+              "validation_errors": [
+                "assumption_0_bad_evidence_count"
+              ]
             }
-          },
+          ],
+          "accepted": null,
           "validation_errors": [
             "assumption_0_bad_evidence_count"
           ]
         }
-      ],
-      "accepted": null,
-      "validation_errors": [
-        "assumption_0_bad_evidence_count"
       ]
     }
   ]
