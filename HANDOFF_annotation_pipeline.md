@@ -10,6 +10,13 @@
 > 本文档是一次长对话的总结，作为下一个对话的执行context。
 > 配套memory: `~/.claude/.../memory/annotation_agent_design.md`（同一套设计的精简版）。
 
+> **2026-09-01 causal-masking correction（重要新发现）：** 本文早期把 raw CSV 的
+> `Patient History` 当作天然早于全部 recorded radiology orders 的纯 HPI，这是未经验证且已被
+> development 反例推翻的假设。该字段虽然语义上是 HPI/入院叙事，但可能在正式入院时回顾 ED
+> 中已经完成的影像，因而包含当前 decision image 的 preliminary/final findings。既有遮蔽只正确
+> 隐藏了结构化 `Radiology[].Report`，没有清理 HPI 中对同一结果的复述；因此本文 §3 的“地基已验证”
+> 只适用于结构化 radiology 顺序，不能再解释为端到端 causal snapshot 已验证。
+
 ---
 
 ## 0. 一句话目标
@@ -92,9 +99,42 @@
 
 ---
 
-## 3. 序列定义（本次讨论最终收敛，因果遮蔽地基已验证 ✅）
+## 3. 序列定义（结构化 radiology 遮蔽已验证；HPI 跨通道泄漏风险后续发现 ⚠️）
 
 **按用户思路：step 0 = HPI+PE+Lab 合并为起始步；之后只有腹部诊断影像才算 decision step。**
+
+### 2026-09-01 对 step 0 的关键修正
+
+原设计中的 `step 0` 是一个**目标定义**，但当前 `build_masked_view.py` 的实现直接把衍生 CSV
+整列 `Patient History` 复制为永久可见 baseline。`Patient History` 可以是 HPI，却不保证其每句话
+都写于当前影像 order 之前；尤其是入院 HPI 可以回顾正式入院前 ED 已完成的检查。于是：
+
+```text
+影像发生在正式入院前  ≠  影像结果在它自己的 order 之前已经可见
+```
+
+已确认的 development 反例：
+
+- `pancreatitis:26486125`：结构化首步 prior imaging 为 0，但 HPI 已复述当前 RUQ US 的 porta-hepatis
+  CBD dilation 和约 3.4 cm necrotic lymph node；与被遮蔽的当前 US 报告对应。
+- `cholecystitis:24115267`：结构化首步 prior imaging 为 0，但 HPI 已写 `Underwent RUQ US`，并复述
+  当前报告中的 stones/sludge、borderline wall thickening、pericholecystic fluid 和 negative Murphy。
+- `pancreatitis:29581468`：当前 decision 是 CT abdomen/pelvis；HPI 已写 `Normal pancreas on CT
+  abd/pelvis prelim read`，而结构化可见 prior imaging 只有 chest radiograph。
+
+旧 Mode-A prompt 也使用同一个 `build_record()`，其历史输出已经引用这些句子；当时的 extractive
+grounding 只验证“文字是否在输入中”，没有验证“文字是否在 order 前已存在”，所以没有发现。这不是
+新 A/Q/C prompt 或 prior A/Q/C 引入的问题，也不是 LLM hallucination，而是输入时间边界的跨通道漏洞。
+
+**可避免性与处理规则：** 衍生数据缺少 `Patient History` 对应的 note ID/charttime，因此仅靠当前文件
+无法完美逐句恢复 HPI 时间快照；这一部分是数据固有限制。但不应只依赖标注后的人工偶然发现：
+
+1. 发送模型前，对 HPI 与当前被遮蔽报告做同模态/关键 finding 重合筛查，命中即进入人工复核；
+2. 明确的当前结果复述不得进入该 decision 的 ex-ante baseline；无法可靠切分时，排除该 step/patient，
+   或用带 note/charttime 的 MIMIC 原始记录重建；
+3. 事后复核仍作为第二道防线，所有清理、排除或重标必须保留 provenance，不覆盖原始模型输出；
+4. prompt/version provenance 除 system prompt 与 schema hash 外，还必须记录 input-builder 版本、
+   causal-mask audit 版本和数据快照；现有 prompt hash 本身不覆盖这些内容。
 
 ```
 诊断决策序列 =

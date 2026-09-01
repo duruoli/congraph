@@ -1,0 +1,665 @@
+{
+  "schema_version": "2.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 21637050,
+  "source_path": "results/annotation_experiment/full/pancreatitis_21637050.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1",
+  "validator_version": "3.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "860ecf0e73ba97fb3261e89936e462f8b2bf74461f4d913df1bca285953a88de",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "860ecf0e73ba97fb3261e89936e462f8b2bf74461f4d913df1bca285953a88de",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis causing his epigastric pain and marked lipase elevation.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease",
+                  "status": "likely",
+                  "evidence": [
+                    "He initially presented ... with intermittent epigastric pain radiating to his throat as well as radiation to the left arm.",
+                    "lipase 700 ... Labes here notable for ___ < 0.01, lipase 931, WBC 26.7"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There may be a complication or alternative intra-abdominal source of inflammation or infection (e.g., necrotizing pancreatitis, abscess, perforation) contributing to severe leukocytosis and prior fevers.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "complication/alternative pathology",
+                  "status": "suspected",
+                  "evidence": [
+                    "after which he has been having increasing pain as well as intermittent fevers",
+                    "WBC 26.7"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Recent esophageal dilation with increasing pain and intermittent fevers raises concern for possible esophageal or upper GI perforation or other post-procedural complication.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "specific complication",
+                  "status": "suspected",
+                  "evidence": [
+                    "endoscopy one week ago for recurrent esophageal strictures, after which he has been having increasing pain as well as intermittent fevers"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Acute coronary syndrome is less likely given normal troponin on arrival and non-ischemic EKG, despite initial mild troponin elevation at the outside hospital.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "syndrome level",
+                  "status": "challenged",
+                  "evidence": [
+                    "___ labs notable for troponin 0.29",
+                    "Labes here notable for ___ < 0.01 ... EKG interpreted as SR @ 63, NA, NI, ?qII/aVL, no STE."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is no known prior abdominal imaging during this episode to define pancreatic morphology or other intra-abdominal pathology.",
+                  "type": "other",
+                  "other_proposed_type": "information_gap",
+                  "level": "contextual",
+                  "status": "established",
+                  "evidence": [
+                    "A CT chest/neck with contrast showed no acute abnormalities in either the neck or chest",
+                    "## Imaging resulted before this decision point (none)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point, so all assumptions are newly formulated from the baseline presentation, labs, and history."
+              },
+              "current_question": {
+                "primary": "What is the intra-abdominal cause and extent of this patient’s acute epigastric pain, marked hyperlipasemia, and leukocytosis, and are there complications of pancreatitis or recent upper GI instrumentation?",
+                "target": "pancreas and surrounding abdominal organs/tissues, including possible pancreatitis, necrosis, abscess, perforation, or other intra-abdominal pathology",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming pancreatitis and/or identifying a specific complication (necrosis, abscess, perforation, other focus) would guide need for ICU-level care, antibiotics, interventional radiology or surgical consultation, and de-emphasize ACS workup.",
+                "negative_answer_changes": "If CT shows no pancreatitis or other intra-abdominal pathology, clinicians would reconsider the diagnosis, search for non-abdominal causes of pain, and potentially re-prioritize cardiac or other evaluations.",
+                "secondary_questions": [
+                  "What is the severity and local extent of pancreatitis or other abdominal inflammatory process, if present?",
+                  "Is there any drainable collection, perforation, or other complication that would require procedural or surgical intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_visualize_abdomen",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the pancreas, surrounding retroperitoneum, and intra-abdominal organs with IV contrast.",
+                    "why_required": "Visualization is necessary to identify or exclude pancreatitis and other intra-abdominal pathology as the source of symptoms."
+                  },
+                  {
+                    "requirement_key": "req_pancreatitis_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of imaging features of acute pancreatitis (pancreatic enlargement, inflammation, peripancreatic stranding, fluid).",
+                    "why_required": "Determining whether pancreatitis is present will confirm the leading suspected diagnosis for the abdominal pain and hyperlipasemia."
+                  },
+                  {
+                    "requirement_key": "req_severity_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of pancreatitis or other inflammatory process, including necrosis, collections, or involvement of adjacent structures.",
+                    "why_required": "Severity and extent influence prognosis, level of monitoring, and whether advanced interventions are needed."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characteristics of complications such as peripancreatic or intra-abdominal abscess, pseudocyst, perforation, or other post-endoscopy complication.",
+                    "why_required": "Detecting complications guides need for antibiotics, drainage procedures, or surgery."
+                  },
+                  {
+                    "requirement_key": "req_alternative_source",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Detection of alternative intra-abdominal causes of pain and leukocytosis (e.g., bowel pathology, hepatobiliary disease, other inflammatory or infectious focus).",
+                    "why_required": "Identifying or excluding alternative abdominal sources will refine the diagnostic focus and subsequent management."
+                  }
+                ],
+                "evidence": [
+                  "He initially presented with intermittent epigastric pain radiating to his throat as well as radiation to the left arm.",
+                  "lipase 700 ... Labes here notable for ___ < 0.01, lipase 931, WBC 26.7"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_visualize_abdomen",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "No prior abdominal imaging has been performed during this episode, so the abdomen and pancreas have not yet been visualized."
+                  },
+                  {
+                    "requirement_key": "req_pancreatitis_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "lipase 700 ... Labes here notable for ___ < 0.01, lipase 931",
+                      "He initially presented with intermittent epigastric pain ... mild TTP in the epigastric area"
+                    ],
+                    "reason": "Clinical presentation and markedly elevated lipase strongly suggest pancreatitis, but imaging confirmation or exclusion has not yet occurred."
+                  },
+                  {
+                    "requirement_key": "req_severity_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Labes here notable for ___ < 0.01, lipase 931, WBC 26.7"
+                    ],
+                    "reason": "Laboratory values and exam imply systemic inflammation but do not define anatomic severity or extent of any pancreatic or intra-abdominal process."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "after which he has been having increasing pain as well as intermittent fevers",
+                      "WBC 26.7"
+                    ],
+                    "reason": "Symptoms and leukocytosis raise concern for complications, but there is no imaging evidence yet to confirm or characterize any such complication."
+                  },
+                  {
+                    "requirement_key": "req_alternative_source",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "A CT chest/neck with contrast showed no acute abnormalities in either the neck or chest",
+                      "ABDOMEN: +BS, soft, mild TTP in the epigastric area, ND, no rebound, no guarding"
+                    ],
+                    "reason": "Upper thoracic sources have been excluded by prior CT chest/neck and exam, but alternative intra-abdominal sources have not been evaluated by imaging."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Clinical data strongly suggest pancreatitis but do not confirm it radiologically, define its severity, or rule out abdominal complications or alternative sources."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis causing his epigastric pain and marked lipase elevation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"He initially presented ... with intermittent epigastric pain radiating to his throat as well as radiation to the left arm.\",\n        \"lipase 700 ... Labes here notable for ___ < 0.01, lipase 931, WBC 26.7\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There may be a complication or alternative intra-abdominal source of inflammation or infection (e.g., necrotizing pancreatitis, abscess, perforation) contributing to severe leukocytosis and prior fevers.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication/alternative pathology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"after which he has been having increasing pain as well as intermittent fevers\",\n        \"WBC 26.7\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Recent esophageal dilation with increasing pain and intermittent fevers raises concern for possible esophageal or upper GI perforation or other post-procedural complication.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"endoscopy one week ago for recurrent esophageal strictures, after which he has been having increasing pain as well as intermittent fevers\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Acute coronary syndrome is less likely given normal troponin on arrival and non-ischemic EKG, despite initial mild troponin elevation at the outside hospital.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome level\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"___ labs notable for troponin 0.29\",\n        \"Labes here notable for ___ < 0.01 ... EKG interpreted as SR @ 63, NA, NI, ?qII/aVL, no STE.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is no known prior abdominal imaging during this episode to define pancreatic morphology or other intra-abdominal pathology.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"information_gap\",\n      \"level\": \"contextual\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"A CT chest/neck with contrast showed no acute abnormalities in either the neck or chest\",\n        \"## Imaging resulted before this decision point (none)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point, so all assumptions are newly formulated from the baseline presentation, labs, and history.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the intra-abdominal cause and extent of this patient’s acute epigastric pain, marked hyperlipasemia, and leukocytosis, and are there complications of pancreatitis or recent upper GI instrumentation?\",\n    \"target\": \"pancreas and surrounding abdominal organs/tissues, including possible pancreatitis, necrosis, abscess, perforation, or other intra-abdominal pathology\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming pancreatitis and/or identifying a specific complication (necrosis, abscess, perforation, other focus) would guide need for ICU-level care, antibiotics, interventional radiology or surgical consultation, and de-emphasize ACS workup.\",\n    \"negative_answer_changes\": \"If CT shows no pancreatitis or other intra-abdominal pathology, clinicians would reconsider the diagnosis, search for non-abdominal causes of pain, and potentially re-prioritize cardiac or other evaluations.\",\n    \"secondary_questions\": [\n      \"What is the severity and local extent of pancreatitis or other abdominal inflammatory process, if present?\",\n      \"Is there any drainable collection, perforation, or other complication that would require procedural or surgical intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_abdomen\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the pancreas, surrounding retroperitoneum, and intra-abdominal organs with IV contrast.\",\n        \"why_required\": \"Visualization is necessary to identify or exclude pancreatitis and other intra-abdominal pathology as the source of symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreatitis_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of imaging features of acute pancreatitis (pancreatic enlargement, inflammation, peripancreatic stranding, fluid).\",\n        \"why_required\": \"Determining whether pancreatitis is present will confirm the leading suspected diagnosis for the abdominal pain and hyperlipasemia.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of pancreatitis or other inflammatory process, including necrosis, collections, or involvement of adjacent structures.\",\n        \"why_required\": \"Severity and extent influence prognosis, level of monitoring, and whether advanced interventions are needed.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characteristics of complications such as peripancreatic or intra-abdominal abscess, pseudocyst, perforation, or other post-endoscopy complication.\",\n        \"why_required\": \"Detecting complications guides need for antibiotics, drainage procedures, or surgery.\"\n      },\n      {\n        \"requirement_key\": \"req_alternative_source\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Detection of alternative intra-abdominal causes of pain and leukocytosis (e.g., bowel pathology, hepatobiliary disease, other inflammatory or infectious focus).\",\n        \"why_required\": \"Identifying or excluding alternative abdominal sources will refine the diagnostic focus and subsequent management.\"\n      }\n    ],\n    \"evidence\": [\n      \"He initially presented with intermittent epigastric pain radiating to his throat as well as radiation to the left arm.\",\n      \"lipase 700 ... Labes here notable for ___ < 0.01, lipase 931, WBC 26.7\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_abdomen\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior abdominal imaging has been performed during this episode, so the abdomen and pancreas have not yet been visualized.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreatitis_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"lipase 700 ... Labes here notable for ___ < 0.01, lipase 931\",\n          \"He initially presented with intermittent epigastric pain ... mild TTP in the epigastric area\"\n        ],\n        \"reason\": \"Clinical presentation and markedly elevated lipase strongly suggest pancreatitis, but imaging confirmation or exclusion has not yet occurred.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Labes here notable for ___ < 0.01, lipase 931, WBC 26.7\"\n        ],\n        \"reason\": \"Laboratory values and exam imply systemic inflammation but do not define anatomic severity or extent of any pancreatic or intra-abdominal process.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"after which he has been having increasing pain as well as intermittent fevers\",\n          \"WBC 26.7\"\n        ],\n        \"reason\": \"Symptoms and leukocytosis raise concern for complications, but there is no imaging evidence yet to confirm or characterize any such complication.\"\n      },\n      {\n        \"requirement_key\": \"req_alternative_source\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"A CT chest/neck with contrast showed no acute abnormalities in either the neck or chest\",\n          \"ABDOMEN: +BS, soft, mild TTP in the epigastric area, ND, no rebound, no guarding\"\n        ],\n        \"reason\": \"Upper thoracic sources have been excluded by prior CT chest/neck and exam, but alternative intra-abdominal sources have not been evaluated by imaging.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Clinical data strongly suggest pancreatitis but do not confirm it radiologically, define its severity, or rule out abdominal complications or alternative sources.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788236994-6dNPjmj8L1ksQY2YJZmI",
+            "usage": {
+              "completion_tokens": 2330,
+              "prompt_tokens": 3734,
+              "total_tokens": 6064,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0279675,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0279675,
+                "upstream_inference_prompt_cost": 0.0046675,
+                "upstream_inference_completions_cost": 0.0233
+              }
+            }
+          },
+          "validation_errors": [
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "d5363cd639f0d863cf66a2adc3473bfed333995b9c32652167a0e2e998f83881",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient’s epigastric pain with markedly elevated lipase and leukocytosis represents acute pancreatitis rather than acute coronary syndrome.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "He initially presented with intermittent epigastric pain radiating to his throat as well as radiation to the left arm.",
+                    "___ labs notable for troponin 0.29, lipase 700, WBC 23.8 ... Labes here notable for ___ < 0.01, lipase 931, WBC 26.7"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is concern for a serious intra-abdominal or peripancreatic complication such as necrosis, collection, or other source of sepsis given very high WBC and recent endoscopy.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "disease complication",
+                  "status": "suspected",
+                  "evidence": [
+                    "after which he has been having increasing pain as well as intermittent fevers",
+                    "Labes here notable for ___ < 0.01, lipase 931, WBC 26.7"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The recent esophageal dilation could have caused an iatrogenic injury (e.g., perforation or mediastinal/upper abdominal process) that might contribute to current symptoms and leukocytosis.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "His history is notable for an endoscopy one week ago for recurrent esophageal strictures, after which he has been having increasing pain as well as intermittent fevers",
+                    "A CT chest/neck with contrast showed no acute abnormalities in either the neck or chest"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "An acute myocardial infarction is currently unlikely despite initial outside troponin elevation.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific diagnosis",
+                  "status": "challenged",
+                  "evidence": [
+                    "EKG interpreted as SR @ 63, NA, NI, ?qII/aVL, no STE.",
+                    "Labes here notable for ___ < 0.01"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is hemodynamically stable without peritoneal signs, so any intra-abdominal pathology is not obviously catastrophic at presentation.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "severity of illness",
+                  "status": "established",
+                  "evidence": [
+                    "Vital prior to transfer: 97.4 63 139/80 19 97%",
+                    "ABDOMEN: +BS, soft, mild TTP in the epigastric area, ND, no rebound, no guarding"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision point, so baseline assumptions are being established."
+              },
+              "current_question": {
+                "primary": "Is there imaging evidence of acute pancreatitis or another intra-abdominal process explaining the epigastric pain, lipase elevation, and leukocytosis, and are there any complications requiring specific management?",
+                "target": "pancreas and surrounding abdominal organs/structures",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming pancreatitis or another intra-abdominal source would shift management toward treating that condition and away from invasive cardiac evaluation.",
+                "negative_answer_changes": "If no intra-abdominal source is found, clinicians would reconsider alternative diagnoses such as non-pancreatic causes of pain and potentially revisit cardiac or other sources.",
+                "secondary_questions": [
+                  "Are there local complications of pancreatitis such as necrosis, fluid collections, or abscess?",
+                  "Is there any other acute abdominal pathology (e.g., perforation, obstruction, ischemia) that could explain the pain and leukocytosis?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_pancreas_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization of the pancreas for signs of acute inflammation or other pathology",
+                    "why_required": "Assessing the pancreas directly is necessary to confirm or refute acute pancreatitis as the source of symptoms."
+                  },
+                  {
+                    "requirement_key": "req_inflammatory_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of imaging features of acute pancreatitis or other intra-abdominal inflammatory pathology",
+                    "why_required": "Determining whether there is an acute inflammatory process explains the lipase elevation and leukocytosis and guides treatment."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of complications such as peripancreatic fluid collections, necrosis, abscess, or perforation",
+                    "why_required": "Complications alter prognosis and may require interventional radiology, surgery, or ICU-level care."
+                  },
+                  {
+                    "requirement_key": "req_alt_abdominal_source",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Identification of alternative abdominal sources of pain and sepsis (e.g., bowel pathology, biliary issues post-cholecystectomy, post-endoscopy injury extending into abdomen)",
+                    "why_required": "If pancreatitis is absent or insufficient to explain illness, other abdominal causes must be found or excluded."
+                  }
+                ],
+                "evidence": [
+                  "He initially presented with intermittent epigastric pain radiating to his throat as well as radiation to the left arm.",
+                  "Labes here notable for ___ < 0.01, lipase 931, WBC 26.7"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_pancreas_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "(none)"
+                    ],
+                    "reason": "No prior abdominal imaging is documented, so the pancreas has not yet been visualized."
+                  },
+                  {
+                    "requirement_key": "req_inflammatory_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "___ labs notable for troponin 0.29, lipase 700, WBC 23.8 ... Labes here notable for ___ < 0.01, lipase 931, WBC 26.7"
+                    ],
+                    "reason": "Laboratory abnormalities strongly suggest inflammation consistent with pancreatitis, but imaging confirmation or exclusion is lacking."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "ABDOMEN: +BS, soft, mild TTP in the epigastric area, ND, no rebound, no guarding"
+                    ],
+                    "reason": "Physical exam does not show peritonitis but cannot exclude deeper complications; no imaging has characterized complications."
+                  },
+                  {
+                    "requirement_key": "req_alt_abdominal_source",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "His history is notable for an endoscopy one week ago for recurrent esophageal strictures, after which he has been having increasing pain as well as intermittent fevers"
+                    ],
+                    "reason": "Non-abdominal CT (chest/neck) was normal above the diaphragm, but no imaging has evaluated abdominal organs for alternative sources."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Laboratory and clinical data suggest but do not confirm pancreatitis or its complications, and no prior abdominal imaging directly addresses the question."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient’s epigastric pain with markedly elevated lipase and leukocytosis represents acute pancreatitis rather than acute coronary syndrome.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"He initially presented with intermittent epigastric pain radiating to his throat as well as radiation to the left arm.\",\n        \"___ labs notable for troponin 0.29, lipase 700, WBC 23.8 ... Labes here notable for ___ < 0.01, lipase 931, WBC 26.7\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is concern for a serious intra-abdominal or peripancreatic complication such as necrosis, collection, or other source of sepsis given very high WBC and recent endoscopy.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"after which he has been having increasing pain as well as intermittent fevers\",\n        \"Labes here notable for ___ < 0.01, lipase 931, WBC 26.7\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The recent esophageal dilation could have caused an iatrogenic injury (e.g., perforation or mediastinal/upper abdominal process) that might contribute to current symptoms and leukocytosis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"His history is notable for an endoscopy one week ago for recurrent esophageal strictures, after which he has been having increasing pain as well as intermittent fevers\",\n        \"A CT chest/neck with contrast showed no acute abnormalities in either the neck or chest\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"An acute myocardial infarction is currently unlikely despite initial outside troponin elevation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnosis\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"EKG interpreted as SR @ 63, NA, NI, ?qII/aVL, no STE.\",\n        \"Labes here notable for ___ < 0.01\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is hemodynamically stable without peritoneal signs, so any intra-abdominal pathology is not obviously catastrophic at presentation.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity of illness\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Vital prior to transfer: 97.4 63 139/80 19 97%\",\n        \"ABDOMEN: +BS, soft, mild TTP in the epigastric area, ND, no rebound, no guarding\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision point, so baseline assumptions are being established.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there imaging evidence of acute pancreatitis or another intra-abdominal process explaining the epigastric pain, lipase elevation, and leukocytosis, and are there any complications requiring specific management?\",\n    \"target\": \"pancreas and surrounding abdominal organs/structures\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming pancreatitis or another intra-abdominal source would shift management toward treating that condition and away from invasive cardiac evaluation.\",\n    \"negative_answer_changes\": \"If no intra-abdominal source is found, clinicians would reconsider alternative diagnoses such as non-pancreatic causes of pain and potentially revisit cardiac or other sources.\",\n    \"secondary_questions\": [\n      \"Are there local complications of pancreatitis such as necrosis, fluid collections, or abscess?\",\n      \"Is there any other acute abdominal pathology (e.g., perforation, obstruction, ischemia) that could explain the pain and leukocytosis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_pancreas_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of the pancreas for signs of acute inflammation or other pathology\",\n        \"why_required\": \"Assessing the pancreas directly is necessary to confirm or refute acute pancreatitis as the source of symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_inflammatory_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of imaging features of acute pancreatitis or other intra-abdominal inflammatory pathology\",\n        \"why_required\": \"Determining whether there is an acute inflammatory process explains the lipase elevation and leukocytosis and guides treatment.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as peripancreatic fluid collections, necrosis, abscess, or perforation\",\n        \"why_required\": \"Complications alter prognosis and may require interventional radiology, surgery, or ICU-level care.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_abdominal_source\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification of alternative abdominal sources of pain and sepsis (e.g., bowel pathology, biliary issues post-cholecystectomy, post-endoscopy injury extending into abdomen)\",\n        \"why_required\": \"If pancreatitis is absent or insufficient to explain illness, other abdominal causes must be found or excluded.\"\n      }\n    ],\n    \"evidence\": [\n      \"He initially presented with intermittent epigastric pain radiating to his throat as well as radiation to the left arm.\",\n      \"Labes here notable for ___ < 0.01, lipase 931, WBC 26.7\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_pancreas_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"(none)\"\n        ],\n        \"reason\": \"No prior abdominal imaging is documented, so the pancreas has not yet been visualized.\"\n      },\n      {\n        \"requirement_key\": \"req_inflammatory_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"___ labs notable for troponin 0.29, lipase 700, WBC 23.8 ... Labes here notable for ___ < 0.01, lipase 931, WBC 26.7\"\n        ],\n        \"reason\": \"Laboratory abnormalities strongly suggest inflammation consistent with pancreatitis, but imaging confirmation or exclusion is lacking.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"ABDOMEN: +BS, soft, mild TTP in the epigastric area, ND, no rebound, no guarding\"\n        ],\n        \"reason\": \"Physical exam does not show peritonitis but cannot exclude deeper complications; no imaging has characterized complications.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_abdominal_source\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"His history is notable for an endoscopy one week ago for recurrent esophageal strictures, after which he has been having increasing pain as well as intermittent fevers\"\n        ],\n        \"reason\": \"Non-abdominal CT (chest/neck) was normal above the diaphragm, but no imaging has evaluated abdominal organs for alternative sources.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Laboratory and clinical data suggest but do not confirm pancreatitis or its complications, and no prior abdominal imaging directly addresses the question.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788237020-HCTjoIuZ4kiMEXQmOjPE",
+            "usage": {
+              "completion_tokens": 2089,
+              "prompt_tokens": 3770,
+              "total_tokens": 5859,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3584,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0215705,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0215705,
+                "upstream_inference_prompt_cost": 0.0006805,
+                "upstream_inference_completions_cost": 0.02089
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient’s epigastric pain with markedly elevated lipase and leukocytosis represents acute pancreatitis rather than acute coronary syndrome.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific diagnosis",
+            "status": "likely",
+            "evidence": [
+              "He initially presented with intermittent epigastric pain radiating to his throat as well as radiation to the left arm.",
+              "___ labs notable for troponin 0.29, lipase 700, WBC 23.8 ... Labes here notable for ___ < 0.01, lipase 931, WBC 26.7"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is concern for a serious intra-abdominal or peripancreatic complication such as necrosis, collection, or other source of sepsis given very high WBC and recent endoscopy.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "disease complication",
+            "status": "suspected",
+            "evidence": [
+              "after which he has been having increasing pain as well as intermittent fevers",
+              "Labes here notable for ___ < 0.01, lipase 931, WBC 26.7"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The recent esophageal dilation could have caused an iatrogenic injury (e.g., perforation or mediastinal/upper abdominal process) that might contribute to current symptoms and leukocytosis.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism",
+            "status": "suspected",
+            "evidence": [
+              "His history is notable for an endoscopy one week ago for recurrent esophageal strictures, after which he has been having increasing pain as well as intermittent fevers",
+              "A CT chest/neck with contrast showed no acute abnormalities in either the neck or chest"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "An acute myocardial infarction is currently unlikely despite initial outside troponin elevation.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific diagnosis",
+            "status": "challenged",
+            "evidence": [
+              "EKG interpreted as SR @ 63, NA, NI, ?qII/aVL, no STE.",
+              "Labes here notable for ___ < 0.01"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is hemodynamically stable without peritoneal signs, so any intra-abdominal pathology is not obviously catastrophic at presentation.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "severity of illness",
+            "status": "established",
+            "evidence": [
+              "Vital prior to transfer: 97.4 63 139/80 19 97%",
+              "ABDOMEN: +BS, soft, mild TTP in the epigastric area, ND, no rebound, no guarding"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision point, so baseline assumptions are being established."
+        },
+        "current_question": {
+          "primary": "Is there imaging evidence of acute pancreatitis or another intra-abdominal process explaining the epigastric pain, lipase elevation, and leukocytosis, and are there any complications requiring specific management?",
+          "target": "pancreas and surrounding abdominal organs/structures",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming pancreatitis or another intra-abdominal source would shift management toward treating that condition and away from invasive cardiac evaluation.",
+          "negative_answer_changes": "If no intra-abdominal source is found, clinicians would reconsider alternative diagnoses such as non-pancreatic causes of pain and potentially revisit cardiac or other sources.",
+          "secondary_questions": [
+            "Are there local complications of pancreatitis such as necrosis, fluid collections, or abscess?",
+            "Is there any other acute abdominal pathology (e.g., perforation, obstruction, ischemia) that could explain the pain and leukocytosis?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_pancreas_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization of the pancreas for signs of acute inflammation or other pathology",
+              "why_required": "Assessing the pancreas directly is necessary to confirm or refute acute pancreatitis as the source of symptoms."
+            },
+            {
+              "requirement_key": "req_inflammatory_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of imaging features of acute pancreatitis or other intra-abdominal inflammatory pathology",
+              "why_required": "Determining whether there is an acute inflammatory process explains the lipase elevation and leukocytosis and guides treatment."
+            },
+            {
+              "requirement_key": "req_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of complications such as peripancreatic fluid collections, necrosis, abscess, or perforation",
+              "why_required": "Complications alter prognosis and may require interventional radiology, surgery, or ICU-level care."
+            },
+            {
+              "requirement_key": "req_alt_abdominal_source",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Identification of alternative abdominal sources of pain and sepsis (e.g., bowel pathology, biliary issues post-cholecystectomy, post-endoscopy injury extending into abdomen)",
+              "why_required": "If pancreatitis is absent or insufficient to explain illness, other abdominal causes must be found or excluded."
+            }
+          ],
+          "evidence": [
+            "He initially presented with intermittent epigastric pain radiating to his throat as well as radiation to the left arm.",
+            "Labes here notable for ___ < 0.01, lipase 931, WBC 26.7"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_pancreas_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "(none)"
+              ],
+              "reason": "No prior abdominal imaging is documented, so the pancreas has not yet been visualized."
+            },
+            {
+              "requirement_key": "req_inflammatory_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "___ labs notable for troponin 0.29, lipase 700, WBC 23.8 ... Labes here notable for ___ < 0.01, lipase 931, WBC 26.7"
+              ],
+              "reason": "Laboratory abnormalities strongly suggest inflammation consistent with pancreatitis, but imaging confirmation or exclusion is lacking."
+            },
+            {
+              "requirement_key": "req_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "ABDOMEN: +BS, soft, mild TTP in the epigastric area, ND, no rebound, no guarding"
+              ],
+              "reason": "Physical exam does not show peritonitis but cannot exclude deeper complications; no imaging has characterized complications."
+            },
+            {
+              "requirement_key": "req_alt_abdominal_source",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "His history is notable for an endoscopy one week ago for recurrent esophageal strictures, after which he has been having increasing pain as well as intermittent fevers"
+              ],
+              "reason": "Non-abdominal CT (chest/neck) was normal above the diaphragm, but no imaging has evaluated abdominal organs for alternative sources."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Laboratory and clinical data suggest but do not confirm pancreatitis or its complications, and no prior abdominal imaging directly addresses the question."
+        },
+        "current_order_fit": {
+          "question_grounding": "well_supported",
+          "test_question_capability": "capable"
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

@@ -1,0 +1,1072 @@
+{
+  "schema_version": "2.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 29962257,
+  "source_path": "results/annotation_experiment/full/appendicitis_29962257.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1",
+  "validator_version": "3.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (ABDOMEN U.S. (COMPLETE STUDY))",
+      "request_prompt_sha256": "4eac137502c2b87de2699b6372b85295d090d1ba67baaf9b33f5801b6793bcda",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "4eac137502c2b87de2699b6372b85295d090d1ba67baaf9b33f5801b6793bcda",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The pregnant patient’s intermittent right-sided greater than left abdominal cramping represents a possible non-obstetric acute abdomen such as biliary disease or appendicitis rather than normal pregnancy discomfort alone.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome (abdominal pain in pregnancy with possible surgical cause)",
+                  "status": "suspected",
+                  "evidence": [
+                    "___ yo G3P0 at ___ presents with diffuse abd cramping, R>L. Has  had this since last night.",
+                    "White Blood Cells: 15.5 K/uL (ref 4.0-11.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Biliary pathology (e.g., cholelithiasis or cholecystitis) is a possible cause of the patient’s right upper quadrant abdominal tenderness.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease possibility",
+                  "status": "suspected",
+                  "evidence": [
+                    "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G",
+                    "Asparate Aminotransferase (AST): 52.0 IU/L (ref 0.0-40.0)"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Appendicitis or other right lower quadrant surgical pathology is a possible cause of symptoms despite minimal tenderness.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease possibility",
+                  "status": "suspected",
+                  "evidence": [
+                    "___ presents with diffuse abd cramping, R>L.",
+                    "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Obstetric complications such as preterm labor or abruption are less likely given closed internal os and lack of vaginal bleeding or fluid loss, but cannot be fully excluded.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "broad complication category",
+                  "status": "challenged",
+                  "evidence": [
+                    "No VB, no LOF, +AFM.",
+                    "SVE: ext os 1 cm dilated, long, int os closed"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Urinary tract infection is a possible concurrent issue but is not clearly the primary cause of the abdominal pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease possibility",
+                  "status": "suspected",
+                  "evidence": [
+                    "Leukocytes: MOD.",
+                    "WBC: 6.0 #/hpf (ref 0.0-5.0)"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision point, so all assumptions are newly formulated from the presenting history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "What is the cause of this pregnant patient’s right-sided abdominal pain, and is there biliary, hepatic, or other upper abdominal pathology that explains her symptoms?",
+                "target": "hepatobiliary and upper abdominal organs as potential sources of acute abdominal pain in pregnancy",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming a hepatobiliary or other upper abdominal source (e.g., cholelithiasis, cholecystitis, hepatic pathology) would prompt non-obstetric management such as surgical or gastroenterology consultation and guide analgesia and monitoring.",
+                "negative_answer_changes": "If no significant hepatobiliary or upper abdominal pathology is found, attention would shift toward alternative causes such as appendicitis, urinary, or primarily obstetric etiologies and might reduce the urgency for surgical intervention focused on the RUQ.",
+                "secondary_questions": [
+                  "Is there sonographic evidence of appendicitis or other significant right lower quadrant pathology in the visualized field?",
+                  "Are there any secondary signs of complications such as free fluid in the abdomen?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate sonographic visualization of the liver, gallbladder and biliary tree, pancreas, kidneys, and other major upper abdominal structures.",
+                    "why_required": "Determining whether these organs are well seen is necessary before concluding whether they harbor pathology causing the pain."
+                  },
+                  {
+                    "requirement_key": "req_biliary",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones, gallbladder wall thickening, pericholecystic fluid, or biliary ductal dilatation.",
+                    "why_required": "These findings would establish or refute biliary disease as a source of the right-sided abdominal pain."
+                  },
+                  {
+                    "requirement_key": "req_appendix",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of an abnormal appendix or clear right lower quadrant inflammatory process if visualized on the abdominal study.",
+                    "why_required": "Appendicitis is an important alternative cause of right-sided abdominal pain in pregnancy and would change management toward urgent surgical evaluation."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, absence, and character of free intraperitoneal fluid or other signs of complicated intra-abdominal pathology.",
+                    "why_required": "Detecting free fluid or complications would influence the urgency and type of intervention needed."
+                  }
+                ],
+                "evidence": [
+                  "___ yo G3P0 at ___ presents with diffuse abd cramping, R>L. Has  had this since last night.",
+                  "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      ""
+                    ],
+                    "reason": "No prior abdominal imaging is documented, so there is no information on visualization of hepatobiliary or other upper abdominal structures."
+                  },
+                  {
+                    "requirement_key": "req_biliary",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Asparate Aminotransferase (AST): 52.0 IU/L (ref 0.0-40.0)"
+                    ],
+                    "reason": "Mild AST elevation and RUQ tenderness suggest but do not confirm biliary disease; imaging evidence of gallbladder or biliary pathology is absent."
+                  },
+                  {
+                    "requirement_key": "req_appendix",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G"
+                    ],
+                    "reason": "Clinical exam shows minimal RLQ tenderness but does not establish or exclude appendicitis, and there is no prior imaging of the appendix or RLQ."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G"
+                    ],
+                    "reason": "The soft abdomen without guarding argues against gross peritonitis but cannot assess for subtle free fluid or intra-abdominal complications without imaging."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "No prior imaging has been performed, so all key aspects of identifying or excluding abdominal organ pathology remain unaddressed."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "remedy",
+              "alternative_reconstruction": "An alternative view is that the primary concern was simply to screen broadly for any non-obstetric cause of abdominal pain in pregnancy without a strong prior focus on hepatobiliary disease. In that account, assumptions would emphasize that obstetric causes like preterm labor appear less likely given a closed internal os and no bleeding or fluid loss, and that the leukocytosis and right-sided discomfort raise a nonspecific concern for any surgical abdomen. The main question would then be: \"Is there any significant non-obstetric intra-abdominal pathology (hepatic, biliary, renal, pancreatic, or free fluid) that explains the pain and leukocytosis?\" Answer requirements would similarly include adequate visualization of major abdominal organs and detection of any focal pathology or free fluid, but without singling out biliary disease or appendicitis as specific leading differentials. Coverage would remain entirely unaddressed pre-imaging, and a complete abdominal ultrasound would still be an appropriate first-line, radiation-free modality in pregnancy to begin answering this broader question."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The pregnant patient’s intermittent right-sided greater than left abdominal cramping represents a possible non-obstetric acute abdomen such as biliary disease or appendicitis rather than normal pregnancy discomfort alone.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome (abdominal pain in pregnancy with possible surgical cause)\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"___ yo G3P0 at ___ presents with diffuse abd cramping, R>L. Has  had this since last night.\",\n        \"White Blood Cells: 15.5 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary pathology (e.g., cholelithiasis or cholecystitis) is a possible cause of the patient’s right upper quadrant abdominal tenderness.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease possibility\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G\",\n        \"Asparate Aminotransferase (AST): 52.0 IU/L (ref 0.0-40.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Appendicitis or other right lower quadrant surgical pathology is a possible cause of symptoms despite minimal tenderness.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease possibility\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"___ presents with diffuse abd cramping, R>L.\",\n        \"ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Obstetric complications such as preterm labor or abruption are less likely given closed internal os and lack of vaginal bleeding or fluid loss, but cannot be fully excluded.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"broad complication category\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"No VB, no LOF, +AFM.\",\n        \"SVE: ext os 1 cm dilated, long, int os closed\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Urinary tract infection is a possible concurrent issue but is not clearly the primary cause of the abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease possibility\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Leukocytes: MOD.\",\n        \"WBC: 6.0 #/hpf (ref 0.0-5.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision point, so all assumptions are newly formulated from the presenting history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the cause of this pregnant patient’s right-sided abdominal pain, and is there biliary, hepatic, or other upper abdominal pathology that explains her symptoms?\",\n    \"target\": \"hepatobiliary and upper abdominal organs as potential sources of acute abdominal pain in pregnancy\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming a hepatobiliary or other upper abdominal source (e.g., cholelithiasis, cholecystitis, hepatic pathology) would prompt non-obstetric management such as surgical or gastroenterology consultation and guide analgesia and monitoring.\",\n    \"negative_answer_changes\": \"If no significant hepatobiliary or upper abdominal pathology is found, attention would shift toward alternative causes such as appendicitis, urinary, or primarily obstetric etiologies and might reduce the urgency for surgical intervention focused on the RUQ.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of appendicitis or other significant right lower quadrant pathology in the visualized field?\",\n      \"Are there any secondary signs of complications such as free fluid in the abdomen?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate sonographic visualization of the liver, gallbladder and biliary tree, pancreas, kidneys, and other major upper abdominal structures.\",\n        \"why_required\": \"Determining whether these organs are well seen is necessary before concluding whether they harbor pathology causing the pain.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, gallbladder wall thickening, pericholecystic fluid, or biliary ductal dilatation.\",\n        \"why_required\": \"These findings would establish or refute biliary disease as a source of the right-sided abdominal pain.\"\n      },\n      {\n        \"requirement_key\": \"req_appendix\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of an abnormal appendix or clear right lower quadrant inflammatory process if visualized on the abdominal study.\",\n        \"why_required\": \"Appendicitis is an important alternative cause of right-sided abdominal pain in pregnancy and would change management toward urgent surgical evaluation.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, absence, and character of free intraperitoneal fluid or other signs of complicated intra-abdominal pathology.\",\n        \"why_required\": \"Detecting free fluid or complications would influence the urgency and type of intervention needed.\"\n      }\n    ],\n    \"evidence\": [\n      \"___ yo G3P0 at ___ presents with diffuse abd cramping, R>L. Has  had this since last night.\",\n      \"ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\"\n        ],\n        \"reason\": \"No prior abdominal imaging is documented, so there is no information on visualization of hepatobiliary or other upper abdominal structures.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Asparate Aminotransferase (AST): 52.0 IU/L (ref 0.0-40.0)\"\n        ],\n        \"reason\": \"Mild AST elevation and RUQ tenderness suggest but do not confirm biliary disease; imaging evidence of gallbladder or biliary pathology is absent.\"\n      },\n      {\n        \"requirement_key\": \"req_appendix\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G\"\n        ],\n        \"reason\": \"Clinical exam shows minimal RLQ tenderness but does not establish or exclude appendicitis, and there is no prior imaging of the appendix or RLQ.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G\"\n        ],\n        \"reason\": \"The soft abdomen without guarding argues against gross peritonitis but cannot assess for subtle free fluid or intra-abdominal complications without imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No prior imaging has been performed, so all key aspects of identifying or excluding abdominal organ pathology remain unaddressed.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"remedy\",\n  \"alternative_reconstruction\": \"An alternative view is that the primary concern was simply to screen broadly for any non-obstetric cause of abdominal pain in pregnancy without a strong prior focus on hepatobiliary disease. In that account, assumptions would emphasize that obstetric causes like preterm labor appear less likely given a closed internal os and no bleeding or fluid loss, and that the leukocytosis and right-sided discomfort raise a nonspecific concern for any surgical abdomen. The main question would then be: \\\"Is there any significant non-obstetric intra-abdominal pathology (hepatic, biliary, renal, pancreatic, or free fluid) that explains the pain and leukocytosis?\\\" Answer requirements would similarly include adequate visualization of major abdominal organs and detection of any focal pathology or free fluid, but without singling out biliary disease or appendicitis as specific leading differentials. Coverage would remain entirely unaddressed pre-imaging, and a complete abdominal ultrasound would still be an appropriate first-line, radiation-free modality in pregnancy to begin answering this broader question.\"\n}",
+            "request_id": "gen-1788236862-k8oaPHrA60uwpsQf6gHn",
+            "usage": {
+              "completion_tokens": 2263,
+              "prompt_tokens": 3301,
+              "total_tokens": 5564,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02675625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02675625,
+                "upstream_inference_prompt_cost": 0.00412625,
+                "upstream_inference_completions_cost": 0.02263
+              }
+            }
+          },
+          "validation_errors": [
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "664faf7ccc35fa9b89f2d66a63f97803e00268c07bf52232c86b3da6057e7d3d",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "Pregnant patient with intermittent right-sided greater than left abdominal cramping without vaginal bleeding or loss of fluid may have a non-obstetric abdominal pathology such as biliary disease or appendicitis.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "working clinical syndrome",
+                  "status": "suspected",
+                  "evidence": [
+                    "presents with diffuse abd cramping, R>L. Has  had this since last night.",
+                    "No VB, no LOF, +AFM."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has leukocytosis, increasing concern for an underlying inflammatory or infectious abdominal process.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "physiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "White Blood Cells: 15.5 K/uL (ref 4.0-11.0)",
+                    "Neutrophils: 85.3 % (ref 50.0-70.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is mild right upper quadrant and right lower quadrant abdominal tenderness on exam, but no guarding or rebound, so a significant acute surgical abdomen is not yet established or excluded.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "severity of syndrome",
+                  "status": "unclear",
+                  "evidence": [
+                    "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G",
+                    "GEN: NAD"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Liver function tests are largely normal aside from a mildly elevated AST, so hepatobiliary disease is possible but not established.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "candidate disease category",
+                  "status": "suspected",
+                  "evidence": [
+                    "Asparate Aminotransferase (AST): 52.0 IU/L (ref 0.0-40.0)",
+                    "Alanine Aminotransferase (ALT): 16.0 IU/L (ref 0.0-40.0)"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Urinalysis shows pyuria and leukocyte esterase which could indicate urinary tract infection as an alternative source of pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative syndrome source",
+                  "status": "suspected",
+                  "evidence": [
+                    "Leukocytes: MOD.",
+                    "WBC: 6.0 #/hpf (ref 0.0-5.0)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point, so all assumptions are newly formulated from the baseline evaluation."
+              },
+              "current_question": {
+                "primary": "What is the cause and anatomic source of this pregnant patient’s right-sided abdominal pain and leukocytosis, specifically excluding or confirming hepatobiliary or other upper abdominal pathology?",
+                "target": "hepatobiliary system and other upper abdominal organs as potential sources of pain",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If a hepatobiliary or other abdominal pathology is identified, management would shift toward targeted medical or surgical treatment and may alter obstetric management.",
+                "negative_answer_changes": "If hepatobiliary and other major abdominal causes are not seen, clinicians would focus more on obstetric causes or urinary/other alternative sources and may avoid unnecessary surgical consultation.",
+                "secondary_questions": [
+                  "Is there ultrasound evidence of acute cholecystitis or biliary colic explaining the right upper quadrant discomfort?",
+                  "Is there any other significant intra-abdominal abnormality (e.g., free fluid, mass) that could explain the pain?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization and assessment of liver, gallbladder, biliary tree, pancreas, spleen, kidneys, and visualizable bowel segments for pathology.",
+                    "why_required": "Determining whether these organs are normal or abnormal is necessary to localize the source of pain."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of structural abnormalities such as gallstones, gallbladder wall thickening, biliary ductal dilation, hepatic lesions, hydronephrosis, or significant free fluid.",
+                    "why_required": "Identifying or excluding these findings helps determine whether an abdominal organ pathology explains the pain."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of any detected hepatobiliary or other abdominal pathology, such as degree of inflammation, obstruction, or fluid.",
+                    "why_required": "The extent of disease guides urgency, need for surgical consult, and safety in pregnancy."
+                  },
+                  {
+                    "requirement_key": "req_alt",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Differentiation between hepatobiliary, renal, and other upper abdominal causes versus non-abdominal or obstetric causes of pain.",
+                    "why_required": "Clarifying whether the pain arises from the abdomen versus alternative sources directs further testing and management."
+                  }
+                ],
+                "evidence": [
+                  "___ yo G3P0 at ___ presents with diffuse abd cramping, R>L.",
+                  "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point",
+                      "(none)"
+                    ],
+                    "reason": "No prior abdominal imaging has been performed, so visualization of abdominal organs has not yet occurred."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "Asparate Aminotransferase (AST): 52.0 IU/L (ref 0.0-40.0)",
+                      "White Blood Cells: 15.5 K/uL (ref 4.0-11.0)"
+                    ],
+                    "reason": "Laboratory values suggest possible inflammation but do not directly demonstrate or exclude structural hepatobiliary or other abdominal abnormalities."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G",
+                      "GEN: NAD"
+                    ],
+                    "reason": "Exam suggests no severe acute abdomen, but cannot quantify severity or extent of any underlying organ-level pathology without imaging."
+                  },
+                  {
+                    "requirement_key": "req_alt",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "Urine Appearance: Hazy.",
+                      "Leukocytes: MOD."
+                    ],
+                    "reason": "Urinalysis raises urinary tract infection as an alternative cause, but does not rule in or out hepatobiliary or other abdominal sources, so discrimination between sources remains incomplete."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "History, exam, and labs raise possibilities but cannot localize the pain source or define organ-specific pathology without imaging."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Pregnant patient with intermittent right-sided greater than left abdominal cramping without vaginal bleeding or loss of fluid may have a non-obstetric abdominal pathology such as biliary disease or appendicitis.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"working clinical syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"presents with diffuse abd cramping, R>L. Has  had this since last night.\",\n        \"No VB, no LOF, +AFM.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has leukocytosis, increasing concern for an underlying inflammatory or infectious abdominal process.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"White Blood Cells: 15.5 K/uL (ref 4.0-11.0)\",\n        \"Neutrophils: 85.3 % (ref 50.0-70.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is mild right upper quadrant and right lower quadrant abdominal tenderness on exam, but no guarding or rebound, so a significant acute surgical abdomen is not yet established or excluded.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity of syndrome\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G\",\n        \"GEN: NAD\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Liver function tests are largely normal aside from a mildly elevated AST, so hepatobiliary disease is possible but not established.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"candidate disease category\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Asparate Aminotransferase (AST): 52.0 IU/L (ref 0.0-40.0)\",\n        \"Alanine Aminotransferase (ALT): 16.0 IU/L (ref 0.0-40.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Urinalysis shows pyuria and leukocyte esterase which could indicate urinary tract infection as an alternative source of pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative syndrome source\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Leukocytes: MOD.\",\n        \"WBC: 6.0 #/hpf (ref 0.0-5.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point, so all assumptions are newly formulated from the baseline evaluation.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the cause and anatomic source of this pregnant patient’s right-sided abdominal pain and leukocytosis, specifically excluding or confirming hepatobiliary or other upper abdominal pathology?\",\n    \"target\": \"hepatobiliary system and other upper abdominal organs as potential sources of pain\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If a hepatobiliary or other abdominal pathology is identified, management would shift toward targeted medical or surgical treatment and may alter obstetric management.\",\n    \"negative_answer_changes\": \"If hepatobiliary and other major abdominal causes are not seen, clinicians would focus more on obstetric causes or urinary/other alternative sources and may avoid unnecessary surgical consultation.\",\n    \"secondary_questions\": [\n      \"Is there ultrasound evidence of acute cholecystitis or biliary colic explaining the right upper quadrant discomfort?\",\n      \"Is there any other significant intra-abdominal abnormality (e.g., free fluid, mass) that could explain the pain?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization and assessment of liver, gallbladder, biliary tree, pancreas, spleen, kidneys, and visualizable bowel segments for pathology.\",\n        \"why_required\": \"Determining whether these organs are normal or abnormal is necessary to localize the source of pain.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of structural abnormalities such as gallstones, gallbladder wall thickening, biliary ductal dilation, hepatic lesions, hydronephrosis, or significant free fluid.\",\n        \"why_required\": \"Identifying or excluding these findings helps determine whether an abdominal organ pathology explains the pain.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of any detected hepatobiliary or other abdominal pathology, such as degree of inflammation, obstruction, or fluid.\",\n        \"why_required\": \"The extent of disease guides urgency, need for surgical consult, and safety in pregnancy.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Differentiation between hepatobiliary, renal, and other upper abdominal causes versus non-abdominal or obstetric causes of pain.\",\n        \"why_required\": \"Clarifying whether the pain arises from the abdomen versus alternative sources directs further testing and management.\"\n      }\n    ],\n    \"evidence\": [\n      \"___ yo G3P0 at ___ presents with diffuse abd cramping, R>L.\",\n      \"ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\",\n          \"(none)\"\n        ],\n        \"reason\": \"No prior abdominal imaging has been performed, so visualization of abdominal organs has not yet occurred.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"Asparate Aminotransferase (AST): 52.0 IU/L (ref 0.0-40.0)\",\n          \"White Blood Cells: 15.5 K/uL (ref 4.0-11.0)\"\n        ],\n        \"reason\": \"Laboratory values suggest possible inflammation but do not directly demonstrate or exclude structural hepatobiliary or other abdominal abnormalities.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G\",\n          \"GEN: NAD\"\n        ],\n        \"reason\": \"Exam suggests no severe acute abdomen, but cannot quantify severity or extent of any underlying organ-level pathology without imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"Urine Appearance: Hazy.\",\n          \"Leukocytes: MOD.\"\n        ],\n        \"reason\": \"Urinalysis raises urinary tract infection as an alternative cause, but does not rule in or out hepatobiliary or other abdominal sources, so discrimination between sources remains incomplete.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"History, exam, and labs raise possibilities but cannot localize the pain source or define organ-specific pathology without imaging.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788236885-yO3R6oP9SoIvwn62Gam6",
+            "usage": {
+              "completion_tokens": 2020,
+              "prompt_tokens": 3337,
+              "total_tokens": 5357,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3072,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02091525,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02091525,
+                "upstream_inference_prompt_cost": 0.00071525,
+                "upstream_inference_completions_cost": 0.0202
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "Pregnant patient with intermittent right-sided greater than left abdominal cramping without vaginal bleeding or loss of fluid may have a non-obstetric abdominal pathology such as biliary disease or appendicitis.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "working clinical syndrome",
+            "status": "suspected",
+            "evidence": [
+              "presents with diffuse abd cramping, R>L. Has  had this since last night.",
+              "No VB, no LOF, +AFM."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has leukocytosis, increasing concern for an underlying inflammatory or infectious abdominal process.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "physiologic mechanism",
+            "status": "suspected",
+            "evidence": [
+              "White Blood Cells: 15.5 K/uL (ref 4.0-11.0)",
+              "Neutrophils: 85.3 % (ref 50.0-70.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is mild right upper quadrant and right lower quadrant abdominal tenderness on exam, but no guarding or rebound, so a significant acute surgical abdomen is not yet established or excluded.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "severity of syndrome",
+            "status": "unclear",
+            "evidence": [
+              "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G",
+              "GEN: NAD"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Liver function tests are largely normal aside from a mildly elevated AST, so hepatobiliary disease is possible but not established.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "candidate disease category",
+            "status": "suspected",
+            "evidence": [
+              "Asparate Aminotransferase (AST): 52.0 IU/L (ref 0.0-40.0)",
+              "Alanine Aminotransferase (ALT): 16.0 IU/L (ref 0.0-40.0)"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Urinalysis shows pyuria and leukocyte esterase which could indicate urinary tract infection as an alternative source of pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "alternative syndrome source",
+            "status": "suspected",
+            "evidence": [
+              "Leukocytes: MOD.",
+              "WBC: 6.0 #/hpf (ref 0.0-5.0)"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point, so all assumptions are newly formulated from the baseline evaluation."
+        },
+        "current_question": {
+          "primary": "What is the cause and anatomic source of this pregnant patient’s right-sided abdominal pain and leukocytosis, specifically excluding or confirming hepatobiliary or other upper abdominal pathology?",
+          "target": "hepatobiliary system and other upper abdominal organs as potential sources of pain",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If a hepatobiliary or other abdominal pathology is identified, management would shift toward targeted medical or surgical treatment and may alter obstetric management.",
+          "negative_answer_changes": "If hepatobiliary and other major abdominal causes are not seen, clinicians would focus more on obstetric causes or urinary/other alternative sources and may avoid unnecessary surgical consultation.",
+          "secondary_questions": [
+            "Is there ultrasound evidence of acute cholecystitis or biliary colic explaining the right upper quadrant discomfort?",
+            "Is there any other significant intra-abdominal abnormality (e.g., free fluid, mass) that could explain the pain?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization and assessment of liver, gallbladder, biliary tree, pancreas, spleen, kidneys, and visualizable bowel segments for pathology.",
+              "why_required": "Determining whether these organs are normal or abnormal is necessary to localize the source of pain."
+            },
+            {
+              "requirement_key": "req_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of structural abnormalities such as gallstones, gallbladder wall thickening, biliary ductal dilation, hepatic lesions, hydronephrosis, or significant free fluid.",
+              "why_required": "Identifying or excluding these findings helps determine whether an abdominal organ pathology explains the pain."
+            },
+            {
+              "requirement_key": "req_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity and extent of any detected hepatobiliary or other abdominal pathology, such as degree of inflammation, obstruction, or fluid.",
+              "why_required": "The extent of disease guides urgency, need for surgical consult, and safety in pregnancy."
+            },
+            {
+              "requirement_key": "req_alt",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Differentiation between hepatobiliary, renal, and other upper abdominal causes versus non-abdominal or obstetric causes of pain.",
+              "why_required": "Clarifying whether the pain arises from the abdomen versus alternative sources directs further testing and management."
+            }
+          ],
+          "evidence": [
+            "___ yo G3P0 at ___ presents with diffuse abd cramping, R>L.",
+            "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point",
+                "(none)"
+              ],
+              "reason": "No prior abdominal imaging has been performed, so visualization of abdominal organs has not yet occurred."
+            },
+            {
+              "requirement_key": "req_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "mixed",
+              "supporting_evidence": [
+                "Asparate Aminotransferase (AST): 52.0 IU/L (ref 0.0-40.0)",
+                "White Blood Cells: 15.5 K/uL (ref 4.0-11.0)"
+              ],
+              "reason": "Laboratory values suggest possible inflammation but do not directly demonstrate or exclude structural hepatobiliary or other abdominal abnormalities."
+            },
+            {
+              "requirement_key": "req_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G",
+                "GEN: NAD"
+              ],
+              "reason": "Exam suggests no severe acute abdomen, but cannot quantify severity or extent of any underlying organ-level pathology without imaging."
+            },
+            {
+              "requirement_key": "req_alt",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "partially_addressed",
+              "direction": "mixed",
+              "supporting_evidence": [
+                "Urine Appearance: Hazy.",
+                "Leukocytes: MOD."
+              ],
+              "reason": "Urinalysis raises urinary tract infection as an alternative cause, but does not rule in or out hepatobiliary or other abdominal sources, so discrimination between sources remains incomplete."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "History, exam, and labs raise possibilities but cannot localize the pain source or define organ-specific pathology without imaging."
+        },
+        "current_order_fit": {
+          "question_grounding": "well_supported",
+          "test_question_capability": "capable"
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "MRI Abdomen (MR ABDOMEN W/CONTRAST)",
+      "request_prompt_sha256": "de6bcfd0156555bef6320cda82a2c62840abc3e3c4bf3dacca48017e510dddfb",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "de6bcfd0156555bef6320cda82a2c62840abc3e3c4bf3dacca48017e510dddfb",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "Findings on abdominal ultrasound are suspicious for acute appendicitis as the source of this pregnant patient’s right-sided abdominal pain and leukocytosis.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.  The lumen is hypoechoic suggesting a fluid-filled lumen.  The wall is mildly thickened and demonstrates heterogeneous echogenicity.",
+                    "Color Doppler images of the appendix demonstrate increased vascularity."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Hepatobiliary disease (e.g., cholelithiasis or cholecystitis) is an unlikely source of the current pain given normal gallbladder and biliary tree on ultrasound.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative organ system source",
+                  "status": "excluded",
+                  "evidence": [
+                    "The gallbladder is normal without evidence of stones.",
+                    "There is no intra- or extra-hepatic biliary dilation.  The portal vein is patent with forward flow."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient’s abdominal pain and leukocytosis may represent an early or evolving surgical abdomen, although exam is currently without guarding or rebound.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "severity of syndrome",
+                  "status": "unclear",
+                  "evidence": [
+                    "White Blood Cells: 15.5 K/uL (ref 4.0-11.0)",
+                    "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Mild fullness of the right renal pelvis represents possible pregnancy-related physiologic hydronephrosis rather than the primary cause of pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative structural finding",
+                  "status": "suspected",
+                  "evidence": [
+                    "The right kidney demonstrates mild fullness of the renal pelvis and measures 11.9 cm.",
+                    "The left kidney is normal and measures 10.7 cm."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Given pregnancy, further cross-sectional imaging for suspected appendicitis should avoid ionizing radiation, making MRI the preferred modality for confirmation and staging.",
+                  "type": "other",
+                  "other_proposed_type": "imaging_strategy_in_pregnancy",
+                  "level": "diagnostic strategy",
+                  "status": "likely",
+                  "evidence": [
+                    "___ yo G3P0 at ___ presents with diffuse abd cramping, R>L.",
+                    "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What is the cause and anatomic source of this pregnant patient’s right-sided abdominal pain and leukocytosis, specifically excluding or confirming hepatobiliary or other upper abdominal pathology?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The abdominal ultrasound adequately visualized hepatobiliary structures (which were normal) and additionally identified a dilated, hypervascular appendix suspicious for appendicitis, thus largely answering the prior question and shifting the leading diagnosis to appendicitis rather than hepatobiliary disease.",
+                "discordance": {
+                  "label": "indeterminate",
+                  "evidence_stream_1": "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G",
+                  "evidence_stream_2": "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.",
+                  "reason": "Imaging is more concerning for appendicitis than the relatively mild abdominal exam, but this does not clearly invalidate either source; it may represent early disease."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "Pregnant patient with intermittent right-sided greater than left abdominal cramping without vaginal bleeding or loss of fluid may have a non-obstetric abdominal pathology such as biliary disease or appendicitis.",
+                "reason": "Ultrasound findings now specifically implicate the appendix and largely rule out hepatobiliary causes, narrowing the suspected non-obstetric abdominal pathology to likely appendicitis."
+              },
+              "current_question": {
+                "primary": "Does this pregnant patient have acute appendicitis and, if so, what is the extent and complications of the disease within the abdomen?",
+                "target": "appendix and surrounding abdominal structures",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirmation and staging of appendicitis would support surgical consultation and operative or interventional management while planning for maternal-fetal safety.",
+                "negative_answer_changes": "If appendicitis is excluded, clinicians would reconsider alternative abdominal or obstetric sources and may avoid unnecessary surgery.",
+                "secondary_questions": [
+                  "Is there periappendiceal abscess, phlegmon, or free fluid indicating complicated appendicitis?",
+                  "Are there alternative intra-abdominal inflammatory or obstructive processes that could explain the symptoms?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis_app",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the appendix and adjacent pericecal region, as well as overall evaluation of intra-abdominal organs and fluid collections.",
+                    "why_required": "Clear visualization is necessary to confirm or refute appendicitis and identify alternative or additional pathology."
+                  },
+                  {
+                    "requirement_key": "req_presence_app",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of imaging features of appendicitis such as appendiceal enlargement, mural thickening, restricted diffusion, periappendiceal inflammation, or fluid.",
+                    "why_required": "These findings directly establish or exclude the diagnosis of acute appendicitis."
+                  },
+                  {
+                    "requirement_key": "req_severity_app",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of disease, including perforation, abscess, phlegmon, free fluid, or involvement of adjacent organs.",
+                    "why_required": "Determining whether appendicitis is uncomplicated or complicated guides urgency and type of intervention."
+                  },
+                  {
+                    "requirement_key": "req_alt_src",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Assessment for alternative intra-abdominal causes of pain (e.g., other bowel inflammation, significant hydronephrosis, other inflammatory collections) if appendicitis is not confirmed.",
+                    "why_required": "If appendicitis is not present, another source must be identified to direct further management."
+                  }
+                ],
+                "evidence": [
+                  "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.",
+                  "White Blood Cells: 15.5 K/uL (ref 4.0-11.0)"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis_app",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.",
+                      "Color Doppler images of the appendix demonstrate increased vascularity."
+                    ],
+                    "reason": "Ultrasound visualized the appendix and pericecal region sufficiently to show abnormality, but MRI can provide more comprehensive cross-sectional assessment of the entire abdomen and appendix in pregnancy."
+                  },
+                  {
+                    "requirement_key": "req_presence_app",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "The lumen is hypoechoic suggesting a fluid-filled lumen.  The wall is mildly thickened and demonstrates heterogeneous echogenicity.",
+                      "Color Doppler images of the appendix demonstrate increased vascularity."
+                    ],
+                    "reason": "Ultrasound shows several features suggestive of appendicitis but does not provide definitive confirmation or full characterization, so presence is supported but not conclusively established."
+                  },
+                  {
+                    "requirement_key": "req_severity_app",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "There is no evidence of free fluid in the right upper quadrant.",
+                      "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm."
+                    ],
+                    "reason": "Ultrasound identifies an enlarged, hypervascular appendix but provides limited information about perforation, abscess, or more distant complications, leaving overall severity incompletely defined."
+                  },
+                  {
+                    "requirement_key": "req_alt_src",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "The gallbladder is normal without evidence of stones.",
+                      "The right kidney demonstrates mild fullness of the renal pelvis and measures 11.9 cm."
+                    ],
+                    "reason": "Ultrasound effectively rules out hepatobiliary causes and notes mild right renal pelvic fullness but does not comprehensively exclude other intra-abdominal inflammatory or obstructive processes."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Ultrasound strongly suggests appendicitis and rules out hepatobiliary disease but does not fully confirm diagnosis or define the extent and complications of disease or alternative causes, leaving the refined question only partially answered."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "An alternative interpretation is that the clinician primarily sought to further characterize the extent of intra-abdominal inflammation and rule out complications (such as abscess or perforation) in a pregnant patient with ultrasound-suspected appendicitis, rather than to confirm the basic diagnosis itself. Under this framing, the primary question would focus on severity and complication assessment, with answer requirements emphasizing detection of abscess, free fluid, or other inflammatory collections and overall burden of disease, while assuming appendicitis is already very likely based on ultrasound."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Findings on abdominal ultrasound are suspicious for acute appendicitis as the source of this pregnant patient’s right-sided abdominal pain and leukocytosis.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.  The lumen is hypoechoic suggesting a fluid-filled lumen.  The wall is mildly thickened and demonstrates heterogeneous echogenicity.\",\n        \"Color Doppler images of the appendix demonstrate increased vascularity.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Hepatobiliary disease (e.g., cholelithiasis or cholecystitis) is an unlikely source of the current pain given normal gallbladder and biliary tree on ultrasound.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative organ system source\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"The gallbladder is normal without evidence of stones.\",\n        \"There is no intra- or extra-hepatic biliary dilation.  The portal vein is patent with forward flow.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient’s abdominal pain and leukocytosis may represent an early or evolving surgical abdomen, although exam is currently without guarding or rebound.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity of syndrome\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"White Blood Cells: 15.5 K/uL (ref 4.0-11.0)\",\n        \"ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Mild fullness of the right renal pelvis represents possible pregnancy-related physiologic hydronephrosis rather than the primary cause of pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative structural finding\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"The right kidney demonstrates mild fullness of the renal pelvis and measures 11.9 cm.\",\n        \"The left kidney is normal and measures 10.7 cm.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Given pregnancy, further cross-sectional imaging for suspected appendicitis should avoid ionizing radiation, making MRI the preferred modality for confirmation and staging.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"imaging_strategy_in_pregnancy\",\n      \"level\": \"diagnostic strategy\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"___ yo G3P0 at ___ presents with diffuse abd cramping, R>L.\",\n        \"The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the cause and anatomic source of this pregnant patient’s right-sided abdominal pain and leukocytosis, specifically excluding or confirming hepatobiliary or other upper abdominal pathology?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The abdominal ultrasound adequately visualized hepatobiliary structures (which were normal) and additionally identified a dilated, hypervascular appendix suspicious for appendicitis, thus largely answering the prior question and shifting the leading diagnosis to appendicitis rather than hepatobiliary disease.\",\n    \"discordance\": {\n      \"label\": \"indeterminate\",\n      \"evidence_stream_1\": \"ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G\",\n      \"evidence_stream_2\": \"The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.\",\n      \"reason\": \"Imaging is more concerning for appendicitis than the relatively mild abdominal exam, but this does not clearly invalidate either source; it may represent early disease.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Pregnant patient with intermittent right-sided greater than left abdominal cramping without vaginal bleeding or loss of fluid may have a non-obstetric abdominal pathology such as biliary disease or appendicitis.\",\n    \"reason\": \"Ultrasound findings now specifically implicate the appendix and largely rule out hepatobiliary causes, narrowing the suspected non-obstetric abdominal pathology to likely appendicitis.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Does this pregnant patient have acute appendicitis and, if so, what is the extent and complications of the disease within the abdomen?\",\n    \"target\": \"appendix and surrounding abdominal structures\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirmation and staging of appendicitis would support surgical consultation and operative or interventional management while planning for maternal-fetal safety.\",\n    \"negative_answer_changes\": \"If appendicitis is excluded, clinicians would reconsider alternative abdominal or obstetric sources and may avoid unnecessary surgery.\",\n    \"secondary_questions\": [\n      \"Is there periappendiceal abscess, phlegmon, or free fluid indicating complicated appendicitis?\",\n      \"Are there alternative intra-abdominal inflammatory or obstructive processes that could explain the symptoms?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis_app\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the appendix and adjacent pericecal region, as well as overall evaluation of intra-abdominal organs and fluid collections.\",\n        \"why_required\": \"Clear visualization is necessary to confirm or refute appendicitis and identify alternative or additional pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_app\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of imaging features of appendicitis such as appendiceal enlargement, mural thickening, restricted diffusion, periappendiceal inflammation, or fluid.\",\n        \"why_required\": \"These findings directly establish or exclude the diagnosis of acute appendicitis.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_app\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of disease, including perforation, abscess, phlegmon, free fluid, or involvement of adjacent organs.\",\n        \"why_required\": \"Determining whether appendicitis is uncomplicated or complicated guides urgency and type of intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_src\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assessment for alternative intra-abdominal causes of pain (e.g., other bowel inflammation, significant hydronephrosis, other inflammatory collections) if appendicitis is not confirmed.\",\n        \"why_required\": \"If appendicitis is not present, another source must be identified to direct further management.\"\n      }\n    ],\n    \"evidence\": [\n      \"The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.\",\n      \"White Blood Cells: 15.5 K/uL (ref 4.0-11.0)\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis_app\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.\",\n          \"Color Doppler images of the appendix demonstrate increased vascularity.\"\n        ],\n        \"reason\": \"Ultrasound visualized the appendix and pericecal region sufficiently to show abnormality, but MRI can provide more comprehensive cross-sectional assessment of the entire abdomen and appendix in pregnancy.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_app\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"The lumen is hypoechoic suggesting a fluid-filled lumen.  The wall is mildly thickened and demonstrates heterogeneous echogenicity.\",\n          \"Color Doppler images of the appendix demonstrate increased vascularity.\"\n        ],\n        \"reason\": \"Ultrasound shows several features suggestive of appendicitis but does not provide definitive confirmation or full characterization, so presence is supported but not conclusively established.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_app\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"There is no evidence of free fluid in the right upper quadrant.\",\n          \"The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.\"\n        ],\n        \"reason\": \"Ultrasound identifies an enlarged, hypervascular appendix but provides limited information about perforation, abscess, or more distant complications, leaving overall severity incompletely defined.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_src\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"The gallbladder is normal without evidence of stones.\",\n          \"The right kidney demonstrates mild fullness of the renal pelvis and measures 11.9 cm.\"\n        ],\n        \"reason\": \"Ultrasound effectively rules out hepatobiliary causes and notes mild right renal pelvic fullness but does not comprehensively exclude other intra-abdominal inflammatory or obstructive processes.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Ultrasound strongly suggests appendicitis and rules out hepatobiliary disease but does not fully confirm diagnosis or define the extent and complications of disease or alternative causes, leaving the refined question only partially answered.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"An alternative interpretation is that the clinician primarily sought to further characterize the extent of intra-abdominal inflammation and rule out complications (such as abscess or perforation) in a pregnant patient with ultrasound-suspected appendicitis, rather than to confirm the basic diagnosis itself. Under this framing, the primary question would focus on severity and complication assessment, with answer requirements emphasizing detection of abscess, free fluid, or other inflammatory collections and overall burden of disease, while assuming appendicitis is already very likely based on ultrasound.\"\n}",
+            "request_id": "gen-1788236904-uVdp6AF5KA1Ygr99NKZr",
+            "usage": {
+              "completion_tokens": 2480,
+              "prompt_tokens": 5312,
+              "total_tokens": 7792,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2048,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.029136,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.029136,
+                "upstream_inference_prompt_cost": 0.004336,
+                "upstream_inference_completions_cost": 0.0248
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "Findings on abdominal ultrasound are suspicious for acute appendicitis as the source of this pregnant patient’s right-sided abdominal pain and leukocytosis.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific disease diagnosis",
+            "status": "likely",
+            "evidence": [
+              "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.  The lumen is hypoechoic suggesting a fluid-filled lumen.  The wall is mildly thickened and demonstrates heterogeneous echogenicity.",
+              "Color Doppler images of the appendix demonstrate increased vascularity."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Hepatobiliary disease (e.g., cholelithiasis or cholecystitis) is an unlikely source of the current pain given normal gallbladder and biliary tree on ultrasound.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "alternative organ system source",
+            "status": "excluded",
+            "evidence": [
+              "The gallbladder is normal without evidence of stones.",
+              "There is no intra- or extra-hepatic biliary dilation.  The portal vein is patent with forward flow."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient’s abdominal pain and leukocytosis may represent an early or evolving surgical abdomen, although exam is currently without guarding or rebound.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "severity of syndrome",
+            "status": "unclear",
+            "evidence": [
+              "White Blood Cells: 15.5 K/uL (ref 4.0-11.0)",
+              "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Mild fullness of the right renal pelvis represents possible pregnancy-related physiologic hydronephrosis rather than the primary cause of pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "alternative structural finding",
+            "status": "suspected",
+            "evidence": [
+              "The right kidney demonstrates mild fullness of the renal pelvis and measures 11.9 cm.",
+              "The left kidney is normal and measures 10.7 cm."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Given pregnancy, further cross-sectional imaging for suspected appendicitis should avoid ionizing radiation, making MRI the preferred modality for confirmation and staging.",
+            "type": "other",
+            "other_proposed_type": "imaging_strategy_in_pregnancy",
+            "level": "diagnostic strategy",
+            "status": "likely",
+            "evidence": [
+              "___ yo G3P0 at ___ presents with diffuse abd cramping, R>L.",
+              "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What is the cause and anatomic source of this pregnant patient’s right-sided abdominal pain and leukocytosis, specifically excluding or confirming hepatobiliary or other upper abdominal pathology?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The abdominal ultrasound adequately visualized hepatobiliary structures (which were normal) and additionally identified a dilated, hypervascular appendix suspicious for appendicitis, thus largely answering the prior question and shifting the leading diagnosis to appendicitis rather than hepatobiliary disease.",
+          "discordance": {
+            "label": "indeterminate",
+            "evidence_stream_1": "ABD: Soft, VERY minimal tenderness in RUQ and RLQ, soft, no R/G",
+            "evidence_stream_2": "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.",
+            "reason": "Imaging is more concerning for appendicitis than the relatively mild abdominal exam, but this does not clearly invalidate either source; it may represent early disease."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "Pregnant patient with intermittent right-sided greater than left abdominal cramping without vaginal bleeding or loss of fluid may have a non-obstetric abdominal pathology such as biliary disease or appendicitis.",
+          "reason": "Ultrasound findings now specifically implicate the appendix and largely rule out hepatobiliary causes, narrowing the suspected non-obstetric abdominal pathology to likely appendicitis."
+        },
+        "current_question": {
+          "primary": "Does this pregnant patient have acute appendicitis and, if so, what is the extent and complications of the disease within the abdomen?",
+          "target": "appendix and surrounding abdominal structures",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirmation and staging of appendicitis would support surgical consultation and operative or interventional management while planning for maternal-fetal safety.",
+          "negative_answer_changes": "If appendicitis is excluded, clinicians would reconsider alternative abdominal or obstetric sources and may avoid unnecessary surgery.",
+          "secondary_questions": [
+            "Is there periappendiceal abscess, phlegmon, or free fluid indicating complicated appendicitis?",
+            "Are there alternative intra-abdominal inflammatory or obstructive processes that could explain the symptoms?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis_app",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the appendix and adjacent pericecal region, as well as overall evaluation of intra-abdominal organs and fluid collections.",
+              "why_required": "Clear visualization is necessary to confirm or refute appendicitis and identify alternative or additional pathology."
+            },
+            {
+              "requirement_key": "req_presence_app",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of imaging features of appendicitis such as appendiceal enlargement, mural thickening, restricted diffusion, periappendiceal inflammation, or fluid.",
+              "why_required": "These findings directly establish or exclude the diagnosis of acute appendicitis."
+            },
+            {
+              "requirement_key": "req_severity_app",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity and extent of disease, including perforation, abscess, phlegmon, free fluid, or involvement of adjacent organs.",
+              "why_required": "Determining whether appendicitis is uncomplicated or complicated guides urgency and type of intervention."
+            },
+            {
+              "requirement_key": "req_alt_src",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Assessment for alternative intra-abdominal causes of pain (e.g., other bowel inflammation, significant hydronephrosis, other inflammatory collections) if appendicitis is not confirmed.",
+              "why_required": "If appendicitis is not present, another source must be identified to direct further management."
+            }
+          ],
+          "evidence": [
+            "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.",
+            "White Blood Cells: 15.5 K/uL (ref 4.0-11.0)"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis_app",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm.",
+                "Color Doppler images of the appendix demonstrate increased vascularity."
+              ],
+              "reason": "Ultrasound visualized the appendix and pericecal region sufficiently to show abnormality, but MRI can provide more comprehensive cross-sectional assessment of the entire abdomen and appendix in pregnancy."
+            },
+            {
+              "requirement_key": "req_presence_app",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "The lumen is hypoechoic suggesting a fluid-filled lumen.  The wall is mildly thickened and demonstrates heterogeneous echogenicity.",
+                "Color Doppler images of the appendix demonstrate increased vascularity."
+              ],
+              "reason": "Ultrasound shows several features suggestive of appendicitis but does not provide definitive confirmation or full characterization, so presence is supported but not conclusively established."
+            },
+            {
+              "requirement_key": "req_severity_app",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "mixed",
+              "supporting_evidence": [
+                "There is no evidence of free fluid in the right upper quadrant.",
+                "The right lower quadrant demonstrates a collapsed cecum with a dilated appendix measuring 7.6 mm to 9.6 mm."
+              ],
+              "reason": "Ultrasound identifies an enlarged, hypervascular appendix but provides limited information about perforation, abscess, or more distant complications, leaving overall severity incompletely defined."
+            },
+            {
+              "requirement_key": "req_alt_src",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "partially_addressed",
+              "direction": "mixed",
+              "supporting_evidence": [
+                "The gallbladder is normal without evidence of stones.",
+                "The right kidney demonstrates mild fullness of the renal pelvis and measures 11.9 cm."
+              ],
+              "reason": "Ultrasound effectively rules out hepatobiliary causes and notes mild right renal pelvic fullness but does not comprehensively exclude other intra-abdominal inflammatory or obstructive processes."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Ultrasound strongly suggests appendicitis and rules out hepatobiliary disease but does not fully confirm diagnosis or define the extent and complications of disease or alternative causes, leaving the refined question only partially answered."
+        },
+        "current_order_fit": {
+          "question_grounding": "well_supported",
+          "test_question_capability": "capable"
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "An alternative interpretation is that the clinician primarily sought to further characterize the extent of intra-abdominal inflammation and rule out complications (such as abscess or perforation) in a pregnant patient with ultrasound-suspected appendicitis, rather than to confirm the basic diagnosis itself. Under this framing, the primary question would focus on severity and complication assessment, with answer requirements emphasizing detection of abscess, free fluid, or other inflammatory collections and overall burden of disease, while assuming appendicitis is already very likely based on ultrasound."
+      },
+      "validation_errors": []
+    }
+  ]
+}

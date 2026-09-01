@@ -1,0 +1,614 @@
+{
+  "schema_version": "2.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 25862056,
+  "source_path": "results/annotation_experiment/full/cholecystitis_25862056.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1",
+  "validator_version": "3.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "95e045f1f8b0870973043a588ac8972ef0af7f2cfaf9ad87d1abd7da5f07c6cf",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "95e045f1f8b0870973043a588ac8972ef0af7f2cfaf9ad87d1abd7da5f07c6cf",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has ongoing right upper quadrant and epigastric abdominal pain concerning for a biliary source despite a previously negative right upper quadrant ultrasound.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome (pain source frame)",
+                  "status": "likely",
+                  "evidence": [
+                    "“___ w/h/o cholelithiasis, seen in ___ ER 2 days ago with RUQ pain that at that point had been going on for two days, but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain. She states the pain never  went away and worsened today.”",
+                    "“Her pain is still localized to the RUQ and epigastrium.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The clinician suspects progression from uncomplicated biliary colic to a possible inflammatory or obstructive hepatobiliary condition (e.g., acute cholecystitis or related complication).",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "candidate disease process",
+                  "status": "suspected",
+                  "evidence": [
+                    "“was felt to be biliary colic, returns today with continued pain. She states the pain never  went away and worsened today.”",
+                    "“She was to have an EGD performed this AM but she was noted to have a temperature of 100.5 so this was deferred.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Systemic inflammatory response or sepsis is not yet established given normal white blood cell count and lactate, but low-grade infection or inflammation remains possible.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "severity/physiologic response",
+                  "status": "challenged",
+                  "evidence": [
+                    "“White Blood Cells: 8.2 K/uL (ref 4.0-11.0)”",
+                    "“Lactate: 1.4 mmol/L (ref 0.5-2.0)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A lower gastrointestinal or pancreatic cause of the pain (e.g., pancreatitis, lower GI bleed) is unlikely at present.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative syndrome/disease",
+                  "status": "challenged",
+                  "evidence": [
+                    "“Her pain is still localized to the RUQ and epigastrium.”",
+                    "“Lipase: 25.0 IU/L (ref 0.0-60.0)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient may have a concurrent urinary tract infection, but this is not clearly the source of her RUQ/epigastric pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative disease process",
+                  "status": "suspected",
+                  "evidence": [
+                    "“Leukocytes: MOD.”",
+                    "“WBC: 17.0 #/hpf (ref 0.0-5.0)”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision point, so all assumptions are newly formulated from the baseline history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Is there current sonographic evidence of gallbladder or proximal biliary pathology that explains the patient’s persistent right upper quadrant and epigastric pain and low-grade fever?",
+                "target": "gallbladder and proximal biliary tree",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming gallbladder or biliary pathology (e.g., cholecystitis, sludge, new stones, wall thickening, pericholecystic fluid, or ductal dilation) would support a biliary source, prompting surgical or gastroenterology consultation and targeted management rather than proceeding with EGD as primary workup.",
+                "negative_answer_changes": "If sonography again shows no biliary pathology, the clinician would downgrade biliary causes and instead pursue alternative sources such as peptic/upper GI disease (rescheduling EGD) or other abdominal or urinary etiologies.",
+                "secondary_questions": [
+                  "Is there biliary ductal dilation suggesting choledocholithiasis or obstructive process?",
+                  "Is there any hepatic parenchymal abnormality adjacent to the gallbladder that might indicate localized inflammation or complication?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the gallbladder, gallbladder wall, pericholecystic region, and common bile duct.",
+                    "why_required": "Determining whether biliary pathology is present requires that these structures be adequately imaged."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones, sludge, gallbladder wall thickening, pericholecystic fluid, sonographic Murphy sign, and biliary ductal dilation.",
+                    "why_required": "These findings would establish or refute diagnoses such as acute cholecystitis or biliary colic as the source of pain."
+                  },
+                  {
+                    "requirement_key": "req_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent of any identified biliary pathology, including degree of wall thickening, size of stones, degree of ductal dilation, or evidence of complications (e.g., abscess, perforation).",
+                    "why_required": "Severity assessment informs urgency of intervention, need for admission, and choice of surgical versus conservative management."
+                  },
+                  {
+                    "requirement_key": "req_alt",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Assessment for alternative upper abdominal causes visible on limited abdominal ultrasound (e.g., focal hepatic lesions near the gallbladder, gross pancreatic head abnormalities if seen).",
+                    "why_required": "If biliary pathology is absent, identifying or excluding other visible causes helps redirect diagnostic workup away from biliary disease."
+                  }
+                ],
+                "evidence": [
+                  "“___ w/h/o cholelithiasis, seen in ___ ER 2 days ago with RUQ pain that at that point had been going on for two days, but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain.”",
+                  "“Her pain is still localized to the RUQ and epigastrium.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“was felt to be biliary colic, returns today with continued pain. She states the pain never  went away and worsened today.”"
+                    ],
+                    "reason": "The prior right upper quadrant ultrasound result is only described as 'negative' without technical details, and no current imaging of the gallbladder or ducts is documented before this order, so present-time visualization is not yet addressed."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“but withe negative ultrasound and was felt to be biliary colic”",
+                      "“Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)”"
+                    ],
+                    "reason": "A prior negative ultrasound and normal liver tests argue against obvious biliary obstruction or acute cholecystitis, but given ongoing and worsening pain plus low-grade fever, they do not definitively exclude evolving biliary pathology now."
+                  },
+                  {
+                    "requirement_key": "req_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“but withe negative ultrasound and was felt to be biliary colic”"
+                    ],
+                    "reason": "No imaging-based description of severity or extent of any biliary disease is available for the current episode; prior ultrasound is only reported as negative without detail."
+                  },
+                  {
+                    "requirement_key": "req_alt",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“Lipase: 25.0 IU/L (ref 0.0-60.0)”",
+                      "“Her pain is still localized to the RUQ and epigastrium.”"
+                    ],
+                    "reason": "Normal lipase and focal RUQ/epigastric pain make pancreatitis and some alternative sources less likely, but possible gastric or duodenal disease and urinary tract infection remain, and no abdominal imaging has yet evaluated alternative structural causes."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Prior negative ultrasound and normal labs partially refute obvious biliary obstruction, but they do not clarify current biliary status or severity given persistent and worsening symptoms, so key requirements remain unaddressed."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has ongoing right upper quadrant and epigastric abdominal pain concerning for a biliary source despite a previously negative right upper quadrant ultrasound.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome (pain source frame)\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“___ w/h/o cholelithiasis, seen in ___ ER 2 days ago with RUQ pain that at that point had been going on for two days, but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain. She states the pain never  went away and worsened today.”\",\n        \"“Her pain is still localized to the RUQ and epigastrium.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The clinician suspects progression from uncomplicated biliary colic to a possible inflammatory or obstructive hepatobiliary condition (e.g., acute cholecystitis or related complication).\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"candidate disease process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“was felt to be biliary colic, returns today with continued pain. She states the pain never  went away and worsened today.”\",\n        \"“She was to have an EGD performed this AM but she was noted to have a temperature of 100.5 so this was deferred.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Systemic inflammatory response or sepsis is not yet established given normal white blood cell count and lactate, but low-grade infection or inflammation remains possible.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity/physiologic response\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"“White Blood Cells: 8.2 K/uL (ref 4.0-11.0)”\",\n        \"“Lactate: 1.4 mmol/L (ref 0.5-2.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A lower gastrointestinal or pancreatic cause of the pain (e.g., pancreatitis, lower GI bleed) is unlikely at present.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative syndrome/disease\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"“Her pain is still localized to the RUQ and epigastrium.”\",\n        \"“Lipase: 25.0 IU/L (ref 0.0-60.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient may have a concurrent urinary tract infection, but this is not clearly the source of her RUQ/epigastric pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative disease process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“Leukocytes: MOD.”\",\n        \"“WBC: 17.0 #/hpf (ref 0.0-5.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision point, so all assumptions are newly formulated from the baseline history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there current sonographic evidence of gallbladder or proximal biliary pathology that explains the patient’s persistent right upper quadrant and epigastric pain and low-grade fever?\",\n    \"target\": \"gallbladder and proximal biliary tree\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming gallbladder or biliary pathology (e.g., cholecystitis, sludge, new stones, wall thickening, pericholecystic fluid, or ductal dilation) would support a biliary source, prompting surgical or gastroenterology consultation and targeted management rather than proceeding with EGD as primary workup.\",\n    \"negative_answer_changes\": \"If sonography again shows no biliary pathology, the clinician would downgrade biliary causes and instead pursue alternative sources such as peptic/upper GI disease (rescheduling EGD) or other abdominal or urinary etiologies.\",\n    \"secondary_questions\": [\n      \"Is there biliary ductal dilation suggesting choledocholithiasis or obstructive process?\",\n      \"Is there any hepatic parenchymal abnormality adjacent to the gallbladder that might indicate localized inflammation or complication?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder, gallbladder wall, pericholecystic region, and common bile duct.\",\n        \"why_required\": \"Determining whether biliary pathology is present requires that these structures be adequately imaged.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, sludge, gallbladder wall thickening, pericholecystic fluid, sonographic Murphy sign, and biliary ductal dilation.\",\n        \"why_required\": \"These findings would establish or refute diagnoses such as acute cholecystitis or biliary colic as the source of pain.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of any identified biliary pathology, including degree of wall thickening, size of stones, degree of ductal dilation, or evidence of complications (e.g., abscess, perforation).\",\n        \"why_required\": \"Severity assessment informs urgency of intervention, need for admission, and choice of surgical versus conservative management.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assessment for alternative upper abdominal causes visible on limited abdominal ultrasound (e.g., focal hepatic lesions near the gallbladder, gross pancreatic head abnormalities if seen).\",\n        \"why_required\": \"If biliary pathology is absent, identifying or excluding other visible causes helps redirect diagnostic workup away from biliary disease.\"\n      }\n    ],\n    \"evidence\": [\n      \"“___ w/h/o cholelithiasis, seen in ___ ER 2 days ago with RUQ pain that at that point had been going on for two days, but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain.”\",\n      \"“Her pain is still localized to the RUQ and epigastrium.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“was felt to be biliary colic, returns today with continued pain. She states the pain never  went away and worsened today.”\"\n        ],\n        \"reason\": \"The prior right upper quadrant ultrasound result is only described as 'negative' without technical details, and no current imaging of the gallbladder or ducts is documented before this order, so present-time visualization is not yet addressed.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“but withe negative ultrasound and was felt to be biliary colic”\",\n          \"“Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)”\"\n        ],\n        \"reason\": \"A prior negative ultrasound and normal liver tests argue against obvious biliary obstruction or acute cholecystitis, but given ongoing and worsening pain plus low-grade fever, they do not definitively exclude evolving biliary pathology now.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“but withe negative ultrasound and was felt to be biliary colic”\"\n        ],\n        \"reason\": \"No imaging-based description of severity or extent of any biliary disease is available for the current episode; prior ultrasound is only reported as negative without detail.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“Lipase: 25.0 IU/L (ref 0.0-60.0)”\",\n          \"“Her pain is still localized to the RUQ and epigastrium.”\"\n        ],\n        \"reason\": \"Normal lipase and focal RUQ/epigastric pain make pancreatitis and some alternative sources less likely, but possible gastric or duodenal disease and urinary tract infection remain, and no abdominal imaging has yet evaluated alternative structural causes.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Prior negative ultrasound and normal labs partially refute obvious biliary obstruction, but they do not clarify current biliary status or severity given persistent and worsening symptoms, so key requirements remain unaddressed.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788236777-mBGvb2qv20KFmdJQZ9NX",
+            "usage": {
+              "completion_tokens": 2345,
+              "prompt_tokens": 3281,
+              "total_tokens": 5626,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02755125,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02755125,
+                "upstream_inference_prompt_cost": 0.00410125,
+                "upstream_inference_completions_cost": 0.02345
+              }
+            }
+          },
+          "validation_errors": [
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "46abb12644e2d2989a3f7c2eadf1514b13fa9924032868ea569be14f6e8faade",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has ongoing right upper quadrant and epigastric abdominal pain concerning for biliary pathology despite a prior negative ultrasound two days ago.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation / symptom complex",
+                  "status": "likely",
+                  "evidence": [
+                    "returns today with continued pain. She states the pain never  went away and worsened today.",
+                    "Her pain is still localized to the RUQ and epigastrium."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Complicated gallbladder disease such as acute cholecystitis or other biliary complications is a concern despite currently normal liver enzymes and lipase and absence of peritoneal signs.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "disease complication / severity",
+                  "status": "suspected",
+                  "evidence": [
+                    "___ w/h/o cholelithiasis, seen in ___ ER 2 days ago with RUQ pain that at that point had been going on for two days, but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain.",
+                    "She was to have an EGD performed this AM but she was noted to have a temperature of 100.5 so this was deferred."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Alternative intra-abdominal causes such as peptic ulcer disease or gastritis are also being considered, given planned but deferred EGD and epigastric tenderness.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "competing diagnoses",
+                  "status": "suspected",
+                  "evidence": [
+                    "She was to have an EGD performed this AM but she was noted to have a temperature of 100.5 so this was deferred.",
+                    "Her pain is still localized to the RUQ and epigastrium."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is not currently septic or in overt shock, given normal lactate and stable vital signs aside from prior low-grade fever.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "physiologic status / severity assessment",
+                  "status": "likely",
+                  "evidence": [
+                    "Vitals: 97.8 72 120/58 20 97%",
+                    "Lactate: 1.4 mmol/L (ref 0.5-2.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Current laboratory studies do not demonstrate pancreatitis or hepatocellular/cholestatic injury.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "lab-based disease exclusion/assessment",
+                  "status": "established",
+                  "evidence": [
+                    "Lipase: 25.0 IU/L (ref 0.0-60.0)",
+                    "Alanine Aminotransferase (ALT): 15.0 IU/L (ref 0.0-40.0) ... Asparate Aminotransferase (AST): 18.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "This is the first imaging decision point so there is no previous question to update."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point so all propositions are being introduced de novo."
+              },
+              "current_question": {
+                "primary": "Is there sonographic evidence of gallbladder or biliary pathology, such as acute cholecystitis or other complications, that explains the patient’s persistent right upper quadrant and epigastric pain?",
+                "target": "gallbladder and proximal biliary tree",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming acute cholecystitis or related biliary pathology would prompt targeted treatment such as antibiotics, surgical consultation for cholecystectomy, and deferral of non-urgent EGD.",
+                "negative_answer_changes": "If no biliary pathology is seen, clinicians would pursue alternative explanations such as peptic disease and urinary or other intra-abdominal sources, and may prioritize EGD or other diagnostic workup.",
+                "secondary_questions": [
+                  "Is there sonographic evidence of gallbladder wall thickening, pericholecystic fluid, or sonographic Murphy sign suggesting acute cholecystitis?",
+                  "Is there biliary ductal dilation suggesting choledocholithiasis or obstruction?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the gallbladder, gallbladder wall, lumen, and proximal biliary ducts.",
+                    "why_required": "Adequate assessment of these structures is necessary to determine whether gallbladder or biliary pathology is present."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones, gallbladder wall thickening, pericholecystic fluid, or a sonographic Murphy sign.",
+                    "why_required": "These findings are key diagnostic criteria for acute cholecystitis or symptomatic cholelithiasis."
+                  },
+                  {
+                    "requirement_key": "req_bile_duct_status",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of intrahepatic or extrahepatic bile duct dilation or other signs of biliary obstruction.",
+                    "why_required": "Biliary ductal status helps determine if there is obstructive pathology such as choledocholithiasis and informs urgency and type of intervention."
+                  }
+                ],
+                "evidence": [
+                  "___ w/h/o cholelithiasis, seen in ___ ER 2 days ago with RUQ pain that at that point had been going on for two days, but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain.",
+                  "Her pain is still localized to the RUQ and epigastrium."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain."
+                    ],
+                    "reason": "A prior ultrasound two days ago is noted as negative but is not available for review here, and given ongoing and worsening pain the adequacy and current relevance of that study are uncertain."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain."
+                    ],
+                    "reason": "The prior negative ultrasound is not detailed and predates clinical worsening, so there is no current imaging evidence regarding presence or absence of acute gallbladder findings."
+                  },
+                  {
+                    "requirement_key": "req_bile_duct_status",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain."
+                    ],
+                    "reason": "No current imaging assesses bile duct caliber or obstruction; labs are normal but cannot exclude early or intermittent obstruction."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "No current abdominal imaging has been performed at this encounter, and the prior negative ultrasound is both temporally remote to the worsening symptoms and insufficiently described to answer the present question."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has ongoing right upper quadrant and epigastric abdominal pain concerning for biliary pathology despite a prior negative ultrasound two days ago.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation / symptom complex\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"returns today with continued pain. She states the pain never  went away and worsened today.\",\n        \"Her pain is still localized to the RUQ and epigastrium.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Complicated gallbladder disease such as acute cholecystitis or other biliary complications is a concern despite currently normal liver enzymes and lipase and absence of peritoneal signs.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease complication / severity\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"___ w/h/o cholelithiasis, seen in ___ ER 2 days ago with RUQ pain that at that point had been going on for two days, but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain.\",\n        \"She was to have an EGD performed this AM but she was noted to have a temperature of 100.5 so this was deferred.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Alternative intra-abdominal causes such as peptic ulcer disease or gastritis are also being considered, given planned but deferred EGD and epigastric tenderness.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing diagnoses\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"She was to have an EGD performed this AM but she was noted to have a temperature of 100.5 so this was deferred.\",\n        \"Her pain is still localized to the RUQ and epigastrium.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is not currently septic or in overt shock, given normal lactate and stable vital signs aside from prior low-grade fever.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic status / severity assessment\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Vitals: 97.8 72 120/58 20 97%\",\n        \"Lactate: 1.4 mmol/L (ref 0.5-2.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Current laboratory studies do not demonstrate pancreatitis or hepatocellular/cholestatic injury.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"lab-based disease exclusion/assessment\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lipase: 25.0 IU/L (ref 0.0-60.0)\",\n        \"Alanine Aminotransferase (ALT): 15.0 IU/L (ref 0.0-40.0) ... Asparate Aminotransferase (AST): 18.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"This is the first imaging decision point so there is no previous question to update.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point so all propositions are being introduced de novo.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there sonographic evidence of gallbladder or biliary pathology, such as acute cholecystitis or other complications, that explains the patient’s persistent right upper quadrant and epigastric pain?\",\n    \"target\": \"gallbladder and proximal biliary tree\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming acute cholecystitis or related biliary pathology would prompt targeted treatment such as antibiotics, surgical consultation for cholecystectomy, and deferral of non-urgent EGD.\",\n    \"negative_answer_changes\": \"If no biliary pathology is seen, clinicians would pursue alternative explanations such as peptic disease and urinary or other intra-abdominal sources, and may prioritize EGD or other diagnostic workup.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of gallbladder wall thickening, pericholecystic fluid, or sonographic Murphy sign suggesting acute cholecystitis?\",\n      \"Is there biliary ductal dilation suggesting choledocholithiasis or obstruction?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder, gallbladder wall, lumen, and proximal biliary ducts.\",\n        \"why_required\": \"Adequate assessment of these structures is necessary to determine whether gallbladder or biliary pathology is present.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, gallbladder wall thickening, pericholecystic fluid, or a sonographic Murphy sign.\",\n        \"why_required\": \"These findings are key diagnostic criteria for acute cholecystitis or symptomatic cholelithiasis.\"\n      },\n      {\n        \"requirement_key\": \"req_bile_duct_status\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of intrahepatic or extrahepatic bile duct dilation or other signs of biliary obstruction.\",\n        \"why_required\": \"Biliary ductal status helps determine if there is obstructive pathology such as choledocholithiasis and informs urgency and type of intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"___ w/h/o cholelithiasis, seen in ___ ER 2 days ago with RUQ pain that at that point had been going on for two days, but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain.\",\n      \"Her pain is still localized to the RUQ and epigastrium.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain.\"\n        ],\n        \"reason\": \"A prior ultrasound two days ago is noted as negative but is not available for review here, and given ongoing and worsening pain the adequacy and current relevance of that study are uncertain.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain.\"\n        ],\n        \"reason\": \"The prior negative ultrasound is not detailed and predates clinical worsening, so there is no current imaging evidence regarding presence or absence of acute gallbladder findings.\"\n      },\n      {\n        \"requirement_key\": \"req_bile_duct_status\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain.\"\n        ],\n        \"reason\": \"No current imaging assesses bile duct caliber or obstruction; labs are normal but cannot exclude early or intermittent obstruction.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No current abdominal imaging has been performed at this encounter, and the prior negative ultrasound is both temporally remote to the worsening symptoms and insufficiently described to answer the present question.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788236804-atwIYOhPQefVe9OxU5ri",
+            "usage": {
+              "completion_tokens": 2033,
+              "prompt_tokens": 3317,
+              "total_tokens": 5350,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3072,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02102025,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02102025,
+                "upstream_inference_prompt_cost": 0.00069025,
+                "upstream_inference_completions_cost": 0.02033
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has ongoing right upper quadrant and epigastric abdominal pain concerning for biliary pathology despite a prior negative ultrasound two days ago.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation / symptom complex",
+            "status": "likely",
+            "evidence": [
+              "returns today with continued pain. She states the pain never  went away and worsened today.",
+              "Her pain is still localized to the RUQ and epigastrium."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Complicated gallbladder disease such as acute cholecystitis or other biliary complications is a concern despite currently normal liver enzymes and lipase and absence of peritoneal signs.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "disease complication / severity",
+            "status": "suspected",
+            "evidence": [
+              "___ w/h/o cholelithiasis, seen in ___ ER 2 days ago with RUQ pain that at that point had been going on for two days, but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain.",
+              "She was to have an EGD performed this AM but she was noted to have a temperature of 100.5 so this was deferred."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Alternative intra-abdominal causes such as peptic ulcer disease or gastritis are also being considered, given planned but deferred EGD and epigastric tenderness.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "competing diagnoses",
+            "status": "suspected",
+            "evidence": [
+              "She was to have an EGD performed this AM but she was noted to have a temperature of 100.5 so this was deferred.",
+              "Her pain is still localized to the RUQ and epigastrium."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is not currently septic or in overt shock, given normal lactate and stable vital signs aside from prior low-grade fever.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "physiologic status / severity assessment",
+            "status": "likely",
+            "evidence": [
+              "Vitals: 97.8 72 120/58 20 97%",
+              "Lactate: 1.4 mmol/L (ref 0.5-2.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Current laboratory studies do not demonstrate pancreatitis or hepatocellular/cholestatic injury.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "lab-based disease exclusion/assessment",
+            "status": "established",
+            "evidence": [
+              "Lipase: 25.0 IU/L (ref 0.0-60.0)",
+              "Alanine Aminotransferase (ALT): 15.0 IU/L (ref 0.0-40.0) ... Asparate Aminotransferase (AST): 18.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "This is the first imaging decision point so there is no previous question to update."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point so all propositions are being introduced de novo."
+        },
+        "current_question": {
+          "primary": "Is there sonographic evidence of gallbladder or biliary pathology, such as acute cholecystitis or other complications, that explains the patient’s persistent right upper quadrant and epigastric pain?",
+          "target": "gallbladder and proximal biliary tree",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming acute cholecystitis or related biliary pathology would prompt targeted treatment such as antibiotics, surgical consultation for cholecystectomy, and deferral of non-urgent EGD.",
+          "negative_answer_changes": "If no biliary pathology is seen, clinicians would pursue alternative explanations such as peptic disease and urinary or other intra-abdominal sources, and may prioritize EGD or other diagnostic workup.",
+          "secondary_questions": [
+            "Is there sonographic evidence of gallbladder wall thickening, pericholecystic fluid, or sonographic Murphy sign suggesting acute cholecystitis?",
+            "Is there biliary ductal dilation suggesting choledocholithiasis or obstruction?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the gallbladder, gallbladder wall, lumen, and proximal biliary ducts.",
+              "why_required": "Adequate assessment of these structures is necessary to determine whether gallbladder or biliary pathology is present."
+            },
+            {
+              "requirement_key": "req_presence_pathology",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones, gallbladder wall thickening, pericholecystic fluid, or a sonographic Murphy sign.",
+              "why_required": "These findings are key diagnostic criteria for acute cholecystitis or symptomatic cholelithiasis."
+            },
+            {
+              "requirement_key": "req_bile_duct_status",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Degree of intrahepatic or extrahepatic bile duct dilation or other signs of biliary obstruction.",
+              "why_required": "Biliary ductal status helps determine if there is obstructive pathology such as choledocholithiasis and informs urgency and type of intervention."
+            }
+          ],
+          "evidence": [
+            "___ w/h/o cholelithiasis, seen in ___ ER 2 days ago with RUQ pain that at that point had been going on for two days, but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain.",
+            "Her pain is still localized to the RUQ and epigastrium."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain."
+              ],
+              "reason": "A prior ultrasound two days ago is noted as negative but is not available for review here, and given ongoing and worsening pain the adequacy and current relevance of that study are uncertain."
+            },
+            {
+              "requirement_key": "req_presence_pathology",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain."
+              ],
+              "reason": "The prior negative ultrasound is not detailed and predates clinical worsening, so there is no current imaging evidence regarding presence or absence of acute gallbladder findings."
+            },
+            {
+              "requirement_key": "req_bile_duct_status",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "but withe negative ultrasound and was felt to be biliary colic, returns today with continued pain."
+              ],
+              "reason": "No current imaging assesses bile duct caliber or obstruction; labs are normal but cannot exclude early or intermittent obstruction."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "No current abdominal imaging has been performed at this encounter, and the prior negative ultrasound is both temporally remote to the worsening symptoms and insufficiently described to answer the present question."
+        },
+        "current_order_fit": {
+          "question_grounding": "well_supported",
+          "test_question_capability": "capable"
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

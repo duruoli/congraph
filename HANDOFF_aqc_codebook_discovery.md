@@ -1,12 +1,73 @@
-# A/Q/C Track B handoff：冻结 GPT-5.1 DIRECT 并启动 development 标注
+# A/Q/C development annotation handoff
+
+## 2026-09-01 bridge batch 004 completed: frozen 12-patient GPT-5.1 annotation
+
+- The active prompt SHA-256 was re-derived as `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`; validator remained `3.0.0` and retry protocol remained `1.0.0-validator-feedback`.
+- The explicit frozen manifest is `data/aqc_direct/bridge_697923b99721_004.json`: 12 new development patients / 18 steps, with 4 appendicitis, 4 cholecystitis, and 4 pancreatitis patients. Manifest file SHA-256: `ED15D138E61A106A38A849FDFD07B9E29BEF5E93F90035A0D84F9F717AEEAEAC`.
+- With explicit user authorization, the frozen batch was sent only to OpenRouter model `openai/gpt-5.1` for A/Q/C annotation, using `--no-cost-stop`. No final-test clinical content was read.
+- The initial run left 2/18 steps structurally invalid after their ordinary attempts. A manifest-scoped `--repair-invalid-steps` run repaired only those steps, reused all valid outputs, and retained the superseded attempts.
+- Final validator 3.0.0 scan: 12/12 patients present, 18/18 steps valid, 0 exact repeats, and 0 steps with `question_grounding != well_supported`.
+- Evidence-fidelity screening flagged one step. Manual review found three non-verbatim absence summaries in `supporting_evidence`; the original model output remains unchanged and the correction overlay is `results/aqc_direct/development/697923b99721/manual_adjudication_bridge_004.json`. Re-audit with the overlay has 0 evidence-fidelity alerts.
+- Audit trail retained: 37 attempts, 37 request IDs, 37 usage objects, 154,255 prompt tokens, 86,122 completion tokens, and recorded cost `$0.962743`. OpenRouter billing remains authoritative.
+- Development now has 44 unique patients covered in total (the earlier 32 plus this frozen batch of 12); 91 development patients remain unannotated. Do not expand to them without a separately frozen manifest and new external-transmission authorization.
+
+## 2026-09-01 final prompt checkpoint：新 schema 已冻结候选，下一对话开始 bridge 标注
+
+> **下一对话从本节开始；本节覆盖下方较早的“下一任务”说明。** 不要重做 codebook discovery、framework comparison、模型选择或旧患者标注，不要读取 final test 临床内容。当前任务是使用下述新 prompt，对全新的 development 患者继续进行 A/Q/C 标注。
+
+### 当前范围
+
+- Development 共235位、433步；已完成132位互不重复患者，尚余103位。
+- Final test 共58位、109步，仍未读取，继续严格排除。
+- 最近完成的32位/62步历史批次及人工 overlay 保持原样；其模型输出不覆盖，仍按旧 schema 和 validator `2.2.0` 解释。
+
+### 本轮 prompt/schema 决策记录
+
+- 活动 prompt 已改写成一个独立、自包含的 clinical reasoning annotation 任务，不再向模型提及 DIRECT/RECODE、research arm 或旧 schema-free reconstruction。角色是 clinical reasoning annotator；主任务始终是综合医嘱前病历、既往已出结果影像、前一 A/Q/C 状态和当前医嘱，重建 Assumptions、Question、Coverage 及其轨迹。
+- `output_contract()` 是在生成前随每个病例一起提供的 JSON 输出模板，不是生成后才做分类，也不是 filled clinical example。模型替换模板说明为病例特异标注；生成后 validator 再检查枚举、字段结构、question/coverage requirement 对齐和轨迹规则。
+- 医嘱是推断 Q 的重要线索，但不证明怀疑的疾病为真。Q 表示医生希望解决的核心不确定性；Coverage 表示当前医嘱前的证据已经回答 Q 的多少。二者不得混淆。
+- 为保持顶层 schema 连续性，保留 `current_order_fit`，但它只是一个轻量的两轴复核包，不是 appropriateness：
+
+```json
+"current_order_fit": {
+  "question_grounding": "well_supported | weakly_supported | unclear",
+  "test_question_capability": "capable | partially_capable | not_capable | uncertain"
+}
+```
+
+  - `question_grounding`：Record → Q；可见病历在多大程度上支持“这是医生关心的问题”。它不判断 Q 的阳性答案是否成立。
+  - `test_question_capability`：Test → Q；当前检查是否有能力回答 Q。
+  - 删除旧的 `intent_support`、`why_this_order_could_answer`、`unsupported_residual` 和额外 gap；不标注 normative appropriateness。
+- evidence/supporting-evidence/evidence-stream 字段只放可见临床原文；概括、推论和由缺失得出的判断放 explanation/reason。
+- 重复检查只有在 Q 真正询问较前变化时才加入 `temporal_course_or_response`；不能仅因检查重复而机械添加。旧影像可提供 baseline，但不能单独回答其后的变化。
+- 旧 `intent_support` 语义曾发生漂移，不能在分析时无条件重命名为新 `question_grounding`。跨版本提取必须保留 prompt/schema/validator 版本；旧批次不作静默迁移。
+
+### 冻结候选版本与本地验证
+
+- 活动 system prompt：`experiments/aqc/prompts.py::ANNOTATION_SYSTEM`
+- 输出 wrapper：`2.0.0-development`
+- Validator：`3.0.0`
+- Retry protocol：`1.0.0-validator-feedback`
+- GPT-5.1 prompt SHA-256：`697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`
+- Python 编译与新 schema 的内存转换验证通过。
+- Development dry-run 仍选出12位全新患者、18步：appendicitis 4位、cholecystitis 4位、pancreatitis 4位；diverticulitis 的未标注 development 候选已耗尽。
+- 尚未使用该 hash 调用 OpenRouter，也没有产生新标注。
+
+### 下一对话的具体任务
+
+1. 先读取本节并确认活动 hash 仍为 `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`、validator 仍为 `3.0.0`；如 hash 不同，先报告而不要执行。
+2. 将 dry-run 的12位/18步新患者冻结为显式 patient manifest，确保网络中断后恢复时名单不漂移；继续排除 final test 和所有已标注患者。
+3. 在实际向 OpenRouter 发送这批临床文本前，取得用户对该冻结名单、OpenRouter、`openai/gpt-5.1`、A/Q/C annotation 用途和 `--no-cost-stop` 的本批明确授权。授权前只做本地操作。
+4. 获授权后使用 `--patient-manifest` 逐患者落盘、可恢复执行；只对结构无效步骤做定向 repair，保留所有 attempts、request id、usage 和 cost。
+5. 完成后用 validator `3.0.0` 全扫18步，并人工复核所有 repeat、`question_grounding != well_supported`、evidence-fidelity alerts；其余步骤抽查。若 bridge 通过，再决定是否提交剩余 development 患者的 Quest/SLURM 批次。
 
 ## 2026-09-01 later checkpoint：132位已完成，repeat 规则进入 validator 2.2 bridge
 
 - 当前共完成132位互不重复的 development 患者；尚余103位。final test 58位、109步仍未读取。
 - 扩大批次 `data/aqc_direct/batch_c7f7ffae_003.json` 完成32位、62步；一次网络中断后用新增的 `--patient-manifest` 精确恢复原获授权名单，没有动态扩展患者范围。记录费用 `$2.082012`，最终 validator 2.1 为62/62有效。
 - 批次审计发现 exact repeat、证据字段混入概括和 order-driven over-rationalization 边界。13步人工纠正位于 `results/aqc_direct/development/c7f7ffae2271/manual_adjudication_batch_003.json`；应用后 validator 2.2 为62/62有效，低证据忠实度候选为0，原模型输出不覆盖。
-- 当前 prompt 是独立的 clinical reasoning annotation 任务，A/Q/C 为主体。为保持顶层 schema 连续性，`current_order_fit` 保留为仅含两个正交关系的轻量复核包：`question_grounding` 判断 Record→Q（病历是否支持“这是医生关心的问题”），`test_question_capability` 判断 Test→Q（检查能否回答 Q）。旧的 `intent_support`、理由、gap 字段均删除；这里不标注 normative appropriateness。活动 prompt 不含 DIRECT/RECODE 等旧研究术语，旧兼容逻辑位于 `experiments/aqc/legacy_recode_prompts.py`。新输出 wrapper 为 `2.0.0-development`，validator 为 `3.0.0`，prompt hash 为 `ca9e5be6060aa40099adb947b8be59aa817e12039eac0d4ec020e78beb4e306d`。旧批次仍按其原 schema/validator 保存，不作静默迁移。
-- 新 hash 的 bridge dry run 已选12位、18步：appendicitis、cholecystitis、pancreatitis 各4位；diverticulitis 的 development 候选已全部标注。该批尚未发送，必须重新取得对这12位、OpenRouter、GPT-5.1、DIRECT用途及无费用停止线的明确授权后才能执行。
+- 历史中间状态（已被顶部 final prompt checkpoint 覆盖）：曾得到 prompt hash `ca9e5be6060aa40099adb947b8be59aa817e12039eac0d4ec020e78beb4e306d`，但随后仍有本地文字精简，因此该 hash 从未执行且不再使用。
+- 当时的 bridge dry run 已选12位、18步：appendicitis、cholecystitis、pancreatitis 各4位；diverticulitis 的 development 候选已全部标注。实际执行必须使用顶部记录的最终候选 hash、冻结 manifest，并重新取得本批外部发送授权。
 
 ## 2026-09-01 continuation checkpoint：新版 bridge 通过，可扩大批次
 
