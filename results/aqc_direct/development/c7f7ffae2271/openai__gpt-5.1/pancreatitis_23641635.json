@@ -1,0 +1,844 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 23641635,
+  "source_path": "results/annotation_experiment/full/pancreatitis_23641635.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "43c0b5f1756ebec7b245886011d26fce007af57d91cc36bdee1bf5a56e8f60d5",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "43c0b5f1756ebec7b245886011d26fce007af57d91cc36bdee1bf5a56e8f60d5",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis following recent ERCP as the primary cause of her current abdominal pain and nausea.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "\"She then had epigastric pain immediately after the ERCP which worsened and then spread to b/l lower quadrants.\"",
+                    "\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\""
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is concern for complications of acute pancreatitis such as pancreatic necrosis, fluid collection, or other intra-abdominal inflammatory processes.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic process",
+                  "status": "suspected",
+                  "evidence": [
+                    "\"epigastric pain immediately after the ERCP which worsened and then spread to b/l lower quadrants.\"",
+                    "\"Pain worse with movement.\""
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient has diffuse abdominal tenderness with mild distension and diminished bowel sounds, raising concern for significant intra-abdominal inflammation or ileus.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical finding pattern",
+                  "status": "established",
+                  "evidence": [
+                    "\"[+] Tenderness diffusely\"",
+                    "\"[+] mildly distended\" and \"Diminished bowel sounds throughout\""
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is hemodynamically stable without clear evidence of septic shock or peritonitis at presentation.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "overall clinical status",
+                  "status": "established",
+                  "evidence": [
+                    "\"T = 98.7 P = 108 BP 106/69 RR 18 O2Sat on  __94% RA__\"",
+                    "\"GENERAL:  Well appearing middle aged female laying in bed\""
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Biliary obstruction or another non-pancreatic intra-abdominal pathology is a possible but unconfirmed contributor to her symptoms.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis element",
+                  "status": "suspected",
+                  "evidence": [
+                    "\"One week ago she began having b/l lower quadrant cramping which she attributed to her chronic constipation.\"",
+                    "\"She then had epigastric pain immediately after the ERCP\""
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "This is the first imaging decision, so there is no prior study to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the initial construction of assumptions at the first imaging decision."
+              },
+              "current_question": {
+                "primary": "Are there imaging-detectable complications or alternative intra-abdominal causes contributing to this patient’s post-ERCP acute pancreatitis and diffuse abdominal pain?",
+                "target": "pancreas and surrounding abdomen for pancreatitis complications and alternative intra-abdominal pathology",
+                "type": "complication",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Detecting necrosis, fluid collection, perforation, or another intra-abdominal source would alter management intensity, need for interventions, and monitoring.",
+                "negative_answer_changes": "Absence of significant complications or alternative pathology would support continued conservative management of uncomplicated post-ERCP pancreatitis.",
+                "secondary_questions": [
+                  "What is the extent and anatomic distribution of pancreatic and peripancreatic inflammation?",
+                  "Is there evidence of another intra-abdominal process (e.g., obstruction, colitis, biliary pathology) explaining her diffuse abdominal tenderness and distension?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization of the pancreas and surrounding peripancreatic tissues, as well as other abdominal viscera.",
+                    "why_required": "Direct assessment of these structures is necessary to identify or exclude complications and alternative intra-abdominal causes."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, type, and characteristics of pancreatitis complications such as necrosis, peripancreatic collections, abscess, or hemorrhage.",
+                    "why_required": "Management and prognosis depend on whether acute pancreatitis is complicated by necrosis, collections, or other serious sequelae."
+                  },
+                  {
+                    "requirement_key": "req_alternative",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of other intra-abdominal pathology (e.g., bowel obstruction, colitis, biliary pathology) that could explain or contribute to the pain and distension.",
+                    "why_required": "Identifying an alternative or additional pathology would change the diagnostic focus and therapeutic strategy beyond pancreatitis alone."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent and distribution of pancreatic and peripancreatic inflammation.",
+                    "why_required": "Grading the severity and extent of pancreatitis informs risk stratification and level of care decisions."
+                  }
+                ],
+                "evidence": [
+                  "\"She then had epigastric pain immediately  after the ERCP which worsened and then spread to b/l lower quadrants.\"",
+                  "\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\""
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "No prior imaging of the abdomen or pancreas is available, so the relevant structures have not yet been visualized."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\""
+                    ],
+                    "reason": "Laboratory and exam findings confirm pancreatitis but cannot characterize specific complications such as necrosis or collections."
+                  },
+                  {
+                    "requirement_key": "req_alternative",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "\"b/l lower quadrant cramping\" and \"diffuse\" abdominal tenderness"
+                    ],
+                    "reason": "Symptoms and exam suggest possible diffuse intra-abdominal pathology, but without imaging no alternative source can be confirmed or excluded."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "\"[+] Tenderness diffusely\"",
+                      "\"[+] mildly distended\" and \"Diminished bowel sounds throughout\""
+                    ],
+                    "reason": "Clinical findings imply potentially significant disease but do not quantify the anatomic extent or severity grading of pancreatitis."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key information about pancreatic imaging appearance, complications, extent, and alternative intra-abdominal causes is missing prior to this first CT."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can visualize the pancreas and entire abdomen, detect pancreatitis complications, and identify alternative intra-abdominal pathology.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact weighting between searching for pancreatitis necrosis versus other causes of diffuse abdominal pain (e.g., colitis, obstruction) is not specified in the chart."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis following recent ERCP as the primary cause of her current abdominal pain and nausea.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"\\\"She then had epigastric pain immediately after the ERCP which worsened and then spread to b/l lower quadrants.\\\"\",\n        \"\\\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is concern for complications of acute pancreatitis such as pancreatic necrosis, fluid collection, or other intra-abdominal inflammatory processes.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"\\\"epigastric pain immediately after the ERCP which worsened and then spread to b/l lower quadrants.\\\"\",\n        \"\\\"Pain worse with movement.\\\"\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient has diffuse abdominal tenderness with mild distension and diminished bowel sounds, raising concern for significant intra-abdominal inflammation or ileus.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical finding pattern\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"\\\"[+] Tenderness diffusely\\\"\",\n        \"\\\"[+] mildly distended\\\" and \\\"Diminished bowel sounds throughout\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is hemodynamically stable without clear evidence of septic shock or peritonitis at presentation.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical status\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"\\\"T = 98.7 P = 108 BP 106/69 RR 18 O2Sat on  __94% RA__\\\"\",\n        \"\\\"GENERAL:  Well appearing middle aged female laying in bed\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary obstruction or another non-pancreatic intra-abdominal pathology is a possible but unconfirmed contributor to her symptoms.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis element\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"\\\"One week ago she began having b/l lower quadrant cramping which she attributed to her chronic constipation.\\\"\",\n        \"\\\"She then had epigastric pain immediately after the ERCP\\\"\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"This is the first imaging decision, so there is no prior study to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the initial construction of assumptions at the first imaging decision.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Are there imaging-detectable complications or alternative intra-abdominal causes contributing to this patient’s post-ERCP acute pancreatitis and diffuse abdominal pain?\",\n    \"target\": \"pancreas and surrounding abdomen for pancreatitis complications and alternative intra-abdominal pathology\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Detecting necrosis, fluid collection, perforation, or another intra-abdominal source would alter management intensity, need for interventions, and monitoring.\",\n    \"negative_answer_changes\": \"Absence of significant complications or alternative pathology would support continued conservative management of uncomplicated post-ERCP pancreatitis.\",\n    \"secondary_questions\": [\n      \"What is the extent and anatomic distribution of pancreatic and peripancreatic inflammation?\",\n      \"Is there evidence of another intra-abdominal process (e.g., obstruction, colitis, biliary pathology) explaining her diffuse abdominal tenderness and distension?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of the pancreas and surrounding peripancreatic tissues, as well as other abdominal viscera.\",\n        \"why_required\": \"Direct assessment of these structures is necessary to identify or exclude complications and alternative intra-abdominal causes.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, type, and characteristics of pancreatitis complications such as necrosis, peripancreatic collections, abscess, or hemorrhage.\",\n        \"why_required\": \"Management and prognosis depend on whether acute pancreatitis is complicated by necrosis, collections, or other serious sequelae.\"\n      },\n      {\n        \"requirement_key\": \"req_alternative\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of other intra-abdominal pathology (e.g., bowel obstruction, colitis, biliary pathology) that could explain or contribute to the pain and distension.\",\n        \"why_required\": \"Identifying an alternative or additional pathology would change the diagnostic focus and therapeutic strategy beyond pancreatitis alone.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent and distribution of pancreatic and peripancreatic inflammation.\",\n        \"why_required\": \"Grading the severity and extent of pancreatitis informs risk stratification and level of care decisions.\"\n      }\n    ],\n    \"evidence\": [\n      \"\\\"She then had epigastric pain immediately  after the ERCP which worsened and then spread to b/l lower quadrants.\\\"\",\n      \"\\\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\\\"\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No prior imaging of the abdomen or pancreas is available, so the relevant structures have not yet been visualized.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\\\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\\\"\"\n        ],\n        \"reason\": \"Laboratory and exam findings confirm pancreatitis but cannot characterize specific complications such as necrosis or collections.\"\n      },\n      {\n        \"requirement_key\": \"req_alternative\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\\\"b/l lower quadrant cramping\\\" and \\\"diffuse\\\" abdominal tenderness\"\n        ],\n        \"reason\": \"Symptoms and exam suggest possible diffuse intra-abdominal pathology, but without imaging no alternative source can be confirmed or excluded.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\\\"[+] Tenderness diffusely\\\"\",\n          \"\\\"[+] mildly distended\\\" and \\\"Diminished bowel sounds throughout\\\"\"\n        ],\n        \"reason\": \"Clinical findings imply potentially significant disease but do not quantify the anatomic extent or severity grading of pancreatitis.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key information about pancreatic imaging appearance, complications, extent, and alternative intra-abdominal causes is missing prior to this first CT.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT of the abdomen and pelvis can visualize the pancreas and entire abdomen, detect pancreatitis complications, and identify alternative intra-abdominal pathology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact weighting between searching for pancreatitis necrosis versus other causes of diffuse abdominal pain (e.g., colitis, obstruction) is not specified in the chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788193118-CbSq8bEjIFEoE4HQskOM",
+            "usage": {
+              "completion_tokens": 2033,
+              "prompt_tokens": 3844,
+              "total_tokens": 5877,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.025135,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.025135,
+                "upstream_inference_prompt_cost": 0.004805,
+                "upstream_inference_completions_cost": 0.02033
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis following recent ERCP as the primary cause of her current abdominal pain and nausea.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome",
+            "status": "established",
+            "evidence": [
+              "\"She then had epigastric pain immediately after the ERCP which worsened and then spread to b/l lower quadrants.\"",
+              "\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\""
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is concern for complications of acute pancreatitis such as pancreatic necrosis, fluid collection, or other intra-abdominal inflammatory processes.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "pathophysiologic process",
+            "status": "suspected",
+            "evidence": [
+              "\"epigastric pain immediately after the ERCP which worsened and then spread to b/l lower quadrants.\"",
+              "\"Pain worse with movement.\""
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient has diffuse abdominal tenderness with mild distension and diminished bowel sounds, raising concern for significant intra-abdominal inflammation or ileus.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical finding pattern",
+            "status": "established",
+            "evidence": [
+              "\"[+] Tenderness diffusely\"",
+              "\"[+] mildly distended\" and \"Diminished bowel sounds throughout\""
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is hemodynamically stable without clear evidence of septic shock or peritonitis at presentation.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "overall clinical status",
+            "status": "established",
+            "evidence": [
+              "\"T = 98.7 P = 108 BP 106/69 RR 18 O2Sat on  __94% RA__\"",
+              "\"GENERAL:  Well appearing middle aged female laying in bed\""
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Biliary obstruction or another non-pancreatic intra-abdominal pathology is a possible but unconfirmed contributor to her symptoms.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "differential diagnosis element",
+            "status": "suspected",
+            "evidence": [
+              "\"One week ago she began having b/l lower quadrant cramping which she attributed to her chronic constipation.\"",
+              "\"She then had epigastric pain immediately after the ERCP\""
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "This is the first imaging decision, so there is no prior study to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the initial construction of assumptions at the first imaging decision."
+        },
+        "current_question": {
+          "primary": "Are there imaging-detectable complications or alternative intra-abdominal causes contributing to this patient’s post-ERCP acute pancreatitis and diffuse abdominal pain?",
+          "target": "pancreas and surrounding abdomen for pancreatitis complications and alternative intra-abdominal pathology",
+          "type": "complication",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Detecting necrosis, fluid collection, perforation, or another intra-abdominal source would alter management intensity, need for interventions, and monitoring.",
+          "negative_answer_changes": "Absence of significant complications or alternative pathology would support continued conservative management of uncomplicated post-ERCP pancreatitis.",
+          "secondary_questions": [
+            "What is the extent and anatomic distribution of pancreatic and peripancreatic inflammation?",
+            "Is there evidence of another intra-abdominal process (e.g., obstruction, colitis, biliary pathology) explaining her diffuse abdominal tenderness and distension?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization of the pancreas and surrounding peripancreatic tissues, as well as other abdominal viscera.",
+              "why_required": "Direct assessment of these structures is necessary to identify or exclude complications and alternative intra-abdominal causes."
+            },
+            {
+              "requirement_key": "req_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, type, and characteristics of pancreatitis complications such as necrosis, peripancreatic collections, abscess, or hemorrhage.",
+              "why_required": "Management and prognosis depend on whether acute pancreatitis is complicated by necrosis, collections, or other serious sequelae."
+            },
+            {
+              "requirement_key": "req_alternative",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of other intra-abdominal pathology (e.g., bowel obstruction, colitis, biliary pathology) that could explain or contribute to the pain and distension.",
+              "why_required": "Identifying an alternative or additional pathology would change the diagnostic focus and therapeutic strategy beyond pancreatitis alone."
+            },
+            {
+              "requirement_key": "req_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent and distribution of pancreatic and peripancreatic inflammation.",
+              "why_required": "Grading the severity and extent of pancreatitis informs risk stratification and level of care decisions."
+            }
+          ],
+          "evidence": [
+            "\"She then had epigastric pain immediately  after the ERCP which worsened and then spread to b/l lower quadrants.\"",
+            "\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\""
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "No prior imaging of the abdomen or pancreas is available, so the relevant structures have not yet been visualized."
+            },
+            {
+              "requirement_key": "req_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\""
+              ],
+              "reason": "Laboratory and exam findings confirm pancreatitis but cannot characterize specific complications such as necrosis or collections."
+            },
+            {
+              "requirement_key": "req_alternative",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "\"b/l lower quadrant cramping\" and \"diffuse\" abdominal tenderness"
+              ],
+              "reason": "Symptoms and exam suggest possible diffuse intra-abdominal pathology, but without imaging no alternative source can be confirmed or excluded."
+            },
+            {
+              "requirement_key": "req_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "\"[+] Tenderness diffusely\"",
+                "\"[+] mildly distended\" and \"Diminished bowel sounds throughout\""
+              ],
+              "reason": "Clinical findings imply potentially significant disease but do not quantify the anatomic extent or severity grading of pancreatitis."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key information about pancreatic imaging appearance, complications, extent, and alternative intra-abdominal causes is missing prior to this first CT."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can visualize the pancreas and entire abdomen, detect pancreatitis complications, and identify alternative intra-abdominal pathology.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The exact weighting between searching for pancreatitis necrosis versus other causes of diffuse abdominal pain (e.g., colitis, obstruction) is not specified in the chart."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "c0f612da73d2e6320cb80d8eec6bd7a7801e435d5f6b79c902c0cf828ff71abd",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "c0f612da73d2e6320cb80d8eec6bd7a7801e435d5f6b79c902c0cf828ff71abd",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute post-ERCP pancreatitis causing her current abdominal pain and nausea.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "\"She then had epigastric pain immediately  after the ERCP which worsened and then spread to b/l lower quadrants.\"",
+                    "\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\""
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is concern for complications of acute pancreatitis such as necrosis or peripancreatic fluid collections given diffuse abdominal tenderness and mild distension.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic process",
+                  "status": "suspected",
+                  "evidence": [
+                    "\"[+] Tenderness diffusely\"",
+                    "\"[+] mildly distended\" and \"Diminished bowel sounds throughout\""
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient is hemodynamically stable without clear sepsis or peritonitis at presentation, but has tachycardia and moderate bilateral pleural effusions suggesting at least moderately severe systemic involvement.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "overall clinical status",
+                  "status": "established",
+                  "evidence": [
+                    "\"T = 98.7 P = 108 BP 106/69 RR 18 O2Sat on  __94% RA__\"",
+                    "\"Moderate, bilateral pleural effusions are seen.\""
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "CT evidence of peripancreatic fat stranding and small-volume ascites indicates acute interstitial pancreatitis without obvious necrosis on the prior study.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "imaging pattern",
+                  "status": "established",
+                  "evidence": [
+                    "\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\"",
+                    "\"Homogeneous appearance of the pancreas without apparent focal lesion or main ductal dilation.\""
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "No alternative intra-abdominal source such as appendicitis, bowel obstruction, or obvious colitis has been identified on prior CT to fully explain the diffuse abdominal pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis element",
+                  "status": "challenged",
+                  "evidence": [
+                    "\"The retrocecal appendix contains contrast and demonstrates no more adjacent fat stranding in the remainder of the abdomen and pelvis. Normal TI. No small bowel dilation.\"",
+                    "\"Contrast and stool within the colon.\""
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Are there imaging-detectable complications or alternative intra-abdominal causes contributing to this patient’s post-ERCP acute pancreatitis and diffuse abdominal pain?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "indeterminate",
+                "effect_on_previous_question": "The CT abdomen and pelvis demonstrated acute interstitial pancreatitis with peripancreatic fat stranding and small ascites but no clear necrosis, abscess, or alternative causes such as appendicitis or bowel obstruction, partially addressing concerns about complications and alternative sources while leaving early necrosis, evolving collections, and detailed severity grading incompletely resolved.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\"",
+                  "evidence_stream_2": "\"Homogeneous appearance of the pancreas without apparent focal lesion or main ductal dilation.\"",
+                  "reason": "Imaging findings of interstitial pancreatitis with peripancreatic fat stranding are consistent with the clinical and laboratory diagnosis of acute pancreatitis."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "There is concern for complications of acute pancreatitis such as necrosis or peripancreatic fluid collections given diffuse abdominal tenderness and mild distension.",
+                "reason": "Prior CT showed peripancreatic fat stranding and small ascites without overt necrosis or large collections, refining concern toward early or evolving complications rather than already-established severe complications."
+              },
+              "current_question": {
+                "primary": "Has this patient’s acute pancreatitis developed early complications or progression not fully characterized on the recent CT that could explain her ongoing diffuse abdominal pain and systemic findings?",
+                "target": "pancreas and peripancreatic/abdominal structures for evolving pancreatitis-related complications or progression",
+                "type": "complication",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying new or worsening necrosis, fluid collections, abscess, or other complications would prompt escalation of care, possible drainage or intervention, and closer monitoring.",
+                "negative_answer_changes": "If no progression or new complications are seen, management can continue as conservative treatment for interstitial pancreatitis with attention to non-imaging causes of pain and systemic findings.",
+                "secondary_questions": [
+                  "Has the extent or distribution of pancreatic and peripancreatic inflammation or ascites changed since the prior CT?",
+                  "Is there any new intra-abdominal process not appreciated or not yet developed on the initial CT that could contribute to symptoms?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Current visualization of the pancreas, peripancreatic tissues, and surrounding abdomen to reassess for evolving changes.",
+                    "why_required": "Direct reassessment is necessary to detect new or progressive complications since the prior CT."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, type, and characteristics of any new or progressive pancreatitis complications such as necrosis, enlarging or new fluid collections, abscess, hemorrhage, or increasing ascites.",
+                    "why_required": "Management decisions depend on whether complications have emerged or progressed after the initial interstitial pancreatitis findings."
+                  },
+                  {
+                    "requirement_key": "req_extent_change",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Change in severity or extent of pancreatic and peripancreatic inflammation and associated ascites compared with the initial CT.",
+                    "why_required": "Progression or stability influences prognosis, level of care, and need for additional interventions."
+                  },
+                  {
+                    "requirement_key": "req_alt_new",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Current assessment for any new alternative intra-abdominal pathology (e.g., bowel ischemia, obstruction, colitis) not evident or not yet developed on the prior CT.",
+                    "why_required": "A new alternative or additional source could redirect diagnostic focus and therapy beyond pancreatitis complications."
+                  }
+                ],
+                "evidence": [
+                  "\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\"",
+                  "\"A small amount of ascites is present throughout the abdomen and pelvis.\""
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "sufficiently_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "\"Helical CT acquisition was performed DURING SINGLE PHASE after the administration of nonionic IV contrast. Oral contrast was also administered.\""
+                    ],
+                    "reason": "The prior contrast-enhanced CT provided adequate visualization of the pancreas and abdomen at that time, though it does not address current interval changes."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "\"Homogeneous appearance of the pancreas without apparent focal lesion or main ductal dilation.\"",
+                      "\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\""
+                    ],
+                    "reason": "The initial CT refutes established necrosis or large collections at that time but cannot exclude early evolving necrosis, small collections, or new complications that may have developed since."
+                  },
+                  {
+                    "requirement_key": "req_extent_change",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "\"A small amount of ascites is present throughout the abdomen and pelvis.\"",
+                      "\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\""
+                    ],
+                    "reason": "The prior CT characterizes initial extent and associated ascites but offers no information on subsequent progression or improvement."
+                  },
+                  {
+                    "requirement_key": "req_alt_new",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "sufficiently_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "\"The retrocecal appendix contains contrast and demonstrates no more adjacent fat stranding in the remainder of the abdomen and pelvis. Normal TI. No small bowel dilation.\""
+                    ],
+                    "reason": "The prior CT adequately excluded common alternative intra-abdominal sources like appendicitis or obstruction at that time, though truly new processes could arise later."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "The initial CT adequately described early interstitial pancreatitis and excluded major alternative causes but cannot address interval progression or newly developed complications, leaving the refined question only partially answered."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A repeat contrast-enhanced CT abdomen and pelvis can reassess the pancreas and abdomen for interval development or progression of pancreatitis complications and new intra-abdominal pathology.",
+                "intent_support": "weakly_supported",
+                "unsupported_residual": "The exact clinical trigger and timing for repeating the same CT modality are not detailed, so the balance between routine re-evaluation versus response to new or worsening symptoms is unclear."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute post-ERCP pancreatitis causing her current abdominal pain and nausea.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"\\\"She then had epigastric pain immediately  after the ERCP which worsened and then spread to b/l lower quadrants.\\\"\",\n        \"\\\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is concern for complications of acute pancreatitis such as necrosis or peripancreatic fluid collections given diffuse abdominal tenderness and mild distension.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"\\\"[+] Tenderness diffusely\\\"\",\n        \"\\\"[+] mildly distended\\\" and \\\"Diminished bowel sounds throughout\\\"\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient is hemodynamically stable without clear sepsis or peritonitis at presentation, but has tachycardia and moderate bilateral pleural effusions suggesting at least moderately severe systemic involvement.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical status\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"\\\"T = 98.7 P = 108 BP 106/69 RR 18 O2Sat on  __94% RA__\\\"\",\n        \"\\\"Moderate, bilateral pleural effusions are seen.\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"CT evidence of peripancreatic fat stranding and small-volume ascites indicates acute interstitial pancreatitis without obvious necrosis on the prior study.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"imaging pattern\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"\\\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\\\"\",\n        \"\\\"Homogeneous appearance of the pancreas without apparent focal lesion or main ductal dilation.\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"No alternative intra-abdominal source such as appendicitis, bowel obstruction, or obvious colitis has been identified on prior CT to fully explain the diffuse abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis element\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"\\\"The retrocecal appendix contains contrast and demonstrates no more adjacent fat stranding in the remainder of the abdomen and pelvis. Normal TI. No small bowel dilation.\\\"\",\n        \"\\\"Contrast and stool within the colon.\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Are there imaging-detectable complications or alternative intra-abdominal causes contributing to this patient’s post-ERCP acute pancreatitis and diffuse abdominal pain?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"indeterminate\",\n    \"effect_on_previous_question\": \"The CT abdomen and pelvis demonstrated acute interstitial pancreatitis with peripancreatic fat stranding and small ascites but no clear necrosis, abscess, or alternative causes such as appendicitis or bowel obstruction, partially addressing concerns about complications and alternative sources while leaving early necrosis, evolving collections, and detailed severity grading incompletely resolved.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"\\\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\\\"\",\n      \"evidence_stream_2\": \"\\\"Homogeneous appearance of the pancreas without apparent focal lesion or main ductal dilation.\\\"\",\n      \"reason\": \"Imaging findings of interstitial pancreatitis with peripancreatic fat stranding are consistent with the clinical and laboratory diagnosis of acute pancreatitis.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"There is concern for complications of acute pancreatitis such as necrosis or peripancreatic fluid collections given diffuse abdominal tenderness and mild distension.\",\n    \"reason\": \"Prior CT showed peripancreatic fat stranding and small ascites without overt necrosis or large collections, refining concern toward early or evolving complications rather than already-established severe complications.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Has this patient’s acute pancreatitis developed early complications or progression not fully characterized on the recent CT that could explain her ongoing diffuse abdominal pain and systemic findings?\",\n    \"target\": \"pancreas and peripancreatic/abdominal structures for evolving pancreatitis-related complications or progression\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying new or worsening necrosis, fluid collections, abscess, or other complications would prompt escalation of care, possible drainage or intervention, and closer monitoring.\",\n    \"negative_answer_changes\": \"If no progression or new complications are seen, management can continue as conservative treatment for interstitial pancreatitis with attention to non-imaging causes of pain and systemic findings.\",\n    \"secondary_questions\": [\n      \"Has the extent or distribution of pancreatic and peripancreatic inflammation or ascites changed since the prior CT?\",\n      \"Is there any new intra-abdominal process not appreciated or not yet developed on the initial CT that could contribute to symptoms?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Current visualization of the pancreas, peripancreatic tissues, and surrounding abdomen to reassess for evolving changes.\",\n        \"why_required\": \"Direct reassessment is necessary to detect new or progressive complications since the prior CT.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, type, and characteristics of any new or progressive pancreatitis complications such as necrosis, enlarging or new fluid collections, abscess, hemorrhage, or increasing ascites.\",\n        \"why_required\": \"Management decisions depend on whether complications have emerged or progressed after the initial interstitial pancreatitis findings.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_change\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Change in severity or extent of pancreatic and peripancreatic inflammation and associated ascites compared with the initial CT.\",\n        \"why_required\": \"Progression or stability influences prognosis, level of care, and need for additional interventions.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_new\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Current assessment for any new alternative intra-abdominal pathology (e.g., bowel ischemia, obstruction, colitis) not evident or not yet developed on the prior CT.\",\n        \"why_required\": \"A new alternative or additional source could redirect diagnostic focus and therapy beyond pancreatitis complications.\"\n      }\n    ],\n    \"evidence\": [\n      \"\\\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\\\"\",\n      \"\\\"A small amount of ascites is present throughout the abdomen and pelvis.\\\"\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"\\\"Helical CT acquisition was performed DURING SINGLE PHASE after the administration of nonionic IV contrast. Oral contrast was also administered.\\\"\"\n        ],\n        \"reason\": \"The prior contrast-enhanced CT provided adequate visualization of the pancreas and abdomen at that time, though it does not address current interval changes.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"\\\"Homogeneous appearance of the pancreas without apparent focal lesion or main ductal dilation.\\\"\",\n          \"\\\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\\\"\"\n        ],\n        \"reason\": \"The initial CT refutes established necrosis or large collections at that time but cannot exclude early evolving necrosis, small collections, or new complications that may have developed since.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_change\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"\\\"A small amount of ascites is present throughout the abdomen and pelvis.\\\"\",\n          \"\\\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\\\"\"\n        ],\n        \"reason\": \"The prior CT characterizes initial extent and associated ascites but offers no information on subsequent progression or improvement.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_new\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"\\\"The retrocecal appendix contains contrast and demonstrates no more adjacent fat stranding in the remainder of the abdomen and pelvis. Normal TI. No small bowel dilation.\\\"\"\n        ],\n        \"reason\": \"The prior CT adequately excluded common alternative intra-abdominal sources like appendicitis or obstruction at that time, though truly new processes could arise later.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"The initial CT adequately described early interstitial pancreatitis and excluded major alternative causes but cannot address interval progression or newly developed complications, leaving the refined question only partially answered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A repeat contrast-enhanced CT abdomen and pelvis can reassess the pancreas and abdomen for interval development or progression of pancreatitis complications and new intra-abdominal pathology.\",\n    \"intent_support\": \"weakly_supported\",\n    \"unsupported_residual\": \"The exact clinical trigger and timing for repeating the same CT modality are not detailed, so the balance between routine re-evaluation versus response to new or worsening symptoms is unclear.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788193134-conLPUhJnyVMXFXGpF5Y",
+            "usage": {
+              "completion_tokens": 2434,
+              "prompt_tokens": 6060,
+              "total_tokens": 8494,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2560,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.029035,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.029035,
+                "upstream_inference_prompt_cost": 0.004695,
+                "upstream_inference_completions_cost": 0.02434
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute post-ERCP pancreatitis causing her current abdominal pain and nausea.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome",
+            "status": "established",
+            "evidence": [
+              "\"She then had epigastric pain immediately  after the ERCP which worsened and then spread to b/l lower quadrants.\"",
+              "\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\""
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is concern for complications of acute pancreatitis such as necrosis or peripancreatic fluid collections given diffuse abdominal tenderness and mild distension.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "pathophysiologic process",
+            "status": "suspected",
+            "evidence": [
+              "\"[+] Tenderness diffusely\"",
+              "\"[+] mildly distended\" and \"Diminished bowel sounds throughout\""
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient is hemodynamically stable without clear sepsis or peritonitis at presentation, but has tachycardia and moderate bilateral pleural effusions suggesting at least moderately severe systemic involvement.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "overall clinical status",
+            "status": "established",
+            "evidence": [
+              "\"T = 98.7 P = 108 BP 106/69 RR 18 O2Sat on  __94% RA__\"",
+              "\"Moderate, bilateral pleural effusions are seen.\""
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "CT evidence of peripancreatic fat stranding and small-volume ascites indicates acute interstitial pancreatitis without obvious necrosis on the prior study.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "imaging pattern",
+            "status": "established",
+            "evidence": [
+              "\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\"",
+              "\"Homogeneous appearance of the pancreas without apparent focal lesion or main ductal dilation.\""
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "No alternative intra-abdominal source such as appendicitis, bowel obstruction, or obvious colitis has been identified on prior CT to fully explain the diffuse abdominal pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "differential diagnosis element",
+            "status": "challenged",
+            "evidence": [
+              "\"The retrocecal appendix contains contrast and demonstrates no more adjacent fat stranding in the remainder of the abdomen and pelvis. Normal TI. No small bowel dilation.\"",
+              "\"Contrast and stool within the colon.\""
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Are there imaging-detectable complications or alternative intra-abdominal causes contributing to this patient’s post-ERCP acute pancreatitis and diffuse abdominal pain?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "indeterminate",
+          "effect_on_previous_question": "The CT abdomen and pelvis demonstrated acute interstitial pancreatitis with peripancreatic fat stranding and small ascites but no clear necrosis, abscess, or alternative causes such as appendicitis or bowel obstruction, partially addressing concerns about complications and alternative sources while leaving early necrosis, evolving collections, and detailed severity grading incompletely resolved.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "\"Lipase: 4890.0 IU/L (ref 0.0-60.0)\"",
+            "evidence_stream_2": "\"Homogeneous appearance of the pancreas without apparent focal lesion or main ductal dilation.\"",
+            "reason": "Imaging findings of interstitial pancreatitis with peripancreatic fat stranding are consistent with the clinical and laboratory diagnosis of acute pancreatitis."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "There is concern for complications of acute pancreatitis such as necrosis or peripancreatic fluid collections given diffuse abdominal tenderness and mild distension.",
+          "reason": "Prior CT showed peripancreatic fat stranding and small ascites without overt necrosis or large collections, refining concern toward early or evolving complications rather than already-established severe complications."
+        },
+        "current_question": {
+          "primary": "Has this patient’s acute pancreatitis developed early complications or progression not fully characterized on the recent CT that could explain her ongoing diffuse abdominal pain and systemic findings?",
+          "target": "pancreas and peripancreatic/abdominal structures for evolving pancreatitis-related complications or progression",
+          "type": "complication",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying new or worsening necrosis, fluid collections, abscess, or other complications would prompt escalation of care, possible drainage or intervention, and closer monitoring.",
+          "negative_answer_changes": "If no progression or new complications are seen, management can continue as conservative treatment for interstitial pancreatitis with attention to non-imaging causes of pain and systemic findings.",
+          "secondary_questions": [
+            "Has the extent or distribution of pancreatic and peripancreatic inflammation or ascites changed since the prior CT?",
+            "Is there any new intra-abdominal process not appreciated or not yet developed on the initial CT that could contribute to symptoms?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Current visualization of the pancreas, peripancreatic tissues, and surrounding abdomen to reassess for evolving changes.",
+              "why_required": "Direct reassessment is necessary to detect new or progressive complications since the prior CT."
+            },
+            {
+              "requirement_key": "req_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, type, and characteristics of any new or progressive pancreatitis complications such as necrosis, enlarging or new fluid collections, abscess, hemorrhage, or increasing ascites.",
+              "why_required": "Management decisions depend on whether complications have emerged or progressed after the initial interstitial pancreatitis findings."
+            },
+            {
+              "requirement_key": "req_extent_change",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Change in severity or extent of pancreatic and peripancreatic inflammation and associated ascites compared with the initial CT.",
+              "why_required": "Progression or stability influences prognosis, level of care, and need for additional interventions."
+            },
+            {
+              "requirement_key": "req_alt_new",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Current assessment for any new alternative intra-abdominal pathology (e.g., bowel ischemia, obstruction, colitis) not evident or not yet developed on the prior CT.",
+              "why_required": "A new alternative or additional source could redirect diagnostic focus and therapy beyond pancreatitis complications."
+            }
+          ],
+          "evidence": [
+            "\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\"",
+            "\"A small amount of ascites is present throughout the abdomen and pelvis.\""
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "sufficiently_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "\"Helical CT acquisition was performed DURING SINGLE PHASE after the administration of nonionic IV contrast. Oral contrast was also administered.\""
+              ],
+              "reason": "The prior contrast-enhanced CT provided adequate visualization of the pancreas and abdomen at that time, though it does not address current interval changes."
+            },
+            {
+              "requirement_key": "req_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "\"Homogeneous appearance of the pancreas without apparent focal lesion or main ductal dilation.\"",
+                "\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\""
+              ],
+              "reason": "The initial CT refutes established necrosis or large collections at that time but cannot exclude early evolving necrosis, small collections, or new complications that may have developed since."
+            },
+            {
+              "requirement_key": "req_extent_change",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "\"A small amount of ascites is present throughout the abdomen and pelvis.\"",
+                "\"Fat stranding is noted throughout the anterior pararenal space adjacent to the pancreas, with mild generalized retroperitoneal fat stranding.\""
+              ],
+              "reason": "The prior CT characterizes initial extent and associated ascites but offers no information on subsequent progression or improvement."
+            },
+            {
+              "requirement_key": "req_alt_new",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "sufficiently_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "\"The retrocecal appendix contains contrast and demonstrates no more adjacent fat stranding in the remainder of the abdomen and pelvis. Normal TI. No small bowel dilation.\""
+              ],
+              "reason": "The prior CT adequately excluded common alternative intra-abdominal sources like appendicitis or obstruction at that time, though truly new processes could arise later."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "The initial CT adequately described early interstitial pancreatitis and excluded major alternative causes but cannot address interval progression or newly developed complications, leaving the refined question only partially answered."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A repeat contrast-enhanced CT abdomen and pelvis can reassess the pancreas and abdomen for interval development or progression of pancreatitis complications and new intra-abdominal pathology.",
+          "intent_support": "weakly_supported",
+          "unsupported_residual": "The exact clinical trigger and timing for repeating the same CT modality are not detailed, so the balance between routine re-evaluation versus response to new or worsening symptoms is unclear."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

@@ -1,0 +1,394 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 24677490,
+  "source_path": "results/annotation_experiment/full/pancreatitis_24677490.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "d9f0c01a505663454371289ea7f45995b2ea8f897a72053d8e90ad1bd738deb9",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (ABDOMEN U.S. (COMPLETE STUDY))",
+      "request_prompt_sha256": "956a7465ae6ea2e390d3a9f67a144d1263d5c0192c2f99fd97fdf329a5f0786c",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "956a7465ae6ea2e390d3a9f67a144d1263d5c0192c2f99fd97fdf329a5f0786c",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis associated with markedly elevated lipase and epigastric/upper abdominal pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "His labs were significant for a leukocytosis to 13.9, anion gap of 31 (+urine ketones), lipase of 1373.",
+                    "ABD: Soft, ND, tender to palpation over epigastrium"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is in diabetic ketoacidosis with severe hyperglycemia, high anion gap metabolic acidosis, and ketonuria.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "He was found to have hyperglycemia to 1008, HCO3 10, ... anion gap of 31 (+urine ketones)",
+                    "initial BG was 420 and he was continued on an insulin drip"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has acute kidney injury with markedly reduced estimated GFR.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "organ dysfunction",
+                  "status": "established",
+                  "evidence": [
+                    "ARF with creatinine 3.2.",
+                    "Creatinine: 2.4 mg/dL ... Estimated GFR = 30 if non African-American"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Alcohol use is a possible contributing etiology to the pancreatitis.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic factor",
+                  "status": "suspected",
+                  "evidence": [
+                    "___ M PMH of IDDM, alcohol abuse, and question of seizure disorder",
+                    "He also describes upper abdominal pain that is nonradiating."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Gallstones or other biliary pathology are a possible alternative or additional cause of the suspected pancreatitis.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative organ source",
+                  "status": "suspected",
+                  "evidence": [
+                    "He also describes upper abdominal pain that is nonradiating.",
+                    "lipase of 1373."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "This is the first decision point so there is no prior A/Q/C state to update."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; assumptions are newly established based on the baseline presentation and labs."
+              },
+              "current_question": {
+                "primary": "Is there biliary or other upper abdominal structural pathology, particularly gallstones or biliary obstruction, that could explain or contribute to the suspected acute pancreatitis and abdominal pain?",
+                "target": "gallbladder, biliary tree, and adjacent upper abdominal organs in the context of suspected acute pancreatitis",
+                "type": "alternative_source",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying gallstones, choledocholithiasis, or biliary obstruction would support biliary pancreatitis and prompt consideration of targeted biliary management (e.g., ERCP, cholecystectomy, or altered medical plan).",
+                "negative_answer_changes": "Absence of biliary pathology would make alcohol or other causes more likely, supporting continued medical management of pancreatitis and DKA without urgent biliary intervention.",
+                "secondary_questions": [
+                  "What is the severity or extent of pancreatic and adjacent organ involvement (e.g., pancreatic enlargement, peripancreatic fluid) in this suspected acute pancreatitis?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_biliary_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones, choledocholithiasis, or biliary sludge in the gallbladder and common bile duct",
+                    "why_required": "Determining if biliary disease is present is essential to decide whether the pancreatitis is likely biliary in origin and whether biliary-specific interventions are needed."
+                  },
+                  {
+                    "requirement_key": "req_biliary_obstruction",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of biliary obstruction, such as common bile duct dilation or intrahepatic ductal dilation",
+                    "why_required": "The extent of obstruction affects urgency and type of intervention (e.g., ERCP vs. conservative management)."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity or extent of pancreatic and peripancreatic abnormalities (e.g., enlargement, peripancreatic fluid collections) if visualized",
+                    "why_required": "Appreciating the extent of pancreatic involvement helps risk stratify the pancreatitis and guide monitoring and supportive care."
+                  }
+                ],
+                "evidence": [
+                  "His labs were significant for ... lipase of 1373.",
+                  "He also describes upper abdominal pain that is nonradiating."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_biliary_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CHEST RADIOGRAPH ... Lungs are clear bilaterally ... The heart is normal in size."
+                    ],
+                    "reason": "Only a chest radiograph has been performed, which does not assess the gallbladder or biliary tree, so the presence or absence of gallstones or choledocholithiasis remains unknown."
+                  },
+                  {
+                    "requirement_key": "req_biliary_obstruction",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CHEST RADIOGRAPH PERFORMED ... Mediastinal contour is unremarkable."
+                    ],
+                    "reason": "No prior imaging of the biliary ducts or liver has been obtained, so the degree of any biliary obstruction cannot be assessed."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "He also describes upper abdominal pain that is nonradiating.",
+                      "His labs were significant for ... lipase of 1373."
+                    ],
+                    "reason": "Pancreatic morphology and peripancreatic structures have not been imaged; lab and clinical data suggest pancreatitis but do not quantify its anatomic extent."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key anatomic and etiologic aspects of suspected biliary or pancreatic pathology remain unassessed by prior chest imaging."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A complete abdominal ultrasound can evaluate the gallbladder and biliary tree for stones and obstruction and often visualize pancreatic enlargement or peripancreatic fluid, directly addressing suspected biliary etiology and extent of pancreatitis.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order does not by itself explain any need to evaluate non-biliary abdominal organs (e.g., kidneys, aorta) beyond what is implied by general upper abdominal pain and systemic illness, but these are plausibly incidental to a complete protocol."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": "An alternative explanation is that the primary question is the severity and complications of pancreatitis itself (e.g., necrosis or fluid collections) rather than biliary etiology; however, CT is usually preferred for detailed pancreatitis staging, and the choice of ultrasound is more directly aligned with evaluating a possible biliary cause in a patient with elevated lipase and epigastric pain."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis associated with markedly elevated lipase and epigastric/upper abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"His labs were significant for a leukocytosis to 13.9, anion gap of 31 (+urine ketones), lipase of 1373.\",\n        \"ABD: Soft, ND, tender to palpation over epigastrium\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is in diabetic ketoacidosis with severe hyperglycemia, high anion gap metabolic acidosis, and ketonuria.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"He was found to have hyperglycemia to 1008, HCO3 10, ... anion gap of 31 (+urine ketones)\",\n        \"initial BG was 420 and he was continued on an insulin drip\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has acute kidney injury with markedly reduced estimated GFR.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ dysfunction\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"ARF with creatinine 3.2.\",\n        \"Creatinine: 2.4 mg/dL ... Estimated GFR = 30 if non African-American\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Alcohol use is a possible contributing etiology to the pancreatitis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic factor\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"___ M PMH of IDDM, alcohol abuse, and question of seizure disorder\",\n        \"He also describes upper abdominal pain that is nonradiating.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Gallstones or other biliary pathology are a possible alternative or additional cause of the suspected pancreatitis.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative organ source\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"He also describes upper abdominal pain that is nonradiating.\",\n        \"lipase of 1373.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"This is the first decision point so there is no prior A/Q/C state to update.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; assumptions are newly established based on the baseline presentation and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there biliary or other upper abdominal structural pathology, particularly gallstones or biliary obstruction, that could explain or contribute to the suspected acute pancreatitis and abdominal pain?\",\n    \"target\": \"gallbladder, biliary tree, and adjacent upper abdominal organs in the context of suspected acute pancreatitis\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying gallstones, choledocholithiasis, or biliary obstruction would support biliary pancreatitis and prompt consideration of targeted biliary management (e.g., ERCP, cholecystectomy, or altered medical plan).\",\n    \"negative_answer_changes\": \"Absence of biliary pathology would make alcohol or other causes more likely, supporting continued medical management of pancreatitis and DKA without urgent biliary intervention.\",\n    \"secondary_questions\": [\n      \"What is the severity or extent of pancreatic and adjacent organ involvement (e.g., pancreatic enlargement, peripancreatic fluid) in this suspected acute pancreatitis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_biliary_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, choledocholithiasis, or biliary sludge in the gallbladder and common bile duct\",\n        \"why_required\": \"Determining if biliary disease is present is essential to decide whether the pancreatitis is likely biliary in origin and whether biliary-specific interventions are needed.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_obstruction\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of biliary obstruction, such as common bile duct dilation or intrahepatic ductal dilation\",\n        \"why_required\": \"The extent of obstruction affects urgency and type of intervention (e.g., ERCP vs. conservative management).\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity or extent of pancreatic and peripancreatic abnormalities (e.g., enlargement, peripancreatic fluid collections) if visualized\",\n        \"why_required\": \"Appreciating the extent of pancreatic involvement helps risk stratify the pancreatitis and guide monitoring and supportive care.\"\n      }\n    ],\n    \"evidence\": [\n      \"His labs were significant for ... lipase of 1373.\",\n      \"He also describes upper abdominal pain that is nonradiating.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_biliary_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CHEST RADIOGRAPH ... Lungs are clear bilaterally ... The heart is normal in size.\"\n        ],\n        \"reason\": \"Only a chest radiograph has been performed, which does not assess the gallbladder or biliary tree, so the presence or absence of gallstones or choledocholithiasis remains unknown.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_obstruction\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CHEST RADIOGRAPH PERFORMED ... Mediastinal contour is unremarkable.\"\n        ],\n        \"reason\": \"No prior imaging of the biliary ducts or liver has been obtained, so the degree of any biliary obstruction cannot be assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"He also describes upper abdominal pain that is nonradiating.\",\n          \"His labs were significant for ... lipase of 1373.\"\n        ],\n        \"reason\": \"Pancreatic morphology and peripancreatic structures have not been imaged; lab and clinical data suggest pancreatitis but do not quantify its anatomic extent.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key anatomic and etiologic aspects of suspected biliary or pancreatic pathology remain unassessed by prior chest imaging.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A complete abdominal ultrasound can evaluate the gallbladder and biliary tree for stones and obstruction and often visualize pancreatic enlargement or peripancreatic fluid, directly addressing suspected biliary etiology and extent of pancreatitis.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order does not by itself explain any need to evaluate non-biliary abdominal organs (e.g., kidneys, aorta) beyond what is implied by general upper abdominal pain and systemic illness, but these are plausibly incidental to a complete protocol.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"An alternative explanation is that the primary question is the severity and complications of pancreatitis itself (e.g., necrosis or fluid collections) rather than biliary etiology; however, CT is usually preferred for detailed pancreatitis staging, and the choice of ultrasound is more directly aligned with evaluating a possible biliary cause in a patient with elevated lipase and epigastric pain.\"\n}",
+            "request_id": "gen-1788190502-xQENcEf6B4xiZdrYjEDH",
+            "usage": {
+              "completion_tokens": 1988,
+              "prompt_tokens": 3898,
+              "total_tokens": 5886,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0247525,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0247525,
+                "upstream_inference_prompt_cost": 0.0048725,
+                "upstream_inference_completions_cost": 0.01988
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis associated with markedly elevated lipase and epigastric/upper abdominal pain.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific diagnosis",
+            "status": "likely",
+            "evidence": [
+              "His labs were significant for a leukocytosis to 13.9, anion gap of 31 (+urine ketones), lipase of 1373.",
+              "ABD: Soft, ND, tender to palpation over epigastrium"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is in diabetic ketoacidosis with severe hyperglycemia, high anion gap metabolic acidosis, and ketonuria.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome",
+            "status": "established",
+            "evidence": [
+              "He was found to have hyperglycemia to 1008, HCO3 10, ... anion gap of 31 (+urine ketones)",
+              "initial BG was 420 and he was continued on an insulin drip"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has acute kidney injury with markedly reduced estimated GFR.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "organ dysfunction",
+            "status": "established",
+            "evidence": [
+              "ARF with creatinine 3.2.",
+              "Creatinine: 2.4 mg/dL ... Estimated GFR = 30 if non African-American"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Alcohol use is a possible contributing etiology to the pancreatitis.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic factor",
+            "status": "suspected",
+            "evidence": [
+              "___ M PMH of IDDM, alcohol abuse, and question of seizure disorder",
+              "He also describes upper abdominal pain that is nonradiating."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Gallstones or other biliary pathology are a possible alternative or additional cause of the suspected pancreatitis.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "alternative organ source",
+            "status": "suspected",
+            "evidence": [
+              "He also describes upper abdominal pain that is nonradiating.",
+              "lipase of 1373."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "This is the first decision point so there is no prior A/Q/C state to update."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; assumptions are newly established based on the baseline presentation and labs."
+        },
+        "current_question": {
+          "primary": "Is there biliary or other upper abdominal structural pathology, particularly gallstones or biliary obstruction, that could explain or contribute to the suspected acute pancreatitis and abdominal pain?",
+          "target": "gallbladder, biliary tree, and adjacent upper abdominal organs in the context of suspected acute pancreatitis",
+          "type": "alternative_source",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying gallstones, choledocholithiasis, or biliary obstruction would support biliary pancreatitis and prompt consideration of targeted biliary management (e.g., ERCP, cholecystectomy, or altered medical plan).",
+          "negative_answer_changes": "Absence of biliary pathology would make alcohol or other causes more likely, supporting continued medical management of pancreatitis and DKA without urgent biliary intervention.",
+          "secondary_questions": [
+            "What is the severity or extent of pancreatic and adjacent organ involvement (e.g., pancreatic enlargement, peripancreatic fluid) in this suspected acute pancreatitis?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_biliary_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones, choledocholithiasis, or biliary sludge in the gallbladder and common bile duct",
+              "why_required": "Determining if biliary disease is present is essential to decide whether the pancreatitis is likely biliary in origin and whether biliary-specific interventions are needed."
+            },
+            {
+              "requirement_key": "req_biliary_obstruction",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Degree of biliary obstruction, such as common bile duct dilation or intrahepatic ductal dilation",
+              "why_required": "The extent of obstruction affects urgency and type of intervention (e.g., ERCP vs. conservative management)."
+            },
+            {
+              "requirement_key": "req_pancreas_extent",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity or extent of pancreatic and peripancreatic abnormalities (e.g., enlargement, peripancreatic fluid collections) if visualized",
+              "why_required": "Appreciating the extent of pancreatic involvement helps risk stratify the pancreatitis and guide monitoring and supportive care."
+            }
+          ],
+          "evidence": [
+            "His labs were significant for ... lipase of 1373.",
+            "He also describes upper abdominal pain that is nonradiating."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_biliary_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CHEST RADIOGRAPH ... Lungs are clear bilaterally ... The heart is normal in size."
+              ],
+              "reason": "Only a chest radiograph has been performed, which does not assess the gallbladder or biliary tree, so the presence or absence of gallstones or choledocholithiasis remains unknown."
+            },
+            {
+              "requirement_key": "req_biliary_obstruction",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CHEST RADIOGRAPH PERFORMED ... Mediastinal contour is unremarkable."
+              ],
+              "reason": "No prior imaging of the biliary ducts or liver has been obtained, so the degree of any biliary obstruction cannot be assessed."
+            },
+            {
+              "requirement_key": "req_pancreas_extent",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "He also describes upper abdominal pain that is nonradiating.",
+                "His labs were significant for ... lipase of 1373."
+              ],
+              "reason": "Pancreatic morphology and peripancreatic structures have not been imaged; lab and clinical data suggest pancreatitis but do not quantify its anatomic extent."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key anatomic and etiologic aspects of suspected biliary or pancreatic pathology remain unassessed by prior chest imaging."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A complete abdominal ultrasound can evaluate the gallbladder and biliary tree for stones and obstruction and often visualize pancreatic enlargement or peripancreatic fluid, directly addressing suspected biliary etiology and extent of pancreatitis.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The order does not by itself explain any need to evaluate non-biliary abdominal organs (e.g., kidneys, aorta) beyond what is implied by general upper abdominal pain and systemic illness, but these are plausibly incidental to a complete protocol."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": "An alternative explanation is that the primary question is the severity and complications of pancreatitis itself (e.g., necrosis or fluid collections) rather than biliary etiology; however, CT is usually preferred for detailed pancreatitis staging, and the choice of ultrasound is more directly aligned with evaluating a possible biliary cause in a patient with elevated lipase and epigastric pain."
+      },
+      "validation_errors": []
+    }
+  ]
+}

@@ -1,0 +1,929 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 24528064,
+  "source_path": "results/annotation_experiment/full/appendicitis_24528064.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (ABDOMEN U.S. (COMPLETE STUDY))",
+      "request_prompt_sha256": "1aff5bb18dd00a5fd13552cad690606c2e5814496218c97d71bb75df45794590",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "1aff5bb18dd00a5fd13552cad690606c2e5814496218c97d71bb75df45794590",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute abdominal pain syndrome with generalized pain and focal right lower quadrant tenderness and vomiting.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation",
+                  "status": "established",
+                  "evidence": [
+                    "This patient is a ___ year old female who complains of ABD PAIN. ... Pain initially epigastric, now generalized with RLQ tenderness.",
+                    "Today vomited x2 (non-bilious)."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has leukocytosis suggesting an acute inflammatory or infectious intra-abdominal process.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "physiologic response",
+                  "status": "likely",
+                  "evidence": [
+                    "White Blood Cells: 12.6 K/uL (ref 4.0-11.0)",
+                    "Neutrophils: 86.4 % (ref 50.0-70.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has acute hepatocellular injury or stress as suggested by isolated AST elevation with normal ALT, bilirubin, and alkaline phosphatase.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "organ-level abnormality",
+                  "status": "suspected",
+                  "evidence": [
+                    "Asparate Aminotransferase (AST): 100.0 IU/L (ref 0.0-40.0)",
+                    "Alanine Aminotransferase (ALT): 23.0 IU/L (ref 0.0-40.0)"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Clinically significant biliary colic, cholecystitis, or other hepatobiliary pathology is a possible cause or contributor to the acute abdominal pain.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "organ/system-level cause",
+                  "status": "suspected",
+                  "evidence": [
+                    "This patient is a ___ year old female who complains of ABD PAIN. Pain initially epigastric, now generalized...",
+                    "Asparate Aminotransferase (AST): 100.0 IU/L (ref 0.0-40.0)"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Gynecologic causes of pain are less likely given a normal pelvic exam and negative urine hCG.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "system-level alternative source",
+                  "status": "challenged",
+                  "evidence": [
+                    "Pelvic exam (ED): nontender adnexa",
+                    "HCG, Urine, Qualitative: NEGATIVE."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_appessed",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No prior imaging or prior question at the first decision point."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision, so assumptions are being established de novo from the presenting data."
+              },
+              "current_question": {
+                "primary": "Is there hepatobiliary or upper abdominal pathology that explains or contributes to this patient’s acute abdominal pain and leukocytosis?",
+                "target": "hepatobiliary system and adjacent upper abdominal organs (liver, gallbladder, biliary tree, pancreas, upper abdomen)",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming a hepatobiliary or related upper abdominal source would focus management on that pathology (e.g., cholecystitis, biliary obstruction, hepatic lesion) and deprioritize alternative intra-abdominal sources.",
+                "negative_answer_changes": "If no significant hepatobiliary or upper abdominal pathology is identified, attention would shift toward other intra-abdominal causes (e.g., appendicitis, bowel pathology) or non-abdominal etiologies and may prompt alternative imaging.",
+                "secondary_questions": [
+                  "Is there biliary ductal dilatation or gallstones that would suggest biliary colic, cholecystitis, or obstruction?",
+                  "Are there focal hepatic or pancreatic abnormalities that could account for the pain and abnormal liver enzyme profile?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the liver, gallbladder, intra- and extrahepatic bile ducts, pancreas, and other visualized upper abdominal organs.",
+                    "why_required": "Determining whether hepatobiliary or upper abdominal pathology exists requires direct assessment of these structures."
+                  },
+                  {
+                    "requirement_key": "req_presence_path",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones, gallbladder wall thickening, pericholecystic fluid, biliary ductal dilatation, or focal hepatic or pancreatic lesions.",
+                    "why_required": "Identifying specific structural abnormalities is needed to determine whether a hepatobiliary or upper abdominal process explains the symptoms."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of any identified hepatobiliary or upper abdominal pathology (e.g., degree of inflammation, obstruction, or mass size).",
+                    "why_required": "The extent of pathology guides urgency and type of management, including need for intervention or admission."
+                  }
+                ],
+                "evidence": [
+                  "This patient is a ___ year old female who complains of ABD PAIN. Pain initially epigastric, now generalized...",
+                  "Asparate Aminotransferase (AST): 100.0 IU/L (ref 0.0-40.0)"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "No prior imaging has been performed to visualize the liver, gallbladder, biliary tree, pancreas, or other upper abdominal organs."
+                  },
+                  {
+                    "requirement_key": "req_presence_path",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Laboratory abnormalities and symptoms suggest possible pathology, but there is no structural assessment yet to confirm or exclude specific hepatobiliary or upper abdominal lesions."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Without imaging, the severity or extent of any potential hepatobiliary or upper abdominal process cannot be characterized."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All requirements for determining whether a hepatobiliary or upper abdominal process explains the presentation remain unaddressed in the absence of prior imaging."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A complete abdominal ultrasound can visualize the liver, gallbladder, biliary ducts, pancreas, and other upper abdominal structures to detect or exclude hepatobiliary pathology relevant to acute abdominal pain and abnormal liver tests.",
+                "intent_support": "weakly_supported",
+                "unsupported_residual": "The order is a complete abdominal ultrasound rather than a more focused right upper quadrant study; it may also be intended to evaluate non-hepatobiliary causes of pain (e.g., hydronephrosis, ascites, aortic pathology, bowel) which are not clearly specified by the available chart data."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": "An alternative account is that the primary question is broader source_localization of the cause of acute abdominal pain anywhere in the abdomen (including hepatobiliary, renal, vascular, or ascitic etiologies), with the abdominal ultrasound serving as an initial non-ionizing survey before considering CT; this would make the main target the entire abdomen rather than specifically the hepatobiliary system."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal pain syndrome with generalized pain and focal right lower quadrant tenderness and vomiting.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"This patient is a ___ year old female who complains of ABD PAIN. ... Pain initially epigastric, now generalized with RLQ tenderness.\",\n        \"Today vomited x2 (non-bilious).\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has leukocytosis suggesting an acute inflammatory or infectious intra-abdominal process.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic response\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"White Blood Cells: 12.6 K/uL (ref 4.0-11.0)\",\n        \"Neutrophils: 86.4 % (ref 50.0-70.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has acute hepatocellular injury or stress as suggested by isolated AST elevation with normal ALT, bilirubin, and alkaline phosphatase.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level abnormality\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Asparate Aminotransferase (AST): 100.0 IU/L (ref 0.0-40.0)\",\n        \"Alanine Aminotransferase (ALT): 23.0 IU/L (ref 0.0-40.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Clinically significant biliary colic, cholecystitis, or other hepatobiliary pathology is a possible cause or contributor to the acute abdominal pain.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ/system-level cause\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"This patient is a ___ year old female who complains of ABD PAIN. Pain initially epigastric, now generalized...\",\n        \"Asparate Aminotransferase (AST): 100.0 IU/L (ref 0.0-40.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Gynecologic causes of pain are less likely given a normal pelvic exam and negative urine hCG.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"system-level alternative source\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Pelvic exam (ED): nontender adnexa\",\n        \"HCG, Urine, Qualitative: NEGATIVE.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_appessed\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging or prior question at the first decision point.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision, so assumptions are being established de novo from the presenting data.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there hepatobiliary or upper abdominal pathology that explains or contributes to this patient’s acute abdominal pain and leukocytosis?\",\n    \"target\": \"hepatobiliary system and adjacent upper abdominal organs (liver, gallbladder, biliary tree, pancreas, upper abdomen)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming a hepatobiliary or related upper abdominal source would focus management on that pathology (e.g., cholecystitis, biliary obstruction, hepatic lesion) and deprioritize alternative intra-abdominal sources.\",\n    \"negative_answer_changes\": \"If no significant hepatobiliary or upper abdominal pathology is identified, attention would shift toward other intra-abdominal causes (e.g., appendicitis, bowel pathology) or non-abdominal etiologies and may prompt alternative imaging.\",\n    \"secondary_questions\": [\n      \"Is there biliary ductal dilatation or gallstones that would suggest biliary colic, cholecystitis, or obstruction?\",\n      \"Are there focal hepatic or pancreatic abnormalities that could account for the pain and abnormal liver enzyme profile?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the liver, gallbladder, intra- and extrahepatic bile ducts, pancreas, and other visualized upper abdominal organs.\",\n        \"why_required\": \"Determining whether hepatobiliary or upper abdominal pathology exists requires direct assessment of these structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_path\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, gallbladder wall thickening, pericholecystic fluid, biliary ductal dilatation, or focal hepatic or pancreatic lesions.\",\n        \"why_required\": \"Identifying specific structural abnormalities is needed to determine whether a hepatobiliary or upper abdominal process explains the symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of any identified hepatobiliary or upper abdominal pathology (e.g., degree of inflammation, obstruction, or mass size).\",\n        \"why_required\": \"The extent of pathology guides urgency and type of management, including need for intervention or admission.\"\n      }\n    ],\n    \"evidence\": [\n      \"This patient is a ___ year old female who complains of ABD PAIN. Pain initially epigastric, now generalized...\",\n      \"Asparate Aminotransferase (AST): 100.0 IU/L (ref 0.0-40.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No prior imaging has been performed to visualize the liver, gallbladder, biliary tree, pancreas, or other upper abdominal organs.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_path\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Laboratory abnormalities and symptoms suggest possible pathology, but there is no structural assessment yet to confirm or exclude specific hepatobiliary or upper abdominal lesions.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Without imaging, the severity or extent of any potential hepatobiliary or upper abdominal process cannot be characterized.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All requirements for determining whether a hepatobiliary or upper abdominal process explains the presentation remain unaddressed in the absence of prior imaging.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A complete abdominal ultrasound can visualize the liver, gallbladder, biliary ducts, pancreas, and other upper abdominal structures to detect or exclude hepatobiliary pathology relevant to acute abdominal pain and abnormal liver tests.\",\n    \"intent_support\": \"weakly_supported\",\n    \"unsupported_residual\": \"The order is a complete abdominal ultrasound rather than a more focused right upper quadrant study; it may also be intended to evaluate non-hepatobiliary causes of pain (e.g., hydronephrosis, ascites, aortic pathology, bowel) which are not clearly specified by the available chart data.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"An alternative account is that the primary question is broader source_localization of the cause of acute abdominal pain anywhere in the abdomen (including hepatobiliary, renal, vascular, or ascitic etiologies), with the abdominal ultrasound serving as an initial non-ionizing survey before considering CT; this would make the main target the entire abdomen rather than specifically the hepatobiliary system.\"\n}",
+            "request_id": "gen-1788193885-8CeVbyN45ttu6LMoclMt",
+            "usage": {
+              "completion_tokens": 2017,
+              "prompt_tokens": 3164,
+              "total_tokens": 5181,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.024125,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.024125,
+                "upstream_inference_prompt_cost": 0.003955,
+                "upstream_inference_completions_cost": 0.02017
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute abdominal pain syndrome with generalized pain and focal right lower quadrant tenderness and vomiting.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation",
+            "status": "established",
+            "evidence": [
+              "This patient is a ___ year old female who complains of ABD PAIN. ... Pain initially epigastric, now generalized with RLQ tenderness.",
+              "Today vomited x2 (non-bilious)."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has leukocytosis suggesting an acute inflammatory or infectious intra-abdominal process.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "physiologic response",
+            "status": "likely",
+            "evidence": [
+              "White Blood Cells: 12.6 K/uL (ref 4.0-11.0)",
+              "Neutrophils: 86.4 % (ref 50.0-70.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has acute hepatocellular injury or stress as suggested by isolated AST elevation with normal ALT, bilirubin, and alkaline phosphatase.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "organ-level abnormality",
+            "status": "suspected",
+            "evidence": [
+              "Asparate Aminotransferase (AST): 100.0 IU/L (ref 0.0-40.0)",
+              "Alanine Aminotransferase (ALT): 23.0 IU/L (ref 0.0-40.0)"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Clinically significant biliary colic, cholecystitis, or other hepatobiliary pathology is a possible cause or contributor to the acute abdominal pain.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "organ/system-level cause",
+            "status": "suspected",
+            "evidence": [
+              "This patient is a ___ year old female who complains of ABD PAIN. Pain initially epigastric, now generalized...",
+              "Asparate Aminotransferase (AST): 100.0 IU/L (ref 0.0-40.0)"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Gynecologic causes of pain are less likely given a normal pelvic exam and negative urine hCG.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "system-level alternative source",
+            "status": "challenged",
+            "evidence": [
+              "Pelvic exam (ED): nontender adnexa",
+              "HCG, Urine, Qualitative: NEGATIVE."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_appessed",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "No prior imaging or prior question at the first decision point."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision, so assumptions are being established de novo from the presenting data."
+        },
+        "current_question": {
+          "primary": "Is there hepatobiliary or upper abdominal pathology that explains or contributes to this patient’s acute abdominal pain and leukocytosis?",
+          "target": "hepatobiliary system and adjacent upper abdominal organs (liver, gallbladder, biliary tree, pancreas, upper abdomen)",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming a hepatobiliary or related upper abdominal source would focus management on that pathology (e.g., cholecystitis, biliary obstruction, hepatic lesion) and deprioritize alternative intra-abdominal sources.",
+          "negative_answer_changes": "If no significant hepatobiliary or upper abdominal pathology is identified, attention would shift toward other intra-abdominal causes (e.g., appendicitis, bowel pathology) or non-abdominal etiologies and may prompt alternative imaging.",
+          "secondary_questions": [
+            "Is there biliary ductal dilatation or gallstones that would suggest biliary colic, cholecystitis, or obstruction?",
+            "Are there focal hepatic or pancreatic abnormalities that could account for the pain and abnormal liver enzyme profile?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the liver, gallbladder, intra- and extrahepatic bile ducts, pancreas, and other visualized upper abdominal organs.",
+              "why_required": "Determining whether hepatobiliary or upper abdominal pathology exists requires direct assessment of these structures."
+            },
+            {
+              "requirement_key": "req_presence_path",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones, gallbladder wall thickening, pericholecystic fluid, biliary ductal dilatation, or focal hepatic or pancreatic lesions.",
+              "why_required": "Identifying specific structural abnormalities is needed to determine whether a hepatobiliary or upper abdominal process explains the symptoms."
+            },
+            {
+              "requirement_key": "req_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity and extent of any identified hepatobiliary or upper abdominal pathology (e.g., degree of inflammation, obstruction, or mass size).",
+              "why_required": "The extent of pathology guides urgency and type of management, including need for intervention or admission."
+            }
+          ],
+          "evidence": [
+            "This patient is a ___ year old female who complains of ABD PAIN. Pain initially epigastric, now generalized...",
+            "Asparate Aminotransferase (AST): 100.0 IU/L (ref 0.0-40.0)"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "No prior imaging has been performed to visualize the liver, gallbladder, biliary tree, pancreas, or other upper abdominal organs."
+            },
+            {
+              "requirement_key": "req_presence_path",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Laboratory abnormalities and symptoms suggest possible pathology, but there is no structural assessment yet to confirm or exclude specific hepatobiliary or upper abdominal lesions."
+            },
+            {
+              "requirement_key": "req_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Without imaging, the severity or extent of any potential hepatobiliary or upper abdominal process cannot be characterized."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All requirements for determining whether a hepatobiliary or upper abdominal process explains the presentation remain unaddressed in the absence of prior imaging."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A complete abdominal ultrasound can visualize the liver, gallbladder, biliary ducts, pancreas, and other upper abdominal structures to detect or exclude hepatobiliary pathology relevant to acute abdominal pain and abnormal liver tests.",
+          "intent_support": "weakly_supported",
+          "unsupported_residual": "The order is a complete abdominal ultrasound rather than a more focused right upper quadrant study; it may also be intended to evaluate non-hepatobiliary causes of pain (e.g., hydronephrosis, ascites, aortic pathology, bowel) which are not clearly specified by the available chart data."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": "An alternative account is that the primary question is broader source_localization of the cause of acute abdominal pain anywhere in the abdomen (including hepatobiliary, renal, vascular, or ascitic etiologies), with the abdominal ultrasound serving as an initial non-ionizing survey before considering CT; this would make the main target the entire abdomen rather than specifically the hepatobiliary system."
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "5cf1dab2204f3cd636db71a2437ba6d5303f80059747f60534bda6eefd4a1e22",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "5cf1dab2204f3cd636db71a2437ba6d5303f80059747f60534bda6eefd4a1e22",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "Despite a normal abdominal ultrasound including a normal-appearing, compressible appendix and no free fluid, the patient continues to have an acute abdominal pain syndrome with right lower quadrant tenderness and leukocytosis.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation and syndrome level",
+                  "status": "established",
+                  "evidence": [
+                    "Pain initially epigastric, now generalized with RLQ tenderness.",
+                    "White Blood Cells: 12.6 K/uL (ref 4.0-11.0)",
+                    "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there hepatobiliary or upper abdominal pathology that explains or contributes to this patient’s acute abdominal pain and leukocytosis?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "negative",
+                "effect_on_previous_question": "The complete abdominal ultrasound adequately visualized the liver, gallbladder, biliary tree, pancreas, kidneys, spleen, and appendix, and showed no gallstones, biliary dilatation, pancreatic abnormality, renal pathology, free fluid, or sonographic evidence of appendicitis, thereby refuting a sonographically detectable hepatobiliary or upper abdominal source and making appendicitis less likely though not definitively excluded.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "The liver is normal in echogenicity without focal lesions. There is no intrahepatic biliary dilation. The common duct measures 3 mm.",
+                  "evidence_stream_2": "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers.",
+                  "reason": "Ultrasound findings are internally consistent and align with the absence of localized peritoneal signs on exam, without conflicting imaging or clinical data."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "Clinically significant biliary colic, cholecystitis, or other hepatobiliary pathology is a possible cause or contributor to the acute abdominal pain.",
+                "reason": "A normal abdominal ultrasound without gallstones, gallbladder wall thickening, pericholecystic fluid, or biliary dilatation substantially reduces the likelihood that hepatobiliary disease explains the presentation, shifting concern toward other intra-abdominal causes such as bowel or mesenteric pathology not well assessed by ultrasound."
+              },
+              "current_question": {
+                "primary": "Is there an intra-abdominal or pelvic cause of this patient’s acute abdominal pain and leukocytosis, particularly involving bowel, mesentery, or other structures not fully evaluated by ultrasound?",
+                "target": "bowel, mesentery, and other abdominal and pelvic viscera as potential sources of acute pathology (e.g., early appendicitis, bowel obstruction, ischemia, inflammatory bowel process, or other intra-abdominal inflammatory or surgical conditions)",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a specific intra-abdominal or pelvic pathology (such as appendicitis, obstruction, or other acute surgical condition) would focus management on that lesion, including potential surgical consultation, antibiotics, or other targeted interventions.",
+                "negative_answer_changes": "If no significant intra-abdominal or pelvic pathology is identified, clinicians would reconsider non-surgical or extra-abdominal causes of pain, potentially pursue non-imaging evaluations, observation, or alternative diagnostic pathways, and may downgrade the likelihood of an acute surgical abdomen.",
+                "secondary_questions": [
+                  "Is there CT evidence of early or atypical appendicitis or other focal bowel inflammation despite a normal ultrasound?",
+                  "Is there evidence of bowel obstruction, ischemia, or other emergent intra-abdominal complication that would change the urgency or type of intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis_abd_pelvis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comprehensive visualization of the bowel, mesentery, peritoneal cavity, solid organs, and pelvic structures to assess for acute pathology.",
+                    "why_required": "Determining whether an intra-abdominal or pelvic source explains the acute pain and leukocytosis requires direct assessment of these structures, which are not fully characterized by prior ultrasound."
+                  },
+                  {
+                    "requirement_key": "req_presence_bowel_path",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of appendiceal inflammation, bowel wall thickening, obstruction, mesenteric inflammation, free air, free fluid, or other acute intra-abdominal or pelvic lesions.",
+                    "why_required": "Identifying or excluding specific lesions is necessary to localize the source of pain and decide on surgical versus conservative management."
+                  },
+                  {
+                    "requirement_key": "req_severity_extent_path",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of any detected intra-abdominal or pelvic process (e.g., degree of obstruction, length of involved bowel, extent of inflammation or fluid).",
+                    "why_required": "The severity and spread of disease influence urgency, need for operative intervention, and level of care."
+                  }
+                ],
+                "evidence": [
+                  "Pain initially epigastric, now generalized with RLQ tenderness.",
+                  "White Blood Cells: 12.6 K/uL (ref 4.0-11.0)",
+                  "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers.",
+                  "There is no free fluid."
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis_abd_pelvis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "The liver is normal in echogenicity without focal lesions. The gallbladder is partially collapsed without stones, sludge, wall edema, or pericholecystic fluid.",
+                      "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers. There is no free fluid."
+                    ],
+                    "reason": "Ultrasound provides good assessment of hepatobiliary organs, kidneys, spleen, and the appendix, but does not comprehensively visualize the entire bowel, mesentery, retroperitoneum, or all pelvic structures, so key potential sources remain unassessed."
+                  },
+                  {
+                    "requirement_key": "req_presence_bowel_path",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible...",
+                      "There is no free fluid."
+                    ],
+                    "reason": "Sonographic findings argue against overt appendicitis and gross intra-abdominal fluid but do not assess for more proximal or subtle bowel pathology, obstruction, or mesenteric disease."
+                  },
+                  {
+                    "requirement_key": "req_severity_extent_path",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Without cross-sectional imaging of the entire abdomen and pelvis, the extent or severity of any non-hepatobiliary intra-abdominal process cannot be characterized."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Prior ultrasound partially reduces the likelihood of hepatobiliary disease and overt appendicitis but does not adequately assess the bowel, mesentery, or overall severity of a potential intra-abdominal process, leaving the central source-localization question unresolved."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can comprehensively evaluate bowel, mesentery, peritoneal cavity, solid organs, and pelvic structures for inflammatory, obstructive, ischemic, or other acute pathology explaining the pain and leukocytosis after a non-revealing ultrasound.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order may also be intended to evaluate less clearly specified entities such as vascular pathology or subtle hepatic parenchymal disease, which are not explicitly raised in the chart."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "An alternative account is that the primary concern remains possible early or atypical appendicitis specifically, with CT ordered mainly to adjudicate discordance between persistent right lower quadrant tenderness and a normal-appearing appendix on ultrasound, rather than to broadly search for any intra-abdominal source."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"Despite a normal abdominal ultrasound including a normal-appearing, compressible appendix and no free fluid, the patient continues to have an acute abdominal pain syndrome with right lower quadrant tenderness and leukocytosis.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation and syndrome level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Pain initially epigastric, now generalized with RLQ tenderness.\",\n        \"White Blood Cells: 12.6 K/uL (ref 4.0-11.0)\",\n        \"The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there hepatobiliary or upper abdominal pathology that explains or contributes to this patient’s acute abdominal pain and leukocytosis?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"negative\",\n    \"effect_on_previous_question\": \"The complete abdominal ultrasound adequately visualized the liver, gallbladder, biliary tree, pancreas, kidneys, spleen, and appendix, and showed no gallstones, biliary dilatation, pancreatic abnormality, renal pathology, free fluid, or sonographic evidence of appendicitis, thereby refuting a sonographically detectable hepatobiliary or upper abdominal source and making appendicitis less likely though not definitively excluded.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"The liver is normal in echogenicity without focal lesions. There is no intrahepatic biliary dilation. The common duct measures 3 mm.\",\n      \"evidence_stream_2\": \"The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers.\",\n      \"reason\": \"Ultrasound findings are internally consistent and align with the absence of localized peritoneal signs on exam, without conflicting imaging or clinical data.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Clinically significant biliary colic, cholecystitis, or other hepatobiliary pathology is a possible cause or contributor to the acute abdominal pain.\",\n    \"reason\": \"A normal abdominal ultrasound without gallstones, gallbladder wall thickening, pericholecystic fluid, or biliary dilatation substantially reduces the likelihood that hepatobiliary disease explains the presentation, shifting concern toward other intra-abdominal causes such as bowel or mesenteric pathology not well assessed by ultrasound.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an intra-abdominal or pelvic cause of this patient’s acute abdominal pain and leukocytosis, particularly involving bowel, mesentery, or other structures not fully evaluated by ultrasound?\",\n    \"target\": \"bowel, mesentery, and other abdominal and pelvic viscera as potential sources of acute pathology (e.g., early appendicitis, bowel obstruction, ischemia, inflammatory bowel process, or other intra-abdominal inflammatory or surgical conditions)\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a specific intra-abdominal or pelvic pathology (such as appendicitis, obstruction, or other acute surgical condition) would focus management on that lesion, including potential surgical consultation, antibiotics, or other targeted interventions.\",\n    \"negative_answer_changes\": \"If no significant intra-abdominal or pelvic pathology is identified, clinicians would reconsider non-surgical or extra-abdominal causes of pain, potentially pursue non-imaging evaluations, observation, or alternative diagnostic pathways, and may downgrade the likelihood of an acute surgical abdomen.\",\n    \"secondary_questions\": [\n      \"Is there CT evidence of early or atypical appendicitis or other focal bowel inflammation despite a normal ultrasound?\",\n      \"Is there evidence of bowel obstruction, ischemia, or other emergent intra-abdominal complication that would change the urgency or type of intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis_abd_pelvis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comprehensive visualization of the bowel, mesentery, peritoneal cavity, solid organs, and pelvic structures to assess for acute pathology.\",\n        \"why_required\": \"Determining whether an intra-abdominal or pelvic source explains the acute pain and leukocytosis requires direct assessment of these structures, which are not fully characterized by prior ultrasound.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_bowel_path\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of appendiceal inflammation, bowel wall thickening, obstruction, mesenteric inflammation, free air, free fluid, or other acute intra-abdominal or pelvic lesions.\",\n        \"why_required\": \"Identifying or excluding specific lesions is necessary to localize the source of pain and decide on surgical versus conservative management.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_extent_path\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of any detected intra-abdominal or pelvic process (e.g., degree of obstruction, length of involved bowel, extent of inflammation or fluid).\",\n        \"why_required\": \"The severity and spread of disease influence urgency, need for operative intervention, and level of care.\"\n      }\n    ],\n    \"evidence\": [\n      \"Pain initially epigastric, now generalized with RLQ tenderness.\",\n      \"White Blood Cells: 12.6 K/uL (ref 4.0-11.0)\",\n      \"The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers.\",\n      \"There is no free fluid.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis_abd_pelvis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"The liver is normal in echogenicity without focal lesions. The gallbladder is partially collapsed without stones, sludge, wall edema, or pericholecystic fluid.\",\n          \"The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers. There is no free fluid.\"\n        ],\n        \"reason\": \"Ultrasound provides good assessment of hepatobiliary organs, kidneys, spleen, and the appendix, but does not comprehensively visualize the entire bowel, mesentery, retroperitoneum, or all pelvic structures, so key potential sources remain unassessed.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_bowel_path\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible...\",\n          \"There is no free fluid.\"\n        ],\n        \"reason\": \"Sonographic findings argue against overt appendicitis and gross intra-abdominal fluid but do not assess for more proximal or subtle bowel pathology, obstruction, or mesenteric disease.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_extent_path\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Without cross-sectional imaging of the entire abdomen and pelvis, the extent or severity of any non-hepatobiliary intra-abdominal process cannot be characterized.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Prior ultrasound partially reduces the likelihood of hepatobiliary disease and overt appendicitis but does not adequately assess the bowel, mesentery, or overall severity of a potential intra-abdominal process, leaving the central source-localization question unresolved.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT of the abdomen and pelvis can comprehensively evaluate bowel, mesentery, peritoneal cavity, solid organs, and pelvic structures for inflammatory, obstructive, ischemic, or other acute pathology explaining the pain and leukocytosis after a non-revealing ultrasound.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order may also be intended to evaluate less clearly specified entities such as vascular pathology or subtle hepatic parenchymal disease, which are not explicitly raised in the chart.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"An alternative account is that the primary concern remains possible early or atypical appendicitis specifically, with CT ordered mainly to adjudicate discordance between persistent right lower quadrant tenderness and a normal-appearing appendix on ultrasound, rather than to broadly search for any intra-abdominal source.\"\n}",
+            "request_id": "gen-1788193899-rBYmZFYBEiWJcj8GxJeF",
+            "usage": {
+              "completion_tokens": 2104,
+              "prompt_tokens": 5190,
+              "total_tokens": 7294,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1792,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0255115,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0255115,
+                "upstream_inference_prompt_cost": 0.0044715,
+                "upstream_inference_completions_cost": 0.02104
+              }
+            }
+          },
+          "validation_errors": [
+            "assumption_0_bad_evidence_count",
+            "bad_question_evidence_count"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "8052a82c48307e0ec6c7b0edcdf58b6f9323f01aad12586b4ee34531d35e8577",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute generalized abdominal pain syndrome with focal right lower quadrant tenderness and vomiting.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation",
+                  "status": "established",
+                  "evidence": [
+                    "This patient is a ___ year old female who complains of ABD PAIN. She has a hx of vental hernia repair. Today vomited x2 (non-bilious). Pain initially epigastric, now generalized with RLQ tenderness.",
+                    "Abdomen soft, nondistended, hyperactive bowel sounds, mild RLQ tenderness to deep palpation without rebound or guarding"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has leukocytosis with neutrophilia suggesting an acute intra-abdominal inflammatory or infectious process.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "physiologic response",
+                  "status": "likely",
+                  "evidence": [
+                    "White Blood Cells: 12.6 K/uL (ref 4.0-11.0)",
+                    "Neutrophils: 86.4 % (ref 50.0-70.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The right lower quadrant appendix appears normal on ultrasound, arguing against sonographically evident appendicitis at the time of imaging.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "organ-level abnormality",
+                  "status": "challenged",
+                  "evidence": [
+                    "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia.",
+                    "It was fully compressible, with no focal tenderness elicited during graded compression maneuvers."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "No significant hepatobiliary pathology (cholelithiasis, cholecystitis, biliary obstruction) is evident on ultrasound to explain the abdominal pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "organ/system-level alternative source",
+                  "status": "challenged",
+                  "evidence": [
+                    "The liver is normal in echogenicity without focal lesions. There is no intrahepatic biliary dilation. The common duct measures 3 mm.",
+                    "The gallbladder is partially collapsed without stones, sludge, wall edema, or pericholecystic fluid. Ultrasonographic ___ sign was negative."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Gynecologic causes of pain are less likely given a normal pelvic exam and negative urine hCG.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "system-level alternative source",
+                  "status": "challenged",
+                  "evidence": [
+                    "Pelvic exam (ED): nontender adnexa",
+                    "HCG, Urine, Qualitative: NEGATIVE."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there hepatobiliary or upper abdominal pathology that explains or contributes to this patient’s acute abdominal pain and leukocytosis?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "negative",
+                "effect_on_previous_question": "The abdominal ultrasound adequately visualized the hepatobiliary system and upper abdominal organs and did not show gallstones, cholecystitis, biliary dilation, or focal hepatic or pancreatic lesions, effectively refuting a major hepatobiliary cause for the presentation and prompting reconsideration of other intra-abdominal sources such as bowel or appendix despite a normal sonographic appendix.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "The gallbladder is partially collapsed without stones, sludge, wall edema, or pericholecystic fluid.",
+                  "evidence_stream_2": "The liver is normal in echogenicity without focal lesions. There is no intrahepatic biliary dilation. The common duct measures 3 mm.",
+                  "reason": "Ultrasound findings are consistent with the working concern for possible hepatobiliary disease but overall argue against it; there is no conflicting major data stream."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "Clinically significant biliary colic, cholecystitis, or other hepatobiliary pathology is a possible cause or contributor to the acute abdominal pain.",
+                "reason": "A normal hepatobiliary ultrasound without stones, wall thickening, biliary dilation, or focal lesions makes a hepatobiliary source of pain less likely and shifts focus toward other intra-abdominal etiologies such as bowel or evolving appendicitis."
+              },
+              "current_question": {
+                "primary": "Is there intra-abdominal or pelvic pathology, particularly involving the bowel or appendix, that explains this patient’s acute abdominal pain and leukocytosis despite a nondiagnostic ultrasound?",
+                "target": "bowel, appendix, and other intra-abdominal and pelvic structures as potential sources of acute abdominal pathology",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a specific intra-abdominal or pelvic cause (such as appendicitis, bowel obstruction, or other inflammatory process) would direct definitive management, including possible surgery, antibiotics, or targeted intervention.",
+                "negative_answer_changes": "If no intra-abdominal or pelvic source is found, clinicians may reconsider non-abdominal causes, observe with serial exams, or pursue alternative diagnostics and management strategies.",
+                "secondary_questions": [
+                  "Is there imaging evidence of acute appendicitis or another focal inflammatory process in the right lower quadrant that was not apparent on ultrasound?",
+                  "Is there bowel obstruction, ischemia, or other significant bowel pathology contributing to the patient’s symptoms?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comprehensive visualization of the bowel, appendix, mesentery, peritoneal cavity, and pelvic organs.",
+                    "why_required": "Determining the source of acute abdominal pain requires direct assessment of these structures for inflammatory, obstructive, or other pathologic changes."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of appendicitis, bowel obstruction, perforation, focal inflammatory changes, free air, or free fluid.",
+                    "why_required": "Identifying or excluding these pathologies is necessary to explain the symptoms and guide urgent management decisions."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of any detected intra-abdominal or pelvic pathology, including the degree of inflammation, obstruction, or spread within the abdomen or pelvis.",
+                    "why_required": "The extent of disease informs the urgency, type of treatment, and need for surgical versus conservative management."
+                  }
+                ],
+                "evidence": [
+                  "Pain initially epigastric, now generalized with RLQ tenderness.",
+                  "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers."
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia.",
+                      "There is no free fluid."
+                    ],
+                    "reason": "Ultrasound provides good visualization of the appendix and limited assessment of free fluid but does not comprehensively visualize the entire bowel, mesentery, or all pelvic structures, so full intra-abdominal source localization remains incomplete."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers.",
+                      "There is no free fluid."
+                    ],
+                    "reason": "The normal appendix and absence of free fluid argue against frank appendicitis or gross peritonitis but do not exclude early appendicitis, bowel obstruction, or other intra-abdominal pathology that ultrasound is less sensitive to detect."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "ABDOMINAL ULTRASOUND: The liver is normal in echogenicity without focal lesions. ... There is no free fluid."
+                    ],
+                    "reason": "The ultrasound mainly characterizes hepatobiliary and renal structures and the appendix; it does not adequately define the severity or overall extent of potential bowel or pelvic pathology."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Although ultrasound reduces the likelihood of appendicitis and hepatobiliary causes, it does not comprehensively visualize bowel and pelvic pathology, leaving the main question about the intra-abdominal source of pain insufficiently answered."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can comprehensively evaluate the bowel, appendix, mesentery, peritoneal cavity, and pelvic organs for inflammatory, obstructive, or other acute pathology that may not be apparent on ultrasound.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order may also aim to evaluate less clearly specified entities such as vascular abnormalities or subtle pancreatic processes, which are not explicitly raised in the chart."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "An alternative account is that the main question is whether there is any surgical abdomen requiring urgent intervention, with CT used broadly to detect or exclude appendicitis, obstruction, perforation, or other emergent intra-abdominal pathology after a negative hepatobiliary and appendix-focused ultrasound."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute generalized abdominal pain syndrome with focal right lower quadrant tenderness and vomiting.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"This patient is a ___ year old female who complains of ABD PAIN. She has a hx of vental hernia repair. Today vomited x2 (non-bilious). Pain initially epigastric, now generalized with RLQ tenderness.\",\n        \"Abdomen soft, nondistended, hyperactive bowel sounds, mild RLQ tenderness to deep palpation without rebound or guarding\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has leukocytosis with neutrophilia suggesting an acute intra-abdominal inflammatory or infectious process.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic response\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"White Blood Cells: 12.6 K/uL (ref 4.0-11.0)\",\n        \"Neutrophils: 86.4 % (ref 50.0-70.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The right lower quadrant appendix appears normal on ultrasound, arguing against sonographically evident appendicitis at the time of imaging.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level abnormality\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia.\",\n        \"It was fully compressible, with no focal tenderness elicited during graded compression maneuvers.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"No significant hepatobiliary pathology (cholelithiasis, cholecystitis, biliary obstruction) is evident on ultrasound to explain the abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ/system-level alternative source\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"The liver is normal in echogenicity without focal lesions. There is no intrahepatic biliary dilation. The common duct measures 3 mm.\",\n        \"The gallbladder is partially collapsed without stones, sludge, wall edema, or pericholecystic fluid. Ultrasonographic ___ sign was negative.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gynecologic causes of pain are less likely given a normal pelvic exam and negative urine hCG.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"system-level alternative source\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Pelvic exam (ED): nontender adnexa\",\n        \"HCG, Urine, Qualitative: NEGATIVE.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there hepatobiliary or upper abdominal pathology that explains or contributes to this patient’s acute abdominal pain and leukocytosis?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"negative\",\n    \"effect_on_previous_question\": \"The abdominal ultrasound adequately visualized the hepatobiliary system and upper abdominal organs and did not show gallstones, cholecystitis, biliary dilation, or focal hepatic or pancreatic lesions, effectively refuting a major hepatobiliary cause for the presentation and prompting reconsideration of other intra-abdominal sources such as bowel or appendix despite a normal sonographic appendix.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"The gallbladder is partially collapsed without stones, sludge, wall edema, or pericholecystic fluid.\",\n      \"evidence_stream_2\": \"The liver is normal in echogenicity without focal lesions. There is no intrahepatic biliary dilation. The common duct measures 3 mm.\",\n      \"reason\": \"Ultrasound findings are consistent with the working concern for possible hepatobiliary disease but overall argue against it; there is no conflicting major data stream.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Clinically significant biliary colic, cholecystitis, or other hepatobiliary pathology is a possible cause or contributor to the acute abdominal pain.\",\n    \"reason\": \"A normal hepatobiliary ultrasound without stones, wall thickening, biliary dilation, or focal lesions makes a hepatobiliary source of pain less likely and shifts focus toward other intra-abdominal etiologies such as bowel or evolving appendicitis.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there intra-abdominal or pelvic pathology, particularly involving the bowel or appendix, that explains this patient’s acute abdominal pain and leukocytosis despite a nondiagnostic ultrasound?\",\n    \"target\": \"bowel, appendix, and other intra-abdominal and pelvic structures as potential sources of acute abdominal pathology\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a specific intra-abdominal or pelvic cause (such as appendicitis, bowel obstruction, or other inflammatory process) would direct definitive management, including possible surgery, antibiotics, or targeted intervention.\",\n    \"negative_answer_changes\": \"If no intra-abdominal or pelvic source is found, clinicians may reconsider non-abdominal causes, observe with serial exams, or pursue alternative diagnostics and management strategies.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of acute appendicitis or another focal inflammatory process in the right lower quadrant that was not apparent on ultrasound?\",\n      \"Is there bowel obstruction, ischemia, or other significant bowel pathology contributing to the patient’s symptoms?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comprehensive visualization of the bowel, appendix, mesentery, peritoneal cavity, and pelvic organs.\",\n        \"why_required\": \"Determining the source of acute abdominal pain requires direct assessment of these structures for inflammatory, obstructive, or other pathologic changes.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of appendicitis, bowel obstruction, perforation, focal inflammatory changes, free air, or free fluid.\",\n        \"why_required\": \"Identifying or excluding these pathologies is necessary to explain the symptoms and guide urgent management decisions.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of any detected intra-abdominal or pelvic pathology, including the degree of inflammation, obstruction, or spread within the abdomen or pelvis.\",\n        \"why_required\": \"The extent of disease informs the urgency, type of treatment, and need for surgical versus conservative management.\"\n      }\n    ],\n    \"evidence\": [\n      \"Pain initially epigastric, now generalized with RLQ tenderness.\",\n      \"The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia.\",\n          \"There is no free fluid.\"\n        ],\n        \"reason\": \"Ultrasound provides good visualization of the appendix and limited assessment of free fluid but does not comprehensively visualize the entire bowel, mesentery, or all pelvic structures, so full intra-abdominal source localization remains incomplete.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers.\",\n          \"There is no free fluid.\"\n        ],\n        \"reason\": \"The normal appendix and absence of free fluid argue against frank appendicitis or gross peritonitis but do not exclude early appendicitis, bowel obstruction, or other intra-abdominal pathology that ultrasound is less sensitive to detect.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"ABDOMINAL ULTRASOUND: The liver is normal in echogenicity without focal lesions. ... There is no free fluid.\"\n        ],\n        \"reason\": \"The ultrasound mainly characterizes hepatobiliary and renal structures and the appendix; it does not adequately define the severity or overall extent of potential bowel or pelvic pathology.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Although ultrasound reduces the likelihood of appendicitis and hepatobiliary causes, it does not comprehensively visualize bowel and pelvic pathology, leaving the main question about the intra-abdominal source of pain insufficiently answered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT of the abdomen and pelvis can comprehensively evaluate the bowel, appendix, mesentery, peritoneal cavity, and pelvic organs for inflammatory, obstructive, or other acute pathology that may not be apparent on ultrasound.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order may also aim to evaluate less clearly specified entities such as vascular abnormalities or subtle pancreatic processes, which are not explicitly raised in the chart.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"An alternative account is that the main question is whether there is any surgical abdomen requiring urgent intervention, with CT used broadly to detect or exclude appendicitis, obstruction, perforation, or other emergent intra-abdominal pathology after a negative hepatobiliary and appendix-focused ultrasound.\"\n}",
+            "request_id": "gen-1788193917-MjJsRTFXysKd5ourTVhk",
+            "usage": {
+              "completion_tokens": 2390,
+              "prompt_tokens": 5233,
+              "total_tokens": 7623,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 4992,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02482525,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02482525,
+                "upstream_inference_prompt_cost": 0.00092525,
+                "upstream_inference_completions_cost": 0.0239
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute generalized abdominal pain syndrome with focal right lower quadrant tenderness and vomiting.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation",
+            "status": "established",
+            "evidence": [
+              "This patient is a ___ year old female who complains of ABD PAIN. She has a hx of vental hernia repair. Today vomited x2 (non-bilious). Pain initially epigastric, now generalized with RLQ tenderness.",
+              "Abdomen soft, nondistended, hyperactive bowel sounds, mild RLQ tenderness to deep palpation without rebound or guarding"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has leukocytosis with neutrophilia suggesting an acute intra-abdominal inflammatory or infectious process.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "physiologic response",
+            "status": "likely",
+            "evidence": [
+              "White Blood Cells: 12.6 K/uL (ref 4.0-11.0)",
+              "Neutrophils: 86.4 % (ref 50.0-70.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The right lower quadrant appendix appears normal on ultrasound, arguing against sonographically evident appendicitis at the time of imaging.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "organ-level abnormality",
+            "status": "challenged",
+            "evidence": [
+              "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia.",
+              "It was fully compressible, with no focal tenderness elicited during graded compression maneuvers."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "No significant hepatobiliary pathology (cholelithiasis, cholecystitis, biliary obstruction) is evident on ultrasound to explain the abdominal pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "organ/system-level alternative source",
+            "status": "challenged",
+            "evidence": [
+              "The liver is normal in echogenicity without focal lesions. There is no intrahepatic biliary dilation. The common duct measures 3 mm.",
+              "The gallbladder is partially collapsed without stones, sludge, wall edema, or pericholecystic fluid. Ultrasonographic ___ sign was negative."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Gynecologic causes of pain are less likely given a normal pelvic exam and negative urine hCG.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "system-level alternative source",
+            "status": "challenged",
+            "evidence": [
+              "Pelvic exam (ED): nontender adnexa",
+              "HCG, Urine, Qualitative: NEGATIVE."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there hepatobiliary or upper abdominal pathology that explains or contributes to this patient’s acute abdominal pain and leukocytosis?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "negative",
+          "effect_on_previous_question": "The abdominal ultrasound adequately visualized the hepatobiliary system and upper abdominal organs and did not show gallstones, cholecystitis, biliary dilation, or focal hepatic or pancreatic lesions, effectively refuting a major hepatobiliary cause for the presentation and prompting reconsideration of other intra-abdominal sources such as bowel or appendix despite a normal sonographic appendix.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "The gallbladder is partially collapsed without stones, sludge, wall edema, or pericholecystic fluid.",
+            "evidence_stream_2": "The liver is normal in echogenicity without focal lesions. There is no intrahepatic biliary dilation. The common duct measures 3 mm.",
+            "reason": "Ultrasound findings are consistent with the working concern for possible hepatobiliary disease but overall argue against it; there is no conflicting major data stream."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "Clinically significant biliary colic, cholecystitis, or other hepatobiliary pathology is a possible cause or contributor to the acute abdominal pain.",
+          "reason": "A normal hepatobiliary ultrasound without stones, wall thickening, biliary dilation, or focal lesions makes a hepatobiliary source of pain less likely and shifts focus toward other intra-abdominal etiologies such as bowel or evolving appendicitis."
+        },
+        "current_question": {
+          "primary": "Is there intra-abdominal or pelvic pathology, particularly involving the bowel or appendix, that explains this patient’s acute abdominal pain and leukocytosis despite a nondiagnostic ultrasound?",
+          "target": "bowel, appendix, and other intra-abdominal and pelvic structures as potential sources of acute abdominal pathology",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a specific intra-abdominal or pelvic cause (such as appendicitis, bowel obstruction, or other inflammatory process) would direct definitive management, including possible surgery, antibiotics, or targeted intervention.",
+          "negative_answer_changes": "If no intra-abdominal or pelvic source is found, clinicians may reconsider non-abdominal causes, observe with serial exams, or pursue alternative diagnostics and management strategies.",
+          "secondary_questions": [
+            "Is there imaging evidence of acute appendicitis or another focal inflammatory process in the right lower quadrant that was not apparent on ultrasound?",
+            "Is there bowel obstruction, ischemia, or other significant bowel pathology contributing to the patient’s symptoms?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Comprehensive visualization of the bowel, appendix, mesentery, peritoneal cavity, and pelvic organs.",
+              "why_required": "Determining the source of acute abdominal pain requires direct assessment of these structures for inflammatory, obstructive, or other pathologic changes."
+            },
+            {
+              "requirement_key": "req_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of appendicitis, bowel obstruction, perforation, focal inflammatory changes, free air, or free fluid.",
+              "why_required": "Identifying or excluding these pathologies is necessary to explain the symptoms and guide urgent management decisions."
+            },
+            {
+              "requirement_key": "req_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity and extent of any detected intra-abdominal or pelvic pathology, including the degree of inflammation, obstruction, or spread within the abdomen or pelvis.",
+              "why_required": "The extent of disease informs the urgency, type of treatment, and need for surgical versus conservative management."
+            }
+          ],
+          "evidence": [
+            "Pain initially epigastric, now generalized with RLQ tenderness.",
+            "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers."
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia.",
+                "There is no free fluid."
+              ],
+              "reason": "Ultrasound provides good visualization of the appendix and limited assessment of free fluid but does not comprehensively visualize the entire bowel, mesentery, or all pelvic structures, so full intra-abdominal source localization remains incomplete."
+            },
+            {
+              "requirement_key": "req_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "The appendix was well visualized in the right lower quadrant, measuring 5 mm without evidence of wall thickening or hyperemia. It was fully compressible, with no focal tenderness elicited during graded compression maneuvers.",
+                "There is no free fluid."
+              ],
+              "reason": "The normal appendix and absence of free fluid argue against frank appendicitis or gross peritonitis but do not exclude early appendicitis, bowel obstruction, or other intra-abdominal pathology that ultrasound is less sensitive to detect."
+            },
+            {
+              "requirement_key": "req_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "ABDOMINAL ULTRASOUND: The liver is normal in echogenicity without focal lesions. ... There is no free fluid."
+              ],
+              "reason": "The ultrasound mainly characterizes hepatobiliary and renal structures and the appendix; it does not adequately define the severity or overall extent of potential bowel or pelvic pathology."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Although ultrasound reduces the likelihood of appendicitis and hepatobiliary causes, it does not comprehensively visualize bowel and pelvic pathology, leaving the main question about the intra-abdominal source of pain insufficiently answered."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can comprehensively evaluate the bowel, appendix, mesentery, peritoneal cavity, and pelvic organs for inflammatory, obstructive, or other acute pathology that may not be apparent on ultrasound.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The order may also aim to evaluate less clearly specified entities such as vascular abnormalities or subtle pancreatic processes, which are not explicitly raised in the chart."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "An alternative account is that the main question is whether there is any surgical abdomen requiring urgent intervention, with CT used broadly to detect or exclude appendicitis, obstruction, perforation, or other emergent intra-abdominal pathology after a negative hepatobiliary and appendix-focused ultrasound."
+      },
+      "validation_errors": []
+    }
+  ]
+}

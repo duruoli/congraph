@@ -1,0 +1,428 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 25431462,
+  "source_path": "results/annotation_experiment/full/pancreatitis_25431462.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "3b52437acb72226520a1cadd79cc46e50b0077c72b883ef4bb03da43ae68f478",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "3b52437acb72226520a1cadd79cc46e50b0077c72b883ef4bb03da43ae68f478",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis causing his current abdominal pain and elevated lipase.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "Labs were significant for lipase ___",
+                    "He describes his pain started in the RUQ ... and most recently with epigastric pain."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is at elevated risk for mesenteric or visceral ischemia or infarction due to his history of mechanical valves, prior splenic infarct, and distal finger necrosis.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "CT abdomen showed ... unchanged splenic infarction",
+                    "He also has a 2 week history of hypoperfusion to right middle finger, resulting of necrosis distal to the DIP. Of note, he has 2 mechanical valves, and his INR was most recently low at 1.9"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Recurrent small bowel obstruction or other complication related to prior extensive bowel surgery and diverting loop ileostomy remains a potential source of abdominal pain.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "broad clinical syndrome and source",
+                  "status": "suspected",
+                  "evidence": [
+                    "___ history of ESRD on HD, CAD, prosthetic aortic and mitral valves and recurrent small bowel obstructions with an ostomy in place presenting with 2 days of abdominal pain.",
+                    "CT abdomen showed ... post-surgical changes of the bowel"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has hemodynamic and metabolic risk factors (ESRD on HD, hyperkalemia, CAD, CHF) that increase the danger of missed intra-abdominal catastrophe despite currently improved pain and benign exam.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "overall risk and severity context",
+                  "status": "established",
+                  "evidence": [
+                    "Past Medical History: ESRD on HD ... CAD Diastolic CHF",
+                    "In the ED, initial vitals: 99.3 114 78/29."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is no clear clinical or laboratory evidence of septic shock or lactic acidosis at this time.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "systemic severity",
+                  "status": "established",
+                  "evidence": [
+                    "Lactate: 0.8 mmol/L (ref 0.5-2.0)",
+                    "White Blood Cells: 8.0 K/uL (ref 4.0-11.0)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "This is the first decision point with no prior imaging to update."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first reconstruction step, so assumptions are being established de novo from the chart."
+              },
+              "current_question": {
+                "primary": "Is there imaging evidence of acute pancreatitis or another intra-abdominal process (such as bowel obstruction or mesenteric/visceral ischemia) that explains this patient’s acute abdominal pain and markedly elevated lipase, and that would change management?",
+                "target": "pancreas and adjacent structures, small and large bowel, and mesenteric/visceral vasculature and organs",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming pancreatitis, bowel obstruction, or ischemia would guide need for intensive monitoring, surgical or interventional consultation, anticoagulation/antibiotic adjustments, and tailored supportive care.",
+                "negative_answer_changes": "If no acute intra-abdominal source is seen, clinicians may favor conservative management, consider non-abdominal causes, and avoid unnecessary invasive interventions.",
+                "secondary_questions": [
+                  "What is the extent and severity of any pancreatic, bowel, or visceral involvement if present?",
+                  "Are there complications such as necrosis, perforation, abscess, or new infarcts that require urgent intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_pancreas_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of imaging signs of acute pancreatitis and its local complications in the pancreas and peripancreatic region.",
+                    "why_required": "Determining whether the lipase elevation and epigastric pain correspond to pancreatitis is central to explaining symptoms and planning management."
+                  },
+                  {
+                    "requirement_key": "req_bowel_obstruction",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of small or large bowel obstruction, stricturing, or other obstructive postsurgical complication.",
+                    "why_required": "Recurrent SBO and extensive bowel surgery/ostomy make obstruction an important alternative or concurrent source of abdominal pain."
+                  },
+                  {
+                    "requirement_key": "req_ischemia_infarct",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of mesenteric or visceral ischemia/infarction (e.g., bowel, spleen, other solid organs).",
+                    "why_required": "His embolic risk (mechanical valves, prior splenic infarct, digital necrosis) raises concern for intra-abdominal ischemia that would significantly change urgency and treatment."
+                  },
+                  {
+                    "requirement_key": "req_extent_complications",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent and severity of any identified pancreatic, bowel, or visceral abnormalities, including necrosis, perforation, abscess, or new infarcts.",
+                    "why_required": "Management intensity, need for surgery or IR, and prognosis depend on how extensive and complicated any detected process is."
+                  }
+                ],
+                "evidence": [
+                  "Labs were significant for lipase ___",
+                  "___ history of ESRD on HD, CAD, prosthetic aortic and mitral valves and recurrent small bowel obstructions with an ostomy in place presenting with 2 days of abdominal pain."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_pancreas_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT abdomen showed no acute intra-abdominal process, unchanged splenic infarction, pancreatic stone with post ductal dilation, post-surgical changes of the bowel and moderate cardiomegaly."
+                    ],
+                    "reason": "A prior CT abdomen is described but without detail about acute pancreatitis or peripancreatic changes; chart text only states 'no acute intra-abdominal process', so the presence or absence of pancreatitis by imaging remains effectively unaddressed."
+                  },
+                  {
+                    "requirement_key": "req_bowel_obstruction",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "CT abdomen showed no acute intra-abdominal process ... post-surgical changes of the bowel"
+                    ],
+                    "reason": "The prior CT reportedly showed no acute intra-abdominal process and only post-surgical bowel changes, which argues against frank obstruction at that time, but details of bowel caliber and transition points are not provided, leaving some residual uncertainty."
+                  },
+                  {
+                    "requirement_key": "req_ischemia_infarct",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "CT abdomen showed no acute intra-abdominal process, unchanged splenic infarction"
+                    ],
+                    "reason": "The prior CT noted an unchanged splenic infarction and explicitly no acute intra-abdominal process, suggesting no obvious new infarcts then, but without dedicated vascular detail; given ongoing embolic risk, current status of mesenteric/visceral ischemia is not fully assessed."
+                  },
+                  {
+                    "requirement_key": "req_extent_complications",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT abdomen showed no acute intra-abdominal process, unchanged splenic infarction, pancreatic stone with post ductal dilation, post-surgical changes of the bowel and moderate cardiomegaly."
+                    ],
+                    "reason": "The summary of the prior CT lacks detail about the extent or complications of any pancreatic, bowel, or visceral process; it primarily reports absence of a gross acute process, so current extent/severity remains uncharacterized."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "A prior CT scan argues somewhat against bowel obstruction or new visceral infarcts at that earlier time but does not specifically address current pancreatitis, detailed vascular ischemia, or the present extent/complications, leaving key requirements incompletely answered."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT abdomen and pelvis can evaluate the pancreas for acute inflammation and complications, assess for bowel obstruction, and detect solid-organ or bowel ischemia/infarction and related complications.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact weighting among suspected pancreatitis, obstruction, and ischemia as the primary target is not explicit in the chart, and the timing and findings of the referenced prior CT abdomen relative to this new CT are somewhat unclear."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis causing his current abdominal pain and elevated lipase.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Labs were significant for lipase ___\",\n        \"He describes his pain started in the RUQ ... and most recently with epigastric pain.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is at elevated risk for mesenteric or visceral ischemia or infarction due to his history of mechanical valves, prior splenic infarct, and distal finger necrosis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"CT abdomen showed ... unchanged splenic infarction\",\n        \"He also has a 2 week history of hypoperfusion to right middle finger, resulting of necrosis distal to the DIP. Of note, he has 2 mechanical valves, and his INR was most recently low at 1.9\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Recurrent small bowel obstruction or other complication related to prior extensive bowel surgery and diverting loop ileostomy remains a potential source of abdominal pain.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"broad clinical syndrome and source\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"___ history of ESRD on HD, CAD, prosthetic aortic and mitral valves and recurrent small bowel obstructions with an ostomy in place presenting with 2 days of abdominal pain.\",\n        \"CT abdomen showed ... post-surgical changes of the bowel\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has hemodynamic and metabolic risk factors (ESRD on HD, hyperkalemia, CAD, CHF) that increase the danger of missed intra-abdominal catastrophe despite currently improved pain and benign exam.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall risk and severity context\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Past Medical History: ESRD on HD ... CAD Diastolic CHF\",\n        \"In the ED, initial vitals: 99.3 114 78/29.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is no clear clinical or laboratory evidence of septic shock or lactic acidosis at this time.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"systemic severity\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Lactate: 0.8 mmol/L (ref 0.5-2.0)\",\n        \"White Blood Cells: 8.0 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"This is the first decision point with no prior imaging to update.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first reconstruction step, so assumptions are being established de novo from the chart.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there imaging evidence of acute pancreatitis or another intra-abdominal process (such as bowel obstruction or mesenteric/visceral ischemia) that explains this patient’s acute abdominal pain and markedly elevated lipase, and that would change management?\",\n    \"target\": \"pancreas and adjacent structures, small and large bowel, and mesenteric/visceral vasculature and organs\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming pancreatitis, bowel obstruction, or ischemia would guide need for intensive monitoring, surgical or interventional consultation, anticoagulation/antibiotic adjustments, and tailored supportive care.\",\n    \"negative_answer_changes\": \"If no acute intra-abdominal source is seen, clinicians may favor conservative management, consider non-abdominal causes, and avoid unnecessary invasive interventions.\",\n    \"secondary_questions\": [\n      \"What is the extent and severity of any pancreatic, bowel, or visceral involvement if present?\",\n      \"Are there complications such as necrosis, perforation, abscess, or new infarcts that require urgent intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_pancreas_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of imaging signs of acute pancreatitis and its local complications in the pancreas and peripancreatic region.\",\n        \"why_required\": \"Determining whether the lipase elevation and epigastric pain correspond to pancreatitis is central to explaining symptoms and planning management.\"\n      },\n      {\n        \"requirement_key\": \"req_bowel_obstruction\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of small or large bowel obstruction, stricturing, or other obstructive postsurgical complication.\",\n        \"why_required\": \"Recurrent SBO and extensive bowel surgery/ostomy make obstruction an important alternative or concurrent source of abdominal pain.\"\n      },\n      {\n        \"requirement_key\": \"req_ischemia_infarct\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of mesenteric or visceral ischemia/infarction (e.g., bowel, spleen, other solid organs).\",\n        \"why_required\": \"His embolic risk (mechanical valves, prior splenic infarct, digital necrosis) raises concern for intra-abdominal ischemia that would significantly change urgency and treatment.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_complications\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent and severity of any identified pancreatic, bowel, or visceral abnormalities, including necrosis, perforation, abscess, or new infarcts.\",\n        \"why_required\": \"Management intensity, need for surgery or IR, and prognosis depend on how extensive and complicated any detected process is.\"\n      }\n    ],\n    \"evidence\": [\n      \"Labs were significant for lipase ___\",\n      \"___ history of ESRD on HD, CAD, prosthetic aortic and mitral valves and recurrent small bowel obstructions with an ostomy in place presenting with 2 days of abdominal pain.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_pancreas_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT abdomen showed no acute intra-abdominal process, unchanged splenic infarction, pancreatic stone with post ductal dilation, post-surgical changes of the bowel and moderate cardiomegaly.\"\n        ],\n        \"reason\": \"A prior CT abdomen is described but without detail about acute pancreatitis or peripancreatic changes; chart text only states 'no acute intra-abdominal process', so the presence or absence of pancreatitis by imaging remains effectively unaddressed.\"\n      },\n      {\n        \"requirement_key\": \"req_bowel_obstruction\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT abdomen showed no acute intra-abdominal process ... post-surgical changes of the bowel\"\n        ],\n        \"reason\": \"The prior CT reportedly showed no acute intra-abdominal process and only post-surgical bowel changes, which argues against frank obstruction at that time, but details of bowel caliber and transition points are not provided, leaving some residual uncertainty.\"\n      },\n      {\n        \"requirement_key\": \"req_ischemia_infarct\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT abdomen showed no acute intra-abdominal process, unchanged splenic infarction\"\n        ],\n        \"reason\": \"The prior CT noted an unchanged splenic infarction and explicitly no acute intra-abdominal process, suggesting no obvious new infarcts then, but without dedicated vascular detail; given ongoing embolic risk, current status of mesenteric/visceral ischemia is not fully assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_complications\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT abdomen showed no acute intra-abdominal process, unchanged splenic infarction, pancreatic stone with post ductal dilation, post-surgical changes of the bowel and moderate cardiomegaly.\"\n        ],\n        \"reason\": \"The summary of the prior CT lacks detail about the extent or complications of any pancreatic, bowel, or visceral process; it primarily reports absence of a gross acute process, so current extent/severity remains uncharacterized.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"A prior CT scan argues somewhat against bowel obstruction or new visceral infarcts at that earlier time but does not specifically address current pancreatitis, detailed vascular ischemia, or the present extent/complications, leaving key requirements incompletely answered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT abdomen and pelvis can evaluate the pancreas for acute inflammation and complications, assess for bowel obstruction, and detect solid-organ or bowel ischemia/infarction and related complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact weighting among suspected pancreatitis, obstruction, and ischemia as the primary target is not explicit in the chart, and the timing and findings of the referenced prior CT abdomen relative to this new CT are somewhat unclear.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788225666-hIm5BcQcDTlRj1NwrJXZ",
+            "usage": {
+              "completion_tokens": 2371,
+              "prompt_tokens": 4053,
+              "total_tokens": 6424,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02877625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02877625,
+                "upstream_inference_prompt_cost": 0.00506625,
+                "upstream_inference_completions_cost": 0.02371
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis causing his current abdominal pain and elevated lipase.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific disease diagnosis",
+            "status": "likely",
+            "evidence": [
+              "Labs were significant for lipase ___",
+              "He describes his pain started in the RUQ ... and most recently with epigastric pain."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is at elevated risk for mesenteric or visceral ischemia or infarction due to his history of mechanical valves, prior splenic infarct, and distal finger necrosis.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "pathophysiologic mechanism",
+            "status": "suspected",
+            "evidence": [
+              "CT abdomen showed ... unchanged splenic infarction",
+              "He also has a 2 week history of hypoperfusion to right middle finger, resulting of necrosis distal to the DIP. Of note, he has 2 mechanical valves, and his INR was most recently low at 1.9"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Recurrent small bowel obstruction or other complication related to prior extensive bowel surgery and diverting loop ileostomy remains a potential source of abdominal pain.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "broad clinical syndrome and source",
+            "status": "suspected",
+            "evidence": [
+              "___ history of ESRD on HD, CAD, prosthetic aortic and mitral valves and recurrent small bowel obstructions with an ostomy in place presenting with 2 days of abdominal pain.",
+              "CT abdomen showed ... post-surgical changes of the bowel"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has hemodynamic and metabolic risk factors (ESRD on HD, hyperkalemia, CAD, CHF) that increase the danger of missed intra-abdominal catastrophe despite currently improved pain and benign exam.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "overall risk and severity context",
+            "status": "established",
+            "evidence": [
+              "Past Medical History: ESRD on HD ... CAD Diastolic CHF",
+              "In the ED, initial vitals: 99.3 114 78/29."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is no clear clinical or laboratory evidence of septic shock or lactic acidosis at this time.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "systemic severity",
+            "status": "established",
+            "evidence": [
+              "Lactate: 0.8 mmol/L (ref 0.5-2.0)",
+              "White Blood Cells: 8.0 K/uL (ref 4.0-11.0)"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "This is the first decision point with no prior imaging to update."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first reconstruction step, so assumptions are being established de novo from the chart."
+        },
+        "current_question": {
+          "primary": "Is there imaging evidence of acute pancreatitis or another intra-abdominal process (such as bowel obstruction or mesenteric/visceral ischemia) that explains this patient’s acute abdominal pain and markedly elevated lipase, and that would change management?",
+          "target": "pancreas and adjacent structures, small and large bowel, and mesenteric/visceral vasculature and organs",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming pancreatitis, bowel obstruction, or ischemia would guide need for intensive monitoring, surgical or interventional consultation, anticoagulation/antibiotic adjustments, and tailored supportive care.",
+          "negative_answer_changes": "If no acute intra-abdominal source is seen, clinicians may favor conservative management, consider non-abdominal causes, and avoid unnecessary invasive interventions.",
+          "secondary_questions": [
+            "What is the extent and severity of any pancreatic, bowel, or visceral involvement if present?",
+            "Are there complications such as necrosis, perforation, abscess, or new infarcts that require urgent intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_pancreas_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of imaging signs of acute pancreatitis and its local complications in the pancreas and peripancreatic region.",
+              "why_required": "Determining whether the lipase elevation and epigastric pain correspond to pancreatitis is central to explaining symptoms and planning management."
+            },
+            {
+              "requirement_key": "req_bowel_obstruction",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of small or large bowel obstruction, stricturing, or other obstructive postsurgical complication.",
+              "why_required": "Recurrent SBO and extensive bowel surgery/ostomy make obstruction an important alternative or concurrent source of abdominal pain."
+            },
+            {
+              "requirement_key": "req_ischemia_infarct",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of mesenteric or visceral ischemia/infarction (e.g., bowel, spleen, other solid organs).",
+              "why_required": "His embolic risk (mechanical valves, prior splenic infarct, digital necrosis) raises concern for intra-abdominal ischemia that would significantly change urgency and treatment."
+            },
+            {
+              "requirement_key": "req_extent_complications",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent and severity of any identified pancreatic, bowel, or visceral abnormalities, including necrosis, perforation, abscess, or new infarcts.",
+              "why_required": "Management intensity, need for surgery or IR, and prognosis depend on how extensive and complicated any detected process is."
+            }
+          ],
+          "evidence": [
+            "Labs were significant for lipase ___",
+            "___ history of ESRD on HD, CAD, prosthetic aortic and mitral valves and recurrent small bowel obstructions with an ostomy in place presenting with 2 days of abdominal pain."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_pancreas_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT abdomen showed no acute intra-abdominal process, unchanged splenic infarction, pancreatic stone with post ductal dilation, post-surgical changes of the bowel and moderate cardiomegaly."
+              ],
+              "reason": "A prior CT abdomen is described but without detail about acute pancreatitis or peripancreatic changes; chart text only states 'no acute intra-abdominal process', so the presence or absence of pancreatitis by imaging remains effectively unaddressed."
+            },
+            {
+              "requirement_key": "req_bowel_obstruction",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "CT abdomen showed no acute intra-abdominal process ... post-surgical changes of the bowel"
+              ],
+              "reason": "The prior CT reportedly showed no acute intra-abdominal process and only post-surgical bowel changes, which argues against frank obstruction at that time, but details of bowel caliber and transition points are not provided, leaving some residual uncertainty."
+            },
+            {
+              "requirement_key": "req_ischemia_infarct",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "CT abdomen showed no acute intra-abdominal process, unchanged splenic infarction"
+              ],
+              "reason": "The prior CT noted an unchanged splenic infarction and explicitly no acute intra-abdominal process, suggesting no obvious new infarcts then, but without dedicated vascular detail; given ongoing embolic risk, current status of mesenteric/visceral ischemia is not fully assessed."
+            },
+            {
+              "requirement_key": "req_extent_complications",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT abdomen showed no acute intra-abdominal process, unchanged splenic infarction, pancreatic stone with post ductal dilation, post-surgical changes of the bowel and moderate cardiomegaly."
+              ],
+              "reason": "The summary of the prior CT lacks detail about the extent or complications of any pancreatic, bowel, or visceral process; it primarily reports absence of a gross acute process, so current extent/severity remains uncharacterized."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "A prior CT scan argues somewhat against bowel obstruction or new visceral infarcts at that earlier time but does not specifically address current pancreatitis, detailed vascular ischemia, or the present extent/complications, leaving key requirements incompletely answered."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT abdomen and pelvis can evaluate the pancreas for acute inflammation and complications, assess for bowel obstruction, and detect solid-organ or bowel ischemia/infarction and related complications.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The exact weighting among suspected pancreatitis, obstruction, and ischemia as the primary target is not explicit in the chart, and the timing and findings of the referenced prior CT abdomen relative to this new CT are somewhat unclear."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

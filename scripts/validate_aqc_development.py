@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from experiments.aqc import prompts  # noqa: E402
+from experiments.aqc import legacy_recode_prompts, prompts  # noqa: E402
 
 DATA = ROOT / "data" / "aqc_development"
 DISEASES = {"appendicitis", "cholecystitis", "diverticulitis", "pancreatitis"}
@@ -153,10 +153,15 @@ def main() -> None:
 
     contract = prompts.output_contract()
     assert "answer_requirements" in contract["current_question"]
+    assert "question_grounding" not in contract["current_question"]
     assert "requirement_key" in contract["current_question"]["answer_requirements"][0]
     assert "coverage" in contract and "pre_order_coverage" not in contract
     assert "requirements" in contract["coverage"]
     assert "requirement_key" in contract["coverage"]["requirements"][0]
+    assert set(contract["current_order_fit"]) == {
+        "question_grounding", "test_question_capability"
+    }
+    assert "current_test" not in contract
 
     # Deterministic lexical stability is not qualitative saturation.
     assert saturation["conclusion"] == "lexically_stable_but_not_yet_qualitatively_saturated"
@@ -172,14 +177,14 @@ def main() -> None:
     }
     baseline = {"patient_history": "history", "physical_examination": "exam",
                 "laboratory_tests": "labs"}
-    direct = prompts.build_direct_user(decision_point, baseline, None)
+    direct = prompts.build_annotation_user(decision_point, baseline, None)
     assert "ORDER_VISIBLE" in direct
     assert "CURRENT_RESULT_SECRET" not in direct
     assert "LATER_EVENT_SECRET" not in direct
 
     old = {"differential": {"other": 1.0}, "reasoning": "OLD_EX_ANTE_VISIBLE",
            "verification": "VERIFICATION_SECRET", "actual_finding": "CURRENT_RESULT_SECRET"}
-    recode = prompts.build_recode_user(old, "ORDER_VISIBLE", None)
+    recode = legacy_recode_prompts.build_recode_user(old, "ORDER_VISIBLE", None)
     assert "OLD_EX_ANTE_VISIBLE" in recode
     assert "VERIFICATION_SECRET" not in recode
     assert "CURRENT_RESULT_SECRET" not in recode

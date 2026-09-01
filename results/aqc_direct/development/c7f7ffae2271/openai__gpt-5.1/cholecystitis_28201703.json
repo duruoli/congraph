@@ -1,0 +1,651 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 28201703,
+  "source_path": "results/annotation_experiment/full/cholecystitis_28201703.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABDOMEN W/CONTRAST)",
+      "request_prompt_sha256": "1484c95a4ffe5968afaa827ba8775850000e3fefc1fed2494eb41a8365058b44",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "1484c95a4ffe5968afaa827ba8775850000e3fefc1fed2494eb41a8365058b44",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute severe liver injury with liver failure and hepatic encephalopathy.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "organ-system syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "Labs significant for INR>20, ... ALT: 882 AP: 911 Tbili: 8.1 AST: 1189 ... Here jaundiced, confused ... + asterixis.",
+                    "On arrival to the MICU, patient was only AOx1 ... Neuro: +asterixis and upgoing toes."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is suspected obstructive or biliary etiology of the acute liver failure related to gallbladder and biliary duct pathology.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic process",
+                  "status": "likely",
+                  "evidence": [
+                    "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.",
+                    "Here jaundiced, confused, describing abd cramps with mild ttp. Abdomen: ... +TTP in RUQ with guarding."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient may have a biliary or intra-abdominal infection or inflammatory process contributing to acute liver failure.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic process",
+                  "status": "suspected",
+                  "evidence": [
+                    "UCx positive.",
+                    "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is concern for a structural biliary complication such as ascending cholangitis, gallbladder pathology, or bowel complication that may require procedural or surgical intervention.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "organ complication",
+                  "status": "suspected",
+                  "evidence": [
+                    "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.",
+                    "Surgery seen patient in ED."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient has severe acute kidney injury on chronic kidney disease.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "organ-system severity",
+                  "status": "established",
+                  "evidence": [
+                    "Creatinine: 7.3 mg/dL ... Estimated GFR = 8 ... Chronic renal insufficiency stage III.",
+                    "Urea Nitrogen: 251.0 mg/dL (ref 6.0-20.0)."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First decision point; no prior imaging to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; assumptions are newly established from the baseline clinical data."
+              },
+              "current_question": {
+                "primary": "What is the nature and extent of biliary and adjacent intra-abdominal pathology contributing to this patient’s acute liver failure?",
+                "target": "biliary tree, gallbladder, and adjacent upper abdominal structures",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming obstructive or infectious biliary pathology (e.g., ductal obstruction, cholangitis, gallbladder complications, perforation) would support targeted biliary intervention or surgery and refine management of the acute liver failure.",
+                "negative_answer_changes": "If no significant biliary or intra-abdominal pathology is identified, clinicians would place greater weight on non-biliary causes of liver failure (e.g., drug-induced, ischemic, autoimmune) and adjust management away from emergent procedural or surgical intervention.",
+                "secondary_questions": [
+                  "Is there evidence of an intra-abdominal complication such as perforation, ischemia, or ileus explaining the CT finding of air in the biliary system?",
+                  "What is the severity and anatomic distribution of biliary ductal dilatation and gallbladder disease?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_biliary_assess",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and assessment of the biliary tree and gallbladder, including ducts and gallbladder lumen/wall.",
+                    "why_required": "Determining whether and where there is obstruction, inflammation, or structural abnormality is essential to link biliary disease to the acute liver failure."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of obstructive, inflammatory, or infectious biliary pathology (e.g., obstructing stone, cholangitis, emphysematous or gangrenous cholecystitis).",
+                    "why_required": "Identifying a specific biliary process would guide decisions about urgent ERCP, drainage, or surgery."
+                  },
+                  {
+                    "requirement_key": "req_extent_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of ductal dilatation, gallbladder involvement, and any associated intra-abdominal changes such as ileus or perforation.",
+                    "why_required": "The degree and spread of disease influence the urgency, feasibility, and type of intervention or surgery."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of intra-abdominal complications related to biliary disease, such as perforation, abscess, or bowel involvement explaining air in the biliary system.",
+                    "why_required": "Detecting complications would escalate care and determine the need for emergent surgical or interventional radiology procedures."
+                  }
+                ],
+                "evidence": [
+                  "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.",
+                  "Concern for new onset liver failure. ... Here jaundiced, confused, describing abd cramps with mild ttp. Abdomen: ... +TTP in RUQ with guarding."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_biliary_assess",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+                    ],
+                    "reason": "A prior CT abdomen is mentioned but no detailed report or images are available, so current decision-making lacks a full, interpretable assessment of the biliary tree and gallbladder."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+                    ],
+                    "reason": "The prior CT suggests biliary and gallbladder pathology but does not clearly define specific diagnoses such as cholangitis or obstructing stone, so presence of a discrete actionable pathology remains incompletely characterized."
+                  },
+                  {
+                    "requirement_key": "req_extent_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+                    ],
+                    "reason": "Only qualitative comments on ducts and ileus are available without precise description of severity or distribution, leaving the extent of disease undefined."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "CT abd showed air in biliary system ... questional ileus.",
+                      "Surgery seen patient in ED."
+                    ],
+                    "reason": "Findings of air in the biliary system and possible ileus suggest potential complications, but their exact nature (e.g., perforation, emphysematous infection) is not specified in the available description."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Existing CT information raises and partially informs concern for biliary and intra-abdominal pathology but lacks sufficient detail to define the nature, severity, and complications needed for management decisions."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT abdomen can delineate the biliary tree, gallbladder, and surrounding organs, characterize ductal dilatation and gallbladder disease, and detect complications such as perforation, abscess, or significant ileus.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "It remains unclear whether the intent is to repeat or extend a prior CT, to better characterize specific suspected entities such as emphysematous cholecystitis versus ascending cholangitis, or to reassess interval change; the exact targeted diagnosis and timing rationale are not fully specified."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute severe liver injury with liver failure and hepatic encephalopathy.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-system syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Labs significant for INR>20, ... ALT: 882 AP: 911 Tbili: 8.1 AST: 1189 ... Here jaundiced, confused ... + asterixis.\",\n        \"On arrival to the MICU, patient was only AOx1 ... Neuro: +asterixis and upgoing toes.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is suspected obstructive or biliary etiology of the acute liver failure related to gallbladder and biliary duct pathology.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic process\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\",\n        \"Here jaundiced, confused, describing abd cramps with mild ttp. Abdomen: ... +TTP in RUQ with guarding.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient may have a biliary or intra-abdominal infection or inflammatory process contributing to acute liver failure.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"UCx positive.\",\n        \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is concern for a structural biliary complication such as ascending cholangitis, gallbladder pathology, or bowel complication that may require procedural or surgical intervention.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\",\n        \"Surgery seen patient in ED.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient has severe acute kidney injury on chronic kidney disease.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-system severity\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Creatinine: 7.3 mg/dL ... Estimated GFR = 8 ... Chronic renal insufficiency stage III.\",\n        \"Urea Nitrogen: 251.0 mg/dL (ref 6.0-20.0).\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior imaging to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; assumptions are newly established from the baseline clinical data.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the nature and extent of biliary and adjacent intra-abdominal pathology contributing to this patient’s acute liver failure?\",\n    \"target\": \"biliary tree, gallbladder, and adjacent upper abdominal structures\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming obstructive or infectious biliary pathology (e.g., ductal obstruction, cholangitis, gallbladder complications, perforation) would support targeted biliary intervention or surgery and refine management of the acute liver failure.\",\n    \"negative_answer_changes\": \"If no significant biliary or intra-abdominal pathology is identified, clinicians would place greater weight on non-biliary causes of liver failure (e.g., drug-induced, ischemic, autoimmune) and adjust management away from emergent procedural or surgical intervention.\",\n    \"secondary_questions\": [\n      \"Is there evidence of an intra-abdominal complication such as perforation, ischemia, or ileus explaining the CT finding of air in the biliary system?\",\n      \"What is the severity and anatomic distribution of biliary ductal dilatation and gallbladder disease?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_biliary_assess\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and assessment of the biliary tree and gallbladder, including ducts and gallbladder lumen/wall.\",\n        \"why_required\": \"Determining whether and where there is obstruction, inflammation, or structural abnormality is essential to link biliary disease to the acute liver failure.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of obstructive, inflammatory, or infectious biliary pathology (e.g., obstructing stone, cholangitis, emphysematous or gangrenous cholecystitis).\",\n        \"why_required\": \"Identifying a specific biliary process would guide decisions about urgent ERCP, drainage, or surgery.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of ductal dilatation, gallbladder involvement, and any associated intra-abdominal changes such as ileus or perforation.\",\n        \"why_required\": \"The degree and spread of disease influence the urgency, feasibility, and type of intervention or surgery.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of intra-abdominal complications related to biliary disease, such as perforation, abscess, or bowel involvement explaining air in the biliary system.\",\n        \"why_required\": \"Detecting complications would escalate care and determine the need for emergent surgical or interventional radiology procedures.\"\n      }\n    ],\n    \"evidence\": [\n      \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\",\n      \"Concern for new onset liver failure. ... Here jaundiced, confused, describing abd cramps with mild ttp. Abdomen: ... +TTP in RUQ with guarding.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_biliary_assess\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\"\n        ],\n        \"reason\": \"A prior CT abdomen is mentioned but no detailed report or images are available, so current decision-making lacks a full, interpretable assessment of the biliary tree and gallbladder.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\"\n        ],\n        \"reason\": \"The prior CT suggests biliary and gallbladder pathology but does not clearly define specific diagnoses such as cholangitis or obstructing stone, so presence of a discrete actionable pathology remains incompletely characterized.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\"\n        ],\n        \"reason\": \"Only qualitative comments on ducts and ileus are available without precise description of severity or distribution, leaving the extent of disease undefined.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"CT abd showed air in biliary system ... questional ileus.\",\n          \"Surgery seen patient in ED.\"\n        ],\n        \"reason\": \"Findings of air in the biliary system and possible ileus suggest potential complications, but their exact nature (e.g., perforation, emphysematous infection) is not specified in the available description.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Existing CT information raises and partially informs concern for biliary and intra-abdominal pathology but lacks sufficient detail to define the nature, severity, and complications needed for management decisions.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT abdomen can delineate the biliary tree, gallbladder, and surrounding organs, characterize ductal dilatation and gallbladder disease, and detect complications such as perforation, abscess, or significant ileus.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"It remains unclear whether the intent is to repeat or extend a prior CT, to better characterize specific suspected entities such as emphysematous cholecystitis versus ascending cholangitis, or to reassess interval change; the exact targeted diagnosis and timing rationale are not fully specified.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788226453-IT4xoKNM7TaGL0nzTu3H",
+            "usage": {
+              "completion_tokens": 2330,
+              "prompt_tokens": 4061,
+              "total_tokens": 6391,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02837625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02837625,
+                "upstream_inference_prompt_cost": 0.00507625,
+                "upstream_inference_completions_cost": 0.0233
+              }
+            }
+          },
+          "validation_errors": [
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "929cabdd864a0596a29511991fe0eaf446f6b2360020a84bb869b29dde6a770a",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute severe liver injury with hepatic dysfunction and encephalopathy consistent with acute liver failure.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "organ system syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "Concern for new onset liver failure. + asterixis.",
+                    "Labs significant for INR>20, ... ALT: 882 AP: 911 Tbili: 8.1 AST: 1189"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient likely has acute biliary obstruction or cholangitis related to gallstones and biliary duct dilation.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease or process",
+                  "status": "likely",
+                  "evidence": [
+                    "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.",
+                    "Abdomen: No organomegaly or ascites noted, +TTP in RUQ with guarding"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Sepsis or systemic inflammatory response from a biliary or urinary source is a possible contributor to the patient’s acute illness.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "UCx positive.",
+                    "Here jaundiced, confused, describing abd cramps with mild ttp. CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient has severe acute kidney injury superimposed on chronic kidney disease.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "organ system syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "Creatinine: 7.3 mg/dL (ref 0.5-1.2)",
+                    "Chronic renal insufficiency stage III"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is a risk of biliary tract or intra-abdominal complications (such as evolving obstruction, perforation, or ischemia) that may require surgical or procedural intervention.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "organ system complication",
+                  "status": "suspected",
+                  "evidence": [
+                    "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.",
+                    "Surgery seen patient in ED."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "no prior imaging-based question at this first decision point",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "no prior imaging or A/Q/C state to compare"
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point so all assumptions are newly established from the baseline chart."
+              },
+              "current_question": {
+                "primary": "What is the nature and extent of the biliary and adjacent intra-abdominal pathology contributing to this patient’s acute liver failure and abdominal symptoms?",
+                "target": "biliary tree, gallbladder, and surrounding abdominal organs",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identification of obstructing stones, cholangitis, perforation, or other structural pathology would guide urgent surgical, endoscopic, or interventional management and refine the etiology of liver failure.",
+                "negative_answer_changes": "If no significant structural biliary or intra-abdominal pathology is found, clinicians would focus on non-obstructive causes of liver failure and adjust the need and timing for invasive biliary or surgical interventions.",
+                "secondary_questions": [
+                  "How severe is any biliary obstruction or local inflammatory process, and is there evidence of complications such as perforation, abscess, or ischemia?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and assessment of the biliary tree, gallbladder, and adjacent upper abdominal organs.",
+                    "why_required": "Determining whether structural disease is present requires adequate imaging of these structures."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of obstructing gallstones, biliary dilation/obstruction, pneumobilia, or other focal lesions.",
+                    "why_required": "Establishing whether structural lesions exist is key to linking biliary pathology to the acute liver failure."
+                  },
+                  {
+                    "requirement_key": "req_severity_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of any biliary obstruction, inflammation, or ileus and impact on surrounding organs.",
+                    "why_required": "The urgency and type of intervention depend on how extensive or severe the pathology is."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of complications such as perforation, abscess, ischemia, or worsening ileus.",
+                    "why_required": "Detecting complications guides surgical consultation, timing of procedures, and overall risk assessment."
+                  }
+                ],
+                "evidence": [
+                  "Concern for new onset liver failure. + asterixis. CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.",
+                  "Abdomen: No organomegaly or ascites noted, +TTP in RUQ with guarding"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+                    ],
+                    "reason": "A prior CT abdomen in the ED provided some visualization of the biliary system and bowel, but details of timing, technique, and completeness are limited and the description suggests possible ileus without a comprehensive characterization."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+                    ],
+                    "reason": "The earlier CT indicates pneumobilia, a large gallstone, and ductal dilation, confirming some pathology but not clarifying exact level of obstruction, current status, or alternative lesions."
+                  },
+                  {
+                    "requirement_key": "req_severity_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+                    ],
+                    "reason": "The available description lacks graded assessment of obstruction, inflammation, or overall burden in a way that would guide current management decisions."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+                    ],
+                    "reason": "Complications such as perforation, abscess, or ischemia are not described, and the phrase 'questional ileus' does not exclude more serious complications."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "A prior CT suggested biliary and bowel pathology but did not fully characterize severity or complications needed to guide ongoing management."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT abdomen can visualize the biliary tree, gallbladder, and surrounding structures, detect obstructing stones, assess dilation and inflammation, and identify complications like perforation, abscess, or ischemia.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact reason for repeating CT rather than using alternative modalities (e.g., ultrasound, MRCP, or ERCP planning) and the specific trigger for this timing of repeat imaging are not explicit in the chart."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute severe liver injury with hepatic dysfunction and encephalopathy consistent with acute liver failure.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Concern for new onset liver failure. + asterixis.\",\n        \"Labs significant for INR>20, ... ALT: 882 AP: 911 Tbili: 8.1 AST: 1189\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient likely has acute biliary obstruction or cholangitis related to gallstones and biliary duct dilation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease or process\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\",\n        \"Abdomen: No organomegaly or ascites noted, +TTP in RUQ with guarding\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Sepsis or systemic inflammatory response from a biliary or urinary source is a possible contributor to the patient’s acute illness.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"UCx positive.\",\n        \"Here jaundiced, confused, describing abd cramps with mild ttp. CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient has severe acute kidney injury superimposed on chronic kidney disease.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Creatinine: 7.3 mg/dL (ref 0.5-1.2)\",\n        \"Chronic renal insufficiency stage III\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is a risk of biliary tract or intra-abdominal complications (such as evolving obstruction, perforation, or ischemia) that may require surgical or procedural intervention.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\",\n        \"Surgery seen patient in ED.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging-based question at this first decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"no prior imaging or A/Q/C state to compare\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point so all assumptions are newly established from the baseline chart.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the nature and extent of the biliary and adjacent intra-abdominal pathology contributing to this patient’s acute liver failure and abdominal symptoms?\",\n    \"target\": \"biliary tree, gallbladder, and surrounding abdominal organs\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identification of obstructing stones, cholangitis, perforation, or other structural pathology would guide urgent surgical, endoscopic, or interventional management and refine the etiology of liver failure.\",\n    \"negative_answer_changes\": \"If no significant structural biliary or intra-abdominal pathology is found, clinicians would focus on non-obstructive causes of liver failure and adjust the need and timing for invasive biliary or surgical interventions.\",\n    \"secondary_questions\": [\n      \"How severe is any biliary obstruction or local inflammatory process, and is there evidence of complications such as perforation, abscess, or ischemia?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and assessment of the biliary tree, gallbladder, and adjacent upper abdominal organs.\",\n        \"why_required\": \"Determining whether structural disease is present requires adequate imaging of these structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of obstructing gallstones, biliary dilation/obstruction, pneumobilia, or other focal lesions.\",\n        \"why_required\": \"Establishing whether structural lesions exist is key to linking biliary pathology to the acute liver failure.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of any biliary obstruction, inflammation, or ileus and impact on surrounding organs.\",\n        \"why_required\": \"The urgency and type of intervention depend on how extensive or severe the pathology is.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of complications such as perforation, abscess, ischemia, or worsening ileus.\",\n        \"why_required\": \"Detecting complications guides surgical consultation, timing of procedures, and overall risk assessment.\"\n      }\n    ],\n    \"evidence\": [\n      \"Concern for new onset liver failure. + asterixis. CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\",\n      \"Abdomen: No organomegaly or ascites noted, +TTP in RUQ with guarding\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\"\n        ],\n        \"reason\": \"A prior CT abdomen in the ED provided some visualization of the biliary system and bowel, but details of timing, technique, and completeness are limited and the description suggests possible ileus without a comprehensive characterization.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\"\n        ],\n        \"reason\": \"The earlier CT indicates pneumobilia, a large gallstone, and ductal dilation, confirming some pathology but not clarifying exact level of obstruction, current status, or alternative lesions.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\"\n        ],\n        \"reason\": \"The available description lacks graded assessment of obstruction, inflammation, or overall burden in a way that would guide current management decisions.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.\"\n        ],\n        \"reason\": \"Complications such as perforation, abscess, or ischemia are not described, and the phrase 'questional ileus' does not exclude more serious complications.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"A prior CT suggested biliary and bowel pathology but did not fully characterize severity or complications needed to guide ongoing management.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT abdomen can visualize the biliary tree, gallbladder, and surrounding structures, detect obstructing stones, assess dilation and inflammation, and identify complications like perforation, abscess, or ischemia.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact reason for repeating CT rather than using alternative modalities (e.g., ultrasound, MRCP, or ERCP planning) and the specific trigger for this timing of repeat imaging are not explicit in the chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788226476-5y1kgt5z4LyM472CQ4tK",
+            "usage": {
+              "completion_tokens": 2161,
+              "prompt_tokens": 4097,
+              "total_tokens": 6258,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3840,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02241125,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02241125,
+                "upstream_inference_prompt_cost": 0.00080125,
+                "upstream_inference_completions_cost": 0.02161
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute severe liver injury with hepatic dysfunction and encephalopathy consistent with acute liver failure.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "organ system syndrome",
+            "status": "established",
+            "evidence": [
+              "Concern for new onset liver failure. + asterixis.",
+              "Labs significant for INR>20, ... ALT: 882 AP: 911 Tbili: 8.1 AST: 1189"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient likely has acute biliary obstruction or cholangitis related to gallstones and biliary duct dilation.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific disease or process",
+            "status": "likely",
+            "evidence": [
+              "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.",
+              "Abdomen: No organomegaly or ascites noted, +TTP in RUQ with guarding"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Sepsis or systemic inflammatory response from a biliary or urinary source is a possible contributor to the patient’s acute illness.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "pathophysiologic mechanism",
+            "status": "suspected",
+            "evidence": [
+              "UCx positive.",
+              "Here jaundiced, confused, describing abd cramps with mild ttp. CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient has severe acute kidney injury superimposed on chronic kidney disease.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "organ system syndrome",
+            "status": "established",
+            "evidence": [
+              "Creatinine: 7.3 mg/dL (ref 0.5-1.2)",
+              "Chronic renal insufficiency stage III"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is a risk of biliary tract or intra-abdominal complications (such as evolving obstruction, perforation, or ischemia) that may require surgical or procedural intervention.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "organ system complication",
+            "status": "suspected",
+            "evidence": [
+              "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.",
+              "Surgery seen patient in ED."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "no prior imaging-based question at this first decision point",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "no prior imaging or A/Q/C state to compare"
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point so all assumptions are newly established from the baseline chart."
+        },
+        "current_question": {
+          "primary": "What is the nature and extent of the biliary and adjacent intra-abdominal pathology contributing to this patient’s acute liver failure and abdominal symptoms?",
+          "target": "biliary tree, gallbladder, and surrounding abdominal organs",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identification of obstructing stones, cholangitis, perforation, or other structural pathology would guide urgent surgical, endoscopic, or interventional management and refine the etiology of liver failure.",
+          "negative_answer_changes": "If no significant structural biliary or intra-abdominal pathology is found, clinicians would focus on non-obstructive causes of liver failure and adjust the need and timing for invasive biliary or surgical interventions.",
+          "secondary_questions": [
+            "How severe is any biliary obstruction or local inflammatory process, and is there evidence of complications such as perforation, abscess, or ischemia?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization and assessment of the biliary tree, gallbladder, and adjacent upper abdominal organs.",
+              "why_required": "Determining whether structural disease is present requires adequate imaging of these structures."
+            },
+            {
+              "requirement_key": "req_presence_pathology",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of obstructing gallstones, biliary dilation/obstruction, pneumobilia, or other focal lesions.",
+              "why_required": "Establishing whether structural lesions exist is key to linking biliary pathology to the acute liver failure."
+            },
+            {
+              "requirement_key": "req_severity_extent",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity and extent of any biliary obstruction, inflammation, or ileus and impact on surrounding organs.",
+              "why_required": "The urgency and type of intervention depend on how extensive or severe the pathology is."
+            },
+            {
+              "requirement_key": "req_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence of complications such as perforation, abscess, ischemia, or worsening ileus.",
+              "why_required": "Detecting complications guides surgical consultation, timing of procedures, and overall risk assessment."
+            }
+          ],
+          "evidence": [
+            "Concern for new onset liver failure. + asterixis. CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus.",
+            "Abdomen: No organomegaly or ascites noted, +TTP in RUQ with guarding"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+              ],
+              "reason": "A prior CT abdomen in the ED provided some visualization of the biliary system and bowel, but details of timing, technique, and completeness are limited and the description suggests possible ileus without a comprehensive characterization."
+            },
+            {
+              "requirement_key": "req_presence_pathology",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+              ],
+              "reason": "The earlier CT indicates pneumobilia, a large gallstone, and ductal dilation, confirming some pathology but not clarifying exact level of obstruction, current status, or alternative lesions."
+            },
+            {
+              "requirement_key": "req_severity_extent",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+              ],
+              "reason": "The available description lacks graded assessment of obstruction, inflammation, or overall burden in a way that would guide current management decisions."
+            },
+            {
+              "requirement_key": "req_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT abd showed air in biliary system and single large gallstone in gallbladder, dilated ducts, questional ileus."
+              ],
+              "reason": "Complications such as perforation, abscess, or ischemia are not described, and the phrase 'questional ileus' does not exclude more serious complications."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "A prior CT suggested biliary and bowel pathology but did not fully characterize severity or complications needed to guide ongoing management."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT abdomen can visualize the biliary tree, gallbladder, and surrounding structures, detect obstructing stones, assess dilation and inflammation, and identify complications like perforation, abscess, or ischemia.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The exact reason for repeating CT rather than using alternative modalities (e.g., ultrasound, MRCP, or ERCP planning) and the specific trigger for this timing of repeat imaging are not explicit in the chart."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

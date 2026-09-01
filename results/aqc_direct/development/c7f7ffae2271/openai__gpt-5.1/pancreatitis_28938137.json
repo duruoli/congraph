@@ -1,0 +1,428 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 28938137,
+  "source_path": "results/annotation_experiment/full/pancreatitis_28938137.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "1f898abfdee5bbc0c21844b6a9ff2aeaee018610eb50113fb8c0fcd8aa95374d",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "1f898abfdee5bbc0c21844b6a9ff2aeaee018610eb50113fb8c0fcd8aa95374d",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute pancreatitis syndrome with severe epigastric/right upper quadrant pain and markedly elevated pancreatic enzymes.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "\"presents with RUQ pain radiating to back for the past two days with cramping and nausea\"",
+                    "\"Lipase: 7580.0 IU/L (ref 0.0-60.0)\" and \"Amylase: 1324.0 IU/L (ref 0.0-100.0)\""
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has acute hepatobiliary injury and cholestasis, raising concern for a biliary cause of pancreatitis.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic process",
+                  "status": "likely",
+                  "evidence": [
+                    "\"Asparate Aminotransferase (AST): 175.0 IU/L (ref 0.0-40.0)\"",
+                    "\"Alanine Aminotransferase (ALT): 455.0 IU/L (ref 0.0-40.0)\", \"Alkaline Phosphatase: 308.0 IU/L (ref 39.0-117.0)\", \"Bilirubin, Total: 2.4 mg/dL (ref 0.0-1.5)\""
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Gallstone disease (cholelithiasis with possible choledocholithiasis) is a likely etiology of this acute pancreatitis.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "\"Ms ___ is a ___ healthy woman who presents with RUQ pain radiating to back for the past two days\"",
+                    "\"Alkaline Phosphatase: 308.0 IU/L\", \"Bilirubin, Total: 2.4 mg/dL\" and markedly elevated transaminases in the setting of acute pancreatitis"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is currently no clinical or laboratory evidence of septic shock or hemodynamic instability from biliary infection.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "illness severity",
+                  "status": "established",
+                  "evidence": [
+                    "\"Gen: NAD\" and vital-sign surrogates without mention of hypotension or tachycardia",
+                    "\"White Blood Cells: 6.1 K/uL (ref 4.0-11.0)\" and \"Lactate: 0.8 mmol/L (ref 0.5-2.0)\""
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Alternative non-biliary causes of pancreatitis (e.g., alcohol, hypertriglyceridemia, drug-induced) have not been clearly identified or excluded in the chart.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "etiologic differential",
+                  "status": "unclear",
+                  "evidence": [
+                    "\"Past Medical History: none    Social History: ___\"",
+                    "No triglyceride level or alcohol use history is documented in the provided chart."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First imaging decision; no prior imaging or question to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision, so the assumptions are initialized from the baseline clinical and laboratory data."
+              },
+              "current_question": {
+                "primary": "Is there gallbladder or biliary tract pathology, such as gallstones or biliary obstruction, that explains this patient’s acute pancreatitis and cholestatic liver test abnormalities?",
+                "target": "gallbladder and extrahepatic biliary tree pathology causing pancreatitis and cholestasis",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming gallstone or obstructive biliary disease would support a diagnosis of biliary pancreatitis and prompt surgical or endoscopic management planning (e.g., cholecystectomy, possible ERCP).",
+                "negative_answer_changes": "If no gallbladder or biliary cause is identified, clinicians would broaden the etiologic workup toward non-biliary causes of pancreatitis and reconsider the source of liver test abnormalities.",
+                "secondary_questions": [
+                  "Is there evidence of acute cholecystitis or other gallbladder complication in the setting of pancreatitis?",
+                  "Is there biliary ductal dilatation suggesting clinically important obstruction that may require urgent decompression?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and assessment of the gallbladder for stones, sludge, wall thickening, and pericholecystic findings.",
+                    "why_required": "Assessing gallbladder structure and contents is necessary to determine whether cholelithiasis or cholecystitis is present as a cause or contributor."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones or other obstructing material within the gallbladder and visible extrahepatic bile ducts.",
+                    "why_required": "Identifying obstructive material is central to attributing pancreatitis and cholestasis to biliary stone disease."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of biliary tract involvement, including ductal dilatation or features suggesting clinically significant obstruction.",
+                    "why_required": "The extent of obstruction helps determine urgency and type of further intervention, such as ERCP or urgent surgery."
+                  },
+                  {
+                    "requirement_key": "req_4",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of gallbladder complications such as acute cholecystitis or gallbladder wall edema in the setting of pancreatitis.",
+                    "why_required": "Detecting complications informs the need and timing for surgical intervention and guides overall management."
+                  }
+                ],
+                "evidence": [
+                  "\"presents with RUQ pain radiating to back for the past two days\" and \"Pain became more intense this AM, epigastric ___ constant.\"",
+                  "\"Lipase: 7580.0 IU/L\" with \"Alkaline Phosphatase: 308.0 IU/L\" and \"Bilirubin, Total: 2.4 mg/dL\" and markedly elevated AST/ALT indicating pancreatitis with cholestatic and hepatocellular injury."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_1",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No imaging studies are listed under \"Imaging resulted before this decision point (none)\"."
+                    ],
+                    "reason": "No prior imaging has visualized the gallbladder, so its structural status and contents are unknown."
+                  },
+                  {
+                    "requirement_key": "req_2",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "There is no prior imaging report documenting gallstones or biliary obstruction."
+                    ],
+                    "reason": "The presence or absence of gallstones or obstructing material in the gallbladder or bile ducts has not yet been assessed by imaging."
+                  },
+                  {
+                    "requirement_key": "req_3",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No pre-order imaging is available to determine bile duct caliber or degree of obstruction."
+                    ],
+                    "reason": "The extent of biliary duct involvement and potential obstruction cannot be inferred from labs and exam alone."
+                  },
+                  {
+                    "requirement_key": "req_4",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "\"Abd: NT/ND\" without localized RUQ peritoneal signs, but no imaging to characterize gallbladder complications."
+                    ],
+                    "reason": "Clinical exam does not exclude cholecystitis or other gallbladder complications, and no imaging has evaluated this."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key aspects of gallbladder and biliary anatomy, pathology, and complications remain unassessed prior to this first imaging order."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant/liver-gallbladder ultrasound can visualize the gallbladder, detect gallstones, assess bile ducts for dilatation, and identify complications such as cholecystitis, directly addressing the suspected biliary etiology.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The choice of a single-organ-focused ultrasound rather than a more comprehensive abdominal evaluation is not fully explained, and non-biliary etiologies of pancreatitis remain unaddressed by this imaging choice."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute pancreatitis syndrome with severe epigastric/right upper quadrant pain and markedly elevated pancreatic enzymes.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"\\\"presents with RUQ pain radiating to back for the past two days with cramping and nausea\\\"\",\n        \"\\\"Lipase: 7580.0 IU/L (ref 0.0-60.0)\\\" and \\\"Amylase: 1324.0 IU/L (ref 0.0-100.0)\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has acute hepatobiliary injury and cholestasis, raising concern for a biliary cause of pancreatitis.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic process\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"\\\"Asparate Aminotransferase (AST): 175.0 IU/L (ref 0.0-40.0)\\\"\",\n        \"\\\"Alanine Aminotransferase (ALT): 455.0 IU/L (ref 0.0-40.0)\\\", \\\"Alkaline Phosphatase: 308.0 IU/L (ref 39.0-117.0)\\\", \\\"Bilirubin, Total: 2.4 mg/dL (ref 0.0-1.5)\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallstone disease (cholelithiasis with possible choledocholithiasis) is a likely etiology of this acute pancreatitis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"\\\"Ms ___ is a ___ healthy woman who presents with RUQ pain radiating to back for the past two days\\\"\",\n        \"\\\"Alkaline Phosphatase: 308.0 IU/L\\\", \\\"Bilirubin, Total: 2.4 mg/dL\\\" and markedly elevated transaminases in the setting of acute pancreatitis\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is currently no clinical or laboratory evidence of septic shock or hemodynamic instability from biliary infection.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"illness severity\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"\\\"Gen: NAD\\\" and vital-sign surrogates without mention of hypotension or tachycardia\",\n        \"\\\"White Blood Cells: 6.1 K/uL (ref 4.0-11.0)\\\" and \\\"Lactate: 0.8 mmol/L (ref 0.5-2.0)\\\"\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Alternative non-biliary causes of pancreatitis (e.g., alcohol, hypertriglyceridemia, drug-induced) have not been clearly identified or excluded in the chart.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic differential\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"\\\"Past Medical History: none    Social History: ___\\\"\",\n        \"No triglyceride level or alcohol use history is documented in the provided chart.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First imaging decision; no prior imaging or question to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision, so the assumptions are initialized from the baseline clinical and laboratory data.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there gallbladder or biliary tract pathology, such as gallstones or biliary obstruction, that explains this patient’s acute pancreatitis and cholestatic liver test abnormalities?\",\n    \"target\": \"gallbladder and extrahepatic biliary tree pathology causing pancreatitis and cholestasis\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming gallstone or obstructive biliary disease would support a diagnosis of biliary pancreatitis and prompt surgical or endoscopic management planning (e.g., cholecystectomy, possible ERCP).\",\n    \"negative_answer_changes\": \"If no gallbladder or biliary cause is identified, clinicians would broaden the etiologic workup toward non-biliary causes of pancreatitis and reconsider the source of liver test abnormalities.\",\n    \"secondary_questions\": [\n      \"Is there evidence of acute cholecystitis or other gallbladder complication in the setting of pancreatitis?\",\n      \"Is there biliary ductal dilatation suggesting clinically important obstruction that may require urgent decompression?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and assessment of the gallbladder for stones, sludge, wall thickening, and pericholecystic findings.\",\n        \"why_required\": \"Assessing gallbladder structure and contents is necessary to determine whether cholelithiasis or cholecystitis is present as a cause or contributor.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones or other obstructing material within the gallbladder and visible extrahepatic bile ducts.\",\n        \"why_required\": \"Identifying obstructive material is central to attributing pancreatitis and cholestasis to biliary stone disease.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of biliary tract involvement, including ductal dilatation or features suggesting clinically significant obstruction.\",\n        \"why_required\": \"The extent of obstruction helps determine urgency and type of further intervention, such as ERCP or urgent surgery.\"\n      },\n      {\n        \"requirement_key\": \"req_4\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of gallbladder complications such as acute cholecystitis or gallbladder wall edema in the setting of pancreatitis.\",\n        \"why_required\": \"Detecting complications informs the need and timing for surgical intervention and guides overall management.\"\n      }\n    ],\n    \"evidence\": [\n      \"\\\"presents with RUQ pain radiating to back for the past two days\\\" and \\\"Pain became more intense this AM, epigastric ___ constant.\\\"\",\n      \"\\\"Lipase: 7580.0 IU/L\\\" with \\\"Alkaline Phosphatase: 308.0 IU/L\\\" and \\\"Bilirubin, Total: 2.4 mg/dL\\\" and markedly elevated AST/ALT indicating pancreatitis with cholestatic and hepatocellular injury.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_1\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No imaging studies are listed under \\\"Imaging resulted before this decision point (none)\\\".\"\n        ],\n        \"reason\": \"No prior imaging has visualized the gallbladder, so its structural status and contents are unknown.\"\n      },\n      {\n        \"requirement_key\": \"req_2\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"There is no prior imaging report documenting gallstones or biliary obstruction.\"\n        ],\n        \"reason\": \"The presence or absence of gallstones or obstructing material in the gallbladder or bile ducts has not yet been assessed by imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_3\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No pre-order imaging is available to determine bile duct caliber or degree of obstruction.\"\n        ],\n        \"reason\": \"The extent of biliary duct involvement and potential obstruction cannot be inferred from labs and exam alone.\"\n      },\n      {\n        \"requirement_key\": \"req_4\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\\\"Abd: NT/ND\\\" without localized RUQ peritoneal signs, but no imaging to characterize gallbladder complications.\"\n        ],\n        \"reason\": \"Clinical exam does not exclude cholecystitis or other gallbladder complications, and no imaging has evaluated this.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key aspects of gallbladder and biliary anatomy, pathology, and complications remain unassessed prior to this first imaging order.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant/liver-gallbladder ultrasound can visualize the gallbladder, detect gallstones, assess bile ducts for dilatation, and identify complications such as cholecystitis, directly addressing the suspected biliary etiology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of a single-organ-focused ultrasound rather than a more comprehensive abdominal evaluation is not fully explained, and non-biliary etiologies of pancreatitis remain unaddressed by this imaging choice.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788226880-Mwa0aA9ZOoE7IPsoZsvh",
+            "usage": {
+              "completion_tokens": 2343,
+              "prompt_tokens": 2918,
+              "total_tokens": 5261,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0270775,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0270775,
+                "upstream_inference_prompt_cost": 0.0036475,
+                "upstream_inference_completions_cost": 0.02343
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute pancreatitis syndrome with severe epigastric/right upper quadrant pain and markedly elevated pancreatic enzymes.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome",
+            "status": "established",
+            "evidence": [
+              "\"presents with RUQ pain radiating to back for the past two days with cramping and nausea\"",
+              "\"Lipase: 7580.0 IU/L (ref 0.0-60.0)\" and \"Amylase: 1324.0 IU/L (ref 0.0-100.0)\""
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has acute hepatobiliary injury and cholestasis, raising concern for a biliary cause of pancreatitis.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "pathophysiologic process",
+            "status": "likely",
+            "evidence": [
+              "\"Asparate Aminotransferase (AST): 175.0 IU/L (ref 0.0-40.0)\"",
+              "\"Alanine Aminotransferase (ALT): 455.0 IU/L (ref 0.0-40.0)\", \"Alkaline Phosphatase: 308.0 IU/L (ref 39.0-117.0)\", \"Bilirubin, Total: 2.4 mg/dL (ref 0.0-1.5)\""
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Gallstone disease (cholelithiasis with possible choledocholithiasis) is a likely etiology of this acute pancreatitis.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic diagnosis",
+            "status": "likely",
+            "evidence": [
+              "\"Ms ___ is a ___ healthy woman who presents with RUQ pain radiating to back for the past two days\"",
+              "\"Alkaline Phosphatase: 308.0 IU/L\", \"Bilirubin, Total: 2.4 mg/dL\" and markedly elevated transaminases in the setting of acute pancreatitis"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "There is currently no clinical or laboratory evidence of septic shock or hemodynamic instability from biliary infection.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "illness severity",
+            "status": "established",
+            "evidence": [
+              "\"Gen: NAD\" and vital-sign surrogates without mention of hypotension or tachycardia",
+              "\"White Blood Cells: 6.1 K/uL (ref 4.0-11.0)\" and \"Lactate: 0.8 mmol/L (ref 0.5-2.0)\""
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Alternative non-biliary causes of pancreatitis (e.g., alcohol, hypertriglyceridemia, drug-induced) have not been clearly identified or excluded in the chart.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "etiologic differential",
+            "status": "unclear",
+            "evidence": [
+              "\"Past Medical History: none    Social History: ___\"",
+              "No triglyceride level or alcohol use history is documented in the provided chart."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First imaging decision; no prior imaging or question to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision, so the assumptions are initialized from the baseline clinical and laboratory data."
+        },
+        "current_question": {
+          "primary": "Is there gallbladder or biliary tract pathology, such as gallstones or biliary obstruction, that explains this patient’s acute pancreatitis and cholestatic liver test abnormalities?",
+          "target": "gallbladder and extrahepatic biliary tree pathology causing pancreatitis and cholestasis",
+          "type": "etiology_or_mechanism",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming gallstone or obstructive biliary disease would support a diagnosis of biliary pancreatitis and prompt surgical or endoscopic management planning (e.g., cholecystectomy, possible ERCP).",
+          "negative_answer_changes": "If no gallbladder or biliary cause is identified, clinicians would broaden the etiologic workup toward non-biliary causes of pancreatitis and reconsider the source of liver test abnormalities.",
+          "secondary_questions": [
+            "Is there evidence of acute cholecystitis or other gallbladder complication in the setting of pancreatitis?",
+            "Is there biliary ductal dilatation suggesting clinically important obstruction that may require urgent decompression?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_1",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization and assessment of the gallbladder for stones, sludge, wall thickening, and pericholecystic findings.",
+              "why_required": "Assessing gallbladder structure and contents is necessary to determine whether cholelithiasis or cholecystitis is present as a cause or contributor."
+            },
+            {
+              "requirement_key": "req_2",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones or other obstructing material within the gallbladder and visible extrahepatic bile ducts.",
+              "why_required": "Identifying obstructive material is central to attributing pancreatitis and cholestasis to biliary stone disease."
+            },
+            {
+              "requirement_key": "req_3",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Degree of biliary tract involvement, including ductal dilatation or features suggesting clinically significant obstruction.",
+              "why_required": "The extent of obstruction helps determine urgency and type of further intervention, such as ERCP or urgent surgery."
+            },
+            {
+              "requirement_key": "req_4",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence of gallbladder complications such as acute cholecystitis or gallbladder wall edema in the setting of pancreatitis.",
+              "why_required": "Detecting complications informs the need and timing for surgical intervention and guides overall management."
+            }
+          ],
+          "evidence": [
+            "\"presents with RUQ pain radiating to back for the past two days\" and \"Pain became more intense this AM, epigastric ___ constant.\"",
+            "\"Lipase: 7580.0 IU/L\" with \"Alkaline Phosphatase: 308.0 IU/L\" and \"Bilirubin, Total: 2.4 mg/dL\" and markedly elevated AST/ALT indicating pancreatitis with cholestatic and hepatocellular injury."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_1",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No imaging studies are listed under \"Imaging resulted before this decision point (none)\"."
+              ],
+              "reason": "No prior imaging has visualized the gallbladder, so its structural status and contents are unknown."
+            },
+            {
+              "requirement_key": "req_2",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "There is no prior imaging report documenting gallstones or biliary obstruction."
+              ],
+              "reason": "The presence or absence of gallstones or obstructing material in the gallbladder or bile ducts has not yet been assessed by imaging."
+            },
+            {
+              "requirement_key": "req_3",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No pre-order imaging is available to determine bile duct caliber or degree of obstruction."
+              ],
+              "reason": "The extent of biliary duct involvement and potential obstruction cannot be inferred from labs and exam alone."
+            },
+            {
+              "requirement_key": "req_4",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "\"Abd: NT/ND\" without localized RUQ peritoneal signs, but no imaging to characterize gallbladder complications."
+              ],
+              "reason": "Clinical exam does not exclude cholecystitis or other gallbladder complications, and no imaging has evaluated this."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key aspects of gallbladder and biliary anatomy, pathology, and complications remain unassessed prior to this first imaging order."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant/liver-gallbladder ultrasound can visualize the gallbladder, detect gallstones, assess bile ducts for dilatation, and identify complications such as cholecystitis, directly addressing the suspected biliary etiology.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The choice of a single-organ-focused ultrasound rather than a more comprehensive abdominal evaluation is not fully explained, and non-biliary etiologies of pancreatitis remain unaddressed by this imaging choice."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

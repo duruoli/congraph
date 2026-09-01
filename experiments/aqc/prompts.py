@@ -1,10 +1,4 @@
-"""Paired, sequential prompts for the Track-B A/Q/C pilot.
-
-Trajectory-level coherence is implemented by carrying the preceding A/Q/C state
-forward one decision point at a time.  A single prompt containing every masked
-view would leak an early order's result through a later view, so it is explicitly
-not supported here.
-"""
+"""Sequential prompts for pre-order A/Q/C clinical reasoning annotation."""
 from __future__ import annotations
 
 import json
@@ -55,32 +49,31 @@ COVERAGE_STATUSES = ["unaddressed", "partially_addressed", "sufficiently_address
 COVERAGE_DIRECTIONS = ["supports", "refutes", "mixed", "no_direction"]
 COVERAGE_AGGREGATES = ["unanswered", "partially_answered", "sufficiently_answered"]
 
-COMMON_SYSTEM = """Reconstruct the A/Q/C state that best explains one observed imaging decision.
+ANNOTATION_SYSTEM = """You are a clinical reasoning annotator. Given the information available before an imaging order and the order itself, reconstruct the reasoning that most plausibly led to that decision:
+- Assumptions (A): what the clinician believed, suspected, or considered;
+- Question (Q): the main uncertainty the clinician wanted the test to resolve;
+- Coverage (C): how much the available evidence had already answered that question.
+Also judge whether the ordered test could answer Q.
 
-Use only the visible pre-order chart, resulted prior imaging, carried prior A/Q/C state, and actual current order. The current result and later events are hidden. The order identifies the decision to explain; the visible chart limits what may be inferred about its intent.
+Use the record and order together. The order is important evidence of the clinician's intended question, but it does not prove that the suspected condition was present. Do not ignore the order, and do not force the record to support it. If the order suggests a more specific Q than the record supports, retain that Q, mark `question_grounding` as `weakly_supported` or `unclear`, and give a materially different record-based account in `alternative_reconstruction`.
+
+Evidence rules:
+- Use only the visible pre-order history, examination, laboratory tests, and resulted prior imaging for clinical claims. Use the prior A/Q/C annotation only to maintain continuity.
+- In `evidence`, `supporting_evidence`, and `evidence_stream_*`, copy only verbatim text from the visible clinical record. Put summaries, interpretations, and conclusions based on missing information in explanation or `reason` fields. Never quote the current order as clinical evidence.
 
 Annotation rules:
-1. Assumptions: write atomic, decision-relevant propositions. Split established facts from speculative causes, mechanisms, or complications, and split any claims with different certainty. Usually include 1-3 uncertain hypotheses plus only the established facts needed to interpret them; maximum 5 propositions total. Give each its own type, level, status, evidence, and support. `established` and `excluded` require decisive evidence; nonvisualization or a limited/nondiagnostic study is not exclusion.
-2. Question: state the central decision-relevant unknown, not the exam name. Evidence fidelity takes priority over specificity. Use the most specific formulation supported by the visible chart; if the exact target or trigger is unclear, use a broader shared question, lower `intent_support`, and state the ambiguity in `unsupported_residual`. Never infer a specific target from the exam name alone. Choose the most central question type; types need not be semantically exclusive. A competing-source question uses `alternative_source`; `alternative_source_discrimination` is a requirement type.
-3. Requirements: declare only the information dimensions needed to answer the question, usually 2-4 and at most 5. Give each a unique `requirement_key` and concrete target/object. A type may repeat for different objects. `temporal_course_or_response` is a requirement, not a question type.
-4. Coverage: evaluate all evidence available before the current order against every declared requirement, with exactly one matching coverage entry per key and type. Keep study adequacy, test-question capability, result status, and aggregate coverage separate. An adequately assessed negative may sufficiently address a requirement with direction `refutes`; a nonvisualized, indeterminate, or unassessed target generally cannot.
-5. Trajectory: carry the prior A/Q/C state forward and revise it only when newly available evidence supports a change. Mark material discordance only for two explicit, clinically important evidence streams that conflict. Derive the transition after updating assumptions and question. Use `close` only when no further imaging is explicitly intended.
-6. Repeats: when the current exam repeats the preceding exam or its target, consider change since the prior study and any new trigger throughout A/Q/C. Integrate this temporal logic into the existing question and requirements when relevant; do not add a requirement mechanically.
-7. Order fit: preserve uncertainty. Put every unexplained part of the order in `unsupported_residual`, and never increase certainty merely to rationalize the observed order.
+1. Assumptions must be atomic and decision-relevant. Separate observed facts from uncertain diagnoses, causes, mechanisms, and complications, and separate claims with different certainty. Include only the facts needed to interpret the uncertain hypotheses; use at most five assumptions. `established` and `excluded` require decisive evidence. A limited, nondiagnostic, or nonvisualizing study does not establish exclusion.
+2. State Q as the clinical unknown, not as the name of the ordered test. Declare two to four answer requirements when possible, at most five. Each requirement needs a unique key and a concrete target. `temporal_course_or_response` is an answer requirement, not a question type. Use `alternative_source` for the question type and `alternative_source_discrimination` for its requirement.
+3. For Coverage C, assess all pre-order evidence against every answer requirement. Provide exactly one matching coverage entry for each requirement. Keep study adequacy, ability of a test to answer Q, result status, and coverage separate. An adequate negative result may address a requirement with direction `refutes`; an unassessed, indeterminate, or nonvisualized target usually cannot.
+4. Across multiple orders, carry the previous A/Q/C state forward and change it only when new evidence supports a change. Mark discordance only when two explicit, clinically important evidence streams conflict. Use `close` only when no further imaging is explicitly intended.
+5. For a repeated order, identify what is being reassessed and why it is repeated now. Without a documented trigger, timing rationale, or decision need, use weak/unclear `question_grounding`. If Q asks whether the condition has changed since an earlier study, include `temporal_course_or_response`. Do not add this requirement merely because an order is repeated.
+6. In `current_order_fit`, record two relations: whether the visible record supports Q as the clinician's question (`question_grounding`), and whether the ordered test can answer Q (`test_question_capability`).
 
-Return strict JSON. Use at most two evidence quotes per item, at most two secondary questions, and one short sentence per explanation."""
-
-DIRECT_SYSTEM = COMMON_SYSTEM + """
-
-This is the DIRECT arm. Infer A/Q/C from the masked chart plus the actual order. You do not see the old schema-free reconstruction."""
-
-RECODE_SYSTEM = COMMON_SYSTEM + """
-
-This is the RECODE arm. Recode the supplied old schema-free, ex-ante reconstruction into A/Q/C. Treat its wording as fallible source material: preserve what it supports, mark over-rationalized or internally unsupported claims as weak, and do not add facts from outside it."""
+Return only the complete JSON object defined in the supplied output template. Use at most two evidence quotes per item, at most two secondary questions, and one short sentence per explanation."""
 
 
 def output_contract() -> dict[str, Any]:
-    """Machine-readable shape requested from both paired pilot arms."""
+    """Machine-readable output template supplied with every annotation request."""
     return {
         "assumptions": [{
             "proposition": "one atomic proposition",
@@ -88,7 +81,7 @@ def output_contract() -> dict[str, Any]:
             "other_proposed_type": "required free-text name when type=other; otherwise empty",
             "level": "clinical hierarchy level in plain language",
             "status": f"one of: {' | '.join(ASSUMPTION_STATUSES)}",
-            "evidence": ["verbatim quote from visible input"],
+            "evidence": ["verbatim quote from the pre-order chart or resulted prior imaging; never quote the current order"],
             "support": "well_supported | weakly_supported | unclear",
         }],
         "previous_order_update": {
@@ -141,10 +134,8 @@ def output_contract() -> dict[str, Any]:
             "aggregate_reason": "optional summary; never a replacement for the entries above",
         },
         "current_order_fit": {
+            "question_grounding": "visible-record support that this was the clinician's question: well_supported | weakly_supported | unclear",
             "test_question_capability": "capable | partially_capable | not_capable | uncertain",
-            "why_this_order_could_answer": "brief explanation",
-            "intent_support": "well_supported | weakly_supported | unclear",
-            "unsupported_residual": "what remains unexplained; empty only if genuinely supported",
         },
         "derived_transition": "remedy | adjudicate | advance | reroute | reopen | close | initial | unclear",
         "alternative_reconstruction": "second plausible A/Q/C account or empty",
@@ -161,12 +152,12 @@ def _prior_imaging_text(prior: list[dict[str, Any]]) -> str:
     )
 
 
-def build_direct_user(
+def build_annotation_user(
     decision_point: dict[str, Any],
     baseline: dict[str, Any],
     prior_aqc: dict[str, Any] | None,
 ) -> str:
-    """Build one causally masked sequential DIRECT-arm request."""
+    """Build one sequential pre-order clinical reasoning annotation request."""
     return f"""## Baseline workup
 [History]
 {baseline.get('patient_history', '')}
@@ -183,41 +174,10 @@ def build_direct_user(
 ## Prior A/Q/C state carried from the preceding decision point
 {json.dumps(prior_aqc, ensure_ascii=False) if prior_aqc else '(none; this is the first decision order)'}
 
-## Actual current order to explain
+## Current imaging order
 {decision_point.get('ordered', '')}
 
-The current result and every later event are hidden. Return exactly this JSON contract:
-{json.dumps(output_contract(), ensure_ascii=False, indent=2)}"""
+The current result and every later event are hidden.
 
-
-def build_recode_user(
-    old_ex_ante: dict[str, Any],
-    ordered: str,
-    prior_aqc: dict[str, Any] | None,
-) -> str:
-    """Build one sequential RECODE-arm request without current result/verification."""
-    allowed = {
-        key: old_ex_ante.get(key)
-        for key in (
-            "differential",
-            "other_hypothesis",
-            "information_gap",
-            "expected_finding",
-            "action_role",
-            "appropriateness",
-            "appropriateness_reason",
-            "grounding",
-            "reasoning",
-        )
-    }
-    return f"""## Old schema-free ex-ante reconstruction
-{json.dumps(allowed, ensure_ascii=False, indent=2)}
-
-## Prior A/Q/C state carried from the preceding decision point
-{json.dumps(prior_aqc, ensure_ascii=False) if prior_aqc else '(none; this is the first decision order)'}
-
-## Actual current order represented by that reconstruction
-{ordered}
-
-No current result, verification label, or later event is available. Return exactly this JSON contract:
+Fill every field in the JSON output template below. Its strings describe the expected content or allowed values; replace them with case-specific annotations. Do not add keys.
 {json.dumps(output_contract(), ensure_ascii=False, indent=2)}"""

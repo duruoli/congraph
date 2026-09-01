@@ -1,0 +1,390 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 27142559,
+  "source_path": "results/annotation_experiment/full/pancreatitis_27142559.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "88db7566218ca913910e7e727b1f2e5729c57b8301dc0e1e9fd4e62cd38cbf73",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "88db7566218ca913910e7e727b1f2e5729c57b8301dc0e1e9fd4e62cd38cbf73",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis with associated cholestatic liver test abnormalities and jaundice.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level working diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "Amylase: 2344.0 IU/L (ref 0.0-100.0); Lipase: 4668.0 IU/L (ref 0.0-60.0)",
+                    "Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5); Bilirubin, Direct: 2.6 mg/dL (ref 0.0-0.3); ALT: 210.0 IU/L (ref 0.0-40.0); AST: 217.0 IU/L (ref 0.0-40.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Gallstone-related disease (e.g., choledocholithiasis or gallstone pancreatitis) is a potential cause of the pancreatitis and cholestasis despite a prior negative gallbladder ultrasound before lap band placement.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic hypothesis",
+                  "status": "suspected",
+                  "evidence": [
+                    "LFTs and Amylase were elevated (no gallstones on US  in ___, pre-lap band).",
+                    "Bilirubin, Direct: 2.6 mg/dL (ref 0.0-0.3); Alkaline Phosphatase: 183.0 IU/L (ref 39.0-117.0)"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is concern for biliary obstruction at or near the level of the common bile duct or ampulla prompting consideration of ERCP.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "mechanistic concern",
+                  "status": "suspected",
+                  "evidence": [
+                    "A bedside band unfill was attempted  to facilitate possible ERCP and for vomiting, but I was unsuccessful.",
+                    "Bilirubin, Direct: 2.6 mg/dL (ref 0.0-0.3); Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5)"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The prior pre-lap-band ultrasound without gallstones does not reliably exclude current gallstones or biliary obstruction.",
+                  "type": "other",
+                  "other_proposed_type": "diagnostic_limit_or_uncertainty",
+                  "level": "test performance / temporal limitation",
+                  "status": "established",
+                  "evidence": [
+                    "LFTs and Amylase were elevated (no gallstones on US  in ___, pre-lap band)."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The lap band and/or obesity may limit endoscopic and possibly sonographic evaluation, motivating imaging to characterize hepatobiliary anatomy before ERCP.",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "device-related context",
+                  "status": "suspected",
+                  "evidence": [
+                    "A bedside band unfill was attempted  to facilitate possible ERCP and for vomiting, but I was unsuccessful.",
+                    "Past Medical History: 1. Morbid obesity."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First imaging decision; no prior imaging to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point; assumptions are newly established from history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Is there sonographic evidence of gallbladder or extrahepatic biliary pathology that could explain the patient’s acute pancreatitis and cholestatic liver test abnormalities and guide need for ERCP?",
+                "target": "gallbladder and extrahepatic biliary tree (including common bile duct) pathology such as gallstones, sludge, or ductal dilatation causing obstruction",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming biliary stones or obstruction would support gallstone pancreatitis or choledocholithiasis and escalate toward ERCP or other biliary intervention.",
+                "negative_answer_changes": "Absence of biliary pathology would weaken gallstone-related etiology and prompt consideration of alternative causes of pancreatitis or non-obstructive cholestasis.",
+                "secondary_questions": [
+                  "What is the current morphology of the liver and intrahepatic bile ducts in the setting of hyperbilirubinemia and elevated liver enzymes?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_gb_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and basic assessment of the gallbladder for stones, sludge, wall thickening, or pericholecystic fluid.",
+                    "why_required": "Determining whether gallbladder pathology is present is essential to assess a biliary cause of pancreatitis and cholestasis."
+                  },
+                  {
+                    "requirement_key": "req_cbd_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of common bile duct dilation or visible ductal stones as markers of extrahepatic biliary obstruction.",
+                    "why_required": "Detecting or excluding ductal obstruction helps determine if ERCP or other urgent biliary intervention is indicated."
+                  },
+                  {
+                    "requirement_key": "req_hepatic_biliary_morphology",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Liver and intrahepatic biliary morphology (e.g., intrahepatic duct dilation, focal lesions) corresponding to cholestasis and transaminase elevation.",
+                    "why_required": "Characterizing the extent and pattern of biliary involvement refines localization of obstruction and alternative hepatic causes."
+                  }
+                ],
+                "evidence": [
+                  "Evaluation of abdominal pain and vomiting in progress.  LFTs and Amylase were elevated (no gallstones on US  in ___, pre-lap band).",
+                  "A bedside band unfill was attempted  to facilitate possible ERCP and for vomiting, but I was unsuccessful."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_gb_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Imaging resulted before this decision point (none)"
+                    ],
+                    "reason": "No prior imaging at this episode has assessed the current state of the gallbladder."
+                  },
+                  {
+                    "requirement_key": "req_cbd_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Imaging resulted before this decision point (none)"
+                    ],
+                    "reason": "There is no existing imaging to evaluate the common bile duct for dilation or stones."
+                  },
+                  {
+                    "requirement_key": "req_hepatic_biliary_morphology",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Imaging resulted before this decision point (none)"
+                    ],
+                    "reason": "Liver and intrahepatic biliary morphology have not been imaged during this presentation."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before this ultrasound order, no imaging has addressed the hepatobiliary anatomy or biliary obstruction in the current illness."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant hepatobiliary ultrasound is well suited to evaluate the gallbladder and biliary tree for stones, ductal dilation, and other obstructive features in a patient with pancreatitis and cholestasis.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The precise balance between evaluating liver parenchyma versus detailed common bile duct imaging is somewhat ambiguous, and prior pre-lap-band ultrasound details (timing, technique) are not specified."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis with associated cholestatic liver test abnormalities and jaundice.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level working diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Amylase: 2344.0 IU/L (ref 0.0-100.0); Lipase: 4668.0 IU/L (ref 0.0-60.0)\",\n        \"Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5); Bilirubin, Direct: 2.6 mg/dL (ref 0.0-0.3); ALT: 210.0 IU/L (ref 0.0-40.0); AST: 217.0 IU/L (ref 0.0-40.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallstone-related disease (e.g., choledocholithiasis or gallstone pancreatitis) is a potential cause of the pancreatitis and cholestasis despite a prior negative gallbladder ultrasound before lap band placement.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic hypothesis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"LFTs and Amylase were elevated (no gallstones on US  in ___, pre-lap band).\",\n        \"Bilirubin, Direct: 2.6 mg/dL (ref 0.0-0.3); Alkaline Phosphatase: 183.0 IU/L (ref 39.0-117.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is concern for biliary obstruction at or near the level of the common bile duct or ampulla prompting consideration of ERCP.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"mechanistic concern\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"A bedside band unfill was attempted  to facilitate possible ERCP and for vomiting, but I was unsuccessful.\",\n        \"Bilirubin, Direct: 2.6 mg/dL (ref 0.0-0.3); Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The prior pre-lap-band ultrasound without gallstones does not reliably exclude current gallstones or biliary obstruction.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"diagnostic_limit_or_uncertainty\",\n      \"level\": \"test performance / temporal limitation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"LFTs and Amylase were elevated (no gallstones on US  in ___, pre-lap band).\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The lap band and/or obesity may limit endoscopic and possibly sonographic evaluation, motivating imaging to characterize hepatobiliary anatomy before ERCP.\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"device-related context\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"A bedside band unfill was attempted  to facilitate possible ERCP and for vomiting, but I was unsuccessful.\",\n        \"Past Medical History: 1. Morbid obesity.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First imaging decision; no prior imaging to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; assumptions are newly established from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there sonographic evidence of gallbladder or extrahepatic biliary pathology that could explain the patient’s acute pancreatitis and cholestatic liver test abnormalities and guide need for ERCP?\",\n    \"target\": \"gallbladder and extrahepatic biliary tree (including common bile duct) pathology such as gallstones, sludge, or ductal dilatation causing obstruction\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming biliary stones or obstruction would support gallstone pancreatitis or choledocholithiasis and escalate toward ERCP or other biliary intervention.\",\n    \"negative_answer_changes\": \"Absence of biliary pathology would weaken gallstone-related etiology and prompt consideration of alternative causes of pancreatitis or non-obstructive cholestasis.\",\n    \"secondary_questions\": [\n      \"What is the current morphology of the liver and intrahepatic bile ducts in the setting of hyperbilirubinemia and elevated liver enzymes?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_gb_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and basic assessment of the gallbladder for stones, sludge, wall thickening, or pericholecystic fluid.\",\n        \"why_required\": \"Determining whether gallbladder pathology is present is essential to assess a biliary cause of pancreatitis and cholestasis.\"\n      },\n      {\n        \"requirement_key\": \"req_cbd_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of common bile duct dilation or visible ductal stones as markers of extrahepatic biliary obstruction.\",\n        \"why_required\": \"Detecting or excluding ductal obstruction helps determine if ERCP or other urgent biliary intervention is indicated.\"\n      },\n      {\n        \"requirement_key\": \"req_hepatic_biliary_morphology\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Liver and intrahepatic biliary morphology (e.g., intrahepatic duct dilation, focal lesions) corresponding to cholestasis and transaminase elevation.\",\n        \"why_required\": \"Characterizing the extent and pattern of biliary involvement refines localization of obstruction and alternative hepatic causes.\"\n      }\n    ],\n    \"evidence\": [\n      \"Evaluation of abdominal pain and vomiting in progress.  LFTs and Amylase were elevated (no gallstones on US  in ___, pre-lap band).\",\n      \"A bedside band unfill was attempted  to facilitate possible ERCP and for vomiting, but I was unsuccessful.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_gb_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"No prior imaging at this episode has assessed the current state of the gallbladder.\"\n      },\n      {\n        \"requirement_key\": \"req_cbd_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"There is no existing imaging to evaluate the common bile duct for dilation or stones.\"\n      },\n      {\n        \"requirement_key\": \"req_hepatic_biliary_morphology\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Imaging resulted before this decision point (none)\"\n        ],\n        \"reason\": \"Liver and intrahepatic biliary morphology have not been imaged during this presentation.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before this ultrasound order, no imaging has addressed the hepatobiliary anatomy or biliary obstruction in the current illness.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant hepatobiliary ultrasound is well suited to evaluate the gallbladder and biliary tree for stones, ductal dilation, and other obstructive features in a patient with pancreatitis and cholestasis.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The precise balance between evaluating liver parenchyma versus detailed common bile duct imaging is somewhat ambiguous, and prior pre-lap-band ultrasound details (timing, technique) are not specified.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788226497-aUFlxtPtPeAls4o8pa9y",
+            "usage": {
+              "completion_tokens": 2067,
+              "prompt_tokens": 3138,
+              "total_tokens": 5205,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0245925,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0245925,
+                "upstream_inference_prompt_cost": 0.0039225,
+                "upstream_inference_completions_cost": 0.02067
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis with associated cholestatic liver test abnormalities and jaundice.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome-level working diagnosis",
+            "status": "likely",
+            "evidence": [
+              "Amylase: 2344.0 IU/L (ref 0.0-100.0); Lipase: 4668.0 IU/L (ref 0.0-60.0)",
+              "Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5); Bilirubin, Direct: 2.6 mg/dL (ref 0.0-0.3); ALT: 210.0 IU/L (ref 0.0-40.0); AST: 217.0 IU/L (ref 0.0-40.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Gallstone-related disease (e.g., choledocholithiasis or gallstone pancreatitis) is a potential cause of the pancreatitis and cholestasis despite a prior negative gallbladder ultrasound before lap band placement.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic hypothesis",
+            "status": "suspected",
+            "evidence": [
+              "LFTs and Amylase were elevated (no gallstones on US  in ___, pre-lap band).",
+              "Bilirubin, Direct: 2.6 mg/dL (ref 0.0-0.3); Alkaline Phosphatase: 183.0 IU/L (ref 39.0-117.0)"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "There is concern for biliary obstruction at or near the level of the common bile duct or ampulla prompting consideration of ERCP.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "mechanistic concern",
+            "status": "suspected",
+            "evidence": [
+              "A bedside band unfill was attempted  to facilitate possible ERCP and for vomiting, but I was unsuccessful.",
+              "Bilirubin, Direct: 2.6 mg/dL (ref 0.0-0.3); Bilirubin, Total: 3.5 mg/dL (ref 0.0-1.5)"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The prior pre-lap-band ultrasound without gallstones does not reliably exclude current gallstones or biliary obstruction.",
+            "type": "other",
+            "other_proposed_type": "diagnostic_limit_or_uncertainty",
+            "level": "test performance / temporal limitation",
+            "status": "established",
+            "evidence": [
+              "LFTs and Amylase were elevated (no gallstones on US  in ___, pre-lap band)."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The lap band and/or obesity may limit endoscopic and possibly sonographic evaluation, motivating imaging to characterize hepatobiliary anatomy before ERCP.",
+            "type": "intervention_or_device_state",
+            "other_proposed_type": "",
+            "level": "device-related context",
+            "status": "suspected",
+            "evidence": [
+              "A bedside band unfill was attempted  to facilitate possible ERCP and for vomiting, but I was unsuccessful.",
+              "Past Medical History: 1. Morbid obesity."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First imaging decision; no prior imaging to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point; assumptions are newly established from history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "Is there sonographic evidence of gallbladder or extrahepatic biliary pathology that could explain the patient’s acute pancreatitis and cholestatic liver test abnormalities and guide need for ERCP?",
+          "target": "gallbladder and extrahepatic biliary tree (including common bile duct) pathology such as gallstones, sludge, or ductal dilatation causing obstruction",
+          "type": "etiology_or_mechanism",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming biliary stones or obstruction would support gallstone pancreatitis or choledocholithiasis and escalate toward ERCP or other biliary intervention.",
+          "negative_answer_changes": "Absence of biliary pathology would weaken gallstone-related etiology and prompt consideration of alternative causes of pancreatitis or non-obstructive cholestasis.",
+          "secondary_questions": [
+            "What is the current morphology of the liver and intrahepatic bile ducts in the setting of hyperbilirubinemia and elevated liver enzymes?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_gb_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization and basic assessment of the gallbladder for stones, sludge, wall thickening, or pericholecystic fluid.",
+              "why_required": "Determining whether gallbladder pathology is present is essential to assess a biliary cause of pancreatitis and cholestasis."
+            },
+            {
+              "requirement_key": "req_cbd_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of common bile duct dilation or visible ductal stones as markers of extrahepatic biliary obstruction.",
+              "why_required": "Detecting or excluding ductal obstruction helps determine if ERCP or other urgent biliary intervention is indicated."
+            },
+            {
+              "requirement_key": "req_hepatic_biliary_morphology",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Liver and intrahepatic biliary morphology (e.g., intrahepatic duct dilation, focal lesions) corresponding to cholestasis and transaminase elevation.",
+              "why_required": "Characterizing the extent and pattern of biliary involvement refines localization of obstruction and alternative hepatic causes."
+            }
+          ],
+          "evidence": [
+            "Evaluation of abdominal pain and vomiting in progress.  LFTs and Amylase were elevated (no gallstones on US  in ___, pre-lap band).",
+            "A bedside band unfill was attempted  to facilitate possible ERCP and for vomiting, but I was unsuccessful."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_gb_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Imaging resulted before this decision point (none)"
+              ],
+              "reason": "No prior imaging at this episode has assessed the current state of the gallbladder."
+            },
+            {
+              "requirement_key": "req_cbd_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Imaging resulted before this decision point (none)"
+              ],
+              "reason": "There is no existing imaging to evaluate the common bile duct for dilation or stones."
+            },
+            {
+              "requirement_key": "req_hepatic_biliary_morphology",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Imaging resulted before this decision point (none)"
+              ],
+              "reason": "Liver and intrahepatic biliary morphology have not been imaged during this presentation."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Before this ultrasound order, no imaging has addressed the hepatobiliary anatomy or biliary obstruction in the current illness."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant hepatobiliary ultrasound is well suited to evaluate the gallbladder and biliary tree for stones, ductal dilation, and other obstructive features in a patient with pancreatitis and cholestasis.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The precise balance between evaluating liver parenchyma versus detailed common bile duct imaging is somewhat ambiguous, and prior pre-lap-band ultrasound details (timing, technique) are not specified."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

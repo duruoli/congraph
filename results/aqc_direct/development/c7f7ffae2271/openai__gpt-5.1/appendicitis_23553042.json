@@ -1,0 +1,464 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 23553042,
+  "source_path": "results/annotation_experiment/full/appendicitis_23553042.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "cdf310769964471f557f5335a12b14f8d5f28705881759a0bddca64e8f112ca1",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "cdf310769964471f557f5335a12b14f8d5f28705881759a0bddca64e8f112ca1",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute undifferentiated abdominal pain syndrome with associated vomiting and leukocytosis, without peritoneal signs on exam.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation",
+                  "status": "established",
+                  "evidence": [
+                    "“presents with 1 day of abdominal pain… intermittent sharp periumbilical abdominal pain… her pain became more severe overnight… had several more here in the ED”",
+                    "“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)” and “Abd: Soft, appropriately tender, non-distended”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A serious intra-abdominal surgical pathology such as appendicitis, bowel obstruction, or other acute inflammatory/infectious process is a concern in this presentation.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "working differential",
+                  "status": "suspected",
+                  "evidence": [
+                    "“1 day of abdominal pain… intermittent sharp periumbilical abdominal pain… pain became more severe overnight… one episode of NBNB emesis… had several more here in the ED”",
+                    "“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)”"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is no current evidence of primary cardiopulmonary cause or pneumoperitoneum explaining the abdominal pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "system/exclusion",
+                  "status": "established",
+                  "evidence": [
+                    "“There is no focal consolidation, effusion, or pneumothorax. The cardiomediastinal silhouette is normal.”",
+                    "“There is no free air below the right hemidiaphragm.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Her prior history of gastritis and GERD alone does not adequately explain the new severity and systemic features of the current episode.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic framing",
+                  "status": "challenged",
+                  "evidence": [
+                    "“she reports having had similar symptoms once before… she had an EGD here and was found to have gastritis and GERD”",
+                    "Current episode includes “pain became more severe overnight… had several more [episodes of emesis] here in the ED… White Blood Cells: 14.1 K/uL”"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Renal function is adequate to permit use of intravenous iodinated contrast for abdominal CT.",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "physiologic suitability",
+                  "status": "established",
+                  "evidence": [
+                    "“Creatinine: 0.8 mg/dL (ref 0.4-1.1)”",
+                    "“estimated GFR (eGFR) is likely >75 mL/min/1.73 m2”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "This is the first decision point; no prior A/Q/C state exists."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision, so the assumptions are being established de novo from the baseline presentation and prior chest radiograph."
+              },
+              "current_question": {
+                "primary": "Is there an acute intra-abdominal or pelvic pathological process explaining this new severe abdominal pain and vomiting?",
+                "target": "acute intra-abdominal or pelvic pathology such as appendicitis, bowel obstruction, inflammatory or infectious process, or other structural cause of abdominal pain",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would establish a concrete diagnosis (e.g., appendicitis, obstruction, localized inflammation) and prompt targeted medical or surgical management.",
+                "negative_answer_changes": "Would lower concern for major surgical abdomen, support conservative or alternative workup (e.g., functional or upper GI causes), and redirect evaluation away from acute intra-abdominal pathology.",
+                "secondary_questions": [
+                  "If an intra-abdominal process is present, what is its location and apparent severity or extent?",
+                  "Is there any complication such as perforation, abscess, or ischemia associated with the process causing abdominal pain?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Global visualization of abdominal and pelvic viscera (bowel, appendix, solid organs, mesentery, peritoneal cavity, and pelvic organs) for acute pathology.",
+                    "why_required": "Determining whether an intra-abdominal or pelvic process explains the symptoms requires adequate assessment of these organs and spaces."
+                  },
+                  {
+                    "requirement_key": "req_presence_absence_pathology",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of specific acute pathologies such as appendicitis, bowel obstruction, localized inflammatory or infectious processes, or other structural causes of pain.",
+                    "why_required": "The clinical decision hinges on whether a concrete acute pathology is present to explain the syndrome."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Anatomic localization of any detected abnormality within the abdomen or pelvis (e.g., small bowel, colon, appendix, biliary tract, gynecologic structures).",
+                    "why_required": "Localization guides diagnosis, choice of therapy, and need for surgical versus medical management."
+                  },
+                  {
+                    "requirement_key": "req_severity_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity or extent of any identified intra-abdominal process, including degree of obstruction, inflammation, or fluid collections.",
+                    "why_required": "Severity assessment informs urgency, level of care, and operative versus nonoperative strategies."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of complications such as free fluid, abscess, perforation, or ischemia.",
+                    "why_required": "Complications materially alter prognosis and immediate management, including the need for emergent intervention."
+                  }
+                ],
+                "evidence": [
+                  "“presents with 1 day of abdominal pain… intermittent sharp periumbilical abdominal pain… pain became more severe overnight… one episode of NBNB emesis at home and had several more here in the ED”",
+                  "“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)” and “There is no free air below the right hemidiaphragm.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Only imaging prior to this decision is a chest radiograph without abdominal coverage: “CHEST (PA AND LAT)… There is no free air below the right hemidiaphragm.”"
+                    ],
+                    "reason": "The chest radiograph gives only a very limited view of the upper abdomen and cannot adequately visualize abdominal or pelvic viscera."
+                  },
+                  {
+                    "requirement_key": "req_presence_absence_pathology",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No prior abdominal imaging is described; labs show leukocytosis but are nonspecific."
+                    ],
+                    "reason": "Presence or absence of specific intra-abdominal pathology (e.g., appendicitis, obstruction) has not been directly assessed by imaging; chest x-ray only excludes gross free air under the right hemidiaphragm."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“Abd: Soft, appropriately tender, non-distended”"
+                    ],
+                    "reason": "Clinical exam localizes tenderness only broadly and does not anatomically localize a specific internal source; no imaging has yet localized a lesion."
+                  },
+                  {
+                    "requirement_key": "req_severity_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "The severity of pain and leukocytosis are known, but there is no information on anatomic extent or degree of any intra-abdominal process."
+                    ],
+                    "reason": "No imaging or other modality has characterized the anatomic severity or extent of a possible intra-abdominal pathology."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“There is no free air below the right hemidiaphragm.”",
+                      "“Abd: Soft, appropriately tender, non-distended”"
+                    ],
+                    "reason": "Absence of free air under the right hemidiaphragm mildly refutes gross perforation, and a soft, non-distended abdomen argues against advanced peritonitis or high-grade obstruction, but other complications (e.g., localized perforation, small collections) remain unassessed."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Existing data (labs, exam, chest radiograph) do not adequately visualize or characterize intra-abdominal pathology, leaving the central question about an acute abdominal process essentially unanswered."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize bowel, appendix, solid organs, mesentery, peritoneum, and pelvic structures to detect, localize, and assess severity and complications of acute intra-abdominal pathology.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The specific leading diagnosis within the differential (e.g., appendicitis vs obstruction vs other inflammatory etiology) is not clearly specified in the chart and remains somewhat broad, but this does not conflict with ordering a general diagnostic CT abdomen/pelvis."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute undifferentiated abdominal pain syndrome with associated vomiting and leukocytosis, without peritoneal signs on exam.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“presents with 1 day of abdominal pain… intermittent sharp periumbilical abdominal pain… her pain became more severe overnight… had several more here in the ED”\",\n        \"“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)” and “Abd: Soft, appropriately tender, non-distended”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A serious intra-abdominal surgical pathology such as appendicitis, bowel obstruction, or other acute inflammatory/infectious process is a concern in this presentation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"working differential\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“1 day of abdominal pain… intermittent sharp periumbilical abdominal pain… pain became more severe overnight… one episode of NBNB emesis… had several more here in the ED”\",\n        \"“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)”\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is no current evidence of primary cardiopulmonary cause or pneumoperitoneum explaining the abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"system/exclusion\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“There is no focal consolidation, effusion, or pneumothorax. The cardiomediastinal silhouette is normal.”\",\n        \"“There is no free air below the right hemidiaphragm.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Her prior history of gastritis and GERD alone does not adequately explain the new severity and systemic features of the current episode.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic framing\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"“she reports having had similar symptoms once before… she had an EGD here and was found to have gastritis and GERD”\",\n        \"Current episode includes “pain became more severe overnight… had several more [episodes of emesis] here in the ED… White Blood Cells: 14.1 K/uL”\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Renal function is adequate to permit use of intravenous iodinated contrast for abdominal CT.\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic suitability\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“Creatinine: 0.8 mg/dL (ref 0.4-1.1)”\",\n        \"“estimated GFR (eGFR) is likely >75 mL/min/1.73 m2”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"This is the first decision point; no prior A/Q/C state exists.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision, so the assumptions are being established de novo from the baseline presentation and prior chest radiograph.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an acute intra-abdominal or pelvic pathological process explaining this new severe abdominal pain and vomiting?\",\n    \"target\": \"acute intra-abdominal or pelvic pathology such as appendicitis, bowel obstruction, inflammatory or infectious process, or other structural cause of abdominal pain\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would establish a concrete diagnosis (e.g., appendicitis, obstruction, localized inflammation) and prompt targeted medical or surgical management.\",\n    \"negative_answer_changes\": \"Would lower concern for major surgical abdomen, support conservative or alternative workup (e.g., functional or upper GI causes), and redirect evaluation away from acute intra-abdominal pathology.\",\n    \"secondary_questions\": [\n      \"If an intra-abdominal process is present, what is its location and apparent severity or extent?\",\n      \"Is there any complication such as perforation, abscess, or ischemia associated with the process causing abdominal pain?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Global visualization of abdominal and pelvic viscera (bowel, appendix, solid organs, mesentery, peritoneal cavity, and pelvic organs) for acute pathology.\",\n        \"why_required\": \"Determining whether an intra-abdominal or pelvic process explains the symptoms requires adequate assessment of these organs and spaces.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_absence_pathology\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of specific acute pathologies such as appendicitis, bowel obstruction, localized inflammatory or infectious processes, or other structural causes of pain.\",\n        \"why_required\": \"The clinical decision hinges on whether a concrete acute pathology is present to explain the syndrome.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Anatomic localization of any detected abnormality within the abdomen or pelvis (e.g., small bowel, colon, appendix, biliary tract, gynecologic structures).\",\n        \"why_required\": \"Localization guides diagnosis, choice of therapy, and need for surgical versus medical management.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity or extent of any identified intra-abdominal process, including degree of obstruction, inflammation, or fluid collections.\",\n        \"why_required\": \"Severity assessment informs urgency, level of care, and operative versus nonoperative strategies.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as free fluid, abscess, perforation, or ischemia.\",\n        \"why_required\": \"Complications materially alter prognosis and immediate management, including the need for emergent intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"“presents with 1 day of abdominal pain… intermittent sharp periumbilical abdominal pain… pain became more severe overnight… one episode of NBNB emesis at home and had several more here in the ED”\",\n      \"“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)” and “There is no free air below the right hemidiaphragm.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Only imaging prior to this decision is a chest radiograph without abdominal coverage: “CHEST (PA AND LAT)… There is no free air below the right hemidiaphragm.”\"\n        ],\n        \"reason\": \"The chest radiograph gives only a very limited view of the upper abdomen and cannot adequately visualize abdominal or pelvic viscera.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_absence_pathology\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal imaging is described; labs show leukocytosis but are nonspecific.\"\n        ],\n        \"reason\": \"Presence or absence of specific intra-abdominal pathology (e.g., appendicitis, obstruction) has not been directly assessed by imaging; chest x-ray only excludes gross free air under the right hemidiaphragm.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“Abd: Soft, appropriately tender, non-distended”\"\n        ],\n        \"reason\": \"Clinical exam localizes tenderness only broadly and does not anatomically localize a specific internal source; no imaging has yet localized a lesion.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"The severity of pain and leukocytosis are known, but there is no information on anatomic extent or degree of any intra-abdominal process.\"\n        ],\n        \"reason\": \"No imaging or other modality has characterized the anatomic severity or extent of a possible intra-abdominal pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“There is no free air below the right hemidiaphragm.”\",\n          \"“Abd: Soft, appropriately tender, non-distended”\"\n        ],\n        \"reason\": \"Absence of free air under the right hemidiaphragm mildly refutes gross perforation, and a soft, non-distended abdomen argues against advanced peritonitis or high-grade obstruction, but other complications (e.g., localized perforation, small collections) remain unassessed.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Existing data (labs, exam, chest radiograph) do not adequately visualize or characterize intra-abdominal pathology, leaving the central question about an acute abdominal process essentially unanswered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize bowel, appendix, solid organs, mesentery, peritoneum, and pelvic structures to detect, localize, and assess severity and complications of acute intra-abdominal pathology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The specific leading diagnosis within the differential (e.g., appendicitis vs obstruction vs other inflammatory etiology) is not clearly specified in the chart and remains somewhat broad, but this does not conflict with ordering a general diagnostic CT abdomen/pelvis.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788193155-gQS7aNJYRcyVMOPpIwsf",
+            "usage": {
+              "completion_tokens": 2570,
+              "prompt_tokens": 3523,
+              "total_tokens": 6093,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.03010375,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.03010375,
+                "upstream_inference_prompt_cost": 0.00440375,
+                "upstream_inference_completions_cost": 0.0257
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute undifferentiated abdominal pain syndrome with associated vomiting and leukocytosis, without peritoneal signs on exam.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation",
+            "status": "established",
+            "evidence": [
+              "“presents with 1 day of abdominal pain… intermittent sharp periumbilical abdominal pain… her pain became more severe overnight… had several more here in the ED”",
+              "“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)” and “Abd: Soft, appropriately tender, non-distended”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A serious intra-abdominal surgical pathology such as appendicitis, bowel obstruction, or other acute inflammatory/infectious process is a concern in this presentation.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "working differential",
+            "status": "suspected",
+            "evidence": [
+              "“1 day of abdominal pain… intermittent sharp periumbilical abdominal pain… pain became more severe overnight… one episode of NBNB emesis… had several more here in the ED”",
+              "“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)”"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "There is no current evidence of primary cardiopulmonary cause or pneumoperitoneum explaining the abdominal pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "system/exclusion",
+            "status": "established",
+            "evidence": [
+              "“There is no focal consolidation, effusion, or pneumothorax. The cardiomediastinal silhouette is normal.”",
+              "“There is no free air below the right hemidiaphragm.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Her prior history of gastritis and GERD alone does not adequately explain the new severity and systemic features of the current episode.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic framing",
+            "status": "challenged",
+            "evidence": [
+              "“she reports having had similar symptoms once before… she had an EGD here and was found to have gastritis and GERD”",
+              "Current episode includes “pain became more severe overnight… had several more [episodes of emesis] here in the ED… White Blood Cells: 14.1 K/uL”"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Renal function is adequate to permit use of intravenous iodinated contrast for abdominal CT.",
+            "type": "intervention_or_device_state",
+            "other_proposed_type": "",
+            "level": "physiologic suitability",
+            "status": "established",
+            "evidence": [
+              "“Creatinine: 0.8 mg/dL (ref 0.4-1.1)”",
+              "“estimated GFR (eGFR) is likely >75 mL/min/1.73 m2”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "This is the first decision point; no prior A/Q/C state exists."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision, so the assumptions are being established de novo from the baseline presentation and prior chest radiograph."
+        },
+        "current_question": {
+          "primary": "Is there an acute intra-abdominal or pelvic pathological process explaining this new severe abdominal pain and vomiting?",
+          "target": "acute intra-abdominal or pelvic pathology such as appendicitis, bowel obstruction, inflammatory or infectious process, or other structural cause of abdominal pain",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Would establish a concrete diagnosis (e.g., appendicitis, obstruction, localized inflammation) and prompt targeted medical or surgical management.",
+          "negative_answer_changes": "Would lower concern for major surgical abdomen, support conservative or alternative workup (e.g., functional or upper GI causes), and redirect evaluation away from acute intra-abdominal pathology.",
+          "secondary_questions": [
+            "If an intra-abdominal process is present, what is its location and apparent severity or extent?",
+            "Is there any complication such as perforation, abscess, or ischemia associated with the process causing abdominal pain?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Global visualization of abdominal and pelvic viscera (bowel, appendix, solid organs, mesentery, peritoneal cavity, and pelvic organs) for acute pathology.",
+              "why_required": "Determining whether an intra-abdominal or pelvic process explains the symptoms requires adequate assessment of these organs and spaces."
+            },
+            {
+              "requirement_key": "req_presence_absence_pathology",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of specific acute pathologies such as appendicitis, bowel obstruction, localized inflammatory or infectious processes, or other structural causes of pain.",
+              "why_required": "The clinical decision hinges on whether a concrete acute pathology is present to explain the syndrome."
+            },
+            {
+              "requirement_key": "req_localization",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Anatomic localization of any detected abnormality within the abdomen or pelvis (e.g., small bowel, colon, appendix, biliary tract, gynecologic structures).",
+              "why_required": "Localization guides diagnosis, choice of therapy, and need for surgical versus medical management."
+            },
+            {
+              "requirement_key": "req_severity_extent",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity or extent of any identified intra-abdominal process, including degree of obstruction, inflammation, or fluid collections.",
+              "why_required": "Severity assessment informs urgency, level of care, and operative versus nonoperative strategies."
+            },
+            {
+              "requirement_key": "req_complication",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of complications such as free fluid, abscess, perforation, or ischemia.",
+              "why_required": "Complications materially alter prognosis and immediate management, including the need for emergent intervention."
+            }
+          ],
+          "evidence": [
+            "“presents with 1 day of abdominal pain… intermittent sharp periumbilical abdominal pain… pain became more severe overnight… one episode of NBNB emesis at home and had several more here in the ED”",
+            "“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)” and “There is no free air below the right hemidiaphragm.”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Only imaging prior to this decision is a chest radiograph without abdominal coverage: “CHEST (PA AND LAT)… There is no free air below the right hemidiaphragm.”"
+              ],
+              "reason": "The chest radiograph gives only a very limited view of the upper abdomen and cannot adequately visualize abdominal or pelvic viscera."
+            },
+            {
+              "requirement_key": "req_presence_absence_pathology",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No prior abdominal imaging is described; labs show leukocytosis but are nonspecific."
+              ],
+              "reason": "Presence or absence of specific intra-abdominal pathology (e.g., appendicitis, obstruction) has not been directly assessed by imaging; chest x-ray only excludes gross free air under the right hemidiaphragm."
+            },
+            {
+              "requirement_key": "req_localization",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“Abd: Soft, appropriately tender, non-distended”"
+              ],
+              "reason": "Clinical exam localizes tenderness only broadly and does not anatomically localize a specific internal source; no imaging has yet localized a lesion."
+            },
+            {
+              "requirement_key": "req_severity_extent",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "The severity of pain and leukocytosis are known, but there is no information on anatomic extent or degree of any intra-abdominal process."
+              ],
+              "reason": "No imaging or other modality has characterized the anatomic severity or extent of a possible intra-abdominal pathology."
+            },
+            {
+              "requirement_key": "req_complication",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“There is no free air below the right hemidiaphragm.”",
+                "“Abd: Soft, appropriately tender, non-distended”"
+              ],
+              "reason": "Absence of free air under the right hemidiaphragm mildly refutes gross perforation, and a soft, non-distended abdomen argues against advanced peritonitis or high-grade obstruction, but other complications (e.g., localized perforation, small collections) remain unassessed."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Existing data (labs, exam, chest radiograph) do not adequately visualize or characterize intra-abdominal pathology, leaving the central question about an acute abdominal process essentially unanswered."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize bowel, appendix, solid organs, mesentery, peritoneum, and pelvic structures to detect, localize, and assess severity and complications of acute intra-abdominal pathology.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The specific leading diagnosis within the differential (e.g., appendicitis vs obstruction vs other inflammatory etiology) is not clearly specified in the chart and remains somewhat broad, but this does not conflict with ordering a general diagnostic CT abdomen/pelvis."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

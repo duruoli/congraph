@@ -1,0 +1,426 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 27299061,
+  "source_path": "results/annotation_experiment/full/diverticulitis_27299061.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "d9f0c01a505663454371289ea7f45995b2ea8f897a72053d8e90ad1bd738deb9",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABDOMEN W/CONTRAST)",
+      "request_prompt_sha256": "01d0daf5ee62ac4252b739cac29bf87fd6069accc81385b5d8540b54b4e4e585",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "01d0daf5ee62ac4252b739cac29bf87fd6069accc81385b5d8540b54b4e4e585",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute left lower quadrant abdominal pain syndrome with systemic inflammatory response suggesting an intra-abdominal process.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "This is a ___ year old female with no significant past medical history presenty to the ED with 12 hours of LLQ pain that begin last night at 8pm.",
+                    "White blood cell count was elevated to 13.2."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Sigmoid diverticulitis is a leading suspected cause of the acute left lower quadrant pain.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "disease process",
+                  "status": "likely",
+                  "evidence": [
+                    "CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening.",
+                    "Colonoscopy ___ (Two polyps of benign appearance were removed, Diverticulosis of the sigmoid colon"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is concern for possible complicated diverticulitis (e.g., abscess, perforation) or alternative intra-abdominal pathology that might change management.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "complication risk",
+                  "status": "suspected",
+                  "evidence": [
+                    "CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening.",
+                    "She was given cipro/flagyl and morphine IV 6mg."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Gynecologic, urinary, and hepatobiliary causes of pain are less likely given history, exam, and labs but not definitively excluded.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis",
+                  "status": "suspected",
+                  "evidence": [
+                    "HCG, Urine, Qualitative: NEGATIVE.",
+                    "Abdomen: soft, non-distended, Moderate LLQ tenderness but no rebound tenderness or guarding. + bowel sounds. no organomegaly"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient is currently hemodynamically stable without peritoneal signs, suggesting no overt generalized perforation or septic shock.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "physiologic status",
+                  "status": "established",
+                  "evidence": [
+                    "Vitals: T:98.4 BP: 130/60 P:91 R:18 O2:99% RA",
+                    "Abdomen: soft, non-distended, Moderate LLQ tenderness but no rebound tenderness or guarding."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "This is the first decision point; no prior imaging to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first reconstruction step, so assumptions are being established de novo."
+              },
+              "current_question": {
+                "primary": "What is the precise colonic and intra-abdominal source and extent of pathology causing this patient’s acute left lower quadrant pain and leukocytosis?",
+                "target": "colon (especially sigmoid) and adjacent intra-abdominal structures",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming diverticulitis location and any complication would support continued or escalated targeted medical/surgical management (e.g., antibiotics choice, need for drainage or surgery, level of monitoring).",
+                "negative_answer_changes": "If diverticulitis or other colonic pathology is not found, clinicians would broaden the workup for alternative sources of LLQ pain and reconsider antibiotic therapy.",
+                "secondary_questions": [
+                  "Is there imaging evidence of complicated diverticulitis such as abscess, perforation, or obstruction that would alter management?",
+                  "Is there an alternative intra-abdominal cause of LLQ pain (e.g., colitis, mass, ischemia) explaining the presentation?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_visualize_colon",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and assessment of the colon, particularly the sigmoid and transverse colon, and adjacent mesentery/pericolonic fat.",
+                    "why_required": "Determining whether colonic inflammation or other pathology is present and where it is located is essential to localize the source of pain."
+                  },
+                  {
+                    "requirement_key": "req_presence_colonic_path",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of acute colonic pathology such as diverticulitis, colitis, mass, or obstruction.",
+                    "why_required": "Knowing whether there is acute colonic disease confirms or refutes the suspected source of symptoms and guides management."
+                  },
+                  {
+                    "requirement_key": "req_extent_complications",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent of colonic and pericolonic involvement and any complications (e.g., phlegmon, abscess, perforation, free air, obstruction).",
+                    "why_required": "The severity and spread of disease determine need for procedural or surgical intervention versus conservative treatment."
+                  },
+                  {
+                    "requirement_key": "req_alternative_source",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evaluation for alternative intra-abdominal sources of LLQ pain such as gynecologic, urinary, or other bowel pathology.",
+                    "why_required": "If the suspected diverticulitis is not confirmed or does not fully explain symptoms, alternative causes must be considered and distinguished."
+                  }
+                ],
+                "evidence": [
+                  "This is a ___ year old female with no significant past medical history presenty to the ED with 12 hours of LLQ pain that begin last night at 8pm.",
+                  "CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening. She was given cipro/flagyl and morphine IV 6mg."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_visualize_colon",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "No prior imaging beyond the referenced CT description is available for review at this decision point, so direct visualization/assessment of the colon cannot be confirmed from the visible chart."
+                  },
+                  {
+                    "requirement_key": "req_presence_colonic_path",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening."
+                    ],
+                    "reason": "A prior CT is reported as showing likely sigmoid diverticula and transverse colon thickening, suggesting but not definitively characterizing acute colonic pathology or its acuity/complications."
+                  },
+                  {
+                    "requirement_key": "req_extent_complications",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening."
+                    ],
+                    "reason": "The description mentions diverticula and thickening but does not specify the extent or presence of abscess, perforation, or other complications."
+                  },
+                  {
+                    "requirement_key": "req_alternative_source",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "HCG, Urine, Qualitative: NEGATIVE.",
+                      "She has not had any fevers, chills, N/V, diarrhea/constipation."
+                    ],
+                    "reason": "Basic labs and pregnancy testing modestly narrow the differential but do not image or definitively exclude alternative intra-abdominal sources of LLQ pain."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Only a brief textual summary of a prior CT is available and does not fully characterize location, severity, complications, or alternatives, leaving the key imaging questions insufficiently answered."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "CT abdomen with contrast can directly visualize the colon and surrounding intra-abdominal structures, characterize diverticulitis, define its extent, detect complications, and assess for alternative pathology.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not clarify whether this CT is a repeat/confirmatory study versus the initial CT being summarized, nor why contrast protocol or timing was specifically chosen."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute left lower quadrant abdominal pain syndrome with systemic inflammatory response suggesting an intra-abdominal process.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"This is a ___ year old female with no significant past medical history presenty to the ED with 12 hours of LLQ pain that begin last night at 8pm.\",\n        \"White blood cell count was elevated to 13.2.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Sigmoid diverticulitis is a leading suspected cause of the acute left lower quadrant pain.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease process\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening.\",\n        \"Colonoscopy ___ (Two polyps of benign appearance were removed, Diverticulosis of the sigmoid colon\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is concern for possible complicated diverticulitis (e.g., abscess, perforation) or alternative intra-abdominal pathology that might change management.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication risk\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening.\",\n        \"She was given cipro/flagyl and morphine IV 6mg.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Gynecologic, urinary, and hepatobiliary causes of pain are less likely given history, exam, and labs but not definitively excluded.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"HCG, Urine, Qualitative: NEGATIVE.\",\n        \"Abdomen: soft, non-distended, Moderate LLQ tenderness but no rebound tenderness or guarding. + bowel sounds. no organomegaly\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient is currently hemodynamically stable without peritoneal signs, suggesting no overt generalized perforation or septic shock.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic status\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Vitals: T:98.4 BP: 130/60 P:91 R:18 O2:99% RA\",\n        \"Abdomen: soft, non-distended, Moderate LLQ tenderness but no rebound tenderness or guarding.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"This is the first decision point; no prior imaging to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first reconstruction step, so assumptions are being established de novo.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the precise colonic and intra-abdominal source and extent of pathology causing this patient’s acute left lower quadrant pain and leukocytosis?\",\n    \"target\": \"colon (especially sigmoid) and adjacent intra-abdominal structures\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming diverticulitis location and any complication would support continued or escalated targeted medical/surgical management (e.g., antibiotics choice, need for drainage or surgery, level of monitoring).\",\n    \"negative_answer_changes\": \"If diverticulitis or other colonic pathology is not found, clinicians would broaden the workup for alternative sources of LLQ pain and reconsider antibiotic therapy.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of complicated diverticulitis such as abscess, perforation, or obstruction that would alter management?\",\n      \"Is there an alternative intra-abdominal cause of LLQ pain (e.g., colitis, mass, ischemia) explaining the presentation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_colon\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and assessment of the colon, particularly the sigmoid and transverse colon, and adjacent mesentery/pericolonic fat.\",\n        \"why_required\": \"Determining whether colonic inflammation or other pathology is present and where it is located is essential to localize the source of pain.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_colonic_path\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute colonic pathology such as diverticulitis, colitis, mass, or obstruction.\",\n        \"why_required\": \"Knowing whether there is acute colonic disease confirms or refutes the suspected source of symptoms and guides management.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_complications\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of colonic and pericolonic involvement and any complications (e.g., phlegmon, abscess, perforation, free air, obstruction).\",\n        \"why_required\": \"The severity and spread of disease determine need for procedural or surgical intervention versus conservative treatment.\"\n      },\n      {\n        \"requirement_key\": \"req_alternative_source\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evaluation for alternative intra-abdominal sources of LLQ pain such as gynecologic, urinary, or other bowel pathology.\",\n        \"why_required\": \"If the suspected diverticulitis is not confirmed or does not fully explain symptoms, alternative causes must be considered and distinguished.\"\n      }\n    ],\n    \"evidence\": [\n      \"This is a ___ year old female with no significant past medical history presenty to the ED with 12 hours of LLQ pain that begin last night at 8pm.\",\n      \"CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening. She was given cipro/flagyl and morphine IV 6mg.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_colon\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No prior imaging beyond the referenced CT description is available for review at this decision point, so direct visualization/assessment of the colon cannot be confirmed from the visible chart.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_colonic_path\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening.\"\n        ],\n        \"reason\": \"A prior CT is reported as showing likely sigmoid diverticula and transverse colon thickening, suggesting but not definitively characterizing acute colonic pathology or its acuity/complications.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_complications\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening.\"\n        ],\n        \"reason\": \"The description mentions diverticula and thickening but does not specify the extent or presence of abscess, perforation, or other complications.\"\n      },\n      {\n        \"requirement_key\": \"req_alternative_source\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"HCG, Urine, Qualitative: NEGATIVE.\",\n          \"She has not had any fevers, chills, N/V, diarrhea/constipation.\"\n        ],\n        \"reason\": \"Basic labs and pregnancy testing modestly narrow the differential but do not image or definitively exclude alternative intra-abdominal sources of LLQ pain.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Only a brief textual summary of a prior CT is available and does not fully characterize location, severity, complications, or alternatives, leaving the key imaging questions insufficiently answered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"CT abdomen with contrast can directly visualize the colon and surrounding intra-abdominal structures, characterize diverticulitis, define its extent, detect complications, and assess for alternative pathology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not clarify whether this CT is a repeat/confirmatory study versus the initial CT being summarized, nor why contrast protocol or timing was specifically chosen.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788190712-1NXG9WaZWalpQKdQxyqc",
+            "usage": {
+              "completion_tokens": 2153,
+              "prompt_tokens": 3407,
+              "total_tokens": 5560,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02578875,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02578875,
+                "upstream_inference_prompt_cost": 0.00425875,
+                "upstream_inference_completions_cost": 0.02153
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute left lower quadrant abdominal pain syndrome with systemic inflammatory response suggesting an intra-abdominal process.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome",
+            "status": "established",
+            "evidence": [
+              "This is a ___ year old female with no significant past medical history presenty to the ED with 12 hours of LLQ pain that begin last night at 8pm.",
+              "White blood cell count was elevated to 13.2."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Sigmoid diverticulitis is a leading suspected cause of the acute left lower quadrant pain.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "disease process",
+            "status": "likely",
+            "evidence": [
+              "CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening.",
+              "Colonoscopy ___ (Two polyps of benign appearance were removed, Diverticulosis of the sigmoid colon"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is concern for possible complicated diverticulitis (e.g., abscess, perforation) or alternative intra-abdominal pathology that might change management.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "complication risk",
+            "status": "suspected",
+            "evidence": [
+              "CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening.",
+              "She was given cipro/flagyl and morphine IV 6mg."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Gynecologic, urinary, and hepatobiliary causes of pain are less likely given history, exam, and labs but not definitively excluded.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "differential diagnosis",
+            "status": "suspected",
+            "evidence": [
+              "HCG, Urine, Qualitative: NEGATIVE.",
+              "Abdomen: soft, non-distended, Moderate LLQ tenderness but no rebound tenderness or guarding. + bowel sounds. no organomegaly"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient is currently hemodynamically stable without peritoneal signs, suggesting no overt generalized perforation or septic shock.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "physiologic status",
+            "status": "established",
+            "evidence": [
+              "Vitals: T:98.4 BP: 130/60 P:91 R:18 O2:99% RA",
+              "Abdomen: soft, non-distended, Moderate LLQ tenderness but no rebound tenderness or guarding."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "This is the first decision point; no prior imaging to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first reconstruction step, so assumptions are being established de novo."
+        },
+        "current_question": {
+          "primary": "What is the precise colonic and intra-abdominal source and extent of pathology causing this patient’s acute left lower quadrant pain and leukocytosis?",
+          "target": "colon (especially sigmoid) and adjacent intra-abdominal structures",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming diverticulitis location and any complication would support continued or escalated targeted medical/surgical management (e.g., antibiotics choice, need for drainage or surgery, level of monitoring).",
+          "negative_answer_changes": "If diverticulitis or other colonic pathology is not found, clinicians would broaden the workup for alternative sources of LLQ pain and reconsider antibiotic therapy.",
+          "secondary_questions": [
+            "Is there imaging evidence of complicated diverticulitis such as abscess, perforation, or obstruction that would alter management?",
+            "Is there an alternative intra-abdominal cause of LLQ pain (e.g., colitis, mass, ischemia) explaining the presentation?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_visualize_colon",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization and assessment of the colon, particularly the sigmoid and transverse colon, and adjacent mesentery/pericolonic fat.",
+              "why_required": "Determining whether colonic inflammation or other pathology is present and where it is located is essential to localize the source of pain."
+            },
+            {
+              "requirement_key": "req_presence_colonic_path",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of acute colonic pathology such as diverticulitis, colitis, mass, or obstruction.",
+              "why_required": "Knowing whether there is acute colonic disease confirms or refutes the suspected source of symptoms and guides management."
+            },
+            {
+              "requirement_key": "req_extent_complications",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent of colonic and pericolonic involvement and any complications (e.g., phlegmon, abscess, perforation, free air, obstruction).",
+              "why_required": "The severity and spread of disease determine need for procedural or surgical intervention versus conservative treatment."
+            },
+            {
+              "requirement_key": "req_alternative_source",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Evaluation for alternative intra-abdominal sources of LLQ pain such as gynecologic, urinary, or other bowel pathology.",
+              "why_required": "If the suspected diverticulitis is not confirmed or does not fully explain symptoms, alternative causes must be considered and distinguished."
+            }
+          ],
+          "evidence": [
+            "This is a ___ year old female with no significant past medical history presenty to the ED with 12 hours of LLQ pain that begin last night at 8pm.",
+            "CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening. She was given cipro/flagyl and morphine IV 6mg."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_visualize_colon",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "No prior imaging beyond the referenced CT description is available for review at this decision point, so direct visualization/assessment of the colon cannot be confirmed from the visible chart."
+            },
+            {
+              "requirement_key": "req_presence_colonic_path",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening."
+              ],
+              "reason": "A prior CT is reported as showing likely sigmoid diverticula and transverse colon thickening, suggesting but not definitively characterizing acute colonic pathology or its acuity/complications."
+            },
+            {
+              "requirement_key": "req_extent_complications",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT abdomen revealed likely sigmoid diverticula with some transverse colon thickening."
+              ],
+              "reason": "The description mentions diverticula and thickening but does not specify the extent or presence of abscess, perforation, or other complications."
+            },
+            {
+              "requirement_key": "req_alternative_source",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "HCG, Urine, Qualitative: NEGATIVE.",
+                "She has not had any fevers, chills, N/V, diarrhea/constipation."
+              ],
+              "reason": "Basic labs and pregnancy testing modestly narrow the differential but do not image or definitively exclude alternative intra-abdominal sources of LLQ pain."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Only a brief textual summary of a prior CT is available and does not fully characterize location, severity, complications, or alternatives, leaving the key imaging questions insufficiently answered."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "CT abdomen with contrast can directly visualize the colon and surrounding intra-abdominal structures, characterize diverticulitis, define its extent, detect complications, and assess for alternative pathology.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not clarify whether this CT is a repeat/confirmatory study versus the initial CT being summarized, nor why contrast protocol or timing was specifically chosen."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

@@ -1,0 +1,820 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 22429578,
+  "source_path": "results/annotation_experiment/full/diverticulitis_22429578.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS W/O CONTRAST)",
+      "request_prompt_sha256": "ac43ce5638bce1f21fb83a34c6ed8318397da19547128884139ee7a5b0a5659b",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "ac43ce5638bce1f21fb83a34c6ed8318397da19547128884139ee7a5b0a5659b",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute abdominal pain with fever and leukocytosis, raising concern for an intra‑abdominal inflammatory or infectious process.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level clinical problem",
+                  "status": "established",
+                  "evidence": [
+                    "She has had fever, sore throat nausea nad vomiting x1d. She developed some periumbilical pain today.",
+                    "Labs were significant for WBC 12.2 (N80.6) ... ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A lymphoproliferative disorder such as lymphoma is a possible explanation for the innumerable retroperitoneal and pelvic lymph nodes seen on prior CT.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "disease-level hypothesis",
+                  "status": "suspected",
+                  "evidence": [
+                    "CT abd/pelvis w/o con showed: ... Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning.",
+                    "Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The retroperitoneal and pelvic lymphadenopathy may instead represent a reactive process to an acute infection or inflammation.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "mechanistic hypothesis about lymph node etiology",
+                  "status": "suspected",
+                  "evidence": [
+                    "Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder.",
+                    "She has had fever, sore throat nausea nad vomiting x1d."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient has biochemically confirmed thyrotoxicosis, likely due to Graves disease.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "disease-level diagnosis",
+                  "status": "established",
+                  "evidence": [
+                    "she was found to have an enlarged thyroid. blood test showed her to have hyperthyroidism. Her TSH was below the measurement in  the lab. T3 was 378 and T4 was 3.6.",
+                    "Past Medical History: ... hyperthyroidism ___: T4: 3.6 TSH: less than 0.2. likely Grave's disease"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The acute febrile illness may represent an infectious process distinct from her underlying thyrotoxicosis.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "mechanistic link between fever and potential source",
+                  "status": "suspected",
+                  "evidence": [
+                    "It was initially thought to be an allergic to methimazole. Routine lab showed WBC up with increased neutrophils and with the mild right lower quadrant the patient was sent to the ER for evaluation.",
+                    "no cough, dysuria. + joint pain, myalgia."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable because this is the first decision point and there is no previous imaging in this encounter.",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No prior imaging-based question to compare with new evidence at this first decision."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first reconstruction step, so assumptions are being established de novo from the pre‑order chart."
+              },
+              "current_question": {
+                "primary": "What is the intra‑abdominal source or explanation for this patient’s acute abdominal pain and systemic inflammatory signs, including whether the previously reported retroperitoneal and pelvic lymphadenopathy represents a reactive process or a lymphoproliferative disorder?",
+                "target": "intra‑abdominal inflammatory, infectious, or lymphoproliferative pathology involving bowel, solid organs, or lymph nodes",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a focal intra‑abdominal source or pathologic lymphadenopathy would guide targeted management such as antibiotics, possible surgical consultation, or hematology/oncology evaluation and further staging workup.",
+                "negative_answer_changes": "If no intra‑abdominal source or concerning lymph node pathology is found, attention would shift toward extra‑abdominal causes of fever and pain and non‑imaging workup, while reconsidering the significance of the lymphadenopathy.",
+                "secondary_questions": [
+                  "Do the retroperitoneal and pelvic lymph nodes show features suggesting malignant lymphoproliferative disease rather than a benign reactive process?",
+                  "Is there any intra‑abdominal complication such as abscess, perforation, or ischemia explaining her abdominal tenderness and systemic symptoms?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization of abdominal and pelvic viscera and retroperitoneum, including bowel, solid organs, and lymph node chains.",
+                    "why_required": "The intra‑abdominal source of symptoms can only be assessed if the relevant organs and lymph node regions are adequately visualized."
+                  },
+                  {
+                    "requirement_key": "req_presence_source",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of focal inflammatory or infectious processes (e.g., appendicitis, colitis, abscess) that could explain abdominal pain and systemic inflammatory response.",
+                    "why_required": "Determining whether a focal intra‑abdominal process exists is central to localizing the source of fever and abdominal pain."
+                  },
+                  {
+                    "requirement_key": "req_nodes_identity",
+                    "id": "finding_identity",
+                    "other_proposed_dimension": "",
+                    "dimension": "Morphologic characterization of retroperitoneal and pelvic lymph nodes, including number, size, and pattern to distinguish reactive from potentially lymphoproliferative nodes.",
+                    "why_required": "Clarifying the nature of the lymphadenopathy is necessary to decide whether to pursue a hematologic workup for lymphoproliferative disease."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of intra‑abdominal complications such as perforation, abscess, or ischemia related to an inflammatory source.",
+                    "why_required": "Detecting complications would alter urgency and type of intervention, including need for surgical or interventional management."
+                  }
+                ],
+                "evidence": [
+                  "She has had fever, sore throat nausea nad vomiting x1d. She developed some periumbilical pain today.",
+                  "CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis. 2. Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning. Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.",
+                      "2. Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning."
+                    ],
+                    "reason": "A prior CT abdomen/pelvis without contrast has visualized abdominal structures and lymph nodes, but the description is limited to the appendix and the presence of numerous nodes, without full characterization of all possible intra‑abdominal sources or detailed node morphology."
+                  },
+                  {
+                    "requirement_key": "req_presence_source",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.",
+                      "Labs were significant for WBC 12.2 (N80.6) ... ABDOMEN: ... tender in LLQ and RLQ"
+                    ],
+                    "reason": "Appendicitis is excluded on prior CT, but persistent abdominal tenderness and leukocytosis mean that an alternative intra‑abdominal source has not been ruled out or identified."
+                  },
+                  {
+                    "requirement_key": "req_nodes_identity",
+                    "requirement_id": "finding_identity",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning.",
+                      "Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder."
+                    ],
+                    "reason": "The prior CT confirms numerous nodes but explicitly leaves their nature indeterminate between reactive and lymphoproliferative, so the identity of the process remains unresolved."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.",
+                      "ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding"
+                    ],
+                    "reason": "The prior CT report only comments on the appendix and lymph nodes and does not address other potential complications such as abscess, perforation, or ischemia that could relate to ongoing pain."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "A previous CT has ruled out appendicitis and documented lymphadenopathy but leaves the etiology of the nodes and the presence of other intra‑abdominal sources or complications incompletely characterized."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A CT of the abdomen and pelvis without contrast can reassess abdominal organs, bowel, and lymph nodes to look for inflammatory or infectious sources and to further characterize the extent and pattern of lymphadenopathy.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The timing and rationale for repeating a noncontrast CT rather than using contrast, and whether there was a specific non‑appendiceal target in mind (e.g., colitis vs. gynecologic pathology), are not fully specified in the available chart."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute abdominal pain with fever and leukocytosis, raising concern for an intra‑abdominal inflammatory or infectious process.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level clinical problem\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"She has had fever, sore throat nausea nad vomiting x1d. She developed some periumbilical pain today.\",\n        \"Labs were significant for WBC 12.2 (N80.6) ... ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A lymphoproliferative disorder such as lymphoma is a possible explanation for the innumerable retroperitoneal and pelvic lymph nodes seen on prior CT.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease-level hypothesis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"CT abd/pelvis w/o con showed: ... Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning.\",\n        \"Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The retroperitoneal and pelvic lymphadenopathy may instead represent a reactive process to an acute infection or inflammation.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"mechanistic hypothesis about lymph node etiology\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder.\",\n        \"She has had fever, sore throat nausea nad vomiting x1d.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient has biochemically confirmed thyrotoxicosis, likely due to Graves disease.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease-level diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"she was found to have an enlarged thyroid. blood test showed her to have hyperthyroidism. Her TSH was below the measurement in  the lab. T3 was 378 and T4 was 3.6.\",\n        \"Past Medical History: ... hyperthyroidism ___: T4: 3.6 TSH: less than 0.2. likely Grave's disease\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The acute febrile illness may represent an infectious process distinct from her underlying thyrotoxicosis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"mechanistic link between fever and potential source\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"It was initially thought to be an allergic to methimazole. Routine lab showed WBC up with increased neutrophils and with the mild right lower quadrant the patient was sent to the ER for evaluation.\",\n        \"no cough, dysuria. + joint pain, myalgia.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable because this is the first decision point and there is no previous imaging in this encounter.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging-based question to compare with new evidence at this first decision.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first reconstruction step, so assumptions are being established de novo from the pre‑order chart.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the intra‑abdominal source or explanation for this patient’s acute abdominal pain and systemic inflammatory signs, including whether the previously reported retroperitoneal and pelvic lymphadenopathy represents a reactive process or a lymphoproliferative disorder?\",\n    \"target\": \"intra‑abdominal inflammatory, infectious, or lymphoproliferative pathology involving bowel, solid organs, or lymph nodes\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a focal intra‑abdominal source or pathologic lymphadenopathy would guide targeted management such as antibiotics, possible surgical consultation, or hematology/oncology evaluation and further staging workup.\",\n    \"negative_answer_changes\": \"If no intra‑abdominal source or concerning lymph node pathology is found, attention would shift toward extra‑abdominal causes of fever and pain and non‑imaging workup, while reconsidering the significance of the lymphadenopathy.\",\n    \"secondary_questions\": [\n      \"Do the retroperitoneal and pelvic lymph nodes show features suggesting malignant lymphoproliferative disease rather than a benign reactive process?\",\n      \"Is there any intra‑abdominal complication such as abscess, perforation, or ischemia explaining her abdominal tenderness and systemic symptoms?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of abdominal and pelvic viscera and retroperitoneum, including bowel, solid organs, and lymph node chains.\",\n        \"why_required\": \"The intra‑abdominal source of symptoms can only be assessed if the relevant organs and lymph node regions are adequately visualized.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_source\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of focal inflammatory or infectious processes (e.g., appendicitis, colitis, abscess) that could explain abdominal pain and systemic inflammatory response.\",\n        \"why_required\": \"Determining whether a focal intra‑abdominal process exists is central to localizing the source of fever and abdominal pain.\"\n      },\n      {\n        \"requirement_key\": \"req_nodes_identity\",\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Morphologic characterization of retroperitoneal and pelvic lymph nodes, including number, size, and pattern to distinguish reactive from potentially lymphoproliferative nodes.\",\n        \"why_required\": \"Clarifying the nature of the lymphadenopathy is necessary to decide whether to pursue a hematologic workup for lymphoproliferative disease.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of intra‑abdominal complications such as perforation, abscess, or ischemia related to an inflammatory source.\",\n        \"why_required\": \"Detecting complications would alter urgency and type of intervention, including need for surgical or interventional management.\"\n      }\n    ],\n    \"evidence\": [\n      \"She has had fever, sore throat nausea nad vomiting x1d. She developed some periumbilical pain today.\",\n      \"CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis. 2. Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning. Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.\",\n          \"2. Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning.\"\n        ],\n        \"reason\": \"A prior CT abdomen/pelvis without contrast has visualized abdominal structures and lymph nodes, but the description is limited to the appendix and the presence of numerous nodes, without full characterization of all possible intra‑abdominal sources or detailed node morphology.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_source\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.\",\n          \"Labs were significant for WBC 12.2 (N80.6) ... ABDOMEN: ... tender in LLQ and RLQ\"\n        ],\n        \"reason\": \"Appendicitis is excluded on prior CT, but persistent abdominal tenderness and leukocytosis mean that an alternative intra‑abdominal source has not been ruled out or identified.\"\n      },\n      {\n        \"requirement_key\": \"req_nodes_identity\",\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning.\",\n          \"Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder.\"\n        ],\n        \"reason\": \"The prior CT confirms numerous nodes but explicitly leaves their nature indeterminate between reactive and lymphoproliferative, so the identity of the process remains unresolved.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.\",\n          \"ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding\"\n        ],\n        \"reason\": \"The prior CT report only comments on the appendix and lymph nodes and does not address other potential complications such as abscess, perforation, or ischemia that could relate to ongoing pain.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"A previous CT has ruled out appendicitis and documented lymphadenopathy but leaves the etiology of the nodes and the presence of other intra‑abdominal sources or complications incompletely characterized.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A CT of the abdomen and pelvis without contrast can reassess abdominal organs, bowel, and lymph nodes to look for inflammatory or infectious sources and to further characterize the extent and pattern of lymphadenopathy.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The timing and rationale for repeating a noncontrast CT rather than using contrast, and whether there was a specific non‑appendiceal target in mind (e.g., colitis vs. gynecologic pathology), are not fully specified in the available chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788225620-5uOiwdCZkauuknjewgGc",
+            "usage": {
+              "completion_tokens": 2604,
+              "prompt_tokens": 3757,
+              "total_tokens": 6361,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.03073625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.03073625,
+                "upstream_inference_prompt_cost": 0.00469625,
+                "upstream_inference_completions_cost": 0.02604
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute abdominal pain with fever and leukocytosis, raising concern for an intra‑abdominal inflammatory or infectious process.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome-level clinical problem",
+            "status": "established",
+            "evidence": [
+              "She has had fever, sore throat nausea nad vomiting x1d. She developed some periumbilical pain today.",
+              "Labs were significant for WBC 12.2 (N80.6) ... ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A lymphoproliferative disorder such as lymphoma is a possible explanation for the innumerable retroperitoneal and pelvic lymph nodes seen on prior CT.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "disease-level hypothesis",
+            "status": "suspected",
+            "evidence": [
+              "CT abd/pelvis w/o con showed: ... Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning.",
+              "Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The retroperitoneal and pelvic lymphadenopathy may instead represent a reactive process to an acute infection or inflammation.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "mechanistic hypothesis about lymph node etiology",
+            "status": "suspected",
+            "evidence": [
+              "Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder.",
+              "She has had fever, sore throat nausea nad vomiting x1d."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient has biochemically confirmed thyrotoxicosis, likely due to Graves disease.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "disease-level diagnosis",
+            "status": "established",
+            "evidence": [
+              "she was found to have an enlarged thyroid. blood test showed her to have hyperthyroidism. Her TSH was below the measurement in  the lab. T3 was 378 and T4 was 3.6.",
+              "Past Medical History: ... hyperthyroidism ___: T4: 3.6 TSH: less than 0.2. likely Grave's disease"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The acute febrile illness may represent an infectious process distinct from her underlying thyrotoxicosis.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "mechanistic link between fever and potential source",
+            "status": "suspected",
+            "evidence": [
+              "It was initially thought to be an allergic to methimazole. Routine lab showed WBC up with increased neutrophils and with the mild right lower quadrant the patient was sent to the ER for evaluation.",
+              "no cough, dysuria. + joint pain, myalgia."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable because this is the first decision point and there is no previous imaging in this encounter.",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "No prior imaging-based question to compare with new evidence at this first decision."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first reconstruction step, so assumptions are being established de novo from the pre‑order chart."
+        },
+        "current_question": {
+          "primary": "What is the intra‑abdominal source or explanation for this patient’s acute abdominal pain and systemic inflammatory signs, including whether the previously reported retroperitoneal and pelvic lymphadenopathy represents a reactive process or a lymphoproliferative disorder?",
+          "target": "intra‑abdominal inflammatory, infectious, or lymphoproliferative pathology involving bowel, solid organs, or lymph nodes",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a focal intra‑abdominal source or pathologic lymphadenopathy would guide targeted management such as antibiotics, possible surgical consultation, or hematology/oncology evaluation and further staging workup.",
+          "negative_answer_changes": "If no intra‑abdominal source or concerning lymph node pathology is found, attention would shift toward extra‑abdominal causes of fever and pain and non‑imaging workup, while reconsidering the significance of the lymphadenopathy.",
+          "secondary_questions": [
+            "Do the retroperitoneal and pelvic lymph nodes show features suggesting malignant lymphoproliferative disease rather than a benign reactive process?",
+            "Is there any intra‑abdominal complication such as abscess, perforation, or ischemia explaining her abdominal tenderness and systemic symptoms?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization of abdominal and pelvic viscera and retroperitoneum, including bowel, solid organs, and lymph node chains.",
+              "why_required": "The intra‑abdominal source of symptoms can only be assessed if the relevant organs and lymph node regions are adequately visualized."
+            },
+            {
+              "requirement_key": "req_presence_source",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of focal inflammatory or infectious processes (e.g., appendicitis, colitis, abscess) that could explain abdominal pain and systemic inflammatory response.",
+              "why_required": "Determining whether a focal intra‑abdominal process exists is central to localizing the source of fever and abdominal pain."
+            },
+            {
+              "requirement_key": "req_nodes_identity",
+              "id": "finding_identity",
+              "other_proposed_dimension": "",
+              "dimension": "Morphologic characterization of retroperitoneal and pelvic lymph nodes, including number, size, and pattern to distinguish reactive from potentially lymphoproliferative nodes.",
+              "why_required": "Clarifying the nature of the lymphadenopathy is necessary to decide whether to pursue a hematologic workup for lymphoproliferative disease."
+            },
+            {
+              "requirement_key": "req_complication",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence of intra‑abdominal complications such as perforation, abscess, or ischemia related to an inflammatory source.",
+              "why_required": "Detecting complications would alter urgency and type of intervention, including need for surgical or interventional management."
+            }
+          ],
+          "evidence": [
+            "She has had fever, sore throat nausea nad vomiting x1d. She developed some periumbilical pain today.",
+            "CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis. 2. Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning. Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.",
+                "2. Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning."
+              ],
+              "reason": "A prior CT abdomen/pelvis without contrast has visualized abdominal structures and lymph nodes, but the description is limited to the appendix and the presence of numerous nodes, without full characterization of all possible intra‑abdominal sources or detailed node morphology."
+            },
+            {
+              "requirement_key": "req_presence_source",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "mixed",
+              "supporting_evidence": [
+                "CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.",
+                "Labs were significant for WBC 12.2 (N80.6) ... ABDOMEN: ... tender in LLQ and RLQ"
+              ],
+              "reason": "Appendicitis is excluded on prior CT, but persistent abdominal tenderness and leukocytosis mean that an alternative intra‑abdominal source has not been ruled out or identified."
+            },
+            {
+              "requirement_key": "req_nodes_identity",
+              "requirement_id": "finding_identity",
+              "status": "partially_addressed",
+              "direction": "mixed",
+              "supporting_evidence": [
+                "Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning.",
+                "Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder."
+              ],
+              "reason": "The prior CT confirms numerous nodes but explicitly leaves their nature indeterminate between reactive and lymphoproliferative, so the identity of the process remains unresolved."
+            },
+            {
+              "requirement_key": "req_complication",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.",
+                "ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding"
+              ],
+              "reason": "The prior CT report only comments on the appendix and lymph nodes and does not address other potential complications such as abscess, perforation, or ischemia that could relate to ongoing pain."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "A previous CT has ruled out appendicitis and documented lymphadenopathy but leaves the etiology of the nodes and the presence of other intra‑abdominal sources or complications incompletely characterized."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A CT of the abdomen and pelvis without contrast can reassess abdominal organs, bowel, and lymph nodes to look for inflammatory or infectious sources and to further characterize the extent and pattern of lymphadenopathy.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The timing and rationale for repeating a noncontrast CT rather than using contrast, and whether there was a specific non‑appendiceal target in mind (e.g., colitis vs. gynecologic pathology), are not fully specified in the available chart."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "Ultrasound Abdomen (PELVIS, NON-OBSTETRIC)",
+      "request_prompt_sha256": "35effe80fd8fa374ef6122095ecd5f381e174bc66647de5145f0588babbc849a",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "35effe80fd8fa374ef6122095ecd5f381e174bc66647de5145f0588babbc849a",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute abdominal pain with fever and leukocytosis suggesting an intra-abdominal inflammatory or infectious process, with CT showing sigmoid diverticula and adjacent inflammatory-appearing changes and free fluid.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level clinical problem",
+                  "status": "established",
+                  "evidence": [
+                    "She has had fever, sore throat nausea nad vomiting x1d. She developed some periumbilical pain today.",
+                    "Diverticula are seen along the sigmoid colon with surrounding fluid most prominent on series 2, image 67. Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The CT-demonstrated pelvic free fluid and sigmoid-region inflammatory stranding raise concern for a pelvic inflammatory focus such as diverticulitis or related complication as a source of her symptoms.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "mechanistic hypothesis about source of fever and pain",
+                  "status": "suspected",
+                  "evidence": [
+                    "Diverticula are seen along the sigmoid colon with surrounding fluid most prominent on series 2, image 67.",
+                    "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is CT-documented trace free pelvic fluid that may represent either a benign physiologic finding or pathologic fluid related to intra-abdominal or pelvic inflammation.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "finding-level description",
+                  "status": "established",
+                  "evidence": [
+                    "There are multiple mildly prominent central mesenteric lymph nodes,  none of which meet CT size criteria for pathological enlargement although these are striking by number. There is trace free fluid.",
+                    "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A lymphoproliferative disorder such as lymphoma remains a possible explanation for the innumerable retroperitoneal and pelvic lymph nodes seen on CT, although they may be reactive.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "disease-level hypothesis",
+                  "status": "suspected",
+                  "evidence": [
+                    "Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning.",
+                    "Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has biochemically confirmed thyrotoxicosis, likely due to Graves disease, but this is not the primary explanation for her acute abdominal pain and pelvic free fluid.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "link between chronic disease and acute presentation",
+                  "status": "suspected",
+                  "evidence": [
+                    "she was found to have an enlarged thyroid. blood test showed her to have hyperthyroidism. Her TSH was below the measurement in  the lab. T3 was 378 and T4 was 3.6.",
+                    "Past Medical History: ... hyperthyroidism ___: T4: 3.6 TSH: less than 0.2. likely Grave's disease"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What is the intra‑abdominal source or explanation for this patient’s acute abdominal pain and systemic inflammatory signs, including whether the previously reported retroperitoneal and pelvic lymphadenopathy represents a reactive process or a lymphoproliferative disorder?",
+                "study_adequacy": "limited_but_diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "indeterminate",
+                "effect_on_previous_question": "The CT abdomen/pelvis without contrast excluded appendicitis and documented sigmoid diverticula with adjacent fluid/stranding and trace pelvic free fluid plus numerous but non-enlarged lymph nodes, partially localizing inflammation toward the sigmoid/pelvic region but leaving the exact source, significance of the free fluid, and nature of the lymphadenopathy unresolved.",
+                "discordance": {
+                  "label": "indeterminate",
+                  "evidence_stream_1": "CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.",
+                  "evidence_stream_2": "ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding",
+                  "reason": "Imaging ruled out appendicitis and showed only subtle sigmoid/pelvic changes while the patient continues to have lower quadrant tenderness and systemic inflammatory signs, so clinical severity slightly exceeds the definitiveness of CT findings but without clear contradiction."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The patient has acute abdominal pain with fever and leukocytosis suggesting an intra-abdominal inflammatory or infectious process, with CT showing sigmoid diverticula and adjacent inflammatory-appearing changes and free fluid.",
+                "reason": "New CT findings of sigmoid diverticula with surrounding fluid, pelvic stranding, and free fluid refine the intra-abdominal inflammatory focus toward the sigmoid/pelvic region without yet defining its exact nature."
+              },
+              "current_question": {
+                "primary": "Does the pelvic free fluid and adjacent sigmoid-region inflammatory change reflect a clinically significant pelvic or adnexal inflammatory process or collection that explains her ongoing abdominal pain and systemic inflammatory signs?",
+                "target": "pelvic structures including adnexa, uterus, and adjacent pelvic fluid/collections in the region of sigmoid diverticula and inflammatory stranding",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a pelvic or adnexal inflammatory focus or fluid collection would support targeted antimicrobial therapy, possible drainage or surgical consultation, and narrower focus of further workup away from alternative sources.",
+                "negative_answer_changes": "If no significant pelvic or adnexal source or collection is found, clinicians would attribute symptoms more to colonic inflammation or other systemic causes, reconsider the significance of the trace free fluid, and potentially redirect evaluation toward alternative intra- or extra-abdominal sources, including hematologic evaluation of lymphadenopathy.",
+                "secondary_questions": [
+                  "Is the pelvic free fluid more compatible with a simple/physiologic fluid versus an organized or complex collection that might require procedural intervention?",
+                  "Are there sonographic features of adnexal pathology (e.g., torsion, tubo-ovarian abscess, complex cyst) that could contribute to her lower quadrant pain?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_pelvis_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "High-resolution visualization of pelvic organs (uterus, ovaries, adnexa) and pelvic free fluid or collections.",
+                    "why_required": "Determining whether pelvic structures or fluid represent the symptomatic source requires adequate depiction of these organs and spaces."
+                  },
+                  {
+                    "requirement_key": "req_pelvic_source",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of a discrete pelvic or adnexal source such as abscess, complex collection, or adnexal mass correlating with inflammatory changes.",
+                    "why_required": "A discrete pelvic source would localize the cause of her symptoms and directly guide need for antibiotics versus drainage or surgery."
+                  },
+                  {
+                    "requirement_key": "req_fluid_character",
+                    "id": "finding_identity",
+                    "other_proposed_dimension": "",
+                    "dimension": "Characterization of pelvic free fluid as simple versus complex, loculated, or septated.",
+                    "why_required": "The nature of the fluid helps distinguish benign or physiologic fluid from pathologic collections requiring intervention."
+                  }
+                ],
+                "evidence": [
+                  "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.",
+                  "ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_pelvis_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.",
+                      "CT of the pelvis:  Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+                    ],
+                    "reason": "CT has demonstrated pelvic free fluid and surrounding stranding but, being non-contrast and not optimized for pelvic organ detail, provides limited characterization of adnexa and the exact nature of the pelvic space involvement."
+                  },
+                  {
+                    "requirement_key": "req_pelvic_source",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+                    ],
+                    "reason": "CT notes free fluid and stranding but does not identify or exclude a discrete pelvic abscess, tubo-ovarian abscess, or adnexal mass, leaving the presence of a specific pelvic source indeterminate."
+                  },
+                  {
+                    "requirement_key": "req_fluid_character",
+                    "requirement_id": "finding_identity",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "There is trace free fluid.",
+                      "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+                    ],
+                    "reason": "The CT report quantifies pelvic free fluid but does not describe its complexity, septations, or echogenicity, so the identity of the fluid as physiologic versus pathologic remains unresolved."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Existing non-contrast CT demonstrates pelvic free fluid and inflammatory changes but does not adequately visualize pelvic organs or characterize fluid/collections to localize a pelvic source for the patient’s symptoms."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Pelvic ultrasound offers high-resolution evaluation of pelvic organs and can characterize free fluid or collections as simple versus complex, helping to determine if there is a clinically significant pelvic or adnexal inflammatory source.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not specify whether gynecologic symptoms, menstrual timing, or concern for specific entities such as tubo-ovarian abscess versus physiologic fluid drove the choice of ultrasound, nor how strongly the team prioritized differentiating colonic from gynecologic sources over further evaluation of lymphadenopathy."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "An alternate interpretation is that the ultrasound pelvis was ordered primarily to assess for occult gynecologic pathology (e.g., ovarian torsion, hemorrhagic or ruptured cyst, or tubo-ovarian abscess) as alternative sources of her lower quadrant pain in a reproductive-age woman with nonspecific CT findings and trace free fluid, with less emphasis on the diverticular changes seen on CT."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute abdominal pain with fever and leukocytosis suggesting an intra-abdominal inflammatory or infectious process, with CT showing sigmoid diverticula and adjacent inflammatory-appearing changes and free fluid.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level clinical problem\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"She has had fever, sore throat nausea nad vomiting x1d. She developed some periumbilical pain today.\",\n        \"Diverticula are seen along the sigmoid colon with surrounding fluid most prominent on series 2, image 67. Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The CT-demonstrated pelvic free fluid and sigmoid-region inflammatory stranding raise concern for a pelvic inflammatory focus such as diverticulitis or related complication as a source of her symptoms.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"mechanistic hypothesis about source of fever and pain\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Diverticula are seen along the sigmoid colon with surrounding fluid most prominent on series 2, image 67.\",\n        \"Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is CT-documented trace free pelvic fluid that may represent either a benign physiologic finding or pathologic fluid related to intra-abdominal or pelvic inflammation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"finding-level description\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"There are multiple mildly prominent central mesenteric lymph nodes,  none of which meet CT size criteria for pathological enlargement although these are striking by number. There is trace free fluid.\",\n        \"Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A lymphoproliferative disorder such as lymphoma remains a possible explanation for the innumerable retroperitoneal and pelvic lymph nodes seen on CT, although they may be reactive.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease-level hypothesis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning.\",\n        \"Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has biochemically confirmed thyrotoxicosis, likely due to Graves disease, but this is not the primary explanation for her acute abdominal pain and pelvic free fluid.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"link between chronic disease and acute presentation\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"she was found to have an enlarged thyroid. blood test showed her to have hyperthyroidism. Her TSH was below the measurement in  the lab. T3 was 378 and T4 was 3.6.\",\n        \"Past Medical History: ... hyperthyroidism ___: T4: 3.6 TSH: less than 0.2. likely Grave's disease\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the intra‑abdominal source or explanation for this patient’s acute abdominal pain and systemic inflammatory signs, including whether the previously reported retroperitoneal and pelvic lymphadenopathy represents a reactive process or a lymphoproliferative disorder?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"indeterminate\",\n    \"effect_on_previous_question\": \"The CT abdomen/pelvis without contrast excluded appendicitis and documented sigmoid diverticula with adjacent fluid/stranding and trace pelvic free fluid plus numerous but non-enlarged lymph nodes, partially localizing inflammation toward the sigmoid/pelvic region but leaving the exact source, significance of the free fluid, and nature of the lymphadenopathy unresolved.\",\n    \"discordance\": {\n      \"label\": \"indeterminate\",\n      \"evidence_stream_1\": \"CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.\",\n      \"evidence_stream_2\": \"ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding\",\n      \"reason\": \"Imaging ruled out appendicitis and showed only subtle sigmoid/pelvic changes while the patient continues to have lower quadrant tenderness and systemic inflammatory signs, so clinical severity slightly exceeds the definitiveness of CT findings but without clear contradiction.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The patient has acute abdominal pain with fever and leukocytosis suggesting an intra-abdominal inflammatory or infectious process, with CT showing sigmoid diverticula and adjacent inflammatory-appearing changes and free fluid.\",\n    \"reason\": \"New CT findings of sigmoid diverticula with surrounding fluid, pelvic stranding, and free fluid refine the intra-abdominal inflammatory focus toward the sigmoid/pelvic region without yet defining its exact nature.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Does the pelvic free fluid and adjacent sigmoid-region inflammatory change reflect a clinically significant pelvic or adnexal inflammatory process or collection that explains her ongoing abdominal pain and systemic inflammatory signs?\",\n    \"target\": \"pelvic structures including adnexa, uterus, and adjacent pelvic fluid/collections in the region of sigmoid diverticula and inflammatory stranding\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a pelvic or adnexal inflammatory focus or fluid collection would support targeted antimicrobial therapy, possible drainage or surgical consultation, and narrower focus of further workup away from alternative sources.\",\n    \"negative_answer_changes\": \"If no significant pelvic or adnexal source or collection is found, clinicians would attribute symptoms more to colonic inflammation or other systemic causes, reconsider the significance of the trace free fluid, and potentially redirect evaluation toward alternative intra- or extra-abdominal sources, including hematologic evaluation of lymphadenopathy.\",\n    \"secondary_questions\": [\n      \"Is the pelvic free fluid more compatible with a simple/physiologic fluid versus an organized or complex collection that might require procedural intervention?\",\n      \"Are there sonographic features of adnexal pathology (e.g., torsion, tubo-ovarian abscess, complex cyst) that could contribute to her lower quadrant pain?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_pelvis_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"High-resolution visualization of pelvic organs (uterus, ovaries, adnexa) and pelvic free fluid or collections.\",\n        \"why_required\": \"Determining whether pelvic structures or fluid represent the symptomatic source requires adequate depiction of these organs and spaces.\"\n      },\n      {\n        \"requirement_key\": \"req_pelvic_source\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of a discrete pelvic or adnexal source such as abscess, complex collection, or adnexal mass correlating with inflammatory changes.\",\n        \"why_required\": \"A discrete pelvic source would localize the cause of her symptoms and directly guide need for antibiotics versus drainage or surgery.\"\n      },\n      {\n        \"requirement_key\": \"req_fluid_character\",\n        \"id\": \"finding_identity\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of pelvic free fluid as simple versus complex, loculated, or septated.\",\n        \"why_required\": \"The nature of the fluid helps distinguish benign or physiologic fluid from pathologic collections requiring intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.\",\n      \"ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_pelvis_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.\",\n          \"CT of the pelvis:  Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.\"\n        ],\n        \"reason\": \"CT has demonstrated pelvic free fluid and surrounding stranding but, being non-contrast and not optimized for pelvic organ detail, provides limited characterization of adnexa and the exact nature of the pelvic space involvement.\"\n      },\n      {\n        \"requirement_key\": \"req_pelvic_source\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.\"\n        ],\n        \"reason\": \"CT notes free fluid and stranding but does not identify or exclude a discrete pelvic abscess, tubo-ovarian abscess, or adnexal mass, leaving the presence of a specific pelvic source indeterminate.\"\n      },\n      {\n        \"requirement_key\": \"req_fluid_character\",\n        \"requirement_id\": \"finding_identity\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"There is trace free fluid.\",\n          \"Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.\"\n        ],\n        \"reason\": \"The CT report quantifies pelvic free fluid but does not describe its complexity, septations, or echogenicity, so the identity of the fluid as physiologic versus pathologic remains unresolved.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Existing non-contrast CT demonstrates pelvic free fluid and inflammatory changes but does not adequately visualize pelvic organs or characterize fluid/collections to localize a pelvic source for the patient’s symptoms.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Pelvic ultrasound offers high-resolution evaluation of pelvic organs and can characterize free fluid or collections as simple versus complex, helping to determine if there is a clinically significant pelvic or adnexal inflammatory source.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not specify whether gynecologic symptoms, menstrual timing, or concern for specific entities such as tubo-ovarian abscess versus physiologic fluid drove the choice of ultrasound, nor how strongly the team prioritized differentiating colonic from gynecologic sources over further evaluation of lymphadenopathy.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"An alternate interpretation is that the ultrasound pelvis was ordered primarily to assess for occult gynecologic pathology (e.g., ovarian torsion, hemorrhagic or ruptured cyst, or tubo-ovarian abscess) as alternative sources of her lower quadrant pain in a reproductive-age woman with nonspecific CT findings and trace free fluid, with less emphasis on the diverticular changes seen on CT.\"\n}",
+            "request_id": "gen-1788225642-vjaUqVXzLzCMGAHZjL5v",
+            "usage": {
+              "completion_tokens": 2691,
+              "prompt_tokens": 6593,
+              "total_tokens": 9284,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2432,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.03241525,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.03241525,
+                "upstream_inference_prompt_cost": 0.00550525,
+                "upstream_inference_completions_cost": 0.02691
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute abdominal pain with fever and leukocytosis suggesting an intra-abdominal inflammatory or infectious process, with CT showing sigmoid diverticula and adjacent inflammatory-appearing changes and free fluid.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome-level clinical problem",
+            "status": "established",
+            "evidence": [
+              "She has had fever, sore throat nausea nad vomiting x1d. She developed some periumbilical pain today.",
+              "Diverticula are seen along the sigmoid colon with surrounding fluid most prominent on series 2, image 67. Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The CT-demonstrated pelvic free fluid and sigmoid-region inflammatory stranding raise concern for a pelvic inflammatory focus such as diverticulitis or related complication as a source of her symptoms.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "mechanistic hypothesis about source of fever and pain",
+            "status": "suspected",
+            "evidence": [
+              "Diverticula are seen along the sigmoid colon with surrounding fluid most prominent on series 2, image 67.",
+              "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is CT-documented trace free pelvic fluid that may represent either a benign physiologic finding or pathologic fluid related to intra-abdominal or pelvic inflammation.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "finding-level description",
+            "status": "established",
+            "evidence": [
+              "There are multiple mildly prominent central mesenteric lymph nodes,  none of which meet CT size criteria for pathological enlargement although these are striking by number. There is trace free fluid.",
+              "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A lymphoproliferative disorder such as lymphoma remains a possible explanation for the innumerable retroperitoneal and pelvic lymph nodes seen on CT, although they may be reactive.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "disease-level hypothesis",
+            "status": "suspected",
+            "evidence": [
+              "Innumerable retroperitoneal and pelvic lymph nodes, none of which appear particularly enlarged, however given the amount are somewhat concerning.",
+              "Although these could reflect reactive lymph nodes, given the number findings also raise concern for lymphoproliferative disorder."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has biochemically confirmed thyrotoxicosis, likely due to Graves disease, but this is not the primary explanation for her acute abdominal pain and pelvic free fluid.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "link between chronic disease and acute presentation",
+            "status": "suspected",
+            "evidence": [
+              "she was found to have an enlarged thyroid. blood test showed her to have hyperthyroidism. Her TSH was below the measurement in  the lab. T3 was 378 and T4 was 3.6.",
+              "Past Medical History: ... hyperthyroidism ___: T4: 3.6 TSH: less than 0.2. likely Grave's disease"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What is the intra‑abdominal source or explanation for this patient’s acute abdominal pain and systemic inflammatory signs, including whether the previously reported retroperitoneal and pelvic lymphadenopathy represents a reactive process or a lymphoproliferative disorder?",
+          "study_adequacy": "limited_but_diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "indeterminate",
+          "effect_on_previous_question": "The CT abdomen/pelvis without contrast excluded appendicitis and documented sigmoid diverticula with adjacent fluid/stranding and trace pelvic free fluid plus numerous but non-enlarged lymph nodes, partially localizing inflammation toward the sigmoid/pelvic region but leaving the exact source, significance of the free fluid, and nature of the lymphadenopathy unresolved.",
+          "discordance": {
+            "label": "indeterminate",
+            "evidence_stream_1": "CT abd/pelvis w/o con showed: 1. Normal appendix, no evidence of acute appendicitis.",
+            "evidence_stream_2": "ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding",
+            "reason": "Imaging ruled out appendicitis and showed only subtle sigmoid/pelvic changes while the patient continues to have lower quadrant tenderness and systemic inflammatory signs, so clinical severity slightly exceeds the definitiveness of CT findings but without clear contradiction."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The patient has acute abdominal pain with fever and leukocytosis suggesting an intra-abdominal inflammatory or infectious process, with CT showing sigmoid diverticula and adjacent inflammatory-appearing changes and free fluid.",
+          "reason": "New CT findings of sigmoid diverticula with surrounding fluid, pelvic stranding, and free fluid refine the intra-abdominal inflammatory focus toward the sigmoid/pelvic region without yet defining its exact nature."
+        },
+        "current_question": {
+          "primary": "Does the pelvic free fluid and adjacent sigmoid-region inflammatory change reflect a clinically significant pelvic or adnexal inflammatory process or collection that explains her ongoing abdominal pain and systemic inflammatory signs?",
+          "target": "pelvic structures including adnexa, uterus, and adjacent pelvic fluid/collections in the region of sigmoid diverticula and inflammatory stranding",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a pelvic or adnexal inflammatory focus or fluid collection would support targeted antimicrobial therapy, possible drainage or surgical consultation, and narrower focus of further workup away from alternative sources.",
+          "negative_answer_changes": "If no significant pelvic or adnexal source or collection is found, clinicians would attribute symptoms more to colonic inflammation or other systemic causes, reconsider the significance of the trace free fluid, and potentially redirect evaluation toward alternative intra- or extra-abdominal sources, including hematologic evaluation of lymphadenopathy.",
+          "secondary_questions": [
+            "Is the pelvic free fluid more compatible with a simple/physiologic fluid versus an organized or complex collection that might require procedural intervention?",
+            "Are there sonographic features of adnexal pathology (e.g., torsion, tubo-ovarian abscess, complex cyst) that could contribute to her lower quadrant pain?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_pelvis_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "High-resolution visualization of pelvic organs (uterus, ovaries, adnexa) and pelvic free fluid or collections.",
+              "why_required": "Determining whether pelvic structures or fluid represent the symptomatic source requires adequate depiction of these organs and spaces."
+            },
+            {
+              "requirement_key": "req_pelvic_source",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of a discrete pelvic or adnexal source such as abscess, complex collection, or adnexal mass correlating with inflammatory changes.",
+              "why_required": "A discrete pelvic source would localize the cause of her symptoms and directly guide need for antibiotics versus drainage or surgery."
+            },
+            {
+              "requirement_key": "req_fluid_character",
+              "id": "finding_identity",
+              "other_proposed_dimension": "",
+              "dimension": "Characterization of pelvic free fluid as simple versus complex, loculated, or septated.",
+              "why_required": "The nature of the fluid helps distinguish benign or physiologic fluid from pathologic collections requiring intervention."
+            }
+          ],
+          "evidence": [
+            "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.",
+            "ABDOMEN: nondistended, +BS, tender in LLQ and RLQ, no rebound/guarding"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_pelvis_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid.",
+                "CT of the pelvis:  Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+              ],
+              "reason": "CT has demonstrated pelvic free fluid and surrounding stranding but, being non-contrast and not optimized for pelvic organ detail, provides limited characterization of adnexa and the exact nature of the pelvic space involvement."
+            },
+            {
+              "requirement_key": "req_pelvic_source",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+              ],
+              "reason": "CT notes free fluid and stranding but does not identify or exclude a discrete pelvic abscess, tubo-ovarian abscess, or adnexal mass, leaving the presence of a specific pelvic source indeterminate."
+            },
+            {
+              "requirement_key": "req_fluid_character",
+              "requirement_id": "finding_identity",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "There is trace free fluid.",
+                "Within the right pelvis there is a small amount of free fluid and stranding near several diverticula and epiploic appendages along the lower sigmoid."
+              ],
+              "reason": "The CT report quantifies pelvic free fluid but does not describe its complexity, septations, or echogenicity, so the identity of the fluid as physiologic versus pathologic remains unresolved."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Existing non-contrast CT demonstrates pelvic free fluid and inflammatory changes but does not adequately visualize pelvic organs or characterize fluid/collections to localize a pelvic source for the patient’s symptoms."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Pelvic ultrasound offers high-resolution evaluation of pelvic organs and can characterize free fluid or collections as simple versus complex, helping to determine if there is a clinically significant pelvic or adnexal inflammatory source.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not specify whether gynecologic symptoms, menstrual timing, or concern for specific entities such as tubo-ovarian abscess versus physiologic fluid drove the choice of ultrasound, nor how strongly the team prioritized differentiating colonic from gynecologic sources over further evaluation of lymphadenopathy."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "An alternate interpretation is that the ultrasound pelvis was ordered primarily to assess for occult gynecologic pathology (e.g., ovarian torsion, hemorrhagic or ruptured cyst, or tubo-ovarian abscess) as alternative sources of her lower quadrant pain in a reproductive-age woman with nonspecific CT findings and trace free fluid, with less emphasis on the diverticular changes seen on CT."
+      },
+      "validation_errors": []
+    }
+  ]
+}

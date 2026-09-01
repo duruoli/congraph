@@ -1,0 +1,362 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 20754081,
+  "source_path": "results/annotation_experiment/full/diverticulitis_20754081.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABDOMEN W/O CONTRAST)",
+      "request_prompt_sha256": "8e5f516a2f96afbe6ce0d24373847a07a1e31573065d4de4cbb797e2a05f4956",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "8e5f516a2f96afbe6ce0d24373847a07a1e31573065d4de4cbb797e2a05f4956",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute/subacute abdominal pain syndrome localized to the lower abdomen (LLQ/hypogastric) with leukocytosis and no prior abdominal surgeries.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "___ p/w 3 day h/o sub-acute onset of ___, constant, crampy,  midline hypogastric pain radiating to ___",
+                    "Abd: soft/ND (+)LLQ/hypogastric tenderness (-)rebound ... White Blood Cells: 14.5 K/uL (ref 4.0-11.0) ... No sick contacts or abdominal surgery."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is a suspected intra-abdominal inflammatory or infectious process such as diverticulitis or another colonic or pelvic source causing the lower abdominal pain and leukocytosis.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "probable disease category",
+                  "status": "suspected",
+                  "evidence": [
+                    "___ p/w 3 day h/o sub-acute onset of ___, constant, crampy,  midline hypogastric pain ... (+)LLQ/hypogastric tenderness",
+                    "White Blood Cells: 14.5 K/uL (ref 4.0-11.0)"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is no current clinical evidence of hepatobiliary or pancreatic pathology as a cause of the abdominal pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "broad disease class exclusion",
+                  "status": "challenged",
+                  "evidence": [
+                    "Lipase: 20.0 IU/L (ref 0.0-60.0)",
+                    "Alanine Aminotransferase (ALT): 13.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.6 mg/dL (ref 0.0-1.5)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_appessed",
+                "effect_on_previous_question": "no prior imaging or question; this is the initial decision point",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "no prior imaging or competing evidence streams at this first decision point"
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; baseline assumptions about an acute lower abdominal pain syndrome are being established."
+              },
+              "current_question": {
+                "primary": "What intra-abdominal source, if any, is responsible for this new-onset lower abdominal pain and leukocytosis?",
+                "target": "intra-abdominal organs and bowel in the lower abdomen and pelvis (e.g., colon, small bowel, adjacent mesentery and pelvic structures)",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a specific intra-abdominal source such as colonic inflammation, abscess, or another focal process would guide targeted therapy (e.g., antibiotics, possible intervention or surgery) and further diagnostic focus.",
+                "negative_answer_changes": "If no intra-abdominal source is demonstrated, clinicians would reconsider the working diagnosis, broaden the differential (including extra-abdominal or functional causes), and potentially redirect further testing.",
+                "secondary_questions": [
+                  "Is there imaging evidence of colonic or adjacent inflammatory change consistent with diverticulitis or a similar lower abdominal inflammatory process?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization of bowel, mesentery, and adjacent intra-abdominal structures in the lower abdomen and pelvis.",
+                    "why_required": "The suspected source of pain is in the LLQ/hypogastric region, so these structures must be assessed to localize any pathology."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of focal inflammatory, infectious, or obstructive pathology in the lower abdomen (e.g., colonic wall thickening, fat stranding, abscess, obstruction).",
+                    "why_required": "Determining whether there is a focal pathologic process is essential to decide on targeted treatment versus alternative evaluations."
+                  },
+                  {
+                    "requirement_key": "req_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent and severity of any identified intra-abdominal inflammatory or infectious process, including spread to adjacent structures.",
+                    "why_required": "Severity and spread influence the need for hospitalization level, interventional drainage, or surgery versus conservative management."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characteristics of complications such as perforation, abscess, or obstruction related to any identified lower abdominal pathology.",
+                    "why_required": "Complications would significantly alter management urgency and choice of therapy."
+                  }
+                ],
+                "evidence": [
+                  "___ p/w 3 day h/o sub-acute onset of ___, constant, crampy,  midline hypogastric pain ... (+)LLQ/hypogastric tenderness",
+                  "White Blood Cells: 14.5 K/uL (ref 4.0-11.0)"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "No imaging has yet been performed, so the lower abdominal bowel and adjacent structures have not been visualized."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Clinical data confirm pain and leukocytosis but cannot establish or exclude a specific focal intra-abdominal lesion."
+                  },
+                  {
+                    "requirement_key": "req_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "There is no pre-imaging information on the anatomic extent or severity of any intra-abdominal process."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Potential complications like perforation or abscess cannot be assessed clinically alone and have not yet been imaged."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before this first imaging study, none of the key anatomic or pathologic features required to localize the source of pain have been assessed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A CT of the abdomen without contrast can visualize bowel, mesentery, and other intra-abdominal structures to detect many inflammatory, infectious, or obstructive causes of lower abdominal pain and assess for some complications.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The choice of a non-contrast protocol rather than contrast-enhanced CT is not fully explained by the available chart (e.g., renal function is normal and no contrast allergy is mentioned)."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute/subacute abdominal pain syndrome localized to the lower abdomen (LLQ/hypogastric) with leukocytosis and no prior abdominal surgeries.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"___ p/w 3 day h/o sub-acute onset of ___, constant, crampy,  midline hypogastric pain radiating to ___\",\n        \"Abd: soft/ND (+)LLQ/hypogastric tenderness (-)rebound ... White Blood Cells: 14.5 K/uL (ref 4.0-11.0) ... No sick contacts or abdominal surgery.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is a suspected intra-abdominal inflammatory or infectious process such as diverticulitis or another colonic or pelvic source causing the lower abdominal pain and leukocytosis.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"probable disease category\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"___ p/w 3 day h/o sub-acute onset of ___, constant, crampy,  midline hypogastric pain ... (+)LLQ/hypogastric tenderness\",\n        \"White Blood Cells: 14.5 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is no current clinical evidence of hepatobiliary or pancreatic pathology as a cause of the abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"broad disease class exclusion\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Lipase: 20.0 IU/L (ref 0.0-60.0)\",\n        \"Alanine Aminotransferase (ALT): 13.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.6 mg/dL (ref 0.0-1.5)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_appessed\",\n    \"effect_on_previous_question\": \"no prior imaging or question; this is the initial decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"no prior imaging or competing evidence streams at this first decision point\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; baseline assumptions about an acute lower abdominal pain syndrome are being established.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What intra-abdominal source, if any, is responsible for this new-onset lower abdominal pain and leukocytosis?\",\n    \"target\": \"intra-abdominal organs and bowel in the lower abdomen and pelvis (e.g., colon, small bowel, adjacent mesentery and pelvic structures)\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a specific intra-abdominal source such as colonic inflammation, abscess, or another focal process would guide targeted therapy (e.g., antibiotics, possible intervention or surgery) and further diagnostic focus.\",\n    \"negative_answer_changes\": \"If no intra-abdominal source is demonstrated, clinicians would reconsider the working diagnosis, broaden the differential (including extra-abdominal or functional causes), and potentially redirect further testing.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of colonic or adjacent inflammatory change consistent with diverticulitis or a similar lower abdominal inflammatory process?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of bowel, mesentery, and adjacent intra-abdominal structures in the lower abdomen and pelvis.\",\n        \"why_required\": \"The suspected source of pain is in the LLQ/hypogastric region, so these structures must be assessed to localize any pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of focal inflammatory, infectious, or obstructive pathology in the lower abdomen (e.g., colonic wall thickening, fat stranding, abscess, obstruction).\",\n        \"why_required\": \"Determining whether there is a focal pathologic process is essential to decide on targeted treatment versus alternative evaluations.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent and severity of any identified intra-abdominal inflammatory or infectious process, including spread to adjacent structures.\",\n        \"why_required\": \"Severity and spread influence the need for hospitalization level, interventional drainage, or surgery versus conservative management.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characteristics of complications such as perforation, abscess, or obstruction related to any identified lower abdominal pathology.\",\n        \"why_required\": \"Complications would significantly alter management urgency and choice of therapy.\"\n      }\n    ],\n    \"evidence\": [\n      \"___ p/w 3 day h/o sub-acute onset of ___, constant, crampy,  midline hypogastric pain ... (+)LLQ/hypogastric tenderness\",\n      \"White Blood Cells: 14.5 K/uL (ref 4.0-11.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No imaging has yet been performed, so the lower abdominal bowel and adjacent structures have not been visualized.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Clinical data confirm pain and leukocytosis but cannot establish or exclude a specific focal intra-abdominal lesion.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"There is no pre-imaging information on the anatomic extent or severity of any intra-abdominal process.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Potential complications like perforation or abscess cannot be assessed clinically alone and have not yet been imaged.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before this first imaging study, none of the key anatomic or pathologic features required to localize the source of pain have been assessed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A CT of the abdomen without contrast can visualize bowel, mesentery, and other intra-abdominal structures to detect many inflammatory, infectious, or obstructive causes of lower abdominal pain and assess for some complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of a non-contrast protocol rather than contrast-enhanced CT is not fully explained by the available chart (e.g., renal function is normal and no contrast allergy is mentioned).\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788225810-bhxyOIGjCztJhalEkWNV",
+            "usage": {
+              "completion_tokens": 1879,
+              "prompt_tokens": 3083,
+              "total_tokens": 4962,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02264375,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02264375,
+                "upstream_inference_prompt_cost": 0.00385375,
+                "upstream_inference_completions_cost": 0.01879
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute/subacute abdominal pain syndrome localized to the lower abdomen (LLQ/hypogastric) with leukocytosis and no prior abdominal surgeries.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome",
+            "status": "established",
+            "evidence": [
+              "___ p/w 3 day h/o sub-acute onset of ___, constant, crampy,  midline hypogastric pain radiating to ___",
+              "Abd: soft/ND (+)LLQ/hypogastric tenderness (-)rebound ... White Blood Cells: 14.5 K/uL (ref 4.0-11.0) ... No sick contacts or abdominal surgery."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is a suspected intra-abdominal inflammatory or infectious process such as diverticulitis or another colonic or pelvic source causing the lower abdominal pain and leukocytosis.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "probable disease category",
+            "status": "suspected",
+            "evidence": [
+              "___ p/w 3 day h/o sub-acute onset of ___, constant, crampy,  midline hypogastric pain ... (+)LLQ/hypogastric tenderness",
+              "White Blood Cells: 14.5 K/uL (ref 4.0-11.0)"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "There is no current clinical evidence of hepatobiliary or pancreatic pathology as a cause of the abdominal pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "broad disease class exclusion",
+            "status": "challenged",
+            "evidence": [
+              "Lipase: 20.0 IU/L (ref 0.0-60.0)",
+              "Alanine Aminotransferase (ALT): 13.0 IU/L (ref 0.0-40.0) ... Bilirubin, Total: 0.6 mg/dL (ref 0.0-1.5)"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_appessed",
+          "effect_on_previous_question": "no prior imaging or question; this is the initial decision point",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "no prior imaging or competing evidence streams at this first decision point"
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; baseline assumptions about an acute lower abdominal pain syndrome are being established."
+        },
+        "current_question": {
+          "primary": "What intra-abdominal source, if any, is responsible for this new-onset lower abdominal pain and leukocytosis?",
+          "target": "intra-abdominal organs and bowel in the lower abdomen and pelvis (e.g., colon, small bowel, adjacent mesentery and pelvic structures)",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a specific intra-abdominal source such as colonic inflammation, abscess, or another focal process would guide targeted therapy (e.g., antibiotics, possible intervention or surgery) and further diagnostic focus.",
+          "negative_answer_changes": "If no intra-abdominal source is demonstrated, clinicians would reconsider the working diagnosis, broaden the differential (including extra-abdominal or functional causes), and potentially redirect further testing.",
+          "secondary_questions": [
+            "Is there imaging evidence of colonic or adjacent inflammatory change consistent with diverticulitis or a similar lower abdominal inflammatory process?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization of bowel, mesentery, and adjacent intra-abdominal structures in the lower abdomen and pelvis.",
+              "why_required": "The suspected source of pain is in the LLQ/hypogastric region, so these structures must be assessed to localize any pathology."
+            },
+            {
+              "requirement_key": "req_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of focal inflammatory, infectious, or obstructive pathology in the lower abdomen (e.g., colonic wall thickening, fat stranding, abscess, obstruction).",
+              "why_required": "Determining whether there is a focal pathologic process is essential to decide on targeted treatment versus alternative evaluations."
+            },
+            {
+              "requirement_key": "req_extent",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent and severity of any identified intra-abdominal inflammatory or infectious process, including spread to adjacent structures.",
+              "why_required": "Severity and spread influence the need for hospitalization level, interventional drainage, or surgery versus conservative management."
+            },
+            {
+              "requirement_key": "req_complication",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and characteristics of complications such as perforation, abscess, or obstruction related to any identified lower abdominal pathology.",
+              "why_required": "Complications would significantly alter management urgency and choice of therapy."
+            }
+          ],
+          "evidence": [
+            "___ p/w 3 day h/o sub-acute onset of ___, constant, crampy,  midline hypogastric pain ... (+)LLQ/hypogastric tenderness",
+            "White Blood Cells: 14.5 K/uL (ref 4.0-11.0)"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "No imaging has yet been performed, so the lower abdominal bowel and adjacent structures have not been visualized."
+            },
+            {
+              "requirement_key": "req_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Clinical data confirm pain and leukocytosis but cannot establish or exclude a specific focal intra-abdominal lesion."
+            },
+            {
+              "requirement_key": "req_extent",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "There is no pre-imaging information on the anatomic extent or severity of any intra-abdominal process."
+            },
+            {
+              "requirement_key": "req_complication",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Potential complications like perforation or abscess cannot be assessed clinically alone and have not yet been imaged."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Before this first imaging study, none of the key anatomic or pathologic features required to localize the source of pain have been assessed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A CT of the abdomen without contrast can visualize bowel, mesentery, and other intra-abdominal structures to detect many inflammatory, infectious, or obstructive causes of lower abdominal pain and assess for some complications.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The choice of a non-contrast protocol rather than contrast-enhanced CT is not fully explained by the available chart (e.g., renal function is normal and no contrast allergy is mentioned)."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

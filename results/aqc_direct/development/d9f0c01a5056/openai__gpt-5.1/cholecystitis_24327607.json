@@ -1,0 +1,392 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 24327607,
+  "source_path": "results/annotation_experiment/full/cholecystitis_24327607.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "d9f0c01a505663454371289ea7f45995b2ea8f897a72053d8e90ad1bd738deb9",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "20a08c7e01a1da9529887389fc4e60e766dad5be1c09a23f9cd4e69dec4e7cc6",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "20a08c7e01a1da9529887389fc4e60e766dad5be1c09a23f9cd4e69dec4e7cc6",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute right upper quadrant abdominal pain syndrome with a positive Murphy sign on exam.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation",
+                  "status": "established",
+                  "evidence": [
+                    "who complained of abdomenal pain. Patient presented via EMS complaining of sudden onset of right upper quadrant pain",
+                    "ABD: Soft, nondistended, tender RUQ, + ___ sign"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Biliary tract disease such as acute cholecystitis or other gallbladder pathology is a leading diagnostic consideration for this RUQ pain presentation.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "working diagnosis",
+                  "status": "suspected",
+                  "evidence": [
+                    "tender RUQ, + ___ sign",
+                    "Family History: no GB disease"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Acute pancreatitis is unlikely as the primary cause of the current abdominal pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "competing diagnosis",
+                  "status": "challenged",
+                  "evidence": [
+                    "Lipase: 18.0 IU/L (ref 0.0-60.0)",
+                    "had ERCP with sphincterotomy, and the CT pancreas protocol showing no mass"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has severe chronic lung disease with chronic hypercapnia and current marked hypercapnic respiratory acidosis.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "systemic comorbidity",
+                  "status": "established",
+                  "evidence": [
+                    "COPD on home ___",
+                    "pH: 7.1 units ... pCO2: 129.0 mm Hg ... Intubated: NOT INTUBATED."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is no current biochemical evidence of obstructive jaundice or acute hepatocellular injury.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "laboratory finding",
+                  "status": "established",
+                  "evidence": [
+                    "Bilirubin, Total: 0.3 mg/dL",
+                    "Alanine Aminotransferase (ALT): 10.0 IU/L; Asparate Aminotransferase (AST): 50.0 IU/L"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First decision point; no prior imaging or question."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; all assumptions are newly established from the baseline presentation."
+              },
+              "current_question": {
+                "primary": "Is there gallbladder or adjacent hepatobiliary pathology, such as acute cholecystitis or biliary obstruction, that explains the patient’s acute right upper quadrant abdominal pain?",
+                "target": "gallbladder and proximal biliary/hepatic system",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming cholecystitis or other biliary pathology would direct management toward surgical or procedural biliary intervention and targeted treatment.",
+                "negative_answer_changes": "If significant gallbladder or biliary disease is not found, the team would need to reconsider alternative sources of RUQ pain and potentially different imaging or workup.",
+                "secondary_questions": [
+                  "Is there biliary ductal dilation suggesting obstruction even in the absence of hyperbilirubinemia?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_gb_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the gallbladder, including wall, lumen, and pericholecystic region.",
+                    "why_required": "Direct assessment of the gallbladder is necessary to identify cholecystitis, stones, or other structural pathology as the pain source."
+                  },
+                  {
+                    "requirement_key": "req_gb_presence_absence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of findings of acute cholecystitis or other significant gallbladder pathology (e.g., gallstones, wall thickening, pericholecystic fluid).",
+                    "why_required": "Determining whether gallbladder pathology exists is central to deciding if RUQ pain is biliary in origin."
+                  },
+                  {
+                    "requirement_key": "req_biliary_ducts",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of intrahepatic and extrahepatic biliary ductal dilation or obstruction, if present.",
+                    "why_required": "The extent of ductal involvement or obstruction would guide urgency and type of intervention, especially after recent ERCP with sphincterotomy."
+                  }
+                ],
+                "evidence": [
+                  "Patient presented via EMS complaining of sudden onset of right upper quadrant pain",
+                  "She was recently admitted for similar symptoms, had ERCP with sphincterotomy, and the CT pancreas protocol showing no mass."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_gb_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "No prior imaging has assessed the gallbladder or RUQ structures in this episode."
+                  },
+                  {
+                    "requirement_key": "req_gb_presence_absence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "There is no existing imaging evidence about cholecystitis, gallstones, or other gallbladder pathology for this presentation."
+                  },
+                  {
+                    "requirement_key": "req_biliary_ducts",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "She was recently admitted for similar symptoms, had ERCP with sphincterotomy"
+                    ],
+                    "reason": "Although there is a history of ERCP, no current imaging documents the presence or degree of biliary ductal dilation or obstruction."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key aspects of gallbladder and proximal biliary evaluation remain unassessed prior to this first imaging order."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant abdominal ultrasound focused on liver/gallbladder can visualize the gallbladder and biliary tree to detect cholecystitis, gallstones, and ductal dilation as causes of RUQ pain.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order is limited to liver/gallbladder; if there was concurrent concern for nonbiliary causes of RUQ pain (e.g., pulmonary or colonic pathology), that broader intent is not fully explained by this specific single-organ ultrasound order."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute right upper quadrant abdominal pain syndrome with a positive Murphy sign on exam.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"who complained of abdomenal pain. Patient presented via EMS complaining of sudden onset of right upper quadrant pain\",\n        \"ABD: Soft, nondistended, tender RUQ, + ___ sign\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary tract disease such as acute cholecystitis or other gallbladder pathology is a leading diagnostic consideration for this RUQ pain presentation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"working diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"tender RUQ, + ___ sign\",\n        \"Family History: no GB disease\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute pancreatitis is unlikely as the primary cause of the current abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing diagnosis\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Lipase: 18.0 IU/L (ref 0.0-60.0)\",\n        \"had ERCP with sphincterotomy, and the CT pancreas protocol showing no mass\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has severe chronic lung disease with chronic hypercapnia and current marked hypercapnic respiratory acidosis.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"systemic comorbidity\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"COPD on home ___\",\n        \"pH: 7.1 units ... pCO2: 129.0 mm Hg ... Intubated: NOT INTUBATED.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is no current biochemical evidence of obstructive jaundice or acute hepatocellular injury.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"laboratory finding\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Bilirubin, Total: 0.3 mg/dL\",\n        \"Alanine Aminotransferase (ALT): 10.0 IU/L; Asparate Aminotransferase (AST): 50.0 IU/L\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior imaging or question.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; all assumptions are newly established from the baseline presentation.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there gallbladder or adjacent hepatobiliary pathology, such as acute cholecystitis or biliary obstruction, that explains the patient’s acute right upper quadrant abdominal pain?\",\n    \"target\": \"gallbladder and proximal biliary/hepatic system\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming cholecystitis or other biliary pathology would direct management toward surgical or procedural biliary intervention and targeted treatment.\",\n    \"negative_answer_changes\": \"If significant gallbladder or biliary disease is not found, the team would need to reconsider alternative sources of RUQ pain and potentially different imaging or workup.\",\n    \"secondary_questions\": [\n      \"Is there biliary ductal dilation suggesting obstruction even in the absence of hyperbilirubinemia?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_gb_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder, including wall, lumen, and pericholecystic region.\",\n        \"why_required\": \"Direct assessment of the gallbladder is necessary to identify cholecystitis, stones, or other structural pathology as the pain source.\"\n      },\n      {\n        \"requirement_key\": \"req_gb_presence_absence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of findings of acute cholecystitis or other significant gallbladder pathology (e.g., gallstones, wall thickening, pericholecystic fluid).\",\n        \"why_required\": \"Determining whether gallbladder pathology exists is central to deciding if RUQ pain is biliary in origin.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_ducts\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of intrahepatic and extrahepatic biliary ductal dilation or obstruction, if present.\",\n        \"why_required\": \"The extent of ductal involvement or obstruction would guide urgency and type of intervention, especially after recent ERCP with sphincterotomy.\"\n      }\n    ],\n    \"evidence\": [\n      \"Patient presented via EMS complaining of sudden onset of right upper quadrant pain\",\n      \"She was recently admitted for similar symptoms, had ERCP with sphincterotomy, and the CT pancreas protocol showing no mass.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_gb_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior imaging has assessed the gallbladder or RUQ structures in this episode.\"\n      },\n      {\n        \"requirement_key\": \"req_gb_presence_absence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"There is no existing imaging evidence about cholecystitis, gallstones, or other gallbladder pathology for this presentation.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_ducts\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"She was recently admitted for similar symptoms, had ERCP with sphincterotomy\"\n        ],\n        \"reason\": \"Although there is a history of ERCP, no current imaging documents the presence or degree of biliary ductal dilation or obstruction.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key aspects of gallbladder and proximal biliary evaluation remain unassessed prior to this first imaging order.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant abdominal ultrasound focused on liver/gallbladder can visualize the gallbladder and biliary tree to detect cholecystitis, gallstones, and ductal dilation as causes of RUQ pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order is limited to liver/gallbladder; if there was concurrent concern for nonbiliary causes of RUQ pain (e.g., pulmonary or colonic pathology), that broader intent is not fully explained by this specific single-organ ultrasound order.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788190438-ZND1mcdpGeLtJLZHoUxQ",
+            "usage": {
+              "completion_tokens": 1862,
+              "prompt_tokens": 3187,
+              "total_tokens": 5049,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02260375,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02260375,
+                "upstream_inference_prompt_cost": 0.00398375,
+                "upstream_inference_completions_cost": 0.01862
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute right upper quadrant abdominal pain syndrome with a positive Murphy sign on exam.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation",
+            "status": "established",
+            "evidence": [
+              "who complained of abdomenal pain. Patient presented via EMS complaining of sudden onset of right upper quadrant pain",
+              "ABD: Soft, nondistended, tender RUQ, + ___ sign"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Biliary tract disease such as acute cholecystitis or other gallbladder pathology is a leading diagnostic consideration for this RUQ pain presentation.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "working diagnosis",
+            "status": "suspected",
+            "evidence": [
+              "tender RUQ, + ___ sign",
+              "Family History: no GB disease"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Acute pancreatitis is unlikely as the primary cause of the current abdominal pain.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "competing diagnosis",
+            "status": "challenged",
+            "evidence": [
+              "Lipase: 18.0 IU/L (ref 0.0-60.0)",
+              "had ERCP with sphincterotomy, and the CT pancreas protocol showing no mass"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has severe chronic lung disease with chronic hypercapnia and current marked hypercapnic respiratory acidosis.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "systemic comorbidity",
+            "status": "established",
+            "evidence": [
+              "COPD on home ___",
+              "pH: 7.1 units ... pCO2: 129.0 mm Hg ... Intubated: NOT INTUBATED."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is no current biochemical evidence of obstructive jaundice or acute hepatocellular injury.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "laboratory finding",
+            "status": "established",
+            "evidence": [
+              "Bilirubin, Total: 0.3 mg/dL",
+              "Alanine Aminotransferase (ALT): 10.0 IU/L; Asparate Aminotransferase (AST): 50.0 IU/L"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First decision point; no prior imaging or question."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; all assumptions are newly established from the baseline presentation."
+        },
+        "current_question": {
+          "primary": "Is there gallbladder or adjacent hepatobiliary pathology, such as acute cholecystitis or biliary obstruction, that explains the patient’s acute right upper quadrant abdominal pain?",
+          "target": "gallbladder and proximal biliary/hepatic system",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming cholecystitis or other biliary pathology would direct management toward surgical or procedural biliary intervention and targeted treatment.",
+          "negative_answer_changes": "If significant gallbladder or biliary disease is not found, the team would need to reconsider alternative sources of RUQ pain and potentially different imaging or workup.",
+          "secondary_questions": [
+            "Is there biliary ductal dilation suggesting obstruction even in the absence of hyperbilirubinemia?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_gb_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the gallbladder, including wall, lumen, and pericholecystic region.",
+              "why_required": "Direct assessment of the gallbladder is necessary to identify cholecystitis, stones, or other structural pathology as the pain source."
+            },
+            {
+              "requirement_key": "req_gb_presence_absence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of findings of acute cholecystitis or other significant gallbladder pathology (e.g., gallstones, wall thickening, pericholecystic fluid).",
+              "why_required": "Determining whether gallbladder pathology exists is central to deciding if RUQ pain is biliary in origin."
+            },
+            {
+              "requirement_key": "req_biliary_ducts",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Degree of intrahepatic and extrahepatic biliary ductal dilation or obstruction, if present.",
+              "why_required": "The extent of ductal involvement or obstruction would guide urgency and type of intervention, especially after recent ERCP with sphincterotomy."
+            }
+          ],
+          "evidence": [
+            "Patient presented via EMS complaining of sudden onset of right upper quadrant pain",
+            "She was recently admitted for similar symptoms, had ERCP with sphincterotomy, and the CT pancreas protocol showing no mass."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_gb_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "No prior imaging has assessed the gallbladder or RUQ structures in this episode."
+            },
+            {
+              "requirement_key": "req_gb_presence_absence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "There is no existing imaging evidence about cholecystitis, gallstones, or other gallbladder pathology for this presentation."
+            },
+            {
+              "requirement_key": "req_biliary_ducts",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "She was recently admitted for similar symptoms, had ERCP with sphincterotomy"
+              ],
+              "reason": "Although there is a history of ERCP, no current imaging documents the presence or degree of biliary ductal dilation or obstruction."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key aspects of gallbladder and proximal biliary evaluation remain unassessed prior to this first imaging order."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant abdominal ultrasound focused on liver/gallbladder can visualize the gallbladder and biliary tree to detect cholecystitis, gallstones, and ductal dilation as causes of RUQ pain.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The order is limited to liver/gallbladder; if there was concurrent concern for nonbiliary causes of RUQ pain (e.g., pulmonary or colonic pathology), that broader intent is not fully explained by this specific single-organ ultrasound order."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

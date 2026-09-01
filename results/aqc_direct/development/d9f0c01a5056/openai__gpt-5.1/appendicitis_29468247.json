@@ -1,0 +1,573 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 29468247,
+  "source_path": "results/annotation_experiment/full/appendicitis_29468247.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "d9f0c01a505663454371289ea7f45995b2ea8f897a72053d8e90ad1bd738deb9",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABDOMEN W/CONTRAST)",
+      "request_prompt_sha256": "74f2b7cef1a08549d5192133a4d465a403d766f947cb373cf3279f3a76cdcf61",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "74f2b7cef1a08549d5192133a4d465a403d766f947cb373cf3279f3a76cdcf61",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute abdominal pain syndrome with right lower quadrant and epigastric tenderness, vomiting, diarrhea, and systemic inflammatory features.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain.",
+                    "Abdominal: Soft, tender RLQ w/o rebound",
+                    "Neutrophils: 85.2 % (ref 50.0-70.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A serious intra-abdominal inflammatory process such as appendicitis or another surgical abdomen is a leading concern as the cause of the right lower quadrant abdominal pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease or process",
+                  "status": "suspected",
+                  "evidence": [
+                    "Abdominal: Soft, tender RLQ w/o rebound",
+                    "This patient is a ___ year old female who complains of VOMITING... Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Primary gastrointestinal infection (gastroenteritis) is an alternative explanation for the vomiting and nonbloody diarrhea.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative syndrome-level source",
+                  "status": "suspected",
+                  "evidence": [
+                    "Here ___ overnight for vomiting, diarrhea, headache.",
+                    "Still w/ nonbloody diarrhea."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Gynecologic pelvic pathology (e.g., pelvic inflammatory disease) is less likely as a primary source of pain given the negative pelvic exam.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative anatomic source",
+                  "status": "challenged",
+                  "evidence": [
+                    "Pelvic: No cervical motion tenderness"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Intracranial causes of the patient’s headache, such as acute hemorrhage or large infarct, have been effectively ruled out by the noncontrast head CT.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative organ-system source",
+                  "status": "excluded",
+                  "evidence": [
+                    "There is no acute intracranial hemorrhage, edema, mass effect, or major vascular territorial infarcts."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "This is the first decision point so no prior A/Q/C to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision, so the abdominal pain syndrome and suspected intra-abdominal source are being established de novo."
+              },
+              "current_question": {
+                "primary": "Is there an acute intra-abdominal inflammatory or surgical process, particularly involving the right lower quadrant, that explains the patient’s abdominal pain and systemic symptoms?",
+                "target": "acute intra-abdominal inflammatory or surgical pathology, especially in the right lower quadrant (e.g., appendiceal or adjacent bowel/mesenteric process)",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would prompt surgical or targeted medical management of the identified intra-abdominal pathology and shift diagnosis away from self-limited gastroenteritis.",
+                "negative_answer_changes": "Would make appendicitis or other surgical abdomen less likely and support managing the syndrome as nonsurgical, such as primary gastroenteritis, while reconsidering other non-imaged causes.",
+                "secondary_questions": [
+                  "What is the anatomic localization of any identified intra-abdominal abnormality relative to the right lower quadrant pain?",
+                  "What is the severity or extent of any detected intra-abdominal pathology that might influence the need for urgent intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and assessment of abdominal viscera including appendix, bowel, mesentery, and solid organs for acute pathology.",
+                    "why_required": "The existence and identity of an intra-abdominal inflammatory or surgical process cannot be determined without adequately imaging these abdominal structures."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of imaging signs of acute inflammatory or surgical disease such as appendicitis, colitis, bowel obstruction, or other focal pathology.",
+                    "why_required": "Determining whether an acute surgical or inflammatory cause exists is central to choosing between operative and conservative management."
+                  },
+                  {
+                    "requirement_key": "req_local",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Anatomic localization of any detected abnormality with specific attention to the right lower quadrant and epigastric regions.",
+                    "why_required": "Correlation of imaging findings with the patient’s focal tenderness is necessary to attribute symptoms to a specific intra-abdominal source."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of any intra-abdominal process, including complications such as perforation, abscess, or widespread inflammation.",
+                    "why_required": "The extent and complications of a detected process guide urgency and type of intervention, including surgery versus medical therapy."
+                  }
+                ],
+                "evidence": [
+                  "Abdominal: Soft, tender RLQ w/o rebound",
+                  "This patient is a ___ year old female who complains of VOMITING... Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Prior imaging 1: CT Head (CT HEAD W/O CONTRAST)"
+                    ],
+                    "reason": "Only the head has been imaged; no prior study visualizes the abdomen or its viscera."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No abdominal imaging is described prior to the CT abdomen order."
+                    ],
+                    "reason": "Without abdominal imaging, the presence or absence of intra-abdominal inflammatory or surgical disease cannot yet be assessed."
+                  },
+                  {
+                    "requirement_key": "req_local",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Abdominal: Soft, tender RLQ w/o rebound"
+                    ],
+                    "reason": "Clinical localization is to the RLQ and epigastrium, but there is no imaging-based anatomic localization of a causative lesion."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No prior abdominal imaging or complications are documented."
+                    ],
+                    "reason": "Severity or extent of any intra-abdominal process cannot be evaluated without imaging; labs show mild anemia and neutrophilia but are nonspecific."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All requirements relating to intra-abdominal pathology remain unaddressed because only head imaging has been performed so far."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT abdomen can visualize the abdominal viscera, detect or exclude acute inflammatory or surgical pathology, localize it to the right lower quadrant, and assess severity or complications.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order is labeled as CT abdomen without explicit pelvis or appendix language, so whether the primary target is appendicitis versus another intra-abdominal process (e.g., pancreatitis, colitis, mesenteric ischemia) remains somewhat ambiguous but still falls under the broader intra-abdominal acute process question."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal pain syndrome with right lower quadrant and epigastric tenderness, vomiting, diarrhea, and systemic inflammatory features.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain.\",\n        \"Abdominal: Soft, tender RLQ w/o rebound\",\n        \"Neutrophils: 85.2 % (ref 50.0-70.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A serious intra-abdominal inflammatory process such as appendicitis or another surgical abdomen is a leading concern as the cause of the right lower quadrant abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease or process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Abdominal: Soft, tender RLQ w/o rebound\",\n        \"This patient is a ___ year old female who complains of VOMITING... Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Primary gastrointestinal infection (gastroenteritis) is an alternative explanation for the vomiting and nonbloody diarrhea.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative syndrome-level source\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Here ___ overnight for vomiting, diarrhea, headache.\",\n        \"Still w/ nonbloody diarrhea.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Gynecologic pelvic pathology (e.g., pelvic inflammatory disease) is less likely as a primary source of pain given the negative pelvic exam.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative anatomic source\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Pelvic: No cervical motion tenderness\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Intracranial causes of the patient’s headache, such as acute hemorrhage or large infarct, have been effectively ruled out by the noncontrast head CT.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative organ-system source\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"There is no acute intracranial hemorrhage, edema, mass effect, or major vascular territorial infarcts.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"This is the first decision point so no prior A/Q/C to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision, so the abdominal pain syndrome and suspected intra-abdominal source are being established de novo.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an acute intra-abdominal inflammatory or surgical process, particularly involving the right lower quadrant, that explains the patient’s abdominal pain and systemic symptoms?\",\n    \"target\": \"acute intra-abdominal inflammatory or surgical pathology, especially in the right lower quadrant (e.g., appendiceal or adjacent bowel/mesenteric process)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would prompt surgical or targeted medical management of the identified intra-abdominal pathology and shift diagnosis away from self-limited gastroenteritis.\",\n    \"negative_answer_changes\": \"Would make appendicitis or other surgical abdomen less likely and support managing the syndrome as nonsurgical, such as primary gastroenteritis, while reconsidering other non-imaged causes.\",\n    \"secondary_questions\": [\n      \"What is the anatomic localization of any identified intra-abdominal abnormality relative to the right lower quadrant pain?\",\n      \"What is the severity or extent of any detected intra-abdominal pathology that might influence the need for urgent intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and assessment of abdominal viscera including appendix, bowel, mesentery, and solid organs for acute pathology.\",\n        \"why_required\": \"The existence and identity of an intra-abdominal inflammatory or surgical process cannot be determined without adequately imaging these abdominal structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of imaging signs of acute inflammatory or surgical disease such as appendicitis, colitis, bowel obstruction, or other focal pathology.\",\n        \"why_required\": \"Determining whether an acute surgical or inflammatory cause exists is central to choosing between operative and conservative management.\"\n      },\n      {\n        \"requirement_key\": \"req_local\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Anatomic localization of any detected abnormality with specific attention to the right lower quadrant and epigastric regions.\",\n        \"why_required\": \"Correlation of imaging findings with the patient’s focal tenderness is necessary to attribute symptoms to a specific intra-abdominal source.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of any intra-abdominal process, including complications such as perforation, abscess, or widespread inflammation.\",\n        \"why_required\": \"The extent and complications of a detected process guide urgency and type of intervention, including surgery versus medical therapy.\"\n      }\n    ],\n    \"evidence\": [\n      \"Abdominal: Soft, tender RLQ w/o rebound\",\n      \"This patient is a ___ year old female who complains of VOMITING... Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Prior imaging 1: CT Head (CT HEAD W/O CONTRAST)\"\n        ],\n        \"reason\": \"Only the head has been imaged; no prior study visualizes the abdomen or its viscera.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No abdominal imaging is described prior to the CT abdomen order.\"\n        ],\n        \"reason\": \"Without abdominal imaging, the presence or absence of intra-abdominal inflammatory or surgical disease cannot yet be assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_local\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Abdominal: Soft, tender RLQ w/o rebound\"\n        ],\n        \"reason\": \"Clinical localization is to the RLQ and epigastrium, but there is no imaging-based anatomic localization of a causative lesion.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal imaging or complications are documented.\"\n        ],\n        \"reason\": \"Severity or extent of any intra-abdominal process cannot be evaluated without imaging; labs show mild anemia and neutrophilia but are nonspecific.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All requirements relating to intra-abdominal pathology remain unaddressed because only head imaging has been performed so far.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT abdomen can visualize the abdominal viscera, detect or exclude acute inflammatory or surgical pathology, localize it to the right lower quadrant, and assess severity or complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order is labeled as CT abdomen without explicit pelvis or appendix language, so whether the primary target is appendicitis versus another intra-abdominal process (e.g., pancreatitis, colitis, mesenteric ischemia) remains somewhat ambiguous but still falls under the broader intra-abdominal acute process question.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788190400-ZzUfjKMWUi1MXE8heeG7",
+            "usage": {
+              "completion_tokens": 2066,
+              "prompt_tokens": 3144,
+              "total_tokens": 5210,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02459,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02459,
+                "upstream_inference_prompt_cost": 0.00393,
+                "upstream_inference_completions_cost": 0.02066
+              }
+            }
+          },
+          "validation_errors": [
+            "assumption_0_bad_evidence_count"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "35a6e2c6590edeb3195aa76eb03f610623acbb98565e346259a39daf5bc8c791",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute gastrointestinal illness with vomiting, diarrhea, abdominal pain, and mild anemia without a clear established intra-abdominal source yet identified.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome description",
+                  "status": "established",
+                  "evidence": [
+                    "This patient is a ___ year old female who complains of  VOMITING. Here ___ overnight for vomiting, diarrhea,  headache.",
+                    "Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain. ... Rectal: Heme Positive ... Hematocrit: 34.1 % (ref 36.0-48.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Acute appendicitis or another right-lower-quadrant inflammatory process is a suspected cause of the abdominal pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease hypothesis",
+                  "status": "suspected",
+                  "evidence": [
+                    "Abdominal: Soft, tender RLQ w/o rebound",
+                    "Still w/  nonbloody diarrhea. Not tolerating PO anti-emetics."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "A significant intra-abdominal complication such as perforation, abscess, or ischemia has not yet been excluded as a cause of the patient’s abdominal pain and heme-positive stool.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "complication category",
+                  "status": "suspected",
+                  "evidence": [
+                    "Rectal: Heme Positive",
+                    "Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable; this is the first decision point so there was no prior imaging question to update.",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No prior question or competing evidence streams at this initial step."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision so the assumptions are being established de novo from the clinical presentation."
+              },
+              "current_question": {
+                "primary": "What acute intra-abdominal pathology, if any, is causing this patient’s abdominal pain, vomiting, diarrhea, and heme-positive stool?",
+                "target": "acute intra-abdominal disease process (e.g., appendicitis, colitis, bowel obstruction, perforation, or other inflammatory/ischemic pathology)",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a specific intra-abdominal pathology would direct targeted management such as surgical consultation, antibiotics, or other disease-specific therapy.",
+                "negative_answer_changes": "If no significant intra-abdominal pathology is found, clinicians may favor non-structural or self-limited causes (e.g., viral gastroenteritis) and manage supportively while reassessing need for further testing.",
+                "secondary_questions": [
+                  "Is there imaging evidence of an acute surgical abdomen such as perforation, abscess, or obstruction that would require urgent intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization of abdominal and pelvic viscera (bowel, solid organs, mesentery, peritoneum, vasculature) for acute pathology.",
+                    "why_required": "Determining whether an intra-abdominal source exists requires direct imaging assessment of the abdominal organs and bowel."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of discrete acute pathology such as appendicitis, colitis, obstruction, perforation, or abscess.",
+                    "why_required": "Confirming or excluding these entities is necessary to attribute the symptoms to a structural intra-abdominal cause."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent and severity of any identified intra-abdominal pathology, including complications (e.g., free air, fluid collections).",
+                    "why_required": "The severity and spread of disease influence the urgency and type of intervention, such as emergent surgery versus conservative management."
+                  }
+                ],
+                "evidence": [
+                  "This patient is a ___ year old female who complains of  VOMITING. Here ___ overnight for vomiting, diarrhea,  headache. ... Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain.",
+                  "Rectal: Heme Positive ... Abdominal: Soft, tender RLQ w/o rebound"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Only prior imaging: CT HEAD W/O CONTRAST, which does not visualize the abdomen.",
+                      "There is no acute intracranial hemorrhage, edema, mass effect, or major vascular territorial infarcts."
+                    ],
+                    "reason": "No prior abdominal imaging has been performed; the existing CT head does not assess abdominal organs."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Abdominal: Soft, tender RLQ w/o rebound",
+                      "Laboratory values are largely unremarkable for a specific intra-abdominal diagnosis, and no abdominal imaging has yet been done."
+                    ],
+                    "reason": "Clinical findings suggest possible intra-abdominal disease, but there is no imaging evidence yet to confirm or exclude specific pathologies."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Rectal: Heme Positive",
+                      "Vital signs are normal, but without abdominal imaging the extent or presence of complications cannot be assessed."
+                    ],
+                    "reason": "The degree and complications of any potential intra-abdominal pathology cannot be determined without targeted abdominal imaging."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key requirements regarding the existence and extent of intra-abdominal pathology remain unaddressed because no abdominal imaging has been performed yet."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT abdomen can visualize abdominal organs and bowel, detect inflammatory or obstructive processes, and identify complications such as perforation or abscess.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order is specified as CT abdomen with contrast without mention of pelvis; if pelvic pathology (e.g., gynecologic or distal bowel disease) is a concern, the rationale for excluding a formal pelvic component is not explicit in the visible chart."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute gastrointestinal illness with vomiting, diarrhea, abdominal pain, and mild anemia without a clear established intra-abdominal source yet identified.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome description\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"This patient is a ___ year old female who complains of  VOMITING. Here ___ overnight for vomiting, diarrhea,  headache.\",\n        \"Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain. ... Rectal: Heme Positive ... Hematocrit: 34.1 % (ref 36.0-48.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute appendicitis or another right-lower-quadrant inflammatory process is a suspected cause of the abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease hypothesis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Abdominal: Soft, tender RLQ w/o rebound\",\n        \"Still w/  nonbloody diarrhea. Not tolerating PO anti-emetics.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"A significant intra-abdominal complication such as perforation, abscess, or ischemia has not yet been excluded as a cause of the patient’s abdominal pain and heme-positive stool.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"complication category\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Rectal: Heme Positive\",\n        \"Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable; this is the first decision point so there was no prior imaging question to update.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior question or competing evidence streams at this initial step.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision so the assumptions are being established de novo from the clinical presentation.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What acute intra-abdominal pathology, if any, is causing this patient’s abdominal pain, vomiting, diarrhea, and heme-positive stool?\",\n    \"target\": \"acute intra-abdominal disease process (e.g., appendicitis, colitis, bowel obstruction, perforation, or other inflammatory/ischemic pathology)\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a specific intra-abdominal pathology would direct targeted management such as surgical consultation, antibiotics, or other disease-specific therapy.\",\n    \"negative_answer_changes\": \"If no significant intra-abdominal pathology is found, clinicians may favor non-structural or self-limited causes (e.g., viral gastroenteritis) and manage supportively while reassessing need for further testing.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of an acute surgical abdomen such as perforation, abscess, or obstruction that would require urgent intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of abdominal and pelvic viscera (bowel, solid organs, mesentery, peritoneum, vasculature) for acute pathology.\",\n        \"why_required\": \"Determining whether an intra-abdominal source exists requires direct imaging assessment of the abdominal organs and bowel.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of discrete acute pathology such as appendicitis, colitis, obstruction, perforation, or abscess.\",\n        \"why_required\": \"Confirming or excluding these entities is necessary to attribute the symptoms to a structural intra-abdominal cause.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent and severity of any identified intra-abdominal pathology, including complications (e.g., free air, fluid collections).\",\n        \"why_required\": \"The severity and spread of disease influence the urgency and type of intervention, such as emergent surgery versus conservative management.\"\n      }\n    ],\n    \"evidence\": [\n      \"This patient is a ___ year old female who complains of  VOMITING. Here ___ overnight for vomiting, diarrhea,  headache. ... Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain.\",\n      \"Rectal: Heme Positive ... Abdominal: Soft, tender RLQ w/o rebound\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Only prior imaging: CT HEAD W/O CONTRAST, which does not visualize the abdomen.\",\n          \"There is no acute intracranial hemorrhage, edema, mass effect, or major vascular territorial infarcts.\"\n        ],\n        \"reason\": \"No prior abdominal imaging has been performed; the existing CT head does not assess abdominal organs.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Abdominal: Soft, tender RLQ w/o rebound\",\n          \"Laboratory values are largely unremarkable for a specific intra-abdominal diagnosis, and no abdominal imaging has yet been done.\"\n        ],\n        \"reason\": \"Clinical findings suggest possible intra-abdominal disease, but there is no imaging evidence yet to confirm or exclude specific pathologies.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Rectal: Heme Positive\",\n          \"Vital signs are normal, but without abdominal imaging the extent or presence of complications cannot be assessed.\"\n        ],\n        \"reason\": \"The degree and complications of any potential intra-abdominal pathology cannot be determined without targeted abdominal imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key requirements regarding the existence and extent of intra-abdominal pathology remain unaddressed because no abdominal imaging has been performed yet.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT abdomen can visualize abdominal organs and bowel, detect inflammatory or obstructive processes, and identify complications such as perforation or abscess.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order is specified as CT abdomen with contrast without mention of pelvis; if pelvic pathology (e.g., gynecologic or distal bowel disease) is a concern, the rationale for excluding a formal pelvic component is not explicit in the visible chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788190423-n7UobABepXJgI6nzZ4Yv",
+            "usage": {
+              "completion_tokens": 1746,
+              "prompt_tokens": 3180,
+              "total_tokens": 4926,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2944,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.018123,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.018123,
+                "upstream_inference_prompt_cost": 0.000663,
+                "upstream_inference_completions_cost": 0.01746
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute gastrointestinal illness with vomiting, diarrhea, abdominal pain, and mild anemia without a clear established intra-abdominal source yet identified.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome description",
+            "status": "established",
+            "evidence": [
+              "This patient is a ___ year old female who complains of  VOMITING. Here ___ overnight for vomiting, diarrhea,  headache.",
+              "Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain. ... Rectal: Heme Positive ... Hematocrit: 34.1 % (ref 36.0-48.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Acute appendicitis or another right-lower-quadrant inflammatory process is a suspected cause of the abdominal pain.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific disease hypothesis",
+            "status": "suspected",
+            "evidence": [
+              "Abdominal: Soft, tender RLQ w/o rebound",
+              "Still w/  nonbloody diarrhea. Not tolerating PO anti-emetics."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "A significant intra-abdominal complication such as perforation, abscess, or ischemia has not yet been excluded as a cause of the patient’s abdominal pain and heme-positive stool.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "complication category",
+            "status": "suspected",
+            "evidence": [
+              "Rectal: Heme Positive",
+              "Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable; this is the first decision point so there was no prior imaging question to update.",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "No prior question or competing evidence streams at this initial step."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision so the assumptions are being established de novo from the clinical presentation."
+        },
+        "current_question": {
+          "primary": "What acute intra-abdominal pathology, if any, is causing this patient’s abdominal pain, vomiting, diarrhea, and heme-positive stool?",
+          "target": "acute intra-abdominal disease process (e.g., appendicitis, colitis, bowel obstruction, perforation, or other inflammatory/ischemic pathology)",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a specific intra-abdominal pathology would direct targeted management such as surgical consultation, antibiotics, or other disease-specific therapy.",
+          "negative_answer_changes": "If no significant intra-abdominal pathology is found, clinicians may favor non-structural or self-limited causes (e.g., viral gastroenteritis) and manage supportively while reassessing need for further testing.",
+          "secondary_questions": [
+            "Is there imaging evidence of an acute surgical abdomen such as perforation, abscess, or obstruction that would require urgent intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization of abdominal and pelvic viscera (bowel, solid organs, mesentery, peritoneum, vasculature) for acute pathology.",
+              "why_required": "Determining whether an intra-abdominal source exists requires direct imaging assessment of the abdominal organs and bowel."
+            },
+            {
+              "requirement_key": "req_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of discrete acute pathology such as appendicitis, colitis, obstruction, perforation, or abscess.",
+              "why_required": "Confirming or excluding these entities is necessary to attribute the symptoms to a structural intra-abdominal cause."
+            },
+            {
+              "requirement_key": "req_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent and severity of any identified intra-abdominal pathology, including complications (e.g., free air, fluid collections).",
+              "why_required": "The severity and spread of disease influence the urgency and type of intervention, such as emergent surgery versus conservative management."
+            }
+          ],
+          "evidence": [
+            "This patient is a ___ year old female who complains of  VOMITING. Here ___ overnight for vomiting, diarrhea,  headache. ... Still w/ ___ HA and epigastric pain and bilateral lower quadrant pain.",
+            "Rectal: Heme Positive ... Abdominal: Soft, tender RLQ w/o rebound"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Only prior imaging: CT HEAD W/O CONTRAST, which does not visualize the abdomen.",
+                "There is no acute intracranial hemorrhage, edema, mass effect, or major vascular territorial infarcts."
+              ],
+              "reason": "No prior abdominal imaging has been performed; the existing CT head does not assess abdominal organs."
+            },
+            {
+              "requirement_key": "req_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Abdominal: Soft, tender RLQ w/o rebound",
+                "Laboratory values are largely unremarkable for a specific intra-abdominal diagnosis, and no abdominal imaging has yet been done."
+              ],
+              "reason": "Clinical findings suggest possible intra-abdominal disease, but there is no imaging evidence yet to confirm or exclude specific pathologies."
+            },
+            {
+              "requirement_key": "req_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Rectal: Heme Positive",
+                "Vital signs are normal, but without abdominal imaging the extent or presence of complications cannot be assessed."
+              ],
+              "reason": "The degree and complications of any potential intra-abdominal pathology cannot be determined without targeted abdominal imaging."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key requirements regarding the existence and extent of intra-abdominal pathology remain unaddressed because no abdominal imaging has been performed yet."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT abdomen can visualize abdominal organs and bowel, detect inflammatory or obstructive processes, and identify complications such as perforation or abscess.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The order is specified as CT abdomen with contrast without mention of pelvis; if pelvic pathology (e.g., gynecologic or distal bowel disease) is a concern, the rationale for excluding a formal pelvic component is not explicit in the visible chart."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

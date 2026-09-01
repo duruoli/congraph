@@ -1,0 +1,712 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 25841363,
+  "source_path": "results/annotation_experiment/full/diverticulitis_25841363.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "d9f0c01a505663454371289ea7f45995b2ea8f897a72053d8e90ad1bd738deb9",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABDOMEN W/CONTRAST)",
+      "request_prompt_sha256": "bdb45c954a1a97954444f675b2047d7bb4c00a70ce74d2e533591471f0db52d6",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "bdb45c954a1a97954444f675b2047d7bb4c00a70ce74d2e533591471f0db52d6",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute right lower quadrant abdominal pain syndrome concerning for an intra-abdominal inflammatory or obstructive process.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome level",
+                  "status": "likely",
+                  "evidence": [
+                    "“presents with acute onset RLQ abdominal pain x12h… very TTP with focal guarding and minimal rebound”",
+                    "“She has not passed flatus since yesterday AM… White Blood Cells: 12.6 K/uL… Neutrophils: 77.6 %”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Acute appendicitis is a leading diagnostic consideration for this acute RLQ pain presentation.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "disease or specific diagnosis",
+                  "status": "suspected",
+                  "evidence": [
+                    "“presents with acute onset RLQ abdominal pain x12h… RLQ slightly distended and very TTP with focal guarding”",
+                    "Mild leukocytosis and focal peritoneal signs without another established source"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Bowel obstruction or localized inflammatory bowel disease flare are alternative potential sources of the RLQ pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "disease or specific diagnosis",
+                  "status": "suspected",
+                  "evidence": [
+                    "“She has not passed flatus since yesterday AM… last BM the previous day”",
+                    "Past Medical History: “IBD”"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient has chronic kidney disease or at least significantly reduced renal function, which may influence contrast and imaging choices.",
+                  "type": "other",
+                  "other_proposed_type": "comorbidity_or_risk_modifier",
+                  "level": "comorbidity or risk factor",
+                  "status": "established",
+                  "evidence": [
+                    "“Estimated GFR = 36 if non African-American… GFR<60 = Chronic Kidney Disease”",
+                    "“Creatinine: 1.4 mg/dL (ref 0.4-1.1)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is currently no established intra-abdominal source of infection, perforation, or ischemia explaining the RLQ pain.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "disease or specific diagnosis",
+                  "status": "unclear",
+                  "evidence": [
+                    "Physical exam localized tenderness and guarding without palpable mass; labs show leukocytosis but no clear source identified.",
+                    "“Lipase: 59.0 IU/L (ref 0.0-60.0)… Bilirubin, Total: 0.6 mg/dL… AST/ALT within normal limits”"
+                  ],
+                  "support": "unclear"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First imaging decision; no prior imaging evidence to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point, so all assumptions are newly established from the baseline history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "What is the intra-abdominal source of this acute right lower quadrant abdominal pain and localized peritoneal irritation?",
+                "target": "appendix, terminal ileum, cecum, and adjacent intra-abdominal structures in the right lower quadrant",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a concrete source such as appendicitis, bowel obstruction, or localized IBD flare would prompt targeted management decisions including possible surgery, antibiotics, or other interventions.",
+                "negative_answer_changes": "If no focal intra-abdominal source is identified, clinicians would reconsider the differential, pursue alternative etiologies, and potentially adjust the need for surgical consultation or further testing.",
+                "secondary_questions": [
+                  "Is there imaging evidence of acute appendicitis versus another local RLQ process such as terminal ileitis, cecal diverticulitis, or focal obstruction?",
+                  "Is there any complication such as abscess, perforation, or free air that would alter urgency or type of intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the appendix, terminal ileum, cecum, and adjacent peritoneal cavity in the right lower quadrant.",
+                    "why_required": "Localizing the source of pain requires seeing these key structures to determine if one is inflamed, obstructed, or otherwise abnormal."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of acute inflammatory changes or obstruction in the appendix, terminal ileum, cecum, or adjacent bowel.",
+                    "why_required": "Determining whether a specific focal pathology exists will guide whether urgent surgical or medical treatment is indicated."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Precise anatomic localization of any detected abnormality in relation to the RLQ structures (appendix, ileocecal region, adjacent bowel loops).",
+                    "why_required": "Knowing exactly which structure is involved differentiates appendicitis from other RLQ pathologies and informs procedural planning."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of complications such as abscess, perforation, free fluid, or free air.",
+                    "why_required": "Complications substantially change urgency, need for operative versus percutaneous management, and antibiotic strategy."
+                  }
+                ],
+                "evidence": [
+                  "“presents with acute onset RLQ abdominal pain x12h… RLQ slightly distended and very TTP with focal guarding and minimal rebound”",
+                  "“She has not passed flatus since yesterday AM… White Blood Cells: 12.6 K/uL… Neutrophils: 77.6 %”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“## Imaging resulted before this decision point (none)”"
+                    ],
+                    "reason": "No prior imaging has been performed, so the appendix, terminal ileum, cecum, and adjacent peritoneum have not been visualized."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No imaging or other direct assessment of intra-abdominal pathology has been obtained."
+                    ],
+                    "reason": "Clinical findings suggest disease but cannot establish presence or absence of specific focal RLQ pathology without imaging."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Exam shows RLQ tenderness but does not anatomically localize the internal source beyond that region."
+                    ],
+                    "reason": "Physical exam localizes pain to the RLQ but does not specify which intra-abdominal structure is involved."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Normal lactate and stable vitals reduce but do not exclude intra-abdominal complications; no imaging yet to assess."
+                    ],
+                    "reason": "Laboratories and exam do not rule in or out abscess, perforation, or free air; imaging is needed to evaluate for complications."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key information needs about the intra-abdominal source, its localization, and any complications remain unaddressed because no prior imaging is available."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen can visualize the appendix, ileocecal region, and adjacent bowel, detect inflammatory changes or obstruction, and identify complications such as abscess or perforation.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order is limited to CT abdomen (without explicit pelvis) although RLQ pain often prompts CT abdomen and pelvis; the chart does not clarify whether pelvic structures (e.g., gynecologic sources) were intentionally excluded or addressed by other means."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute right lower quadrant abdominal pain syndrome concerning for an intra-abdominal inflammatory or obstructive process.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome level\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“presents with acute onset RLQ abdominal pain x12h… very TTP with focal guarding and minimal rebound”\",\n        \"“She has not passed flatus since yesterday AM… White Blood Cells: 12.6 K/uL… Neutrophils: 77.6 %”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute appendicitis is a leading diagnostic consideration for this acute RLQ pain presentation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease or specific diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“presents with acute onset RLQ abdominal pain x12h… RLQ slightly distended and very TTP with focal guarding”\",\n        \"Mild leukocytosis and focal peritoneal signs without another established source\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Bowel obstruction or localized inflammatory bowel disease flare are alternative potential sources of the RLQ pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease or specific diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“She has not passed flatus since yesterday AM… last BM the previous day”\",\n        \"Past Medical History: “IBD”\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient has chronic kidney disease or at least significantly reduced renal function, which may influence contrast and imaging choices.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"comorbidity_or_risk_modifier\",\n      \"level\": \"comorbidity or risk factor\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“Estimated GFR = 36 if non African-American… GFR<60 = Chronic Kidney Disease”\",\n        \"“Creatinine: 1.4 mg/dL (ref 0.4-1.1)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is currently no established intra-abdominal source of infection, perforation, or ischemia explaining the RLQ pain.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease or specific diagnosis\",\n      \"status\": \"unclear\",\n      \"evidence\": [\n        \"Physical exam localized tenderness and guarding without palpable mass; labs show leukocytosis but no clear source identified.\",\n        \"“Lipase: 59.0 IU/L (ref 0.0-60.0)… Bilirubin, Total: 0.6 mg/dL… AST/ALT within normal limits”\"\n      ],\n      \"support\": \"unclear\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First imaging decision; no prior imaging evidence to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point, so all assumptions are newly established from the baseline history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the intra-abdominal source of this acute right lower quadrant abdominal pain and localized peritoneal irritation?\",\n    \"target\": \"appendix, terminal ileum, cecum, and adjacent intra-abdominal structures in the right lower quadrant\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a concrete source such as appendicitis, bowel obstruction, or localized IBD flare would prompt targeted management decisions including possible surgery, antibiotics, or other interventions.\",\n    \"negative_answer_changes\": \"If no focal intra-abdominal source is identified, clinicians would reconsider the differential, pursue alternative etiologies, and potentially adjust the need for surgical consultation or further testing.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of acute appendicitis versus another local RLQ process such as terminal ileitis, cecal diverticulitis, or focal obstruction?\",\n      \"Is there any complication such as abscess, perforation, or free air that would alter urgency or type of intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the appendix, terminal ileum, cecum, and adjacent peritoneal cavity in the right lower quadrant.\",\n        \"why_required\": \"Localizing the source of pain requires seeing these key structures to determine if one is inflamed, obstructed, or otherwise abnormal.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute inflammatory changes or obstruction in the appendix, terminal ileum, cecum, or adjacent bowel.\",\n        \"why_required\": \"Determining whether a specific focal pathology exists will guide whether urgent surgical or medical treatment is indicated.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Precise anatomic localization of any detected abnormality in relation to the RLQ structures (appendix, ileocecal region, adjacent bowel loops).\",\n        \"why_required\": \"Knowing exactly which structure is involved differentiates appendicitis from other RLQ pathologies and informs procedural planning.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as abscess, perforation, free fluid, or free air.\",\n        \"why_required\": \"Complications substantially change urgency, need for operative versus percutaneous management, and antibiotic strategy.\"\n      }\n    ],\n    \"evidence\": [\n      \"“presents with acute onset RLQ abdominal pain x12h… RLQ slightly distended and very TTP with focal guarding and minimal rebound”\",\n      \"“She has not passed flatus since yesterday AM… White Blood Cells: 12.6 K/uL… Neutrophils: 77.6 %”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“## Imaging resulted before this decision point (none)”\"\n        ],\n        \"reason\": \"No prior imaging has been performed, so the appendix, terminal ileum, cecum, and adjacent peritoneum have not been visualized.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No imaging or other direct assessment of intra-abdominal pathology has been obtained.\"\n        ],\n        \"reason\": \"Clinical findings suggest disease but cannot establish presence or absence of specific focal RLQ pathology without imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Exam shows RLQ tenderness but does not anatomically localize the internal source beyond that region.\"\n        ],\n        \"reason\": \"Physical exam localizes pain to the RLQ but does not specify which intra-abdominal structure is involved.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Normal lactate and stable vitals reduce but do not exclude intra-abdominal complications; no imaging yet to assess.\"\n        ],\n        \"reason\": \"Laboratories and exam do not rule in or out abscess, perforation, or free air; imaging is needed to evaluate for complications.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key information needs about the intra-abdominal source, its localization, and any complications remain unaddressed because no prior imaging is available.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT of the abdomen can visualize the appendix, ileocecal region, and adjacent bowel, detect inflammatory changes or obstruction, and identify complications such as abscess or perforation.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order is limited to CT abdomen (without explicit pelvis) although RLQ pain often prompts CT abdomen and pelvis; the chart does not clarify whether pelvic structures (e.g., gynecologic sources) were intentionally excluded or addressed by other means.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788190458-Una01YZdNNSZTjIQmcST",
+            "usage": {
+              "completion_tokens": 2192,
+              "prompt_tokens": 3276,
+              "total_tokens": 5468,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.026015,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.026015,
+                "upstream_inference_prompt_cost": 0.004095,
+                "upstream_inference_completions_cost": 0.02192
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute right lower quadrant abdominal pain syndrome concerning for an intra-abdominal inflammatory or obstructive process.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome level",
+            "status": "likely",
+            "evidence": [
+              "“presents with acute onset RLQ abdominal pain x12h… very TTP with focal guarding and minimal rebound”",
+              "“She has not passed flatus since yesterday AM… White Blood Cells: 12.6 K/uL… Neutrophils: 77.6 %”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Acute appendicitis is a leading diagnostic consideration for this acute RLQ pain presentation.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "disease or specific diagnosis",
+            "status": "suspected",
+            "evidence": [
+              "“presents with acute onset RLQ abdominal pain x12h… RLQ slightly distended and very TTP with focal guarding”",
+              "Mild leukocytosis and focal peritoneal signs without another established source"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Bowel obstruction or localized inflammatory bowel disease flare are alternative potential sources of the RLQ pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "disease or specific diagnosis",
+            "status": "suspected",
+            "evidence": [
+              "“She has not passed flatus since yesterday AM… last BM the previous day”",
+              "Past Medical History: “IBD”"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient has chronic kidney disease or at least significantly reduced renal function, which may influence contrast and imaging choices.",
+            "type": "other",
+            "other_proposed_type": "comorbidity_or_risk_modifier",
+            "level": "comorbidity or risk factor",
+            "status": "established",
+            "evidence": [
+              "“Estimated GFR = 36 if non African-American… GFR<60 = Chronic Kidney Disease”",
+              "“Creatinine: 1.4 mg/dL (ref 0.4-1.1)”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is currently no established intra-abdominal source of infection, perforation, or ischemia explaining the RLQ pain.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "disease or specific diagnosis",
+            "status": "unclear",
+            "evidence": [
+              "Physical exam localized tenderness and guarding without palpable mass; labs show leukocytosis but no clear source identified.",
+              "“Lipase: 59.0 IU/L (ref 0.0-60.0)… Bilirubin, Total: 0.6 mg/dL… AST/ALT within normal limits”"
+            ],
+            "support": "unclear"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First imaging decision; no prior imaging evidence to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point, so all assumptions are newly established from the baseline history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "What is the intra-abdominal source of this acute right lower quadrant abdominal pain and localized peritoneal irritation?",
+          "target": "appendix, terminal ileum, cecum, and adjacent intra-abdominal structures in the right lower quadrant",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a concrete source such as appendicitis, bowel obstruction, or localized IBD flare would prompt targeted management decisions including possible surgery, antibiotics, or other interventions.",
+          "negative_answer_changes": "If no focal intra-abdominal source is identified, clinicians would reconsider the differential, pursue alternative etiologies, and potentially adjust the need for surgical consultation or further testing.",
+          "secondary_questions": [
+            "Is there imaging evidence of acute appendicitis versus another local RLQ process such as terminal ileitis, cecal diverticulitis, or focal obstruction?",
+            "Is there any complication such as abscess, perforation, or free air that would alter urgency or type of intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the appendix, terminal ileum, cecum, and adjacent peritoneal cavity in the right lower quadrant.",
+              "why_required": "Localizing the source of pain requires seeing these key structures to determine if one is inflamed, obstructed, or otherwise abnormal."
+            },
+            {
+              "requirement_key": "req_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of acute inflammatory changes or obstruction in the appendix, terminal ileum, cecum, or adjacent bowel.",
+              "why_required": "Determining whether a specific focal pathology exists will guide whether urgent surgical or medical treatment is indicated."
+            },
+            {
+              "requirement_key": "req_localization",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Precise anatomic localization of any detected abnormality in relation to the RLQ structures (appendix, ileocecal region, adjacent bowel loops).",
+              "why_required": "Knowing exactly which structure is involved differentiates appendicitis from other RLQ pathologies and informs procedural planning."
+            },
+            {
+              "requirement_key": "req_complication",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of complications such as abscess, perforation, free fluid, or free air.",
+              "why_required": "Complications substantially change urgency, need for operative versus percutaneous management, and antibiotic strategy."
+            }
+          ],
+          "evidence": [
+            "“presents with acute onset RLQ abdominal pain x12h… RLQ slightly distended and very TTP with focal guarding and minimal rebound”",
+            "“She has not passed flatus since yesterday AM… White Blood Cells: 12.6 K/uL… Neutrophils: 77.6 %”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“## Imaging resulted before this decision point (none)”"
+              ],
+              "reason": "No prior imaging has been performed, so the appendix, terminal ileum, cecum, and adjacent peritoneum have not been visualized."
+            },
+            {
+              "requirement_key": "req_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No imaging or other direct assessment of intra-abdominal pathology has been obtained."
+              ],
+              "reason": "Clinical findings suggest disease but cannot establish presence or absence of specific focal RLQ pathology without imaging."
+            },
+            {
+              "requirement_key": "req_localization",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Exam shows RLQ tenderness but does not anatomically localize the internal source beyond that region."
+              ],
+              "reason": "Physical exam localizes pain to the RLQ but does not specify which intra-abdominal structure is involved."
+            },
+            {
+              "requirement_key": "req_complication",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Normal lactate and stable vitals reduce but do not exclude intra-abdominal complications; no imaging yet to assess."
+              ],
+              "reason": "Laboratories and exam do not rule in or out abscess, perforation, or free air; imaging is needed to evaluate for complications."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key information needs about the intra-abdominal source, its localization, and any complications remain unaddressed because no prior imaging is available."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen can visualize the appendix, ileocecal region, and adjacent bowel, detect inflammatory changes or obstruction, and identify complications such as abscess or perforation.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The order is limited to CT abdomen (without explicit pelvis) although RLQ pain often prompts CT abdomen and pelvis; the chart does not clarify whether pelvic structures (e.g., gynecologic sources) were intentionally excluded or addressed by other means."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "0fb889d621643bdcdeace408a3f53f7dd1570435a20d639e87d2ff09a0919529",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "0fb889d621643bdcdeace408a3f53f7dd1570435a20d639e87d2ff09a0919529",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The CT abdomen/pelvis shows a normal appendix and instead demonstrates mild focal cecal wall thickening with diverticula and a right adnexal cyst, so the source of RLQ pain remains incompletely explained and other abdominal causes, including hepatobiliary disease, are still being considered.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome level (cause of abdominal/RLQ pain)",
+                  "status": "likely",
+                  "evidence": [
+                    "“There is mild focal wall thickening of the cecum with minimal associated fat stranding… There is are scatter diverticula of the cecum. The appendix is normal.”",
+                    "“There is a 4.6 x 3.0 cm hypodense cystic structure in the right adnexa… The urinary bladder, distal ureters, uterus, sigmoid colon and rectum are normal.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What is the intra-abdominal source of this acute right lower quadrant abdominal pain and localized peritoneal irritation?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "indeterminate",
+                "effect_on_previous_question": "The CT effectively visualized the appendix, ileocecal region, and pelvis, excluding appendicitis and major complications, but yielded only mild cecal wall thickening and cecal diverticula plus adnexal cysts without clear evidence that these account for the acute syndrome, so the source of pain remains only partially explained.",
+                "discordance": {
+                  "label": "indeterminate",
+                  "evidence_stream_1": "“RLQ slightly distended and very TTP with focal guarding and minimal rebound.”",
+                  "evidence_stream_2": "“There is mild focal wall thickening of the cecum with minimal associated fat stranding… The appendix is normal.”",
+                  "reason": "Marked focal RLQ tenderness and guarding contrast with only mild cecal inflammatory changes on CT, which may or may not fully explain the clinical severity but do not represent a clear-cut alternative diagnosis."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "Acute appendicitis is a leading diagnostic consideration for this acute RLQ pain presentation.",
+                "reason": "CT shows a normal appendix, shifting the working frame away from appendicitis and toward other abdominal or pelvic sources, leaving the pain source only partially explained."
+              },
+              "current_question": {
+                "primary": "Is there a hepatobiliary cause, such as acute gallbladder or biliary tract disease, that could be contributing to this patient’s abdominal pain and presentation?",
+                "target": "gallbladder, intrahepatic and extrahepatic biliary tree, and adjacent hepatic parenchyma",
+                "type": "alternative_source",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying cholecystitis or another biliary/hepatobiliary process would shift management toward targeted medical therapy, possible surgical consultation for cholecystectomy, and antibiotic coverage for biliary infection.",
+                "negative_answer_changes": "If hepatobiliary disease is excluded, clinicians would deprioritize biliary etiologies and focus on colonic, gynecologic, or other intra-abdominal sources (e.g., cecal diverticulitis or adnexal pathology) when planning further evaluation and treatment.",
+                "secondary_questions": [
+                  "Is there imaging evidence of acute cholecystitis or biliary obstruction that might not have been fully characterized on the prior CT?",
+                  "Are there focal liver lesions or other hepatic abnormalities that could explain or modify the management of this abdominal pain syndrome?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_hpb_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the gallbladder, biliary ducts, and adjacent hepatic parenchyma for structural and sonographic assessment.",
+                    "why_required": "Confirming or excluding a hepatobiliary source requires clear assessment of these structures for wall thickening, stones, sludge, ductal dilation, or focal lesions."
+                  },
+                  {
+                    "requirement_key": "req_hpb_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones, biliary sludge, gallbladder wall thickening, pericholecystic fluid, or bile duct dilation.",
+                    "why_required": "These findings define acute cholecystitis or biliary obstruction and would directly alter diagnosis and treatment decisions."
+                  },
+                  {
+                    "requirement_key": "req_hpb_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of complications related to hepatobiliary disease, such as pericholecystic abscess, perforation, or significant intrahepatic biliary dilation.",
+                    "why_required": "Complications would escalate urgency and determine need for procedural or surgical intervention and level of care."
+                  }
+                ],
+                "evidence": [
+                  "“the liver, gallbladder, pancreas, spleen and bilateral adrenal glands are normal.”",
+                  "Order: “Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_hpb_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“the liver, gallbladder, pancreas, spleen and bilateral adrenal glands are normal.”"
+                    ],
+                    "reason": "The prior contrast CT provides gross anatomic assessment and reported normal liver and gallbladder, but CT is less sensitive than ultrasound for stones, sludge, and dynamic gallbladder findings, so detailed hepatobiliary visualization is only partly addressed."
+                  },
+                  {
+                    "requirement_key": "req_hpb_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“the liver, gallbladder, pancreas, spleen and bilateral adrenal glands are normal.”"
+                    ],
+                    "reason": "CT reported normal hepatobiliary structures, which argues against advanced cholecystitis or major biliary obstruction, but cannot reliably exclude cholelithiasis, sludge, or early/mild cholecystitis."
+                  },
+                  {
+                    "requirement_key": "req_hpb_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "sufficiently_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“There is no free air or fluid in the abdomen.”"
+                    ],
+                    "reason": "CT would likely show major hepatobiliary complications such as large pericholecystic abscess, perforation, or marked biliary dilation, and none were described, making such complications unlikely before the ultrasound order."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "CT substantially reduces the likelihood of severe hepatobiliary complications and gross pathology but does not adequately assess for gallstones, sludge, or subtle cholecystitis, leaving key aspects of the hepatobiliary-source question unresolved."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant or hepatobiliary ultrasound is the preferred test to detect gallstones, sludge, gallbladder wall changes, pericholecystic fluid, and bile duct dilation that may have been missed or under-characterized on CT.",
+                "intent_support": "weakly_supported",
+                "unsupported_residual": "The chart does not describe right upper quadrant tenderness, classic biliary symptoms, or abnormal liver chemistries to strongly suggest gallbladder disease, so the precise clinical trigger for focusing on hepatobiliary ultrasound instead of further evaluation of the cecal or adnexal findings remains unclear."
+              },
+              "derived_transition": "reroute",
+              "alternative_reconstruction": "The ultrasound may have been ordered not primarily to explain the RLQ pain but as an opportunistic workup of possible subclinical biliary disease or incidental hepatobiliary issues in an older patient with multiple comorbidities after CT ruled out appendicitis, using this episode as a chance to complete baseline hepatobiliary imaging."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The CT abdomen/pelvis shows a normal appendix and instead demonstrates mild focal cecal wall thickening with diverticula and a right adnexal cyst, so the source of RLQ pain remains incompletely explained and other abdominal causes, including hepatobiliary disease, are still being considered.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome level (cause of abdominal/RLQ pain)\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“There is mild focal wall thickening of the cecum with minimal associated fat stranding… There is are scatter diverticula of the cecum. The appendix is normal.”\",\n        \"“There is a 4.6 x 3.0 cm hypodense cystic structure in the right adnexa… The urinary bladder, distal ureters, uterus, sigmoid colon and rectum are normal.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the intra-abdominal source of this acute right lower quadrant abdominal pain and localized peritoneal irritation?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"indeterminate\",\n    \"effect_on_previous_question\": \"The CT effectively visualized the appendix, ileocecal region, and pelvis, excluding appendicitis and major complications, but yielded only mild cecal wall thickening and cecal diverticula plus adnexal cysts without clear evidence that these account for the acute syndrome, so the source of pain remains only partially explained.\",\n    \"discordance\": {\n      \"label\": \"indeterminate\",\n      \"evidence_stream_1\": \"“RLQ slightly distended and very TTP with focal guarding and minimal rebound.”\",\n      \"evidence_stream_2\": \"“There is mild focal wall thickening of the cecum with minimal associated fat stranding… The appendix is normal.”\",\n      \"reason\": \"Marked focal RLQ tenderness and guarding contrast with only mild cecal inflammatory changes on CT, which may or may not fully explain the clinical severity but do not represent a clear-cut alternative diagnosis.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Acute appendicitis is a leading diagnostic consideration for this acute RLQ pain presentation.\",\n    \"reason\": \"CT shows a normal appendix, shifting the working frame away from appendicitis and toward other abdominal or pelvic sources, leaving the pain source only partially explained.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a hepatobiliary cause, such as acute gallbladder or biliary tract disease, that could be contributing to this patient’s abdominal pain and presentation?\",\n    \"target\": \"gallbladder, intrahepatic and extrahepatic biliary tree, and adjacent hepatic parenchyma\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying cholecystitis or another biliary/hepatobiliary process would shift management toward targeted medical therapy, possible surgical consultation for cholecystectomy, and antibiotic coverage for biliary infection.\",\n    \"negative_answer_changes\": \"If hepatobiliary disease is excluded, clinicians would deprioritize biliary etiologies and focus on colonic, gynecologic, or other intra-abdominal sources (e.g., cecal diverticulitis or adnexal pathology) when planning further evaluation and treatment.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of acute cholecystitis or biliary obstruction that might not have been fully characterized on the prior CT?\",\n      \"Are there focal liver lesions or other hepatic abnormalities that could explain or modify the management of this abdominal pain syndrome?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_hpb_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder, biliary ducts, and adjacent hepatic parenchyma for structural and sonographic assessment.\",\n        \"why_required\": \"Confirming or excluding a hepatobiliary source requires clear assessment of these structures for wall thickening, stones, sludge, ductal dilation, or focal lesions.\"\n      },\n      {\n        \"requirement_key\": \"req_hpb_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, biliary sludge, gallbladder wall thickening, pericholecystic fluid, or bile duct dilation.\",\n        \"why_required\": \"These findings define acute cholecystitis or biliary obstruction and would directly alter diagnosis and treatment decisions.\"\n      },\n      {\n        \"requirement_key\": \"req_hpb_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications related to hepatobiliary disease, such as pericholecystic abscess, perforation, or significant intrahepatic biliary dilation.\",\n        \"why_required\": \"Complications would escalate urgency and determine need for procedural or surgical intervention and level of care.\"\n      }\n    ],\n    \"evidence\": [\n      \"“the liver, gallbladder, pancreas, spleen and bilateral adrenal glands are normal.”\",\n      \"Order: “Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_hpb_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“the liver, gallbladder, pancreas, spleen and bilateral adrenal glands are normal.”\"\n        ],\n        \"reason\": \"The prior contrast CT provides gross anatomic assessment and reported normal liver and gallbladder, but CT is less sensitive than ultrasound for stones, sludge, and dynamic gallbladder findings, so detailed hepatobiliary visualization is only partly addressed.\"\n      },\n      {\n        \"requirement_key\": \"req_hpb_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“the liver, gallbladder, pancreas, spleen and bilateral adrenal glands are normal.”\"\n        ],\n        \"reason\": \"CT reported normal hepatobiliary structures, which argues against advanced cholecystitis or major biliary obstruction, but cannot reliably exclude cholelithiasis, sludge, or early/mild cholecystitis.\"\n      },\n      {\n        \"requirement_key\": \"req_hpb_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“There is no free air or fluid in the abdomen.”\"\n        ],\n        \"reason\": \"CT would likely show major hepatobiliary complications such as large pericholecystic abscess, perforation, or marked biliary dilation, and none were described, making such complications unlikely before the ultrasound order.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"CT substantially reduces the likelihood of severe hepatobiliary complications and gross pathology but does not adequately assess for gallstones, sludge, or subtle cholecystitis, leaving key aspects of the hepatobiliary-source question unresolved.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant or hepatobiliary ultrasound is the preferred test to detect gallstones, sludge, gallbladder wall changes, pericholecystic fluid, and bile duct dilation that may have been missed or under-characterized on CT.\",\n    \"intent_support\": \"weakly_supported\",\n    \"unsupported_residual\": \"The chart does not describe right upper quadrant tenderness, classic biliary symptoms, or abnormal liver chemistries to strongly suggest gallbladder disease, so the precise clinical trigger for focusing on hepatobiliary ultrasound instead of further evaluation of the cecal or adnexal findings remains unclear.\"\n  },\n  \"derived_transition\": \"reroute\",\n  \"alternative_reconstruction\": \"The ultrasound may have been ordered not primarily to explain the RLQ pain but as an opportunistic workup of possible subclinical biliary disease or incidental hepatobiliary issues in an older patient with multiple comorbidities after CT ruled out appendicitis, using this episode as a chance to complete baseline hepatobiliary imaging.\"\n}",
+            "request_id": "gen-1788190482-FJIQrmfMrHagGmGk8HWk",
+            "usage": {
+              "completion_tokens": 1927,
+              "prompt_tokens": 5658,
+              "total_tokens": 7585,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1920,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0241825,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0241825,
+                "upstream_inference_prompt_cost": 0.0049125,
+                "upstream_inference_completions_cost": 0.01927
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The CT abdomen/pelvis shows a normal appendix and instead demonstrates mild focal cecal wall thickening with diverticula and a right adnexal cyst, so the source of RLQ pain remains incompletely explained and other abdominal causes, including hepatobiliary disease, are still being considered.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome level (cause of abdominal/RLQ pain)",
+            "status": "likely",
+            "evidence": [
+              "“There is mild focal wall thickening of the cecum with minimal associated fat stranding… There is are scatter diverticula of the cecum. The appendix is normal.”",
+              "“There is a 4.6 x 3.0 cm hypodense cystic structure in the right adnexa… The urinary bladder, distal ureters, uterus, sigmoid colon and rectum are normal.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What is the intra-abdominal source of this acute right lower quadrant abdominal pain and localized peritoneal irritation?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "indeterminate",
+          "effect_on_previous_question": "The CT effectively visualized the appendix, ileocecal region, and pelvis, excluding appendicitis and major complications, but yielded only mild cecal wall thickening and cecal diverticula plus adnexal cysts without clear evidence that these account for the acute syndrome, so the source of pain remains only partially explained.",
+          "discordance": {
+            "label": "indeterminate",
+            "evidence_stream_1": "“RLQ slightly distended and very TTP with focal guarding and minimal rebound.”",
+            "evidence_stream_2": "“There is mild focal wall thickening of the cecum with minimal associated fat stranding… The appendix is normal.”",
+            "reason": "Marked focal RLQ tenderness and guarding contrast with only mild cecal inflammatory changes on CT, which may or may not fully explain the clinical severity but do not represent a clear-cut alternative diagnosis."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "Acute appendicitis is a leading diagnostic consideration for this acute RLQ pain presentation.",
+          "reason": "CT shows a normal appendix, shifting the working frame away from appendicitis and toward other abdominal or pelvic sources, leaving the pain source only partially explained."
+        },
+        "current_question": {
+          "primary": "Is there a hepatobiliary cause, such as acute gallbladder or biliary tract disease, that could be contributing to this patient’s abdominal pain and presentation?",
+          "target": "gallbladder, intrahepatic and extrahepatic biliary tree, and adjacent hepatic parenchyma",
+          "type": "alternative_source",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying cholecystitis or another biliary/hepatobiliary process would shift management toward targeted medical therapy, possible surgical consultation for cholecystectomy, and antibiotic coverage for biliary infection.",
+          "negative_answer_changes": "If hepatobiliary disease is excluded, clinicians would deprioritize biliary etiologies and focus on colonic, gynecologic, or other intra-abdominal sources (e.g., cecal diverticulitis or adnexal pathology) when planning further evaluation and treatment.",
+          "secondary_questions": [
+            "Is there imaging evidence of acute cholecystitis or biliary obstruction that might not have been fully characterized on the prior CT?",
+            "Are there focal liver lesions or other hepatic abnormalities that could explain or modify the management of this abdominal pain syndrome?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_hpb_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the gallbladder, biliary ducts, and adjacent hepatic parenchyma for structural and sonographic assessment.",
+              "why_required": "Confirming or excluding a hepatobiliary source requires clear assessment of these structures for wall thickening, stones, sludge, ductal dilation, or focal lesions."
+            },
+            {
+              "requirement_key": "req_hpb_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones, biliary sludge, gallbladder wall thickening, pericholecystic fluid, or bile duct dilation.",
+              "why_required": "These findings define acute cholecystitis or biliary obstruction and would directly alter diagnosis and treatment decisions."
+            },
+            {
+              "requirement_key": "req_hpb_complication",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of complications related to hepatobiliary disease, such as pericholecystic abscess, perforation, or significant intrahepatic biliary dilation.",
+              "why_required": "Complications would escalate urgency and determine need for procedural or surgical intervention and level of care."
+            }
+          ],
+          "evidence": [
+            "“the liver, gallbladder, pancreas, spleen and bilateral adrenal glands are normal.”",
+            "Order: “Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_hpb_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“the liver, gallbladder, pancreas, spleen and bilateral adrenal glands are normal.”"
+              ],
+              "reason": "The prior contrast CT provides gross anatomic assessment and reported normal liver and gallbladder, but CT is less sensitive than ultrasound for stones, sludge, and dynamic gallbladder findings, so detailed hepatobiliary visualization is only partly addressed."
+            },
+            {
+              "requirement_key": "req_hpb_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“the liver, gallbladder, pancreas, spleen and bilateral adrenal glands are normal.”"
+              ],
+              "reason": "CT reported normal hepatobiliary structures, which argues against advanced cholecystitis or major biliary obstruction, but cannot reliably exclude cholelithiasis, sludge, or early/mild cholecystitis."
+            },
+            {
+              "requirement_key": "req_hpb_complication",
+              "requirement_id": "complication_presence_or_character",
+              "status": "sufficiently_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“There is no free air or fluid in the abdomen.”"
+              ],
+              "reason": "CT would likely show major hepatobiliary complications such as large pericholecystic abscess, perforation, or marked biliary dilation, and none were described, making such complications unlikely before the ultrasound order."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "CT substantially reduces the likelihood of severe hepatobiliary complications and gross pathology but does not adequately assess for gallstones, sludge, or subtle cholecystitis, leaving key aspects of the hepatobiliary-source question unresolved."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant or hepatobiliary ultrasound is the preferred test to detect gallstones, sludge, gallbladder wall changes, pericholecystic fluid, and bile duct dilation that may have been missed or under-characterized on CT.",
+          "intent_support": "weakly_supported",
+          "unsupported_residual": "The chart does not describe right upper quadrant tenderness, classic biliary symptoms, or abnormal liver chemistries to strongly suggest gallbladder disease, so the precise clinical trigger for focusing on hepatobiliary ultrasound instead of further evaluation of the cecal or adnexal findings remains unclear."
+        },
+        "derived_transition": "reroute",
+        "alternative_reconstruction": "The ultrasound may have been ordered not primarily to explain the RLQ pain but as an opportunistic workup of possible subclinical biliary disease or incidental hepatobiliary issues in an older patient with multiple comorbidities after CT ruled out appendicitis, using this episode as a chance to complete baseline hepatobiliary imaging."
+      },
+      "validation_errors": []
+    }
+  ]
+}

@@ -1,0 +1,848 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 27993727,
+  "source_path": "results/annotation_experiment/full/appendicitis_27993727.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "7958ee704dd082f4671f4cfa21ed0f69c2ad4a12344086932a180efe533a4d33",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "7958ee704dd082f4671f4cfa21ed0f69c2ad4a12344086932a180efe533a4d33",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute right-sided abdominal pain syndrome of 5 days’ duration without clear source on history, exam, or labs.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation",
+                  "status": "established",
+                  "evidence": [
+                    "___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days. No fevers, chills, n/v, or change in bowel  movements.",
+                    "ABD: Soft, mildly distended, well healed cholecystectomy scars,  mild tenderness to deep palpation RUQ."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is no current clinical or laboratory evidence of sepsis or hemodynamic instability.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "physiologic state",
+                  "status": "established",
+                  "evidence": [
+                    "Vitals: Temp 97.7, HR 71, BP 135/76, RR 16, 100% Room air GEN: A&O, NAD",
+                    "Lactate: 1.9 mmol/L (ref 0.5-2.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is no laboratory evidence of urinary tract infection or hematuria to explain the right lower quadrant abdominal pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "organ system level",
+                  "status": "established",
+                  "evidence": [
+                    "Leukocytes: NEG.",
+                    "Nitrite: NEG."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A surgical acute abdomen such as appendicitis or other intra-abdominal inflammatory process is a concern despite relatively benign labs and vitals.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis",
+                  "status": "suspected",
+                  "evidence": [
+                    "now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.",
+                    "ABD: Soft, mildly distended ... mild tenderness to deep palpation RUQ."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Prior laparoscopic cholecystectomy raises the possibility of postoperative or biliary-tract–related complications or adhesions contributing to current abdominal pain.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days.",
+                    "ABD: Soft, mildly distended, well healed cholecystectomy scars"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First imaging decision; no prior study to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point, so all assumptions are newly established from the baseline presentation."
+              },
+              "current_question": {
+                "primary": "What is the intra-abdominal source of this patient’s new, localized right-sided abdominal pain?",
+                "target": "appendix and other intra-abdominal organs and structures that could generate focal right-sided abdominal pain",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming a focal intra-abdominal pathology (e.g., appendicitis, inflammatory or obstructive process) would direct urgent surgical or targeted medical management.",
+                "negative_answer_changes": "Not identifying a focal intra-abdominal source would lower concern for a surgical acute abdomen and shift evaluation toward non-surgical or extra-abdominal causes.",
+                "secondary_questions": [
+                  "Is there imaging evidence of complications such as perforation, abscess, obstruction, or other surgical pathology requiring urgent intervention?",
+                  "Is there any biliary, postoperative, or adhesion-related abnormality that could explain the current abdominal pain?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the appendix and surrounding right lower quadrant/right-sided abdominal structures, as well as other abdominal viscera.",
+                    "why_required": "Identifying or excluding a focal source of pain requires that the appendix and adjacent bowel and organs be clearly assessed."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of inflammatory, obstructive, or other focal intra-abdominal pathology correlating with the area of pain.",
+                    "why_required": "Deciding on surgical versus medical management hinges on whether there is a demonstrable focal intra-abdominal lesion."
+                  },
+                  {
+                    "requirement_key": "req_anatomic_localization",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Anatomic localization of any detected abnormality relative to the right lower quadrant and upper right abdomen.",
+                    "why_required": "Linking any abnormal finding to the patient’s symptom location helps determine causal relevance and guides operative planning."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characterization of complications such as perforation, abscess, free air, or bowel obstruction.",
+                    "why_required": "Detection of complications would upgrade urgency and influence the type and timing of intervention."
+                  }
+                ],
+                "evidence": [
+                  "___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.",
+                  "ABD: Soft, mildly distended, well healed cholecystectomy scars,  mild tenderness to deep palpation RUQ."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "No prior imaging has assessed the appendix, right lower quadrant, or other abdominal structures."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "No imaging evidence is available to confirm or exclude focal intra-abdominal pathology despite clinical concern."
+                  },
+                  {
+                    "requirement_key": "req_anatomic_localization",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "The exact anatomic source of pain is uncertain based solely on physical exam and labs."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "Potential complications such as perforation, abscess, or obstruction cannot be evaluated without imaging."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All imaging-dependent requirements remain unaddressed because no prior abdominal imaging has been performed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can visualize the appendix and other intra-abdominal organs, detect inflammatory or obstructive pathology, and identify complications such as perforation or abscess.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The relative emphasis on appendicitis versus other specific intra-abdominal etiologies (e.g., gynecologic, mesenteric ischemia, small-bowel pathology) is not fully specified by the chart, though the broad search for an intra-abdominal source is supported."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute right-sided abdominal pain syndrome of 5 days’ duration without clear source on history, exam, or labs.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days. No fevers, chills, n/v, or change in bowel  movements.\",\n        \"ABD: Soft, mildly distended, well healed cholecystectomy scars,  mild tenderness to deep palpation RUQ.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is no current clinical or laboratory evidence of sepsis or hemodynamic instability.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic state\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Vitals: Temp 97.7, HR 71, BP 135/76, RR 16, 100% Room air GEN: A&O, NAD\",\n        \"Lactate: 1.9 mmol/L (ref 0.5-2.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is no laboratory evidence of urinary tract infection or hematuria to explain the right lower quadrant abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Leukocytes: NEG.\",\n        \"Nitrite: NEG.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A surgical acute abdomen such as appendicitis or other intra-abdominal inflammatory process is a concern despite relatively benign labs and vitals.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.\",\n        \"ABD: Soft, mildly distended ... mild tenderness to deep palpation RUQ.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Prior laparoscopic cholecystectomy raises the possibility of postoperative or biliary-tract–related complications or adhesions contributing to current abdominal pain.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days.\",\n        \"ABD: Soft, mildly distended, well healed cholecystectomy scars\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First imaging decision; no prior study to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point, so all assumptions are newly established from the baseline presentation.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the intra-abdominal source of this patient’s new, localized right-sided abdominal pain?\",\n    \"target\": \"appendix and other intra-abdominal organs and structures that could generate focal right-sided abdominal pain\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming a focal intra-abdominal pathology (e.g., appendicitis, inflammatory or obstructive process) would direct urgent surgical or targeted medical management.\",\n    \"negative_answer_changes\": \"Not identifying a focal intra-abdominal source would lower concern for a surgical acute abdomen and shift evaluation toward non-surgical or extra-abdominal causes.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of complications such as perforation, abscess, obstruction, or other surgical pathology requiring urgent intervention?\",\n      \"Is there any biliary, postoperative, or adhesion-related abnormality that could explain the current abdominal pain?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the appendix and surrounding right lower quadrant/right-sided abdominal structures, as well as other abdominal viscera.\",\n        \"why_required\": \"Identifying or excluding a focal source of pain requires that the appendix and adjacent bowel and organs be clearly assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of inflammatory, obstructive, or other focal intra-abdominal pathology correlating with the area of pain.\",\n        \"why_required\": \"Deciding on surgical versus medical management hinges on whether there is a demonstrable focal intra-abdominal lesion.\"\n      },\n      {\n        \"requirement_key\": \"req_anatomic_localization\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Anatomic localization of any detected abnormality relative to the right lower quadrant and upper right abdomen.\",\n        \"why_required\": \"Linking any abnormal finding to the patient’s symptom location helps determine causal relevance and guides operative planning.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characterization of complications such as perforation, abscess, free air, or bowel obstruction.\",\n        \"why_required\": \"Detection of complications would upgrade urgency and influence the type and timing of intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.\",\n      \"ABD: Soft, mildly distended, well healed cholecystectomy scars,  mild tenderness to deep palpation RUQ.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior imaging has assessed the appendix, right lower quadrant, or other abdominal structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No imaging evidence is available to confirm or exclude focal intra-abdominal pathology despite clinical concern.\"\n      },\n      {\n        \"requirement_key\": \"req_anatomic_localization\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"The exact anatomic source of pain is uncertain based solely on physical exam and labs.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Potential complications such as perforation, abscess, or obstruction cannot be evaluated without imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All imaging-dependent requirements remain unaddressed because no prior abdominal imaging has been performed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT of the abdomen and pelvis can visualize the appendix and other intra-abdominal organs, detect inflammatory or obstructive pathology, and identify complications such as perforation or abscess.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The relative emphasis on appendicitis versus other specific intra-abdominal etiologies (e.g., gynecologic, mesenteric ischemia, small-bowel pathology) is not fully specified by the chart, though the broad search for an intra-abdominal source is supported.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788193705-XDdGgj52qlXL7CdXNV11",
+            "usage": {
+              "completion_tokens": 2071,
+              "prompt_tokens": 3198,
+              "total_tokens": 5269,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0247075,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0247075,
+                "upstream_inference_prompt_cost": 0.0039975,
+                "upstream_inference_completions_cost": 0.02071
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute right-sided abdominal pain syndrome of 5 days’ duration without clear source on history, exam, or labs.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation",
+            "status": "established",
+            "evidence": [
+              "___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days. No fevers, chills, n/v, or change in bowel  movements.",
+              "ABD: Soft, mildly distended, well healed cholecystectomy scars,  mild tenderness to deep palpation RUQ."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is no current clinical or laboratory evidence of sepsis or hemodynamic instability.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "physiologic state",
+            "status": "established",
+            "evidence": [
+              "Vitals: Temp 97.7, HR 71, BP 135/76, RR 16, 100% Room air GEN: A&O, NAD",
+              "Lactate: 1.9 mmol/L (ref 0.5-2.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is no laboratory evidence of urinary tract infection or hematuria to explain the right lower quadrant abdominal pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "organ system level",
+            "status": "established",
+            "evidence": [
+              "Leukocytes: NEG.",
+              "Nitrite: NEG."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A surgical acute abdomen such as appendicitis or other intra-abdominal inflammatory process is a concern despite relatively benign labs and vitals.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "differential diagnosis",
+            "status": "suspected",
+            "evidence": [
+              "now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.",
+              "ABD: Soft, mildly distended ... mild tenderness to deep palpation RUQ."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Prior laparoscopic cholecystectomy raises the possibility of postoperative or biliary-tract–related complications or adhesions contributing to current abdominal pain.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism",
+            "status": "suspected",
+            "evidence": [
+              "___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days.",
+              "ABD: Soft, mildly distended, well healed cholecystectomy scars"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First imaging decision; no prior study to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point, so all assumptions are newly established from the baseline presentation."
+        },
+        "current_question": {
+          "primary": "What is the intra-abdominal source of this patient’s new, localized right-sided abdominal pain?",
+          "target": "appendix and other intra-abdominal organs and structures that could generate focal right-sided abdominal pain",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming a focal intra-abdominal pathology (e.g., appendicitis, inflammatory or obstructive process) would direct urgent surgical or targeted medical management.",
+          "negative_answer_changes": "Not identifying a focal intra-abdominal source would lower concern for a surgical acute abdomen and shift evaluation toward non-surgical or extra-abdominal causes.",
+          "secondary_questions": [
+            "Is there imaging evidence of complications such as perforation, abscess, obstruction, or other surgical pathology requiring urgent intervention?",
+            "Is there any biliary, postoperative, or adhesion-related abnormality that could explain the current abdominal pain?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the appendix and surrounding right lower quadrant/right-sided abdominal structures, as well as other abdominal viscera.",
+              "why_required": "Identifying or excluding a focal source of pain requires that the appendix and adjacent bowel and organs be clearly assessed."
+            },
+            {
+              "requirement_key": "req_presence_pathology",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of inflammatory, obstructive, or other focal intra-abdominal pathology correlating with the area of pain.",
+              "why_required": "Deciding on surgical versus medical management hinges on whether there is a demonstrable focal intra-abdominal lesion."
+            },
+            {
+              "requirement_key": "req_anatomic_localization",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Anatomic localization of any detected abnormality relative to the right lower quadrant and upper right abdomen.",
+              "why_required": "Linking any abnormal finding to the patient’s symptom location helps determine causal relevance and guides operative planning."
+            },
+            {
+              "requirement_key": "req_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and characterization of complications such as perforation, abscess, free air, or bowel obstruction.",
+              "why_required": "Detection of complications would upgrade urgency and influence the type and timing of intervention."
+            }
+          ],
+          "evidence": [
+            "___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.",
+            "ABD: Soft, mildly distended, well healed cholecystectomy scars,  mild tenderness to deep palpation RUQ."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "No prior imaging has assessed the appendix, right lower quadrant, or other abdominal structures."
+            },
+            {
+              "requirement_key": "req_presence_pathology",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "No imaging evidence is available to confirm or exclude focal intra-abdominal pathology despite clinical concern."
+            },
+            {
+              "requirement_key": "req_anatomic_localization",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "The exact anatomic source of pain is uncertain based solely on physical exam and labs."
+            },
+            {
+              "requirement_key": "req_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "Potential complications such as perforation, abscess, or obstruction cannot be evaluated without imaging."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All imaging-dependent requirements remain unaddressed because no prior abdominal imaging has been performed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can visualize the appendix and other intra-abdominal organs, detect inflammatory or obstructive pathology, and identify complications such as perforation or abscess.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The relative emphasis on appendicitis versus other specific intra-abdominal etiologies (e.g., gynecologic, mesenteric ischemia, small-bowel pathology) is not fully specified by the chart, though the broad search for an intra-abdominal source is supported."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "b485481625bfe86ca2ae06fb7caccb9e406ebd36a35c7c6c7cac2737653fe7ba",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "b485481625bfe86ca2ae06fb7caccb9e406ebd36a35c7c6c7cac2737653fe7ba",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute localized right-sided abdominal pain syndrome of several days’ duration without a clear source on history, exam, or labs.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation",
+                  "status": "established",
+                  "evidence": [
+                    "___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days. No fevers, chills, n/v, or change in bowel  movements. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.",
+                    "ABD: Soft, mildly distended, well healed cholecystectomy scars,  mild tenderness to deep palpation RUQ."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is no current clinical or laboratory evidence of sepsis or hemodynamic instability.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "physiologic state",
+                  "status": "established",
+                  "evidence": [
+                    "Vitals: Temp 97.7, HR 71, BP 135/76, RR 16, 100% Room air GEN: A&O, NAD",
+                    "Lactate: 1.9 mmol/L (ref 0.5-2.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is no laboratory evidence of urinary tract infection or hematuria to explain the right-sided abdominal pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "organ system level",
+                  "status": "established",
+                  "evidence": [
+                    "Leukocytes: NEG.",
+                    "Nitrite: NEG."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "An acute intra-abdominal inflammatory surgical condition such as appendicitis is a leading concern despite relatively benign labs and vitals.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.",
+                    "There is no clear extra-abdominal or urinary source on exam or urinalysis."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Prior laparoscopic cholecystectomy raises a background possibility of postoperative or biliary-tract–related pain but without current supporting signs of biliary pathology.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days.",
+                    "The liver, spleen, pancreas, adrenal glands and kidneys appear grossly unremarkable.  The patient is status post cholecystectomy."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What is the intra-abdominal source of this patient’s new, localized right-sided abdominal pain?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The contrast-enhanced CT abdomen and pelvis provided diagnostic visualization of the appendix and surrounding structures, demonstrating acute appendicitis with an appendicolith and surrounding inflammatory changes and no evidence of perforation or abscess, thereby identifying the intra-abdominal source of pain and clarifying the absence of major complications.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.",
+                  "evidence_stream_2": "now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.",
+                  "reason": "Imaging evidence of acute appendicitis is concordant with the clinical presentation of localized right-sided abdominal pain and concern for a surgical acute abdomen."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "An acute intra-abdominal inflammatory surgical condition such as appendicitis is a leading concern despite relatively benign labs and vitals.",
+                "reason": "The CT demonstrated a fluid-filled, distended, hyperemic appendix with surrounding inflammatory fat stranding and an appendicolith without perforation or abscess, converting suspected intra-abdominal surgical pathology into established acute uncomplicated appendicitis as the pain source."
+              },
+              "current_question": {
+                "primary": "What is the current anatomic extent and complication status of this patient’s now-established acute appendicitis to guide definitive management?",
+                "target": "inflamed appendix and surrounding intra-abdominal structures, including pericecal fat and adjacent bowel, with attention to perforation, abscess, free air, or obstruction",
+                "type": "severity_or_extent",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If imaging confirms localized, non-perforated appendicitis without abscess or obstruction, the team will proceed with standard appendectomy or appropriate nonoperative management for uncomplicated appendicitis.",
+                "negative_answer_changes": "If imaging reveals perforation, abscess, free air, or more extensive inflammatory spread than expected, management will escalate to urgent operative intervention, possible drainage, and broader perioperative planning.",
+                "secondary_questions": [
+                  "Is there imaging evidence of perforation, abscess, free air, or bowel obstruction complicating the acute appendicitis?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_app_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the appendix and adjacent cecum, pericecal fat, and surrounding bowel loops.",
+                    "why_required": "Clear assessment of the inflamed appendix and nearby structures is necessary to characterize disease extent and detect local complications."
+                  },
+                  {
+                    "requirement_key": "req_appendicitis_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characteristics of acute appendicitis, including luminal distention, wall hyperemia, fat stranding, and appendicolith.",
+                    "why_required": "Confirming and characterizing appendicitis is essential to anchor the diagnosis and tailor management to uncomplicated versus complicated disease."
+                  },
+                  {
+                    "requirement_key": "req_complications_now",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, absence, and characterization of complications such as perforation, abscess formation, free air, or obstruction.",
+                    "why_required": "Detecting perforation or abscess alters urgency, need for drainage, antibiotic strategy, and surgical approach."
+                  },
+                  {
+                    "requirement_key": "req_anatomic_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Anatomic extent of inflammatory changes involving the cecal base and surrounding tissues.",
+                    "why_required": "Understanding how far inflammation extends informs operative planning and risk assessment."
+                  }
+                ],
+                "evidence": [
+                  "Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.",
+                  "No extraluminal air or evidence of abscess formation is seen.  Mild thickening of the cecal base is compatible with secondary inflammation."
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_app_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "sufficiently_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.",
+                      "Loops of small and large bowel are normal in size and caliber."
+                    ],
+                    "reason": "The CT clearly visualizes the appendix and adjacent bowel, allowing assessment of the primary target and local surroundings."
+                  },
+                  {
+                    "requirement_key": "req_appendicitis_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "sufficiently_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.",
+                      "An intraluminal hyperdensity is consistent with an appendicolith (601B:20).  At this level, the appendix measures up to 14 mm in diameter."
+                    ],
+                    "reason": "Findings of a dilated, hyperemic appendix with fat stranding and appendicolith establish the presence of acute appendicitis and characterize its features."
+                  },
+                  {
+                    "requirement_key": "req_complications_now",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "sufficiently_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "No extraluminal air or evidence of abscess formation is seen.",
+                      "No free air or lymphadenopathy is seen."
+                    ],
+                    "reason": "CT specifically comments on the absence of abscess, extraluminal air, and free air, adequately excluding major complications at this time."
+                  },
+                  {
+                    "requirement_key": "req_anatomic_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "sufficiently_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "At this level, the appendix measures up to 14 mm in diameter.",
+                      "Mild thickening of the cecal base is compatible with secondary inflammation."
+                    ],
+                    "reason": "The report provides measurements and describes extension of inflammation to the cecal base, defining local extent of disease."
+                  }
+                ],
+                "aggregate": "sufficiently_answered",
+                "aggregate_reason": "The CT fully characterizes the presence, local extent, and complication status of acute appendicitis, addressing all defined information needs for management planning."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis is well-suited to delineate appendiceal inflammation, anatomic extent, and complications of acute appendicitis.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not specify whether imaging was also intended to screen for alternative or additional intra-abdominal pathology beyond appendicitis, though no such abnormalities were described."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute localized right-sided abdominal pain syndrome of several days’ duration without a clear source on history, exam, or labs.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days. No fevers, chills, n/v, or change in bowel  movements. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.\",\n        \"ABD: Soft, mildly distended, well healed cholecystectomy scars,  mild tenderness to deep palpation RUQ.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is no current clinical or laboratory evidence of sepsis or hemodynamic instability.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic state\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Vitals: Temp 97.7, HR 71, BP 135/76, RR 16, 100% Room air GEN: A&O, NAD\",\n        \"Lactate: 1.9 mmol/L (ref 0.5-2.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is no laboratory evidence of urinary tract infection or hematuria to explain the right-sided abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Leukocytes: NEG.\",\n        \"Nitrite: NEG.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"An acute intra-abdominal inflammatory surgical condition such as appendicitis is a leading concern despite relatively benign labs and vitals.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.\",\n        \"There is no clear extra-abdominal or urinary source on exam or urinalysis.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Prior laparoscopic cholecystectomy raises a background possibility of postoperative or biliary-tract–related pain but without current supporting signs of biliary pathology.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days.\",\n        \"The liver, spleen, pancreas, adrenal glands and kidneys appear grossly unremarkable.  The patient is status post cholecystectomy.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the intra-abdominal source of this patient’s new, localized right-sided abdominal pain?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The contrast-enhanced CT abdomen and pelvis provided diagnostic visualization of the appendix and surrounding structures, demonstrating acute appendicitis with an appendicolith and surrounding inflammatory changes and no evidence of perforation or abscess, thereby identifying the intra-abdominal source of pain and clarifying the absence of major complications.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.\",\n      \"evidence_stream_2\": \"now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.\",\n      \"reason\": \"Imaging evidence of acute appendicitis is concordant with the clinical presentation of localized right-sided abdominal pain and concern for a surgical acute abdomen.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"An acute intra-abdominal inflammatory surgical condition such as appendicitis is a leading concern despite relatively benign labs and vitals.\",\n    \"reason\": \"The CT demonstrated a fluid-filled, distended, hyperemic appendix with surrounding inflammatory fat stranding and an appendicolith without perforation or abscess, converting suspected intra-abdominal surgical pathology into established acute uncomplicated appendicitis as the pain source.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the current anatomic extent and complication status of this patient’s now-established acute appendicitis to guide definitive management?\",\n    \"target\": \"inflamed appendix and surrounding intra-abdominal structures, including pericecal fat and adjacent bowel, with attention to perforation, abscess, free air, or obstruction\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If imaging confirms localized, non-perforated appendicitis without abscess or obstruction, the team will proceed with standard appendectomy or appropriate nonoperative management for uncomplicated appendicitis.\",\n    \"negative_answer_changes\": \"If imaging reveals perforation, abscess, free air, or more extensive inflammatory spread than expected, management will escalate to urgent operative intervention, possible drainage, and broader perioperative planning.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of perforation, abscess, free air, or bowel obstruction complicating the acute appendicitis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_app_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the appendix and adjacent cecum, pericecal fat, and surrounding bowel loops.\",\n        \"why_required\": \"Clear assessment of the inflamed appendix and nearby structures is necessary to characterize disease extent and detect local complications.\"\n      },\n      {\n        \"requirement_key\": \"req_appendicitis_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characteristics of acute appendicitis, including luminal distention, wall hyperemia, fat stranding, and appendicolith.\",\n        \"why_required\": \"Confirming and characterizing appendicitis is essential to anchor the diagnosis and tailor management to uncomplicated versus complicated disease.\"\n      },\n      {\n        \"requirement_key\": \"req_complications_now\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, absence, and characterization of complications such as perforation, abscess formation, free air, or obstruction.\",\n        \"why_required\": \"Detecting perforation or abscess alters urgency, need for drainage, antibiotic strategy, and surgical approach.\"\n      },\n      {\n        \"requirement_key\": \"req_anatomic_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Anatomic extent of inflammatory changes involving the cecal base and surrounding tissues.\",\n        \"why_required\": \"Understanding how far inflammation extends informs operative planning and risk assessment.\"\n      }\n    ],\n    \"evidence\": [\n      \"Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.\",\n      \"No extraluminal air or evidence of abscess formation is seen.  Mild thickening of the cecal base is compatible with secondary inflammation.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_app_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.\",\n          \"Loops of small and large bowel are normal in size and caliber.\"\n        ],\n        \"reason\": \"The CT clearly visualizes the appendix and adjacent bowel, allowing assessment of the primary target and local surroundings.\"\n      },\n      {\n        \"requirement_key\": \"req_appendicitis_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.\",\n          \"An intraluminal hyperdensity is consistent with an appendicolith (601B:20).  At this level, the appendix measures up to 14 mm in diameter.\"\n        ],\n        \"reason\": \"Findings of a dilated, hyperemic appendix with fat stranding and appendicolith establish the presence of acute appendicitis and characterize its features.\"\n      },\n      {\n        \"requirement_key\": \"req_complications_now\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"No extraluminal air or evidence of abscess formation is seen.\",\n          \"No free air or lymphadenopathy is seen.\"\n        ],\n        \"reason\": \"CT specifically comments on the absence of abscess, extraluminal air, and free air, adequately excluding major complications at this time.\"\n      },\n      {\n        \"requirement_key\": \"req_anatomic_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"At this level, the appendix measures up to 14 mm in diameter.\",\n          \"Mild thickening of the cecal base is compatible with secondary inflammation.\"\n        ],\n        \"reason\": \"The report provides measurements and describes extension of inflammation to the cecal base, defining local extent of disease.\"\n      }\n    ],\n    \"aggregate\": \"sufficiently_answered\",\n    \"aggregate_reason\": \"The CT fully characterizes the presence, local extent, and complication status of acute appendicitis, addressing all defined information needs for management planning.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis is well-suited to delineate appendiceal inflammation, anatomic extent, and complications of acute appendicitis.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not specify whether imaging was also intended to screen for alternative or additional intra-abdominal pathology beyond appendicitis, though no such abnormalities were described.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788193719-XhHozBWHuryZKiwWKbHK",
+            "usage": {
+              "completion_tokens": 2443,
+              "prompt_tokens": 5300,
+              "total_tokens": 7743,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1920,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.028895,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.028895,
+                "upstream_inference_prompt_cost": 0.004465,
+                "upstream_inference_completions_cost": 0.02443
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute localized right-sided abdominal pain syndrome of several days’ duration without a clear source on history, exam, or labs.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation",
+            "status": "established",
+            "evidence": [
+              "___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days. No fevers, chills, n/v, or change in bowel  movements. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.",
+              "ABD: Soft, mildly distended, well healed cholecystectomy scars,  mild tenderness to deep palpation RUQ."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is no current clinical or laboratory evidence of sepsis or hemodynamic instability.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "physiologic state",
+            "status": "established",
+            "evidence": [
+              "Vitals: Temp 97.7, HR 71, BP 135/76, RR 16, 100% Room air GEN: A&O, NAD",
+              "Lactate: 1.9 mmol/L (ref 0.5-2.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is no laboratory evidence of urinary tract infection or hematuria to explain the right-sided abdominal pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "organ system level",
+            "status": "established",
+            "evidence": [
+              "Leukocytes: NEG.",
+              "Nitrite: NEG."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "An acute intra-abdominal inflammatory surgical condition such as appendicitis is a leading concern despite relatively benign labs and vitals.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "differential diagnosis",
+            "status": "likely",
+            "evidence": [
+              "now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.",
+              "There is no clear extra-abdominal or urinary source on exam or urinalysis."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Prior laparoscopic cholecystectomy raises a background possibility of postoperative or biliary-tract–related pain but without current supporting signs of biliary pathology.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism",
+            "status": "suspected",
+            "evidence": [
+              "___ F with prior lap cholecystectomy, now with new RLQ pain for 5 days.",
+              "The liver, spleen, pancreas, adrenal glands and kidneys appear grossly unremarkable.  The patient is status post cholecystectomy."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What is the intra-abdominal source of this patient’s new, localized right-sided abdominal pain?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The contrast-enhanced CT abdomen and pelvis provided diagnostic visualization of the appendix and surrounding structures, demonstrating acute appendicitis with an appendicolith and surrounding inflammatory changes and no evidence of perforation or abscess, thereby identifying the intra-abdominal source of pain and clarifying the absence of major complications.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.",
+            "evidence_stream_2": "now with new RLQ pain for 5 days. Pain has been steadily worsening and is sharp, localized in quality. Worse with movement.",
+            "reason": "Imaging evidence of acute appendicitis is concordant with the clinical presentation of localized right-sided abdominal pain and concern for a surgical acute abdomen."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "An acute intra-abdominal inflammatory surgical condition such as appendicitis is a leading concern despite relatively benign labs and vitals.",
+          "reason": "The CT demonstrated a fluid-filled, distended, hyperemic appendix with surrounding inflammatory fat stranding and an appendicolith without perforation or abscess, converting suspected intra-abdominal surgical pathology into established acute uncomplicated appendicitis as the pain source."
+        },
+        "current_question": {
+          "primary": "What is the current anatomic extent and complication status of this patient’s now-established acute appendicitis to guide definitive management?",
+          "target": "inflamed appendix and surrounding intra-abdominal structures, including pericecal fat and adjacent bowel, with attention to perforation, abscess, free air, or obstruction",
+          "type": "severity_or_extent",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If imaging confirms localized, non-perforated appendicitis without abscess or obstruction, the team will proceed with standard appendectomy or appropriate nonoperative management for uncomplicated appendicitis.",
+          "negative_answer_changes": "If imaging reveals perforation, abscess, free air, or more extensive inflammatory spread than expected, management will escalate to urgent operative intervention, possible drainage, and broader perioperative planning.",
+          "secondary_questions": [
+            "Is there imaging evidence of perforation, abscess, free air, or bowel obstruction complicating the acute appendicitis?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_app_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the appendix and adjacent cecum, pericecal fat, and surrounding bowel loops.",
+              "why_required": "Clear assessment of the inflamed appendix and nearby structures is necessary to characterize disease extent and detect local complications."
+            },
+            {
+              "requirement_key": "req_appendicitis_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and characteristics of acute appendicitis, including luminal distention, wall hyperemia, fat stranding, and appendicolith.",
+              "why_required": "Confirming and characterizing appendicitis is essential to anchor the diagnosis and tailor management to uncomplicated versus complicated disease."
+            },
+            {
+              "requirement_key": "req_complications_now",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, absence, and characterization of complications such as perforation, abscess formation, free air, or obstruction.",
+              "why_required": "Detecting perforation or abscess alters urgency, need for drainage, antibiotic strategy, and surgical approach."
+            },
+            {
+              "requirement_key": "req_anatomic_extent",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Anatomic extent of inflammatory changes involving the cecal base and surrounding tissues.",
+              "why_required": "Understanding how far inflammation extends informs operative planning and risk assessment."
+            }
+          ],
+          "evidence": [
+            "Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.",
+            "No extraluminal air or evidence of abscess formation is seen.  Mild thickening of the cecal base is compatible with secondary inflammation."
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_app_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "sufficiently_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.",
+                "Loops of small and large bowel are normal in size and caliber."
+              ],
+              "reason": "The CT clearly visualizes the appendix and adjacent bowel, allowing assessment of the primary target and local surroundings."
+            },
+            {
+              "requirement_key": "req_appendicitis_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "sufficiently_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "Within the abdomen and pelvis, the appendix is fluid filled and distended with hyperemia and surrounding inflammatory fat stranding.",
+                "An intraluminal hyperdensity is consistent with an appendicolith (601B:20).  At this level, the appendix measures up to 14 mm in diameter."
+              ],
+              "reason": "Findings of a dilated, hyperemic appendix with fat stranding and appendicolith establish the presence of acute appendicitis and characterize its features."
+            },
+            {
+              "requirement_key": "req_complications_now",
+              "requirement_id": "complication_presence_or_character",
+              "status": "sufficiently_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "No extraluminal air or evidence of abscess formation is seen.",
+                "No free air or lymphadenopathy is seen."
+              ],
+              "reason": "CT specifically comments on the absence of abscess, extraluminal air, and free air, adequately excluding major complications at this time."
+            },
+            {
+              "requirement_key": "req_anatomic_extent",
+              "requirement_id": "severity_or_extent",
+              "status": "sufficiently_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "At this level, the appendix measures up to 14 mm in diameter.",
+                "Mild thickening of the cecal base is compatible with secondary inflammation."
+              ],
+              "reason": "The report provides measurements and describes extension of inflammation to the cecal base, defining local extent of disease."
+            }
+          ],
+          "aggregate": "sufficiently_answered",
+          "aggregate_reason": "The CT fully characterizes the presence, local extent, and complication status of acute appendicitis, addressing all defined information needs for management planning."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis is well-suited to delineate appendiceal inflammation, anatomic extent, and complications of acute appendicitis.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not specify whether imaging was also intended to screen for alternative or additional intra-abdominal pathology beyond appendicitis, though no such abnormalities were described."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

@@ -1,0 +1,653 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 25033877,
+  "source_path": "results/annotation_experiment/full/appendicitis_25033877.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (RENAL TRANSPLANT U.S. RIGHT)",
+      "request_prompt_sha256": "7bfd9d7a582665902e7165ad876f16a6124d9db144611b3dc8c3762919ff7200",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "7bfd9d7a582665902e7165ad876f16a6124d9db144611b3dc8c3762919ff7200",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has a recently transplanted kidney and now presents with sepsis and focal tenderness over the renal graft.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall clinical picture",
+                  "status": "established",
+                  "evidence": [
+                    "“___ y/o female s/p 3 kidney transplants, the most recent in ___ of last year… She presented… with 3 days of nausea/vomiting/diarrhea and abdominal pain… She was apparently febrile to 103 earlier in the day as well.”",
+                    "“Abd: Soft. ND.  TTP over graft and lower quadrants… White Blood Cells: 17.8 K/uL… 69%N, 29% bands.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is concern for acute pathology of the renal transplant such as pyelonephritis, rejection, or vascular compromise contributing to her septic presentation.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "disease process",
+                  "status": "suspected",
+                  "evidence": [
+                    "“she has had recurrant UTI/pyelonephritis since her recent transplant and is on chronic supressive treatment with bactrim.”",
+                    "“CT OSH with PO contrast: … Enlarged and edematous transplant kidney.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The outlying CT suggested possible appendicitis and complex intrapelvic fluid, so the precise source of sepsis (appendix vs renal graft vs other intra-abdominal focus) is unclear.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "competing source frame",
+                  "status": "suspected",
+                  "evidence": [
+                    "“CT OSH with PO contrast: likely ____ with 11mm dilated appendix with fat stranding… Complex intrapelvic free fluid.”",
+                    "“she has had recurrant UTI/pyelonephritis since her recent transplant”"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient is hemodynamically fragile with recent hypotension requiring 6 liters of IV fluids and has a metabolic acidosis, increasing concern that the transplant kidney may be at risk.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "physiologic severity",
+                  "status": "established",
+                  "evidence": [
+                    "“At the ___ ER she was given 6 liters of NS for hypotension prior to transfer.”",
+                    "“Bicarbonate: 9.0 mEq/L (ref 22.0-32.0)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The prior chest radiograph excludes a primary thoracic source for her current sepsis but does not address renal graft status.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "source exclusion",
+                  "status": "established",
+                  "evidence": [
+                    "“The lungs are well expanded and clear… No pleural effusion or pneumothorax is present.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No previous decision-specific question existed before this first order."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision point; assumptions are newly established from the baseline presentation and prior CT and chest radiograph."
+              },
+              "current_question": {
+                "primary": "Is there acute pathology involving the renal transplant graft (such as pyelonephritis, rejection, or vascular compromise) that could be contributing to her septic presentation and requires targeted management?",
+                "target": "renal transplant graft and its perfusion and parenchymal status",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would prompt management directed at the graft (e.g., adjustment of immunosuppression, antibiotics directed at pyelonephritis, possible biopsy, or vascular intervention) and influence risk–benefit decisions for surgery on other suspected sources such as possible appendicitis.",
+                "negative_answer_changes": "Would make the renal graft a less likely primary source of sepsis and support prioritizing alternative intra-abdominal sources (e.g., appendicitis, pelvic process) and standard sepsis management while continuing routine graft monitoring.",
+                "secondary_questions": [
+                  "Is there sonographic evidence that the transplant renal artery or vein is compromised (e.g., thrombosis, high-resistance flow) in the setting of hypotension and sepsis?",
+                  "Is there hydronephrosis or perinephric fluid collection around the transplant kidney suggesting obstruction, urinoma, abscess, or other complication?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_visual",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the renal transplant kidney, collecting system, and perinephric region.",
+                    "why_required": "The graft and surrounding tissues must be seen clearly to judge for parenchymal changes, obstruction, or collections."
+                  },
+                  {
+                    "requirement_key": "req_parenchyma",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of parenchymal changes of the transplant kidney such as enlargement, altered echogenicity, or findings suggesting pyelonephritis or acute rejection.",
+                    "why_required": "Identifying or excluding acute parenchymal pathology is central to deciding whether the graft is a major contributor to sepsis."
+                  },
+                  {
+                    "requirement_key": "req_vascular",
+                    "id": "device_or_intervention_function",
+                    "other_proposed_dimension": "",
+                    "dimension": "Assessment of transplant renal artery and vein Doppler waveforms for patency and resistance, indicating adequate or impaired graft perfusion.",
+                    "why_required": "Vascular compromise can threaten graft viability and worsen sepsis-related kidney dysfunction, requiring urgent intervention."
+                  },
+                  {
+                    "requirement_key": "req_obstruction_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, absence, and characterization of hydronephrosis or perinephric fluid collections around the transplant kidney.",
+                    "why_required": "Obstruction, urinoma, or abscess would represent treatable complications and potential septic foci involving the graft."
+                  }
+                ],
+                "evidence": [
+                  "“___ y/o female s/p 3 kidney transplants, the most recent in  ___ of last year… she has had recurrant UTI/pyelonephritis since her recent transplant and is on chronic supressive treatment with bactrim.”",
+                  "“CT OSH with PO contrast: … Enlarged and edematous transplant kidney.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_visual",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“CT OSH with PO contrast: … Enlarged and edematous transplant kidney.”"
+                    ],
+                    "reason": "An outside CT notes an enlarged, edematous transplant kidney but provides limited detail and is not a focused current assessment; no prior study at this institution evaluates real-time graft appearance."
+                  },
+                  {
+                    "requirement_key": "req_parenchyma",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“CT OSH with PO contrast: … Enlarged and edematous transplant kidney.”"
+                    ],
+                    "reason": "Outside CT suggests abnormal parenchyma (enlarged and edematous), supporting concern for acute graft pathology, but does not differentiate etiology or provide temporal evolution, so the question is not fully answered."
+                  },
+                  {
+                    "requirement_key": "req_vascular",
+                    "requirement_id": "device_or_intervention_function",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“CT OSH with PO contrast: … Enlarged and edematous transplant kidney.”"
+                    ],
+                    "reason": "No pre-order imaging or data describe transplant renal artery or vein patency or Doppler characteristics."
+                  },
+                  {
+                    "requirement_key": "req_obstruction_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“CT OSH with PO contrast: … Complex intrapelvic free fluid.”"
+                    ],
+                    "reason": "Outside CT reports complex intrapelvic free fluid but does not localize it specifically to perinephric versus other pelvic compartments or assess the collecting system, so potential graft-related collections or obstruction remain incompletely evaluated."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "An outside CT raises concern for abnormal graft parenchyma and pelvic fluid but does not provide focused, current assessment of graft structure, perfusion, obstruction, or specific perinephric complications."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A dedicated renal transplant ultrasound with Doppler can directly evaluate graft morphology, parenchymal changes, vascular patency and resistance, hydronephrosis, and perinephric collections in a hemodynamically unstable, septic transplant recipient.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The relative priority between evaluating the suspected appendicitis versus the transplant graft source of sepsis is not fully specified by the chart, and the exact differential among pyelonephritis, rejection, and ischemic injury as the leading graft concern remains somewhat ambiguous."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has a recently transplanted kidney and now presents with sepsis and focal tenderness over the renal graft.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical picture\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“___ y/o female s/p 3 kidney transplants, the most recent in ___ of last year… She presented… with 3 days of nausea/vomiting/diarrhea and abdominal pain… She was apparently febrile to 103 earlier in the day as well.”\",\n        \"“Abd: Soft. ND.  TTP over graft and lower quadrants… White Blood Cells: 17.8 K/uL… 69%N, 29% bands.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is concern for acute pathology of the renal transplant such as pyelonephritis, rejection, or vascular compromise contributing to her septic presentation.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“she has had recurrant UTI/pyelonephritis since her recent transplant and is on chronic supressive treatment with bactrim.”\",\n        \"“CT OSH with PO contrast: … Enlarged and edematous transplant kidney.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The outlying CT suggested possible appendicitis and complex intrapelvic fluid, so the precise source of sepsis (appendix vs renal graft vs other intra-abdominal focus) is unclear.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing source frame\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“CT OSH with PO contrast: likely ____ with 11mm dilated appendix with fat stranding… Complex intrapelvic free fluid.”\",\n        \"“she has had recurrant UTI/pyelonephritis since her recent transplant”\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient is hemodynamically fragile with recent hypotension requiring 6 liters of IV fluids and has a metabolic acidosis, increasing concern that the transplant kidney may be at risk.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic severity\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“At the ___ ER she was given 6 liters of NS for hypotension prior to transfer.”\",\n        \"“Bicarbonate: 9.0 mEq/L (ref 22.0-32.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The prior chest radiograph excludes a primary thoracic source for her current sepsis but does not address renal graft status.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"source exclusion\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“The lungs are well expanded and clear… No pleural effusion or pneumothorax is present.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No previous decision-specific question existed before this first order.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision point; assumptions are newly established from the baseline presentation and prior CT and chest radiograph.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there acute pathology involving the renal transplant graft (such as pyelonephritis, rejection, or vascular compromise) that could be contributing to her septic presentation and requires targeted management?\",\n    \"target\": \"renal transplant graft and its perfusion and parenchymal status\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would prompt management directed at the graft (e.g., adjustment of immunosuppression, antibiotics directed at pyelonephritis, possible biopsy, or vascular intervention) and influence risk–benefit decisions for surgery on other suspected sources such as possible appendicitis.\",\n    \"negative_answer_changes\": \"Would make the renal graft a less likely primary source of sepsis and support prioritizing alternative intra-abdominal sources (e.g., appendicitis, pelvic process) and standard sepsis management while continuing routine graft monitoring.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence that the transplant renal artery or vein is compromised (e.g., thrombosis, high-resistance flow) in the setting of hypotension and sepsis?\",\n      \"Is there hydronephrosis or perinephric fluid collection around the transplant kidney suggesting obstruction, urinoma, abscess, or other complication?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_visual\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the renal transplant kidney, collecting system, and perinephric region.\",\n        \"why_required\": \"The graft and surrounding tissues must be seen clearly to judge for parenchymal changes, obstruction, or collections.\"\n      },\n      {\n        \"requirement_key\": \"req_parenchyma\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of parenchymal changes of the transplant kidney such as enlargement, altered echogenicity, or findings suggesting pyelonephritis or acute rejection.\",\n        \"why_required\": \"Identifying or excluding acute parenchymal pathology is central to deciding whether the graft is a major contributor to sepsis.\"\n      },\n      {\n        \"requirement_key\": \"req_vascular\",\n        \"id\": \"device_or_intervention_function\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assessment of transplant renal artery and vein Doppler waveforms for patency and resistance, indicating adequate or impaired graft perfusion.\",\n        \"why_required\": \"Vascular compromise can threaten graft viability and worsen sepsis-related kidney dysfunction, requiring urgent intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_obstruction_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, absence, and characterization of hydronephrosis or perinephric fluid collections around the transplant kidney.\",\n        \"why_required\": \"Obstruction, urinoma, or abscess would represent treatable complications and potential septic foci involving the graft.\"\n      }\n    ],\n    \"evidence\": [\n      \"“___ y/o female s/p 3 kidney transplants, the most recent in  ___ of last year… she has had recurrant UTI/pyelonephritis since her recent transplant and is on chronic supressive treatment with bactrim.”\",\n      \"“CT OSH with PO contrast: … Enlarged and edematous transplant kidney.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_visual\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“CT OSH with PO contrast: … Enlarged and edematous transplant kidney.”\"\n        ],\n        \"reason\": \"An outside CT notes an enlarged, edematous transplant kidney but provides limited detail and is not a focused current assessment; no prior study at this institution evaluates real-time graft appearance.\"\n      },\n      {\n        \"requirement_key\": \"req_parenchyma\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“CT OSH with PO contrast: … Enlarged and edematous transplant kidney.”\"\n        ],\n        \"reason\": \"Outside CT suggests abnormal parenchyma (enlarged and edematous), supporting concern for acute graft pathology, but does not differentiate etiology or provide temporal evolution, so the question is not fully answered.\"\n      },\n      {\n        \"requirement_key\": \"req_vascular\",\n        \"requirement_id\": \"device_or_intervention_function\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“CT OSH with PO contrast: … Enlarged and edematous transplant kidney.”\"\n        ],\n        \"reason\": \"No pre-order imaging or data describe transplant renal artery or vein patency or Doppler characteristics.\"\n      },\n      {\n        \"requirement_key\": \"req_obstruction_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“CT OSH with PO contrast: … Complex intrapelvic free fluid.”\"\n        ],\n        \"reason\": \"Outside CT reports complex intrapelvic free fluid but does not localize it specifically to perinephric versus other pelvic compartments or assess the collecting system, so potential graft-related collections or obstruction remain incompletely evaluated.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"An outside CT raises concern for abnormal graft parenchyma and pelvic fluid but does not provide focused, current assessment of graft structure, perfusion, obstruction, or specific perinephric complications.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A dedicated renal transplant ultrasound with Doppler can directly evaluate graft morphology, parenchymal changes, vascular patency and resistance, hydronephrosis, and perinephric collections in a hemodynamically unstable, septic transplant recipient.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The relative priority between evaluating the suspected appendicitis versus the transplant graft source of sepsis is not fully specified by the chart, and the exact differential among pyelonephritis, rejection, and ischemic injury as the leading graft concern remains somewhat ambiguous.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788226260-NbDK3RgzdHlWK2IpJAEj",
+            "usage": {
+              "completion_tokens": 2381,
+              "prompt_tokens": 3481,
+              "total_tokens": 5862,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02816125,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02816125,
+                "upstream_inference_prompt_cost": 0.00435125,
+                "upstream_inference_completions_cost": 0.02381
+              }
+            }
+          },
+          "validation_errors": [
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "4724af10884485c348a235e9702cb0f8ea12e868d8a03152aba209368a99d496",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has a functioning right iliac fossa renal allograft placed during her most recent kidney transplant and is currently dependent on this graft for renal function.",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "organ-level intervention status",
+                  "status": "established",
+                  "evidence": [
+                    "___ y/o female s/p 3 kidney transplants, the most recent in  ___ of last year.",
+                    "Enlarged and edematous transplant kidney."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is currently septic or severely systemically ill with suspected intraabdominal source and possible shock.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "whole-patient syndrome",
+                  "status": "likely",
+                  "evidence": [
+                    "She presented to ___ earlier in the day with 3 days of nausea/vomiting/diarrhea and abdominal pain. She attests to anorexia. SHe was apparently febrile to 103 earlier in the day as well.",
+                    "At the ___ ER she was given 6 liters of NS for hypotension prior to transfer. ... White Blood Cells: 17.8 K/uL (ref 4.0-11.0) ... Bands: 26.0 % (ref 0.0-5.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is an acute abdominal process involving the right lower quadrant, including probable acute appendicitis and complex intrapelvic fluid, with associated enlargement and edema of the renal allograft.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "regional disease process",
+                  "status": "likely",
+                  "evidence": [
+                    "CT OSH with PO contrast: likely ____ with 11mm dilated appendix with fat stranding.",
+                    "Enlarged and edematous transplant kidney.  Large R adnexal cyst likely from R ovary.  Complex intrapelvic free fluid."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The renal allograft may be at risk for acute dysfunction from ischemia, infection, obstruction, or rejection in the setting of sepsis and peri-graft inflammatory changes.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "Enlarged and edematous transplant kidney.",
+                    "she has had recurrant UTI/pyelonephritis since her recent transplant and is on chronic supressive treatment with bactrim."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is meaningful concern that the renal allograft may have impaired perfusion or collecting system obstruction that could alter urgent management decisions.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "organ-level severity and risk",
+                  "status": "suspected",
+                  "evidence": [
+                    "Enlarged and edematous transplant kidney.",
+                    "At the ___ ER she was given 6 liters of NS for hypotension prior to transfer."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "This is the first decision point so there is no previous question or imaging trajectory to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point so all assumptions are being established de novo from the available history, exam, labs, and prior CT description."
+              },
+              "current_question": {
+                "primary": "Is the right renal allograft currently structurally and hemodynamically intact, without significant vascular compromise or collecting system obstruction that would change urgent management in this septic abdominal presentation?",
+                "target": "right renal transplant (parenchyma, perfusion, and collecting system including ureteral outflow)",
+                "type": "intervention_or_device_state",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If the transplant shows impaired perfusion, significant hydronephrosis, or peri-graft collection, clinicians may escalate renal-directed interventions (e.g., modify immunosuppression, consult transplant surgery or interventional radiology urgently, adjust hemodynamic targets, or plan operative strategy around graft protection).",
+                "negative_answer_changes": "If the transplant appears well perfused without obstruction or major peri-graft complication, clinicians can prioritize management of the suspected appendicitis/intraabdominal sepsis with less concern for immediate graft failure as a procedural or hemodynamic constraint.",
+                "secondary_questions": [
+                  "Is there sonographic evidence of peri-graft fluid collection, such as hematoma, urinoma, or abscess, that could represent a complication of the renal transplant in the context of this acute abdomen?",
+                  "Does Doppler evaluation suggest renal vein thrombosis or significant arterial flow abnormality of the renal allograft contributing to acute kidney injury risk in this unstable patient?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_graft_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and basic structural assessment of the right renal transplant parenchyma and collecting system, including size, echogenicity, and presence of hydronephrosis.",
+                    "why_required": "Confirming that the graft can be adequately seen and structurally assessed is necessary before any conclusions can be drawn about its integrity or obstruction."
+                  },
+                  {
+                    "requirement_key": "req_vascular_status",
+                    "id": "device_or_intervention_function",
+                    "other_proposed_dimension": "",
+                    "dimension": "Doppler assessment of arterial and venous flow within the right renal allograft to evaluate for vascular compromise (e.g., thrombosis, markedly abnormal resistive indices).",
+                    "why_required": "Determining whether the graft has adequate blood flow is critical to rule in or out acute vascular complications that might require emergent intervention."
+                  },
+                  {
+                    "requirement_key": "req_obstruction_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of significant collecting system dilation or ureteral obstruction in the renal transplant.",
+                    "why_required": "Obstruction would represent a reversible cause of graft dysfunction and could change immediate management, such as need for decompression."
+                  },
+                  {
+                    "requirement_key": "req_peri_graft_fluid",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Characterization of any peri-graft fluid collections adjacent to the right renal transplant (size, location, simple vs complex).",
+                    "why_required": "Peri-graft collections might indicate urinoma, hematoma, or abscess that could both explain symptoms and endanger graft function, influencing need and timing of drainage or surgery."
+                  }
+                ],
+                "evidence": [
+                  "Enlarged and edematous transplant kidney.",
+                  "she has had recurrant UTI/pyelonephritis since her recent transplant and is on chronic supressive treatment with bactrim."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_graft_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT OSH with PO contrast: ... Enlarged and edematous transplant kidney."
+                    ],
+                    "reason": "The outside CT establishes that the transplant kidney is enlarged and edematous but does not provide current, modality-appropriate sonographic visualization or detailed structural assessment at this institution."
+                  },
+                  {
+                    "requirement_key": "req_vascular_status",
+                    "requirement_id": "device_or_intervention_function",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "At the ___ ER she was given 6 liters of NS for hypotension prior to transfer."
+                    ],
+                    "reason": "No prior study has assessed graft arterial or venous flow or resistive indices; CT with oral contrast and chest radiograph do not evaluate real-time vascular function of the allograft."
+                  },
+                  {
+                    "requirement_key": "req_obstruction_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Enlarged and edematous transplant kidney."
+                    ],
+                    "reason": "The CT mentions enlargement and edema but does not clearly describe collecting system dilation or ureteral obstruction, leaving the presence of obstruction unresolved."
+                  },
+                  {
+                    "requirement_key": "req_peri_graft_fluid",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "Complex intrapelvic free fluid.",
+                      "Enlarged and edematous transplant kidney."
+                    ],
+                    "reason": "The CT identifies complex intrapelvic free fluid but does not specifically localize or characterize fluid in relation to the transplant capsule, so peri-graft collection as a transplant-specific complication remains incompletely characterized."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Existing CT and chest radiograph provide limited, indirect information about the renal transplant; they do not adequately address real-time graft structure, perfusion, or obstruction status needed for acute decision-making."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A dedicated right renal transplant ultrasound with Doppler can visualize the allograft, assess for hydronephrosis, detect peri-graft collections, and evaluate arterial and venous flow, directly addressing graft integrity and function.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The precise relative contributions of appendicitis, possible pelvic abscess, and transplant-related pathology to the patient’s sepsis cannot be fully disentangled from the available chart, so the balance between evaluating graft status versus other abdominal sources remains somewhat inferential."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has a functioning right iliac fossa renal allograft placed during her most recent kidney transplant and is currently dependent on this graft for renal function.\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level intervention status\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"___ y/o female s/p 3 kidney transplants, the most recent in  ___ of last year.\",\n        \"Enlarged and edematous transplant kidney.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is currently septic or severely systemically ill with suspected intraabdominal source and possible shock.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"whole-patient syndrome\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"She presented to ___ earlier in the day with 3 days of nausea/vomiting/diarrhea and abdominal pain. She attests to anorexia. SHe was apparently febrile to 103 earlier in the day as well.\",\n        \"At the ___ ER she was given 6 liters of NS for hypotension prior to transfer. ... White Blood Cells: 17.8 K/uL (ref 4.0-11.0) ... Bands: 26.0 % (ref 0.0-5.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is an acute abdominal process involving the right lower quadrant, including probable acute appendicitis and complex intrapelvic fluid, with associated enlargement and edema of the renal allograft.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"regional disease process\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"CT OSH with PO contrast: likely ____ with 11mm dilated appendix with fat stranding.\",\n        \"Enlarged and edematous transplant kidney.  Large R adnexal cyst likely from R ovary.  Complex intrapelvic free fluid.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The renal allograft may be at risk for acute dysfunction from ischemia, infection, obstruction, or rejection in the setting of sepsis and peri-graft inflammatory changes.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Enlarged and edematous transplant kidney.\",\n        \"she has had recurrant UTI/pyelonephritis since her recent transplant and is on chronic supressive treatment with bactrim.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is meaningful concern that the renal allograft may have impaired perfusion or collecting system obstruction that could alter urgent management decisions.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level severity and risk\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Enlarged and edematous transplant kidney.\",\n        \"At the ___ ER she was given 6 liters of NS for hypotension prior to transfer.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"This is the first decision point so there is no previous question or imaging trajectory to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point so all assumptions are being established de novo from the available history, exam, labs, and prior CT description.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is the right renal allograft currently structurally and hemodynamically intact, without significant vascular compromise or collecting system obstruction that would change urgent management in this septic abdominal presentation?\",\n    \"target\": \"right renal transplant (parenchyma, perfusion, and collecting system including ureteral outflow)\",\n    \"type\": \"intervention_or_device_state\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If the transplant shows impaired perfusion, significant hydronephrosis, or peri-graft collection, clinicians may escalate renal-directed interventions (e.g., modify immunosuppression, consult transplant surgery or interventional radiology urgently, adjust hemodynamic targets, or plan operative strategy around graft protection).\",\n    \"negative_answer_changes\": \"If the transplant appears well perfused without obstruction or major peri-graft complication, clinicians can prioritize management of the suspected appendicitis/intraabdominal sepsis with less concern for immediate graft failure as a procedural or hemodynamic constraint.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of peri-graft fluid collection, such as hematoma, urinoma, or abscess, that could represent a complication of the renal transplant in the context of this acute abdomen?\",\n      \"Does Doppler evaluation suggest renal vein thrombosis or significant arterial flow abnormality of the renal allograft contributing to acute kidney injury risk in this unstable patient?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_graft_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and basic structural assessment of the right renal transplant parenchyma and collecting system, including size, echogenicity, and presence of hydronephrosis.\",\n        \"why_required\": \"Confirming that the graft can be adequately seen and structurally assessed is necessary before any conclusions can be drawn about its integrity or obstruction.\"\n      },\n      {\n        \"requirement_key\": \"req_vascular_status\",\n        \"id\": \"device_or_intervention_function\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Doppler assessment of arterial and venous flow within the right renal allograft to evaluate for vascular compromise (e.g., thrombosis, markedly abnormal resistive indices).\",\n        \"why_required\": \"Determining whether the graft has adequate blood flow is critical to rule in or out acute vascular complications that might require emergent intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_obstruction_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of significant collecting system dilation or ureteral obstruction in the renal transplant.\",\n        \"why_required\": \"Obstruction would represent a reversible cause of graft dysfunction and could change immediate management, such as need for decompression.\"\n      },\n      {\n        \"requirement_key\": \"req_peri_graft_fluid\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of any peri-graft fluid collections adjacent to the right renal transplant (size, location, simple vs complex).\",\n        \"why_required\": \"Peri-graft collections might indicate urinoma, hematoma, or abscess that could both explain symptoms and endanger graft function, influencing need and timing of drainage or surgery.\"\n      }\n    ],\n    \"evidence\": [\n      \"Enlarged and edematous transplant kidney.\",\n      \"she has had recurrant UTI/pyelonephritis since her recent transplant and is on chronic supressive treatment with bactrim.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_graft_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT OSH with PO contrast: ... Enlarged and edematous transplant kidney.\"\n        ],\n        \"reason\": \"The outside CT establishes that the transplant kidney is enlarged and edematous but does not provide current, modality-appropriate sonographic visualization or detailed structural assessment at this institution.\"\n      },\n      {\n        \"requirement_key\": \"req_vascular_status\",\n        \"requirement_id\": \"device_or_intervention_function\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"At the ___ ER she was given 6 liters of NS for hypotension prior to transfer.\"\n        ],\n        \"reason\": \"No prior study has assessed graft arterial or venous flow or resistive indices; CT with oral contrast and chest radiograph do not evaluate real-time vascular function of the allograft.\"\n      },\n      {\n        \"requirement_key\": \"req_obstruction_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Enlarged and edematous transplant kidney.\"\n        ],\n        \"reason\": \"The CT mentions enlargement and edema but does not clearly describe collecting system dilation or ureteral obstruction, leaving the presence of obstruction unresolved.\"\n      },\n      {\n        \"requirement_key\": \"req_peri_graft_fluid\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"Complex intrapelvic free fluid.\",\n          \"Enlarged and edematous transplant kidney.\"\n        ],\n        \"reason\": \"The CT identifies complex intrapelvic free fluid but does not specifically localize or characterize fluid in relation to the transplant capsule, so peri-graft collection as a transplant-specific complication remains incompletely characterized.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Existing CT and chest radiograph provide limited, indirect information about the renal transplant; they do not adequately address real-time graft structure, perfusion, or obstruction status needed for acute decision-making.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A dedicated right renal transplant ultrasound with Doppler can visualize the allograft, assess for hydronephrosis, detect peri-graft collections, and evaluate arterial and venous flow, directly addressing graft integrity and function.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The precise relative contributions of appendicitis, possible pelvic abscess, and transplant-related pathology to the patient’s sepsis cannot be fully disentangled from the available chart, so the balance between evaluating graft status versus other abdominal sources remains somewhat inferential.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788226282-CSjObJVnCoiBneJJqn2I",
+            "usage": {
+              "completion_tokens": 2417,
+              "prompt_tokens": 3517,
+              "total_tokens": 5934,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3328,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02482225,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02482225,
+                "upstream_inference_prompt_cost": 0.00065225,
+                "upstream_inference_completions_cost": 0.02417
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has a functioning right iliac fossa renal allograft placed during her most recent kidney transplant and is currently dependent on this graft for renal function.",
+            "type": "intervention_or_device_state",
+            "other_proposed_type": "",
+            "level": "organ-level intervention status",
+            "status": "established",
+            "evidence": [
+              "___ y/o female s/p 3 kidney transplants, the most recent in  ___ of last year.",
+              "Enlarged and edematous transplant kidney."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is currently septic or severely systemically ill with suspected intraabdominal source and possible shock.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "whole-patient syndrome",
+            "status": "likely",
+            "evidence": [
+              "She presented to ___ earlier in the day with 3 days of nausea/vomiting/diarrhea and abdominal pain. She attests to anorexia. SHe was apparently febrile to 103 earlier in the day as well.",
+              "At the ___ ER she was given 6 liters of NS for hypotension prior to transfer. ... White Blood Cells: 17.8 K/uL (ref 4.0-11.0) ... Bands: 26.0 % (ref 0.0-5.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is an acute abdominal process involving the right lower quadrant, including probable acute appendicitis and complex intrapelvic fluid, with associated enlargement and edema of the renal allograft.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "regional disease process",
+            "status": "likely",
+            "evidence": [
+              "CT OSH with PO contrast: likely ____ with 11mm dilated appendix with fat stranding.",
+              "Enlarged and edematous transplant kidney.  Large R adnexal cyst likely from R ovary.  Complex intrapelvic free fluid."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The renal allograft may be at risk for acute dysfunction from ischemia, infection, obstruction, or rejection in the setting of sepsis and peri-graft inflammatory changes.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "pathophysiologic mechanism",
+            "status": "suspected",
+            "evidence": [
+              "Enlarged and edematous transplant kidney.",
+              "she has had recurrant UTI/pyelonephritis since her recent transplant and is on chronic supressive treatment with bactrim."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "There is meaningful concern that the renal allograft may have impaired perfusion or collecting system obstruction that could alter urgent management decisions.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "organ-level severity and risk",
+            "status": "suspected",
+            "evidence": [
+              "Enlarged and edematous transplant kidney.",
+              "At the ___ ER she was given 6 liters of NS for hypotension prior to transfer."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "This is the first decision point so there is no previous question or imaging trajectory to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point so all assumptions are being established de novo from the available history, exam, labs, and prior CT description."
+        },
+        "current_question": {
+          "primary": "Is the right renal allograft currently structurally and hemodynamically intact, without significant vascular compromise or collecting system obstruction that would change urgent management in this septic abdominal presentation?",
+          "target": "right renal transplant (parenchyma, perfusion, and collecting system including ureteral outflow)",
+          "type": "intervention_or_device_state",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If the transplant shows impaired perfusion, significant hydronephrosis, or peri-graft collection, clinicians may escalate renal-directed interventions (e.g., modify immunosuppression, consult transplant surgery or interventional radiology urgently, adjust hemodynamic targets, or plan operative strategy around graft protection).",
+          "negative_answer_changes": "If the transplant appears well perfused without obstruction or major peri-graft complication, clinicians can prioritize management of the suspected appendicitis/intraabdominal sepsis with less concern for immediate graft failure as a procedural or hemodynamic constraint.",
+          "secondary_questions": [
+            "Is there sonographic evidence of peri-graft fluid collection, such as hematoma, urinoma, or abscess, that could represent a complication of the renal transplant in the context of this acute abdomen?",
+            "Does Doppler evaluation suggest renal vein thrombosis or significant arterial flow abnormality of the renal allograft contributing to acute kidney injury risk in this unstable patient?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_graft_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization and basic structural assessment of the right renal transplant parenchyma and collecting system, including size, echogenicity, and presence of hydronephrosis.",
+              "why_required": "Confirming that the graft can be adequately seen and structurally assessed is necessary before any conclusions can be drawn about its integrity or obstruction."
+            },
+            {
+              "requirement_key": "req_vascular_status",
+              "id": "device_or_intervention_function",
+              "other_proposed_dimension": "",
+              "dimension": "Doppler assessment of arterial and venous flow within the right renal allograft to evaluate for vascular compromise (e.g., thrombosis, markedly abnormal resistive indices).",
+              "why_required": "Determining whether the graft has adequate blood flow is critical to rule in or out acute vascular complications that might require emergent intervention."
+            },
+            {
+              "requirement_key": "req_obstruction_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of significant collecting system dilation or ureteral obstruction in the renal transplant.",
+              "why_required": "Obstruction would represent a reversible cause of graft dysfunction and could change immediate management, such as need for decompression."
+            },
+            {
+              "requirement_key": "req_peri_graft_fluid",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Characterization of any peri-graft fluid collections adjacent to the right renal transplant (size, location, simple vs complex).",
+              "why_required": "Peri-graft collections might indicate urinoma, hematoma, or abscess that could both explain symptoms and endanger graft function, influencing need and timing of drainage or surgery."
+            }
+          ],
+          "evidence": [
+            "Enlarged and edematous transplant kidney.",
+            "she has had recurrant UTI/pyelonephritis since her recent transplant and is on chronic supressive treatment with bactrim."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_graft_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT OSH with PO contrast: ... Enlarged and edematous transplant kidney."
+              ],
+              "reason": "The outside CT establishes that the transplant kidney is enlarged and edematous but does not provide current, modality-appropriate sonographic visualization or detailed structural assessment at this institution."
+            },
+            {
+              "requirement_key": "req_vascular_status",
+              "requirement_id": "device_or_intervention_function",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "At the ___ ER she was given 6 liters of NS for hypotension prior to transfer."
+              ],
+              "reason": "No prior study has assessed graft arterial or venous flow or resistive indices; CT with oral contrast and chest radiograph do not evaluate real-time vascular function of the allograft."
+            },
+            {
+              "requirement_key": "req_obstruction_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Enlarged and edematous transplant kidney."
+              ],
+              "reason": "The CT mentions enlargement and edema but does not clearly describe collecting system dilation or ureteral obstruction, leaving the presence of obstruction unresolved."
+            },
+            {
+              "requirement_key": "req_peri_graft_fluid",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "Complex intrapelvic free fluid.",
+                "Enlarged and edematous transplant kidney."
+              ],
+              "reason": "The CT identifies complex intrapelvic free fluid but does not specifically localize or characterize fluid in relation to the transplant capsule, so peri-graft collection as a transplant-specific complication remains incompletely characterized."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Existing CT and chest radiograph provide limited, indirect information about the renal transplant; they do not adequately address real-time graft structure, perfusion, or obstruction status needed for acute decision-making."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A dedicated right renal transplant ultrasound with Doppler can visualize the allograft, assess for hydronephrosis, detect peri-graft collections, and evaluate arterial and venous flow, directly addressing graft integrity and function.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The precise relative contributions of appendicitis, possible pelvic abscess, and transplant-related pathology to the patient’s sepsis cannot be fully disentangled from the available chart, so the balance between evaluating graft status versus other abdominal sources remains somewhat inferential."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

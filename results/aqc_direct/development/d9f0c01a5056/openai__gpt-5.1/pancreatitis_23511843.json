@@ -1,0 +1,820 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 23511843,
+  "source_path": "results/annotation_experiment/full/pancreatitis_23511843.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "d9f0c01a505663454371289ea7f45995b2ea8f897a72053d8e90ad1bd738deb9",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "a15a6466f6cb8844af10a2f5ecd16774ac4a0ebef77d7b3b7abb458903027df1",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "a15a6466f6cb8844af10a2f5ecd16774ac4a0ebef77d7b3b7abb458903027df1",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis causing her elevated lipase and acute LUQ abdominal pain radiating to the back.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "She was then awoken from sleep at 2 am with severe, constant LUQ pain that wrapped around her left side to her back.",
+                    "Lipase was found to be 715 with an amylase of 285."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is currently no overt bowel obstruction or free intraperitoneal air.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "syndrome or major complication state",
+                  "status": "established",
+                  "evidence": [
+                    "There is a normal bowel gas pattern without evidence of obstruction.",
+                    "There is no free air."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is status post colectomy with an ileostomy in the right lower quadrant and is planned for further reconstructive bowel surgeries.",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "anatomic/surgical baseline",
+                  "status": "established",
+                  "evidence": [
+                    "She was found to have a toxic megacolon that was removed at this institution on ___. She currently is planned for three reconstructive bowel surgeries but is currently with an illiostomy.",
+                    "An ileostomy is present in the right lower quadrant."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A local pancreatic or peripancreatic complication (e.g., necrosis, fluid collection, pseudocyst, abscess) may be present, contributing to persistent severe pain and vomiting.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "specific complication of pancreatitis",
+                  "status": "suspected",
+                  "evidence": [
+                    "On arrival to the floor, patient is actively vomiting. She reports that her pain is ___ and she feels nauseated.",
+                    "Lipase was found to be 715 with an amylase of 285."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "A biliary or other structural abdominal process (e.g., gallstones, postsurgical complication) could be an alternative source or contributor to the acute pancreatitis.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "potential etiologic source",
+                  "status": "suspected",
+                  "evidence": [
+                    "Pt is ___ year old woman with past history of UC s/p colectomy ___ presenting with acute worsening of abdominal pain.",
+                    "CT abdomen was performed. Colorectal surgery was consulted and stated that there was not any acute surgical process."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First decision point; no prior A/Q/C state."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; assumptions are newly established from the baseline chart and prior radiograph."
+              },
+              "current_question": {
+                "primary": "What is the nature and extent of pancreatic and adjacent intra-abdominal pathology explaining this patient’s acute pancreatitis and severe LUQ pain?",
+                "target": "pancreas and surrounding abdominal structures",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming local pancreatic or peripancreatic complications or a structural cause (e.g., gallstones, peripancreatic collections) would guide intensity of pancreatitis management, need for procedural/surgical consultation, and monitoring strategy.",
+                "negative_answer_changes": "If no significant pancreatic complication or structural cause is seen, clinicians may favor conservative management, reassess for nonstructural or alternative causes of pain, and adjust the need for further invasive evaluation.",
+                "secondary_questions": [
+                  "Is there a structural etiology for the pancreatitis such as biliary disease or a postsurgical complication?",
+                  "Is there any other acute intra-abdominal complication (e.g., abscess, collection, vascular event) contributing to her symptoms?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_pancreas_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of acute inflammatory changes in the pancreas and peripancreatic tissues (e.g., enlargement, fat stranding, necrosis, fluid collections).",
+                    "why_required": "Determining whether there is active pancreatic inflammation or local complications is central to characterizing the pancreatitis and its local impact."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent and severity of pancreatic and peripancreatic involvement, including necrosis, size and number of collections, and involvement of adjacent organs.",
+                    "why_required": "Severity and extent stratify risk, influence level of monitoring, and inform need for interventional radiology or surgical input."
+                  },
+                  {
+                    "requirement_key": "req_etiology",
+                    "id": "etiologic_agent_or_mechanism",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of a structural cause of pancreatitis such as biliary stones, ductal obstruction, or postsurgical complications.",
+                    "why_required": "Identifying a treatable etiology (e.g., gallstones) changes downstream management such as ERCP or cholecystectomy planning."
+                  },
+                  {
+                    "requirement_key": "req_other_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of other acute intra-abdominal complications (e.g., abscess, postoperative collection, bowel or mesenteric pathology) that could explain or worsen her symptoms.",
+                    "why_required": "Nonpancreatic intra-abdominal complications may need different interventions and may change the overall management plan."
+                  }
+                ],
+                "evidence": [
+                  "She was then awoken from sleep at 2 am with severe, constant LUQ pain that wrapped around her left side to her back.",
+                  "Lipase was found to be 715 with an amylase of 285."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_pancreas_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "TECHNIQUE: Supine and upright abdominal radiographs are provided.",
+                      "There is a normal bowel gas pattern without evidence of obstruction. ... There is no free air."
+                    ],
+                    "reason": "The abdominal radiograph assesses bowel gas and free air but does not visualize or characterize the pancreas or peripancreatic inflammation."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "There is a normal bowel gas pattern without evidence of obstruction.",
+                      "There is no free air."
+                    ],
+                    "reason": "Severity and extent of pancreatic involvement cannot be assessed on plain abdominal radiography."
+                  },
+                  {
+                    "requirement_key": "req_etiology",
+                    "requirement_id": "etiologic_agent_or_mechanism",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT abdomen was performed. Colorectal surgery was consulted and stated that there was not any acute surgical process.",
+                      "There is a normal bowel gas pattern without evidence of obstruction."
+                    ],
+                    "reason": "No prior imaging result here characterizes biliary structures, pancreatic ducts, or postoperative collections; the outside CT is not detailed and only notes no acute surgical process."
+                  },
+                  {
+                    "requirement_key": "req_other_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "There is a normal bowel gas pattern without evidence of obstruction.",
+                      "There is no free air."
+                    ],
+                    "reason": "Radiograph excludes gross obstruction and free air but cannot evaluate many other intra-abdominal complications such as fluid collections or subtle postoperative issues."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Pre-order imaging only rules out obstruction and free air; it does not characterize the pancreas, peripancreatic tissues, structural etiology, or most complications relevant to acute pancreatitis."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can visualize the pancreas and surrounding structures, identify local complications, assess severity, and look for structural causes or other intra-abdominal pathology.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not specify a particular suspected etiology (e.g., gallstones vs medication) or a focused concern such as necrotizing versus interstitial pancreatitis; the exact primary trigger for repeating CT after an outside CT is also not explicit."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis causing her elevated lipase and acute LUQ abdominal pain radiating to the back.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"She was then awoken from sleep at 2 am with severe, constant LUQ pain that wrapped around her left side to her back.\",\n        \"Lipase was found to be 715 with an amylase of 285.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is currently no overt bowel obstruction or free intraperitoneal air.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome or major complication state\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"There is a normal bowel gas pattern without evidence of obstruction.\",\n        \"There is no free air.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is status post colectomy with an ileostomy in the right lower quadrant and is planned for further reconstructive bowel surgeries.\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"anatomic/surgical baseline\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"She was found to have a toxic megacolon that was removed at this institution on ___. She currently is planned for three reconstructive bowel surgeries but is currently with an illiostomy.\",\n        \"An ileostomy is present in the right lower quadrant.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A local pancreatic or peripancreatic complication (e.g., necrosis, fluid collection, pseudocyst, abscess) may be present, contributing to persistent severe pain and vomiting.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific complication of pancreatitis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"On arrival to the floor, patient is actively vomiting. She reports that her pain is ___ and she feels nauseated.\",\n        \"Lipase was found to be 715 with an amylase of 285.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"A biliary or other structural abdominal process (e.g., gallstones, postsurgical complication) could be an alternative source or contributor to the acute pancreatitis.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"potential etiologic source\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Pt is ___ year old woman with past history of UC s/p colectomy ___ presenting with acute worsening of abdominal pain.\",\n        \"CT abdomen was performed. Colorectal surgery was consulted and stated that there was not any acute surgical process.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior A/Q/C state.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; assumptions are newly established from the baseline chart and prior radiograph.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the nature and extent of pancreatic and adjacent intra-abdominal pathology explaining this patient’s acute pancreatitis and severe LUQ pain?\",\n    \"target\": \"pancreas and surrounding abdominal structures\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming local pancreatic or peripancreatic complications or a structural cause (e.g., gallstones, peripancreatic collections) would guide intensity of pancreatitis management, need for procedural/surgical consultation, and monitoring strategy.\",\n    \"negative_answer_changes\": \"If no significant pancreatic complication or structural cause is seen, clinicians may favor conservative management, reassess for nonstructural or alternative causes of pain, and adjust the need for further invasive evaluation.\",\n    \"secondary_questions\": [\n      \"Is there a structural etiology for the pancreatitis such as biliary disease or a postsurgical complication?\",\n      \"Is there any other acute intra-abdominal complication (e.g., abscess, collection, vascular event) contributing to her symptoms?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_pancreas_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute inflammatory changes in the pancreas and peripancreatic tissues (e.g., enlargement, fat stranding, necrosis, fluid collections).\",\n        \"why_required\": \"Determining whether there is active pancreatic inflammation or local complications is central to characterizing the pancreatitis and its local impact.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent and severity of pancreatic and peripancreatic involvement, including necrosis, size and number of collections, and involvement of adjacent organs.\",\n        \"why_required\": \"Severity and extent stratify risk, influence level of monitoring, and inform need for interventional radiology or surgical input.\"\n      },\n      {\n        \"requirement_key\": \"req_etiology\",\n        \"id\": \"etiologic_agent_or_mechanism\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of a structural cause of pancreatitis such as biliary stones, ductal obstruction, or postsurgical complications.\",\n        \"why_required\": \"Identifying a treatable etiology (e.g., gallstones) changes downstream management such as ERCP or cholecystectomy planning.\"\n      },\n      {\n        \"requirement_key\": \"req_other_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of other acute intra-abdominal complications (e.g., abscess, postoperative collection, bowel or mesenteric pathology) that could explain or worsen her symptoms.\",\n        \"why_required\": \"Nonpancreatic intra-abdominal complications may need different interventions and may change the overall management plan.\"\n      }\n    ],\n    \"evidence\": [\n      \"She was then awoken from sleep at 2 am with severe, constant LUQ pain that wrapped around her left side to her back.\",\n      \"Lipase was found to be 715 with an amylase of 285.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_pancreas_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"TECHNIQUE: Supine and upright abdominal radiographs are provided.\",\n          \"There is a normal bowel gas pattern without evidence of obstruction. ... There is no free air.\"\n        ],\n        \"reason\": \"The abdominal radiograph assesses bowel gas and free air but does not visualize or characterize the pancreas or peripancreatic inflammation.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"There is a normal bowel gas pattern without evidence of obstruction.\",\n          \"There is no free air.\"\n        ],\n        \"reason\": \"Severity and extent of pancreatic involvement cannot be assessed on plain abdominal radiography.\"\n      },\n      {\n        \"requirement_key\": \"req_etiology\",\n        \"requirement_id\": \"etiologic_agent_or_mechanism\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT abdomen was performed. Colorectal surgery was consulted and stated that there was not any acute surgical process.\",\n          \"There is a normal bowel gas pattern without evidence of obstruction.\"\n        ],\n        \"reason\": \"No prior imaging result here characterizes biliary structures, pancreatic ducts, or postoperative collections; the outside CT is not detailed and only notes no acute surgical process.\"\n      },\n      {\n        \"requirement_key\": \"req_other_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"There is a normal bowel gas pattern without evidence of obstruction.\",\n          \"There is no free air.\"\n        ],\n        \"reason\": \"Radiograph excludes gross obstruction and free air but cannot evaluate many other intra-abdominal complications such as fluid collections or subtle postoperative issues.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Pre-order imaging only rules out obstruction and free air; it does not characterize the pancreas, peripancreatic tissues, structural etiology, or most complications relevant to acute pancreatitis.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis can visualize the pancreas and surrounding structures, identify local complications, assess severity, and look for structural causes or other intra-abdominal pathology.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not specify a particular suspected etiology (e.g., gallstones vs medication) or a focused concern such as necrotizing versus interstitial pancreatitis; the exact primary trigger for repeating CT after an outside CT is also not explicit.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788190586-VlSRXBWmLUAQWjLG2NHG",
+            "usage": {
+              "completion_tokens": 2240,
+              "prompt_tokens": 3741,
+              "total_tokens": 5981,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02707625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02707625,
+                "upstream_inference_prompt_cost": 0.00467625,
+                "upstream_inference_completions_cost": 0.0224
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis causing her elevated lipase and acute LUQ abdominal pain radiating to the back.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific diagnosis",
+            "status": "likely",
+            "evidence": [
+              "She was then awoken from sleep at 2 am with severe, constant LUQ pain that wrapped around her left side to her back.",
+              "Lipase was found to be 715 with an amylase of 285."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is currently no overt bowel obstruction or free intraperitoneal air.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "syndrome or major complication state",
+            "status": "established",
+            "evidence": [
+              "There is a normal bowel gas pattern without evidence of obstruction.",
+              "There is no free air."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is status post colectomy with an ileostomy in the right lower quadrant and is planned for further reconstructive bowel surgeries.",
+            "type": "intervention_or_device_state",
+            "other_proposed_type": "",
+            "level": "anatomic/surgical baseline",
+            "status": "established",
+            "evidence": [
+              "She was found to have a toxic megacolon that was removed at this institution on ___. She currently is planned for three reconstructive bowel surgeries but is currently with an illiostomy.",
+              "An ileostomy is present in the right lower quadrant."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A local pancreatic or peripancreatic complication (e.g., necrosis, fluid collection, pseudocyst, abscess) may be present, contributing to persistent severe pain and vomiting.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "specific complication of pancreatitis",
+            "status": "suspected",
+            "evidence": [
+              "On arrival to the floor, patient is actively vomiting. She reports that her pain is ___ and she feels nauseated.",
+              "Lipase was found to be 715 with an amylase of 285."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "A biliary or other structural abdominal process (e.g., gallstones, postsurgical complication) could be an alternative source or contributor to the acute pancreatitis.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "potential etiologic source",
+            "status": "suspected",
+            "evidence": [
+              "Pt is ___ year old woman with past history of UC s/p colectomy ___ presenting with acute worsening of abdominal pain.",
+              "CT abdomen was performed. Colorectal surgery was consulted and stated that there was not any acute surgical process."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First decision point; no prior A/Q/C state."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; assumptions are newly established from the baseline chart and prior radiograph."
+        },
+        "current_question": {
+          "primary": "What is the nature and extent of pancreatic and adjacent intra-abdominal pathology explaining this patient’s acute pancreatitis and severe LUQ pain?",
+          "target": "pancreas and surrounding abdominal structures",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming local pancreatic or peripancreatic complications or a structural cause (e.g., gallstones, peripancreatic collections) would guide intensity of pancreatitis management, need for procedural/surgical consultation, and monitoring strategy.",
+          "negative_answer_changes": "If no significant pancreatic complication or structural cause is seen, clinicians may favor conservative management, reassess for nonstructural or alternative causes of pain, and adjust the need for further invasive evaluation.",
+          "secondary_questions": [
+            "Is there a structural etiology for the pancreatitis such as biliary disease or a postsurgical complication?",
+            "Is there any other acute intra-abdominal complication (e.g., abscess, collection, vascular event) contributing to her symptoms?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_pancreas_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of acute inflammatory changes in the pancreas and peripancreatic tissues (e.g., enlargement, fat stranding, necrosis, fluid collections).",
+              "why_required": "Determining whether there is active pancreatic inflammation or local complications is central to characterizing the pancreatitis and its local impact."
+            },
+            {
+              "requirement_key": "req_pancreas_extent",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent and severity of pancreatic and peripancreatic involvement, including necrosis, size and number of collections, and involvement of adjacent organs.",
+              "why_required": "Severity and extent stratify risk, influence level of monitoring, and inform need for interventional radiology or surgical input."
+            },
+            {
+              "requirement_key": "req_etiology",
+              "id": "etiologic_agent_or_mechanism",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence of a structural cause of pancreatitis such as biliary stones, ductal obstruction, or postsurgical complications.",
+              "why_required": "Identifying a treatable etiology (e.g., gallstones) changes downstream management such as ERCP or cholecystectomy planning."
+            },
+            {
+              "requirement_key": "req_other_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of other acute intra-abdominal complications (e.g., abscess, postoperative collection, bowel or mesenteric pathology) that could explain or worsen her symptoms.",
+              "why_required": "Nonpancreatic intra-abdominal complications may need different interventions and may change the overall management plan."
+            }
+          ],
+          "evidence": [
+            "She was then awoken from sleep at 2 am with severe, constant LUQ pain that wrapped around her left side to her back.",
+            "Lipase was found to be 715 with an amylase of 285."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_pancreas_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "TECHNIQUE: Supine and upright abdominal radiographs are provided.",
+                "There is a normal bowel gas pattern without evidence of obstruction. ... There is no free air."
+              ],
+              "reason": "The abdominal radiograph assesses bowel gas and free air but does not visualize or characterize the pancreas or peripancreatic inflammation."
+            },
+            {
+              "requirement_key": "req_pancreas_extent",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "There is a normal bowel gas pattern without evidence of obstruction.",
+                "There is no free air."
+              ],
+              "reason": "Severity and extent of pancreatic involvement cannot be assessed on plain abdominal radiography."
+            },
+            {
+              "requirement_key": "req_etiology",
+              "requirement_id": "etiologic_agent_or_mechanism",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT abdomen was performed. Colorectal surgery was consulted and stated that there was not any acute surgical process.",
+                "There is a normal bowel gas pattern without evidence of obstruction."
+              ],
+              "reason": "No prior imaging result here characterizes biliary structures, pancreatic ducts, or postoperative collections; the outside CT is not detailed and only notes no acute surgical process."
+            },
+            {
+              "requirement_key": "req_other_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "There is a normal bowel gas pattern without evidence of obstruction.",
+                "There is no free air."
+              ],
+              "reason": "Radiograph excludes gross obstruction and free air but cannot evaluate many other intra-abdominal complications such as fluid collections or subtle postoperative issues."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Pre-order imaging only rules out obstruction and free air; it does not characterize the pancreas, peripancreatic tissues, structural etiology, or most complications relevant to acute pancreatitis."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can visualize the pancreas and surrounding structures, identify local complications, assess severity, and look for structural causes or other intra-abdominal pathology.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not specify a particular suspected etiology (e.g., gallstones vs medication) or a focused concern such as necrotizing versus interstitial pancreatitis; the exact primary trigger for repeating CT after an outside CT is also not explicit."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "Ultrasound Abdomen (ABDOMEN US (COMPLETE STUDY))",
+      "request_prompt_sha256": "40946682df33079945769c6158eb4dcb497cfb3c3c9123328c920ba16089c755",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "40946682df33079945769c6158eb4dcb497cfb3c3c9123328c920ba16089c755",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis corresponding to her elevated lipase and LUQ abdominal pain radiating to the back.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "She was then awoken from sleep at 2 am with severe, constant LUQ pain that wrapped around her left side to her back.",
+                    "Lipase was found to be 715 with an amylase of 285."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is new mild left-sided hydronephrosis with a moderately dilated left ureter and associated perinephric fat stranding and delayed nephrogram.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "imaging finding / potential syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "There is new mild left-sided hydronephrosis, and the left ureter is moderately dilated down to the pelvic inlet after which its course is difficult to follow.",
+                    "Fat stranding is present about the left kidney and the nephrogram is slightly delayed."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A biliary or other structural cause for pancreatitis (e.g., gallstones, ductal obstruction, postsurgical complication) remains a possible etiology.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "Lipase was found to be 715 with an amylase of 285.",
+                    "The liver, gallbladder, spleen, and adrenal glands appear within normal limits."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Non-biliary intra-abdominal or urologic pathology such as left hydronephrosis or postoperative pelvic fluid collections may be contributing to the patient’s abdominal pain and vomiting.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "syndrome or alternative pain source",
+                  "status": "suspected",
+                  "evidence": [
+                    "There is new mild left-sided hydronephrosis, and the left ureter is moderately dilated down to the pelvic inlet after which its course is difficult to follow.",
+                    "There are also small tubular fluid-containing structures along each pelvic sidewall, but quite small and more extensive on the left than right, which may represent a small postoperative fluid collections."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The pancreas shows only mild inflammatory changes on CT without clear necrosis or large peripancreatic collections.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "severity/extent of pancreatitis",
+                  "status": "likely",
+                  "evidence": [
+                    "There is mild fat stranding about the pancreas which demonstrated slight fullness.",
+                    "The liver, gallbladder, spleen, and adrenal glands appear within normal limits."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What is the nature and extent of pancreatic and adjacent intra-abdominal pathology explaining this patient’s acute pancreatitis and severe LUQ pain?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The contrast-enhanced CT characterized mild pancreatic inflammation without major local complications, did not show biliary pathology, and revealed additional findings of new left hydronephrosis and small possible postoperative pelvic collections as alternative or contributing pain sources.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "There is mild fat stranding about the pancreas which demonstrated slight fullness.",
+                  "evidence_stream_2": "Lipase was found to be 715 with an amylase of 285.",
+                  "reason": "CT evidence of mild pancreatitis aligns with the clinical and laboratory diagnosis of acute pancreatitis."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "A biliary or other structural abdominal process (e.g., gallstones, postsurgical complication) could be an alternative source or contributor to the acute pancreatitis.",
+                "reason": "CT showed only mild pancreatic changes without biliary abnormalities but revealed left hydronephrosis and small pelvic fluid collections, refining concern toward detailed evaluation of biliary versus non-biliary structural causes and alternative pain sources."
+              },
+              "current_question": {
+                "primary": "Is there a biliary or other upper abdominal structural etiology for this pancreatitis or pain, such as gallstones, biliary obstruction, or another hepatobiliary abnormality, that was not fully characterized on CT?",
+                "target": "gallbladder, biliary tree, liver, and adjacent upper abdominal structures",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying gallstones, biliary obstruction, or another hepatobiliary cause would support targeted interventions such as ERCP, cholecystectomy planning, or focused hepatobiliary management in addition to pancreatitis care.",
+                "negative_answer_changes": "If no biliary or hepatobiliary structural etiology is found, clinicians may attribute symptoms to non-biliary causes such as idiopathic or other pancreatitis mechanisms and to alternative sources like left hydronephrosis or postoperative collections, shifting further workup away from the biliary tree.",
+                "secondary_questions": [
+                  "Are there sonographic signs of pancreatitis-related changes or peripancreatic fluid that refine assessment of severity or complications?",
+                  "Is there any sonographically evident hepatic or portal venous abnormality contributing to the clinical picture?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_biliary_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones, sludge, gallbladder wall thickening, pericholecystic fluid, or common bile duct dilation suggesting biliary colic, cholecystitis, or choledocholithiasis.",
+                    "why_required": "Biliary pathology is a common and treatable etiology of pancreatitis and upper abdominal pain, and its identification would change management."
+                  },
+                  {
+                    "requirement_key": "req_biliary_mechanism",
+                    "id": "etiologic_agent_or_mechanism",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence that any detected gallbladder or bile duct abnormality is mechanistically responsible for pancreatitis or current pain (e.g., obstructing stone in CBD, biliary dilation).",
+                    "why_required": "Linking structural findings to a causal mechanism guides decisions about urgency and type of intervention."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_sono",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Ultrasound assessment of the pancreas and peripancreatic region for enlargement, echotexture changes, or fluid collections, insofar as technically feasible.",
+                    "why_required": "Sonographic confirmation or complication assessment of pancreatitis can complement CT and influence monitoring and follow-up imaging strategy."
+                  }
+                ],
+                "evidence": [
+                  "Lipase was found to be 715 with an amylase of 285.",
+                  "The liver, gallbladder, spleen, and adrenal glands appear within normal limits."
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_biliary_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "The liver, gallbladder, spleen, and adrenal glands appear within normal limits.",
+                      "CT ABDOMEN: The liver, gallbladder, spleen, and adrenal glands appear within normal limits."
+                    ],
+                    "reason": "CT showed no gross hepatobiliary abnormality, which argues against large stones or marked biliary dilation, but CT is less sensitive than ultrasound for small stones or sludge, so biliary pathology is not fully excluded."
+                  },
+                  {
+                    "requirement_key": "req_biliary_mechanism",
+                    "requirement_id": "etiologic_agent_or_mechanism",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "The liver, gallbladder, spleen, and adrenal glands appear within normal limits."
+                    ],
+                    "reason": "Although CT did not show biliary abnormalities, it did not demonstrate a specific causative mechanism such as an obstructing CBD stone or definitive biliary obstruction explaining the pancreatitis."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_sono",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "sufficiently_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "There is mild fat stranding about the pancreas which demonstrated slight fullness.",
+                      "There is mild fat stranding about the pancreas which demonstrated slight fullness."
+                    ],
+                    "reason": "Contrast-enhanced CT directly visualized the pancreas and peripancreatic tissues, confirming mild inflammatory changes and providing adequate anatomic assessment, though ultrasound may still add complementary information."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Pancreatic involvement is well characterized on CT, but biliary pathology and its causal role remain only partially evaluated, with CT not fully excluding small stones or sludge or directly establishing an etiologic mechanism."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Abdominal ultrasound is well-suited to detect gallstones, biliary sludge, gallbladder wall changes, and bile duct dilation and can sometimes visualize pancreatic and peripancreatic abnormalities, directly addressing suspected biliary etiology and refining structural assessment.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not explicitly state renewed or worsening jaundice, abnormal liver function tests, or a specific suspicion for choledocholithiasis versus acalculous disease, and the ultrasound’s role in further evaluating left hydronephrosis or pelvic postoperative collections is not clearly specified."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "Clinicians may have ordered abdominal ultrasound primarily to reassess the upper abdomen noninvasively after CT identified new left hydronephrosis and possible pelvic fluid collections, using ultrasound to further characterize any subtle hepatic, perihepatic, or upper abdominal collections and to verify the absence of biliary or hepatic complications as alternative pain sources."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis corresponding to her elevated lipase and LUQ abdominal pain radiating to the back.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"She was then awoken from sleep at 2 am with severe, constant LUQ pain that wrapped around her left side to her back.\",\n        \"Lipase was found to be 715 with an amylase of 285.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is new mild left-sided hydronephrosis with a moderately dilated left ureter and associated perinephric fat stranding and delayed nephrogram.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"imaging finding / potential syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"There is new mild left-sided hydronephrosis, and the left ureter is moderately dilated down to the pelvic inlet after which its course is difficult to follow.\",\n        \"Fat stranding is present about the left kidney and the nephrogram is slightly delayed.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A biliary or other structural cause for pancreatitis (e.g., gallstones, ductal obstruction, postsurgical complication) remains a possible etiology.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Lipase was found to be 715 with an amylase of 285.\",\n        \"The liver, gallbladder, spleen, and adrenal glands appear within normal limits.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Non-biliary intra-abdominal or urologic pathology such as left hydronephrosis or postoperative pelvic fluid collections may be contributing to the patient’s abdominal pain and vomiting.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome or alternative pain source\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"There is new mild left-sided hydronephrosis, and the left ureter is moderately dilated down to the pelvic inlet after which its course is difficult to follow.\",\n        \"There are also small tubular fluid-containing structures along each pelvic sidewall, but quite small and more extensive on the left than right, which may represent a small postoperative fluid collections.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The pancreas shows only mild inflammatory changes on CT without clear necrosis or large peripancreatic collections.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity/extent of pancreatitis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"There is mild fat stranding about the pancreas which demonstrated slight fullness.\",\n        \"The liver, gallbladder, spleen, and adrenal glands appear within normal limits.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What is the nature and extent of pancreatic and adjacent intra-abdominal pathology explaining this patient’s acute pancreatitis and severe LUQ pain?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The contrast-enhanced CT characterized mild pancreatic inflammation without major local complications, did not show biliary pathology, and revealed additional findings of new left hydronephrosis and small possible postoperative pelvic collections as alternative or contributing pain sources.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"There is mild fat stranding about the pancreas which demonstrated slight fullness.\",\n      \"evidence_stream_2\": \"Lipase was found to be 715 with an amylase of 285.\",\n      \"reason\": \"CT evidence of mild pancreatitis aligns with the clinical and laboratory diagnosis of acute pancreatitis.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"A biliary or other structural abdominal process (e.g., gallstones, postsurgical complication) could be an alternative source or contributor to the acute pancreatitis.\",\n    \"reason\": \"CT showed only mild pancreatic changes without biliary abnormalities but revealed left hydronephrosis and small pelvic fluid collections, refining concern toward detailed evaluation of biliary versus non-biliary structural causes and alternative pain sources.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a biliary or other upper abdominal structural etiology for this pancreatitis or pain, such as gallstones, biliary obstruction, or another hepatobiliary abnormality, that was not fully characterized on CT?\",\n    \"target\": \"gallbladder, biliary tree, liver, and adjacent upper abdominal structures\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying gallstones, biliary obstruction, or another hepatobiliary cause would support targeted interventions such as ERCP, cholecystectomy planning, or focused hepatobiliary management in addition to pancreatitis care.\",\n    \"negative_answer_changes\": \"If no biliary or hepatobiliary structural etiology is found, clinicians may attribute symptoms to non-biliary causes such as idiopathic or other pancreatitis mechanisms and to alternative sources like left hydronephrosis or postoperative collections, shifting further workup away from the biliary tree.\",\n    \"secondary_questions\": [\n      \"Are there sonographic signs of pancreatitis-related changes or peripancreatic fluid that refine assessment of severity or complications?\",\n      \"Is there any sonographically evident hepatic or portal venous abnormality contributing to the clinical picture?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_biliary_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, sludge, gallbladder wall thickening, pericholecystic fluid, or common bile duct dilation suggesting biliary colic, cholecystitis, or choledocholithiasis.\",\n        \"why_required\": \"Biliary pathology is a common and treatable etiology of pancreatitis and upper abdominal pain, and its identification would change management.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_mechanism\",\n        \"id\": \"etiologic_agent_or_mechanism\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence that any detected gallbladder or bile duct abnormality is mechanistically responsible for pancreatitis or current pain (e.g., obstructing stone in CBD, biliary dilation).\",\n        \"why_required\": \"Linking structural findings to a causal mechanism guides decisions about urgency and type of intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_sono\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Ultrasound assessment of the pancreas and peripancreatic region for enlargement, echotexture changes, or fluid collections, insofar as technically feasible.\",\n        \"why_required\": \"Sonographic confirmation or complication assessment of pancreatitis can complement CT and influence monitoring and follow-up imaging strategy.\"\n      }\n    ],\n    \"evidence\": [\n      \"Lipase was found to be 715 with an amylase of 285.\",\n      \"The liver, gallbladder, spleen, and adrenal glands appear within normal limits.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_biliary_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"The liver, gallbladder, spleen, and adrenal glands appear within normal limits.\",\n          \"CT ABDOMEN: The liver, gallbladder, spleen, and adrenal glands appear within normal limits.\"\n        ],\n        \"reason\": \"CT showed no gross hepatobiliary abnormality, which argues against large stones or marked biliary dilation, but CT is less sensitive than ultrasound for small stones or sludge, so biliary pathology is not fully excluded.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_mechanism\",\n        \"requirement_id\": \"etiologic_agent_or_mechanism\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"The liver, gallbladder, spleen, and adrenal glands appear within normal limits.\"\n        ],\n        \"reason\": \"Although CT did not show biliary abnormalities, it did not demonstrate a specific causative mechanism such as an obstructing CBD stone or definitive biliary obstruction explaining the pancreatitis.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_sono\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"There is mild fat stranding about the pancreas which demonstrated slight fullness.\",\n          \"There is mild fat stranding about the pancreas which demonstrated slight fullness.\"\n        ],\n        \"reason\": \"Contrast-enhanced CT directly visualized the pancreas and peripancreatic tissues, confirming mild inflammatory changes and providing adequate anatomic assessment, though ultrasound may still add complementary information.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Pancreatic involvement is well characterized on CT, but biliary pathology and its causal role remain only partially evaluated, with CT not fully excluding small stones or sludge or directly establishing an etiologic mechanism.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Abdominal ultrasound is well-suited to detect gallstones, biliary sludge, gallbladder wall changes, and bile duct dilation and can sometimes visualize pancreatic and peripancreatic abnormalities, directly addressing suspected biliary etiology and refining structural assessment.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not explicitly state renewed or worsening jaundice, abnormal liver function tests, or a specific suspicion for choledocholithiasis versus acalculous disease, and the ultrasound’s role in further evaluating left hydronephrosis or pelvic postoperative collections is not clearly specified.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"Clinicians may have ordered abdominal ultrasound primarily to reassess the upper abdomen noninvasively after CT identified new left hydronephrosis and possible pelvic fluid collections, using ultrasound to further characterize any subtle hepatic, perihepatic, or upper abdominal collections and to verify the absence of biliary or hepatic complications as alternative pain sources.\"\n}",
+            "request_id": "gen-1788190604-63QYWLx6gLcg79lDoqpd",
+            "usage": {
+              "completion_tokens": 2422,
+              "prompt_tokens": 6288,
+              "total_tokens": 8710,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2432,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.029344,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.029344,
+                "upstream_inference_prompt_cost": 0.005124,
+                "upstream_inference_completions_cost": 0.02422
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis corresponding to her elevated lipase and LUQ abdominal pain radiating to the back.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific diagnosis",
+            "status": "likely",
+            "evidence": [
+              "She was then awoken from sleep at 2 am with severe, constant LUQ pain that wrapped around her left side to her back.",
+              "Lipase was found to be 715 with an amylase of 285."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is new mild left-sided hydronephrosis with a moderately dilated left ureter and associated perinephric fat stranding and delayed nephrogram.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "imaging finding / potential syndrome",
+            "status": "established",
+            "evidence": [
+              "There is new mild left-sided hydronephrosis, and the left ureter is moderately dilated down to the pelvic inlet after which its course is difficult to follow.",
+              "Fat stranding is present about the left kidney and the nephrogram is slightly delayed."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A biliary or other structural cause for pancreatitis (e.g., gallstones, ductal obstruction, postsurgical complication) remains a possible etiology.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism",
+            "status": "suspected",
+            "evidence": [
+              "Lipase was found to be 715 with an amylase of 285.",
+              "The liver, gallbladder, spleen, and adrenal glands appear within normal limits."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Non-biliary intra-abdominal or urologic pathology such as left hydronephrosis or postoperative pelvic fluid collections may be contributing to the patient’s abdominal pain and vomiting.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "syndrome or alternative pain source",
+            "status": "suspected",
+            "evidence": [
+              "There is new mild left-sided hydronephrosis, and the left ureter is moderately dilated down to the pelvic inlet after which its course is difficult to follow.",
+              "There are also small tubular fluid-containing structures along each pelvic sidewall, but quite small and more extensive on the left than right, which may represent a small postoperative fluid collections."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The pancreas shows only mild inflammatory changes on CT without clear necrosis or large peripancreatic collections.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "severity/extent of pancreatitis",
+            "status": "likely",
+            "evidence": [
+              "There is mild fat stranding about the pancreas which demonstrated slight fullness.",
+              "The liver, gallbladder, spleen, and adrenal glands appear within normal limits."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What is the nature and extent of pancreatic and adjacent intra-abdominal pathology explaining this patient’s acute pancreatitis and severe LUQ pain?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The contrast-enhanced CT characterized mild pancreatic inflammation without major local complications, did not show biliary pathology, and revealed additional findings of new left hydronephrosis and small possible postoperative pelvic collections as alternative or contributing pain sources.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "There is mild fat stranding about the pancreas which demonstrated slight fullness.",
+            "evidence_stream_2": "Lipase was found to be 715 with an amylase of 285.",
+            "reason": "CT evidence of mild pancreatitis aligns with the clinical and laboratory diagnosis of acute pancreatitis."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "A biliary or other structural abdominal process (e.g., gallstones, postsurgical complication) could be an alternative source or contributor to the acute pancreatitis.",
+          "reason": "CT showed only mild pancreatic changes without biliary abnormalities but revealed left hydronephrosis and small pelvic fluid collections, refining concern toward detailed evaluation of biliary versus non-biliary structural causes and alternative pain sources."
+        },
+        "current_question": {
+          "primary": "Is there a biliary or other upper abdominal structural etiology for this pancreatitis or pain, such as gallstones, biliary obstruction, or another hepatobiliary abnormality, that was not fully characterized on CT?",
+          "target": "gallbladder, biliary tree, liver, and adjacent upper abdominal structures",
+          "type": "etiology_or_mechanism",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying gallstones, biliary obstruction, or another hepatobiliary cause would support targeted interventions such as ERCP, cholecystectomy planning, or focused hepatobiliary management in addition to pancreatitis care.",
+          "negative_answer_changes": "If no biliary or hepatobiliary structural etiology is found, clinicians may attribute symptoms to non-biliary causes such as idiopathic or other pancreatitis mechanisms and to alternative sources like left hydronephrosis or postoperative collections, shifting further workup away from the biliary tree.",
+          "secondary_questions": [
+            "Are there sonographic signs of pancreatitis-related changes or peripancreatic fluid that refine assessment of severity or complications?",
+            "Is there any sonographically evident hepatic or portal venous abnormality contributing to the clinical picture?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_biliary_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones, sludge, gallbladder wall thickening, pericholecystic fluid, or common bile duct dilation suggesting biliary colic, cholecystitis, or choledocholithiasis.",
+              "why_required": "Biliary pathology is a common and treatable etiology of pancreatitis and upper abdominal pain, and its identification would change management."
+            },
+            {
+              "requirement_key": "req_biliary_mechanism",
+              "id": "etiologic_agent_or_mechanism",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence that any detected gallbladder or bile duct abnormality is mechanistically responsible for pancreatitis or current pain (e.g., obstructing stone in CBD, biliary dilation).",
+              "why_required": "Linking structural findings to a causal mechanism guides decisions about urgency and type of intervention."
+            },
+            {
+              "requirement_key": "req_pancreas_sono",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Ultrasound assessment of the pancreas and peripancreatic region for enlargement, echotexture changes, or fluid collections, insofar as technically feasible.",
+              "why_required": "Sonographic confirmation or complication assessment of pancreatitis can complement CT and influence monitoring and follow-up imaging strategy."
+            }
+          ],
+          "evidence": [
+            "Lipase was found to be 715 with an amylase of 285.",
+            "The liver, gallbladder, spleen, and adrenal glands appear within normal limits."
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_biliary_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "The liver, gallbladder, spleen, and adrenal glands appear within normal limits.",
+                "CT ABDOMEN: The liver, gallbladder, spleen, and adrenal glands appear within normal limits."
+              ],
+              "reason": "CT showed no gross hepatobiliary abnormality, which argues against large stones or marked biliary dilation, but CT is less sensitive than ultrasound for small stones or sludge, so biliary pathology is not fully excluded."
+            },
+            {
+              "requirement_key": "req_biliary_mechanism",
+              "requirement_id": "etiologic_agent_or_mechanism",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "The liver, gallbladder, spleen, and adrenal glands appear within normal limits."
+              ],
+              "reason": "Although CT did not show biliary abnormalities, it did not demonstrate a specific causative mechanism such as an obstructing CBD stone or definitive biliary obstruction explaining the pancreatitis."
+            },
+            {
+              "requirement_key": "req_pancreas_sono",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "sufficiently_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "There is mild fat stranding about the pancreas which demonstrated slight fullness.",
+                "There is mild fat stranding about the pancreas which demonstrated slight fullness."
+              ],
+              "reason": "Contrast-enhanced CT directly visualized the pancreas and peripancreatic tissues, confirming mild inflammatory changes and providing adequate anatomic assessment, though ultrasound may still add complementary information."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Pancreatic involvement is well characterized on CT, but biliary pathology and its causal role remain only partially evaluated, with CT not fully excluding small stones or sludge or directly establishing an etiologic mechanism."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Abdominal ultrasound is well-suited to detect gallstones, biliary sludge, gallbladder wall changes, and bile duct dilation and can sometimes visualize pancreatic and peripancreatic abnormalities, directly addressing suspected biliary etiology and refining structural assessment.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not explicitly state renewed or worsening jaundice, abnormal liver function tests, or a specific suspicion for choledocholithiasis versus acalculous disease, and the ultrasound’s role in further evaluating left hydronephrosis or pelvic postoperative collections is not clearly specified."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "Clinicians may have ordered abdominal ultrasound primarily to reassess the upper abdomen noninvasively after CT identified new left hydronephrosis and possible pelvic fluid collections, using ultrasound to further characterize any subtle hepatic, perihepatic, or upper abdominal collections and to verify the absence of biliary or hepatic complications as alternative pain sources."
+      },
+      "validation_errors": []
+    }
+  ]
+}

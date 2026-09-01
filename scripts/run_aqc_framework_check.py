@@ -23,7 +23,7 @@ if str(ROOT) not in sys.path:
 import pandas as pd  # noqa: E402
 
 from experiments.annotation.annotate import call_json  # noqa: E402
-from experiments.aqc import prompts  # noqa: E402
+from experiments.aqc import legacy_recode_prompts, prompts  # noqa: E402
 from scripts.build_aqc_discovery_sample import (  # noqa: E402
     DISEASES, ROOT as BUILDER_ROOT, greedy_batch, load_timing, profile_development,
     stable_hash,
@@ -109,7 +109,13 @@ def load_masked_record(disease: str, hadm_id: int, frames: dict[str, pd.DataFram
     return build_record(disease, hadm_id, row.iloc[0], labmap)
 
 
-def validate_output(value: Any, *, is_first_step: bool = False) -> list[str]:
+def validate_output(
+    value: Any,
+    *,
+    is_first_step: bool = False,
+    ordered: str | None = None,
+    is_repeat_order: bool = False,
+) -> list[str]:
     errors: list[str] = []
     if not isinstance(value, dict):
         return ["not_a_json_object"]
@@ -167,6 +173,20 @@ def validate_output(value: Any, *, is_first_step: bool = False) -> list[str]:
         secondary = question.get("secondary_questions")
         if not isinstance(secondary, list) or len(secondary) > 2:
             errors.append("bad_secondary_questions")
+        question_evidence = question.get("evidence")
+        if (
+            not isinstance(question_evidence, list)
+            or not question_evidence
+            or len(question_evidence) > 2
+        ):
+            errors.append("bad_question_evidence_count")
+        elif isinstance(ordered, str) and ordered.strip():
+            normalized_order = ordered.strip().casefold()
+            if any(
+                isinstance(item, str) and item.strip().casefold() == normalized_order
+                for item in question_evidence
+            ):
+                errors.append("current_order_used_as_question_evidence")
     coverage = value.get("coverage")
     if not isinstance(coverage, dict) or not isinstance(coverage.get("requirements"), list):
         errors.append("coverage_requirements_not_list")
@@ -236,6 +256,43 @@ def validate_output(value: Any, *, is_first_step: bool = False) -> list[str]:
         "remedy", "adjudicate", "advance", "reroute", "reopen", "close", "initial", "unclear"
     }:
         errors.append("bad_derived_transition")
+    fit = value.get("current_order_fit")
+    if not isinstance(fit, dict):
+        errors.append("current_order_fit_not_object")
+    else:
+        if set(fit) != {"question_grounding", "test_question_capability"}:
+            errors.append("bad_current_order_fit_fields")
+        if fit.get("question_grounding") not in {
+            "well_supported", "weakly_supported", "unclear"
+        }:
+            errors.append("bad_question_grounding")
+        if fit.get("test_question_capability") not in {
+            "capable", "partially_capable", "not_capable", "uncertain"
+        }:
+            errors.append("bad_test_question_capability")
+    if "current_test" in value:
+        errors.append("transitional_current_test_present")
+    if is_repeat_order and isinstance(question, dict):
+        primary = str(question.get("primary") or "")
+        requirements = question.get("answer_requirements")
+        requirement_text = " ".join(
+            str(item.get("dimension") or "")
+            for item in requirements if isinstance(item, dict)
+        ) if isinstance(requirements, list) else ""
+        temporal_text = f"{primary} {requirement_text}".casefold()
+        temporal_markers = (
+            "current", "interval", "since", "change", "progress", "evolv",
+            "response", "reassess", "repeat", "new ", "now", "当前", "变化", "进展",
+        )
+        has_temporal_framing = any(marker in temporal_text for marker in temporal_markers)
+        if not has_temporal_framing:
+            errors.append("repeat_order_missing_temporal_framing")
+        if (
+            isinstance(coverage, dict)
+            and coverage.get("aggregate") == "sufficiently_answered"
+            and has_temporal_framing
+        ):
+            errors.append("repeat_temporal_question_sufficiently_answered_preorder")
     return errors
 
 
@@ -294,18 +351,27 @@ def run_patient(patient: dict[str, Any], *, model: str, frames: dict[str, pd.Dat
     for dp, source_step in zip(record["decision_points"], source["steps"], strict=True):
         if int(dp["step"]) != int(source_step["step"]):
             raise ValueError(f"step id mismatch {disease}/{hadm_id}")
-        direct_user = prompts.build_direct_user(dp, record["baseline"], direct_prior)
-        recode_user = prompts.build_recode_user(
+        direct_user = prompts.build_annotation_user(dp, record["baseline"], direct_prior)
+        recode_user = legacy_recode_prompts.build_recode_user(
             source_step["representative_ex_ante"], str(source_step.get("ordered", "")), recode_prior
         )
         direct_call = call_json(
-            prompts.DIRECT_SYSTEM, direct_user, model=model, temperature=0.0, max_tokens=4000
+            prompts.ANNOTATION_SYSTEM, direct_user, model=model, temperature=0.0, max_tokens=4000
         )
         recode_call = call_json(
-            prompts.RECODE_SYSTEM, recode_user, model=model, temperature=0.0, max_tokens=4000
+            legacy_recode_prompts.RECODE_SYSTEM,
+            recode_user,
+            model=model,
+            temperature=0.0,
+            max_tokens=4000,
         )
         direct_value = direct_call.get("parsed")
         recode_value = recode_call.get("parsed")
+        is_repeat_order = any(
+            previous_dp["ordered"] == dp["ordered"]
+            for previous_dp in record["decision_points"]
+            if int(previous_dp["step"]) < int(dp["step"])
+        )
         steps.append({
             "step": int(dp["step"]),
             "ordered": dp["ordered"],
@@ -313,8 +379,18 @@ def run_patient(patient: dict[str, Any], *, model: str, frames: dict[str, pd.Dat
             "recode_prompt_sha256": sha256(recode_user),
             "direct": direct_call,
             "recode": recode_call,
-            "direct_validation_errors": validate_output(direct_value, is_first_step=int(dp["step"]) == 1),
-            "recode_validation_errors": validate_output(recode_value, is_first_step=int(dp["step"]) == 1),
+            "direct_validation_errors": validate_output(
+                direct_value,
+                is_first_step=int(dp["step"]) == 1,
+                ordered=dp["ordered"],
+                is_repeat_order=is_repeat_order,
+            ),
+            "recode_validation_errors": validate_output(
+                recode_value,
+                is_first_step=int(dp["step"]) == 1,
+                ordered=str(source_step.get("ordered", "")),
+                is_repeat_order=is_repeat_order,
+            ),
             "comparison": compare_step(direct_value, recode_value),
         })
         direct_prior = direct_value

@@ -1,0 +1,762 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 25665153,
+  "source_path": "results/annotation_experiment/full/appendicitis_25665153.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "f523ea0970a472eae8ed45b074bd054c889a42e24f2faceeac20324214f9b942",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "f523ea0970a472eae8ed45b074bd054c889a42e24f2faceeac20324214f9b942",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute right‑sided abdominal pain localizing to the right upper and right mid abdomen with some right lower quadrant tenderness but no peritoneal signs.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "symptom/physical finding level",
+                  "status": "established",
+                  "evidence": [
+                    "“developed primarily right sided abdominal pain approximately 12 hrs prior to presentation… The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”",
+                    "“abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is no current clinical or laboratory evidence of generalized sepsis, pancreatitis, urinary tract infection, or pregnancy.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome and lab pattern level",
+                  "status": "established",
+                  "evidence": [
+                    "“She has not been febrile but does endorse chills.” and vitals: “T: 98.2 P: 77 BP: 112/68 RR: 18 O2sat: 99% on RA”",
+                    "“Lipase: 38.0 IU/L (ref 0.0-60.0)… Leukocytes: NEG.… Nitrite: NEG.… HCG, Urine, Qualitative: NEGATIVE.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Acute hepatobiliary disease such as biliary colic or acute cholecystitis is a leading suspected cause of this acute right‑sided abdominal pain.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "disease/organ system level",
+                  "status": "suspected",
+                  "evidence": [
+                    "“developed primarily right sided abdominal pain approximately 12 hrs prior to presentation… followed by some nausea and nonbilious emesis.”",
+                    "Abdomen: “quite tender to palpation locally over RLQ and R mid abdomen.” with normal lipase and urinalysis, making hepatobiliary and appendiceal sources key differentials."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Acute appendicitis remains an important alternative source of the right‑sided abdominal pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "disease level",
+                  "status": "suspected",
+                  "evidence": [
+                    "“The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”",
+                    "“quite tender to palpation locally over RLQ and R mid abdomen.” with otherwise benign exam and labs, compatible with early appendicitis."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient has preserved renal function and no contraindication to potential contrast imaging if later needed.",
+                  "type": "other",
+                  "other_proposed_type": "intervention_risk_context",
+                  "level": "system/physiology level",
+                  "status": "established",
+                  "evidence": [
+                    "“Creatinine: 0.9 mg/dL (ref 0.4-1.1)… Estimated GFR = 68 if non African-American (mL/min/1.73 m2).”",
+                    "Hemodynamics and coagulation are normal: “BP: 112/68… PT: 10.8 sec… INR(PT): 1.0.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First decision point; no prior imaging."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; baseline assumptions are being established from history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Is there imaging evidence of acute hepatobiliary pathology accounting for this acute right‑sided abdominal pain?",
+                "target": "gallbladder and adjacent hepatobiliary structures for acute cholecystitis, biliary colic, or related pathology",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming acute hepatobiliary pathology would direct management toward biliary-specific treatment such as surgical or medical therapy and deprioritize other abdominal sources.",
+                "negative_answer_changes": "If acute hepatobiliary pathology is not demonstrated, other intra-abdominal causes such as appendicitis would move up in priority and further imaging or surgical evaluation would be pursued.",
+                "secondary_questions": [
+                  "Is there secondary evidence of complications of gallbladder disease such as perforation, abscess, or biliary obstruction?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_viz",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and basic structural assessment of the gallbladder and adjacent liver/biliary tree",
+                    "why_required": "Determining whether hepatobiliary pathology explains the pain requires adequate visualization of the gallbladder and nearby hepatobiliary structures."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones, gallbladder wall thickening, pericholecystic fluid, sonographic Murphy sign, or biliary ductal dilation",
+                    "why_required": "These findings establish or refute acute cholecystitis, biliary colic, or biliary obstruction as the pain source."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Signs of complicated biliary disease such as perforation, abscess, or marked biliary obstruction",
+                    "why_required": "Detecting complications would alter urgency, need for intervention, and potential surgical approach."
+                  }
+                ],
+                "evidence": [
+                  "“developed primarily right sided abdominal pain… followed by some nausea and nonbilious emesis.”",
+                  "“abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen.” with normal lipase and urinalysis, making hepatobiliary and appendiceal etiologies key considerations."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_viz",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "No prior imaging has visualized the gallbladder or hepatobiliary structures."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Clinical exam and labs do not directly assess the presence or absence of gallstones, gallbladder wall changes, or ductal dilation."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Vitals and labs are reassuring: “T: 98.2… P: 77… Lactate: 1.4 mmol/L (ref 0.5-2.0).”"
+                    ],
+                    "reason": "While the stable clinical picture makes severe complication less likely, it does not assess local biliary complications, and no imaging has been done."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key hepatobiliary imaging questions remain unaddressed because no abdominal imaging has yet been performed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant or focused hepatobiliary ultrasound can visualize the gallbladder and nearby biliary structures, detect stones and inflammatory changes, and identify many biliary complications, directly addressing the suspected hepatobiliary source of pain.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order specification between liver versus gallbladder emphasis and how appendicitis versus biliary disease is prioritized in the overall diagnostic plan is not fully explicit in the chart."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": "The ultrasound could instead be primarily intended to exclude biliary disease as an alternative source before proceeding to CT for suspected appendicitis, making the central question one of alternative_source discrimination between hepatobiliary and appendiceal causes of right‑sided abdominal pain."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute right‑sided abdominal pain localizing to the right upper and right mid abdomen with some right lower quadrant tenderness but no peritoneal signs.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"symptom/physical finding level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“developed primarily right sided abdominal pain approximately 12 hrs prior to presentation… The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”\",\n        \"“abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is no current clinical or laboratory evidence of generalized sepsis, pancreatitis, urinary tract infection, or pregnancy.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome and lab pattern level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“She has not been febrile but does endorse chills.” and vitals: “T: 98.2 P: 77 BP: 112/68 RR: 18 O2sat: 99% on RA”\",\n        \"“Lipase: 38.0 IU/L (ref 0.0-60.0)… Leukocytes: NEG.… Nitrite: NEG.… HCG, Urine, Qualitative: NEGATIVE.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute hepatobiliary disease such as biliary colic or acute cholecystitis is a leading suspected cause of this acute right‑sided abdominal pain.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease/organ system level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“developed primarily right sided abdominal pain approximately 12 hrs prior to presentation… followed by some nausea and nonbilious emesis.”\",\n        \"Abdomen: “quite tender to palpation locally over RLQ and R mid abdomen.” with normal lipase and urinalysis, making hepatobiliary and appendiceal sources key differentials.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Acute appendicitis remains an important alternative source of the right‑sided abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease level\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”\",\n        \"“quite tender to palpation locally over RLQ and R mid abdomen.” with otherwise benign exam and labs, compatible with early appendicitis.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient has preserved renal function and no contraindication to potential contrast imaging if later needed.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"intervention_risk_context\",\n      \"level\": \"system/physiology level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“Creatinine: 0.9 mg/dL (ref 0.4-1.1)… Estimated GFR = 68 if non African-American (mL/min/1.73 m2).”\",\n        \"Hemodynamics and coagulation are normal: “BP: 112/68… PT: 10.8 sec… INR(PT): 1.0.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior imaging.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; baseline assumptions are being established from history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there imaging evidence of acute hepatobiliary pathology accounting for this acute right‑sided abdominal pain?\",\n    \"target\": \"gallbladder and adjacent hepatobiliary structures for acute cholecystitis, biliary colic, or related pathology\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming acute hepatobiliary pathology would direct management toward biliary-specific treatment such as surgical or medical therapy and deprioritize other abdominal sources.\",\n    \"negative_answer_changes\": \"If acute hepatobiliary pathology is not demonstrated, other intra-abdominal causes such as appendicitis would move up in priority and further imaging or surgical evaluation would be pursued.\",\n    \"secondary_questions\": [\n      \"Is there secondary evidence of complications of gallbladder disease such as perforation, abscess, or biliary obstruction?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_viz\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and basic structural assessment of the gallbladder and adjacent liver/biliary tree\",\n        \"why_required\": \"Determining whether hepatobiliary pathology explains the pain requires adequate visualization of the gallbladder and nearby hepatobiliary structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, gallbladder wall thickening, pericholecystic fluid, sonographic Murphy sign, or biliary ductal dilation\",\n        \"why_required\": \"These findings establish or refute acute cholecystitis, biliary colic, or biliary obstruction as the pain source.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Signs of complicated biliary disease such as perforation, abscess, or marked biliary obstruction\",\n        \"why_required\": \"Detecting complications would alter urgency, need for intervention, and potential surgical approach.\"\n      }\n    ],\n    \"evidence\": [\n      \"“developed primarily right sided abdominal pain… followed by some nausea and nonbilious emesis.”\",\n      \"“abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen.” with normal lipase and urinalysis, making hepatobiliary and appendiceal etiologies key considerations.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_viz\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No prior imaging has visualized the gallbladder or hepatobiliary structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Clinical exam and labs do not directly assess the presence or absence of gallstones, gallbladder wall changes, or ductal dilation.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Vitals and labs are reassuring: “T: 98.2… P: 77… Lactate: 1.4 mmol/L (ref 0.5-2.0).”\"\n        ],\n        \"reason\": \"While the stable clinical picture makes severe complication less likely, it does not assess local biliary complications, and no imaging has been done.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key hepatobiliary imaging questions remain unaddressed because no abdominal imaging has yet been performed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant or focused hepatobiliary ultrasound can visualize the gallbladder and nearby biliary structures, detect stones and inflammatory changes, and identify many biliary complications, directly addressing the suspected hepatobiliary source of pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order specification between liver versus gallbladder emphasis and how appendicitis versus biliary disease is prioritized in the overall diagnostic plan is not fully explicit in the chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"The ultrasound could instead be primarily intended to exclude biliary disease as an alternative source before proceeding to CT for suspected appendicitis, making the central question one of alternative_source discrimination between hepatobiliary and appendiceal causes of right‑sided abdominal pain.\"\n}",
+            "request_id": "gen-1788194115-i1JKxQ8OYOKIpkk3U4tD",
+            "usage": {
+              "completion_tokens": 2118,
+              "prompt_tokens": 3244,
+              "total_tokens": 5362,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.025235,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.025235,
+                "upstream_inference_prompt_cost": 0.004055,
+                "upstream_inference_completions_cost": 0.02118
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute right‑sided abdominal pain localizing to the right upper and right mid abdomen with some right lower quadrant tenderness but no peritoneal signs.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "symptom/physical finding level",
+            "status": "established",
+            "evidence": [
+              "“developed primarily right sided abdominal pain approximately 12 hrs prior to presentation… The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”",
+              "“abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is no current clinical or laboratory evidence of generalized sepsis, pancreatitis, urinary tract infection, or pregnancy.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "syndrome and lab pattern level",
+            "status": "established",
+            "evidence": [
+              "“She has not been febrile but does endorse chills.” and vitals: “T: 98.2 P: 77 BP: 112/68 RR: 18 O2sat: 99% on RA”",
+              "“Lipase: 38.0 IU/L (ref 0.0-60.0)… Leukocytes: NEG.… Nitrite: NEG.… HCG, Urine, Qualitative: NEGATIVE.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Acute hepatobiliary disease such as biliary colic or acute cholecystitis is a leading suspected cause of this acute right‑sided abdominal pain.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "disease/organ system level",
+            "status": "suspected",
+            "evidence": [
+              "“developed primarily right sided abdominal pain approximately 12 hrs prior to presentation… followed by some nausea and nonbilious emesis.”",
+              "Abdomen: “quite tender to palpation locally over RLQ and R mid abdomen.” with normal lipase and urinalysis, making hepatobiliary and appendiceal sources key differentials."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Acute appendicitis remains an important alternative source of the right‑sided abdominal pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "disease level",
+            "status": "suspected",
+            "evidence": [
+              "“The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”",
+              "“quite tender to palpation locally over RLQ and R mid abdomen.” with otherwise benign exam and labs, compatible with early appendicitis."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient has preserved renal function and no contraindication to potential contrast imaging if later needed.",
+            "type": "other",
+            "other_proposed_type": "intervention_risk_context",
+            "level": "system/physiology level",
+            "status": "established",
+            "evidence": [
+              "“Creatinine: 0.9 mg/dL (ref 0.4-1.1)… Estimated GFR = 68 if non African-American (mL/min/1.73 m2).”",
+              "Hemodynamics and coagulation are normal: “BP: 112/68… PT: 10.8 sec… INR(PT): 1.0.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First decision point; no prior imaging."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision; baseline assumptions are being established from history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "Is there imaging evidence of acute hepatobiliary pathology accounting for this acute right‑sided abdominal pain?",
+          "target": "gallbladder and adjacent hepatobiliary structures for acute cholecystitis, biliary colic, or related pathology",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming acute hepatobiliary pathology would direct management toward biliary-specific treatment such as surgical or medical therapy and deprioritize other abdominal sources.",
+          "negative_answer_changes": "If acute hepatobiliary pathology is not demonstrated, other intra-abdominal causes such as appendicitis would move up in priority and further imaging or surgical evaluation would be pursued.",
+          "secondary_questions": [
+            "Is there secondary evidence of complications of gallbladder disease such as perforation, abscess, or biliary obstruction?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_viz",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization and basic structural assessment of the gallbladder and adjacent liver/biliary tree",
+              "why_required": "Determining whether hepatobiliary pathology explains the pain requires adequate visualization of the gallbladder and nearby hepatobiliary structures."
+            },
+            {
+              "requirement_key": "req_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones, gallbladder wall thickening, pericholecystic fluid, sonographic Murphy sign, or biliary ductal dilation",
+              "why_required": "These findings establish or refute acute cholecystitis, biliary colic, or biliary obstruction as the pain source."
+            },
+            {
+              "requirement_key": "req_complication",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Signs of complicated biliary disease such as perforation, abscess, or marked biliary obstruction",
+              "why_required": "Detecting complications would alter urgency, need for intervention, and potential surgical approach."
+            }
+          ],
+          "evidence": [
+            "“developed primarily right sided abdominal pain… followed by some nausea and nonbilious emesis.”",
+            "“abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen.” with normal lipase and urinalysis, making hepatobiliary and appendiceal etiologies key considerations."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_viz",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "No prior imaging has visualized the gallbladder or hepatobiliary structures."
+            },
+            {
+              "requirement_key": "req_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Clinical exam and labs do not directly assess the presence or absence of gallstones, gallbladder wall changes, or ductal dilation."
+            },
+            {
+              "requirement_key": "req_complication",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Vitals and labs are reassuring: “T: 98.2… P: 77… Lactate: 1.4 mmol/L (ref 0.5-2.0).”"
+              ],
+              "reason": "While the stable clinical picture makes severe complication less likely, it does not assess local biliary complications, and no imaging has been done."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key hepatobiliary imaging questions remain unaddressed because no abdominal imaging has yet been performed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant or focused hepatobiliary ultrasound can visualize the gallbladder and nearby biliary structures, detect stones and inflammatory changes, and identify many biliary complications, directly addressing the suspected hepatobiliary source of pain.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The order specification between liver versus gallbladder emphasis and how appendicitis versus biliary disease is prioritized in the overall diagnostic plan is not fully explicit in the chart."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": "The ultrasound could instead be primarily intended to exclude biliary disease as an alternative source before proceeding to CT for suspected appendicitis, making the central question one of alternative_source discrimination between hepatobiliary and appendiceal causes of right‑sided abdominal pain."
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "8ee6615b8e55b173603868fc5396cda130f9336f3990873b1f12d7bf399e26a5",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "8ee6615b8e55b173603868fc5396cda130f9336f3990873b1f12d7bf399e26a5",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute right‑sided abdominal pain now localizing to the right lower quadrant with migratory pattern and focal RLQ/R mid‑abdominal tenderness, without systemic instability or clear alternative non‑gastrointestinal source.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "symptom and exam syndrome level",
+                  "status": "established",
+                  "evidence": [
+                    "“developed primarily right  sided abdominal pain approximately 12 hrs prior to presentation… The  pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”",
+                    "“abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Acute appendicitis is a leading suspected cause of the current right‑sided abdominal pain after hepatobiliary pathology was not demonstrated on targeted ultrasound.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "disease level",
+                  "status": "likely",
+                  "evidence": [
+                    "“The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”",
+                    "Ultrasound: “The gallbladder is normal, and the common bile duct measures 5 mm, not dilated.… The pancreas is normal.… The visualized portions of the right kidney are normal.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Acute hepatobiliary pathology (biliary colic or acute cholecystitis) is now less likely as the primary source of pain because focused hepatobiliary ultrasound was normal.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "disease/organ level",
+                  "status": "challenged",
+                  "evidence": [
+                    "Ultrasound: “The gallbladder is normal, and the common bile duct measures 5 mm, not dilated.… There is no intrahepatic biliary duct dilatation.… The pancreas is normal.”",
+                    "Labs and vitals are reassuring without cholestatic pattern or sepsis: “Alanine Aminotransferase (ALT): 23.0 IU/L… Bilirubin, Total: 0.6 mg/dL… T: 98.2  P: 77  BP: 112/68  RR: 18  O2sat: 99% on RA”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient’s renal function and hemodynamics remain adequate for intravenous contrast administration.",
+                  "type": "other",
+                  "other_proposed_type": "intervention_risk_context",
+                  "level": "system/physiology level",
+                  "status": "established",
+                  "evidence": [
+                    "“Creatinine: 0.9 mg/dL (ref 0.4-1.1)… Estimated GFR = 68 if non African-American (mL/min/1.73 m2).”",
+                    "On admission: “BP: 112/68… PT: 10.8 sec… INR(PT): 1.0.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is currently no laboratory evidence of urinary tract infection, nephrolithiasis, pancreatitis, or pregnancy to explain the abdominal pain.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "syndrome and lab pattern level",
+                  "status": "established",
+                  "evidence": [
+                    "Urinalysis: “Leukocytes: NEG.… Nitrite: NEG.… RBC: <1.… Bacteria: FEW.”",
+                    "“Lipase: 38.0 IU/L (ref 0.0-60.0)… HCG, Urine, Qualitative: NEGATIVE.”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there imaging evidence of acute hepatobiliary pathology accounting for this acute right‑sided abdominal pain?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "negative",
+                "effect_on_previous_question": "The right upper abdominal ultrasound adequately visualized the hepatobiliary structures and was normal, effectively refuting acute hepatobiliary disease as the primary source of pain and shifting diagnostic focus toward other intra‑abdominal causes such as appendicitis.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "Ultrasound: “The gallbladder is normal, and the common bile duct measures 5 mm, not dilated.… There is no intrahepatic biliary duct dilatation.”",
+                  "evidence_stream_2": "Clinical picture without jaundice, systemic toxicity, or cholestatic labs: “Bilirubin, Total: 0.6 mg/dL… Alanine Aminotransferase (ALT): 23.0 IU/L… T: 98.2  P: 77.”",
+                  "reason": "Imaging findings of a normal gallbladder and biliary tree are consistent with the benign hepatobiliary labs and absence of biliary sepsis."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "Acute hepatobiliary disease such as biliary colic or acute cholecystitis is a leading suspected cause of this acute right‑sided abdominal pain.",
+                "reason": "Normal hepatobiliary ultrasound substantially lowers the probability of acute biliary disease, refining it from a leading suspicion to a challenged alternative and promoting appendicitis and other intra‑abdominal causes as primary considerations."
+              },
+              "current_question": {
+                "primary": "What intra‑abdominal pathology, particularly in the right lower quadrant, is responsible for this acute localized abdominal pain now that hepatobiliary causes have been largely excluded?",
+                "target": "appendix and adjacent bowel/mesentery, and broader abdominopelvic organs, to identify or exclude appendicitis and alternative intra‑abdominal causes of acute right‑sided pain",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a specific cause such as appendicitis, bowel inflammation, obstruction, or another focal intra‑abdominal process would direct the team toward targeted interventions such as surgery, antibiotics, or other appropriate therapies.",
+                "negative_answer_changes": "If no actionable intra‑abdominal pathology is identified, the team may reconsider the diagnosis, pursue non‑imaging evaluation, observation, or alternative modalities while maintaining conservative management.",
+                "secondary_questions": [
+                  "Is there imaging evidence of complications such as perforation, abscess, free air, or significant fluid collections that would alter urgency and management strategy?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_app_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and structural assessment of the appendix and adjacent cecum/right lower quadrant structures",
+                    "why_required": "Determining whether appendicitis explains the pain requires adequate visualization of the appendix region and surrounding tissues."
+                  },
+                  {
+                    "requirement_key": "req_alt_sources",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Assessment of other abdominopelvic organs (bowel, mesentery, urinary tract, gynecologic structures where visible) for alternative causes of acute right‑sided abdominal pain",
+                    "why_required": "If the appendix is not clearly abnormal, alternative intra‑abdominal sources must be evaluated to localize the cause of pain."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, absence, and character of complications such as perforation, abscess, free air, or significant fluid collections",
+                    "why_required": "Detecting complications informs urgency, need for emergent surgery, and potential need for drainage or broader antibiotic coverage."
+                  }
+                ],
+                "evidence": [
+                  "“The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.… quite tender to palpation locally over RLQ and R mid abdomen.”",
+                  "Ultrasound: “The gallbladder is normal… The pancreas is normal.… The visualized portions of the right kidney are normal.”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_app_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "The prior ultrasound focused on hepatobiliary structures and right kidney: “The liver is normal… The gallbladder is normal… The pancreas is normal.… The visualized portions of the right kidney are normal.”"
+                    ],
+                    "reason": "No prior imaging has visualized or assessed the appendix or detailed right lower quadrant bowel/mesentery."
+                  },
+                  {
+                    "requirement_key": "req_alt_sources",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "Ultrasound: “The gallbladder is normal… The pancreas is normal.… The visualized portions of the right kidney are normal.”"
+                    ],
+                    "reason": "Hepatobiliary, pancreatic, and upper right renal sources have been imaged and appear normal, but bowel, pelvic, appendiceal, and non‑visualized urinary or gynecologic sources have not been assessed."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Vitals and lactate are reassuring: “T: 98.2  P: 77… Lactate: 1.4 mmol/L (ref 0.5-2.0).”"
+                    ],
+                    "reason": "Clinical stability makes severe complications less likely but does not image or characterize intra‑abdominal perforation, abscess, or free air."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "The localization and characterization of the intra‑abdominal source, especially appendicitis and its complications, remain unaddressed by prior imaging despite partial exclusion of hepatobiliary and some renal causes."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast‑enhanced CT of the abdomen and pelvis can visualize the appendix, bowel, mesentery, solid organs, and many pelvic structures, and is well suited to identify appendicitis, alternative intra‑abdominal causes, and complications.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not specify detailed consideration of gynecologic etiologies or whether radiation exposure and alternative modalities (e.g., focused pelvic ultrasound) were weighed, so the relative prioritization of CT over other options is not explicit."
+              },
+              "derived_transition": "reroute",
+              "alternative_reconstruction": "An alternative account is that the CT is primarily intended as a broad abdominopelvic survey for any surgical abdomen (including but not limited to appendicitis, perforation, obstruction, or occult malignancy) after a negative hepatobiliary ultrasound, framing the central question as existence_or_identity of any acute surgical intra‑abdominal pathology rather than focused source_localization to the appendix."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute right‑sided abdominal pain now localizing to the right lower quadrant with migratory pattern and focal RLQ/R mid‑abdominal tenderness, without systemic instability or clear alternative non‑gastrointestinal source.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"symptom and exam syndrome level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“developed primarily right  sided abdominal pain approximately 12 hrs prior to presentation… The  pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”\",\n        \"“abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute appendicitis is a leading suspected cause of the current right‑sided abdominal pain after hepatobiliary pathology was not demonstrated on targeted ultrasound.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease level\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"“The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”\",\n        \"Ultrasound: “The gallbladder is normal, and the common bile duct measures 5 mm, not dilated.… The pancreas is normal.… The visualized portions of the right kidney are normal.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute hepatobiliary pathology (biliary colic or acute cholecystitis) is now less likely as the primary source of pain because focused hepatobiliary ultrasound was normal.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease/organ level\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Ultrasound: “The gallbladder is normal, and the common bile duct measures 5 mm, not dilated.… There is no intrahepatic biliary duct dilatation.… The pancreas is normal.”\",\n        \"Labs and vitals are reassuring without cholestatic pattern or sepsis: “Alanine Aminotransferase (ALT): 23.0 IU/L… Bilirubin, Total: 0.6 mg/dL… T: 98.2  P: 77  BP: 112/68  RR: 18  O2sat: 99% on RA”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient’s renal function and hemodynamics remain adequate for intravenous contrast administration.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"intervention_risk_context\",\n      \"level\": \"system/physiology level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“Creatinine: 0.9 mg/dL (ref 0.4-1.1)… Estimated GFR = 68 if non African-American (mL/min/1.73 m2).”\",\n        \"On admission: “BP: 112/68… PT: 10.8 sec… INR(PT): 1.0.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is currently no laboratory evidence of urinary tract infection, nephrolithiasis, pancreatitis, or pregnancy to explain the abdominal pain.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome and lab pattern level\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Urinalysis: “Leukocytes: NEG.… Nitrite: NEG.… RBC: <1.… Bacteria: FEW.”\",\n        \"“Lipase: 38.0 IU/L (ref 0.0-60.0)… HCG, Urine, Qualitative: NEGATIVE.”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there imaging evidence of acute hepatobiliary pathology accounting for this acute right‑sided abdominal pain?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"negative\",\n    \"effect_on_previous_question\": \"The right upper abdominal ultrasound adequately visualized the hepatobiliary structures and was normal, effectively refuting acute hepatobiliary disease as the primary source of pain and shifting diagnostic focus toward other intra‑abdominal causes such as appendicitis.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"Ultrasound: “The gallbladder is normal, and the common bile duct measures 5 mm, not dilated.… There is no intrahepatic biliary duct dilatation.”\",\n      \"evidence_stream_2\": \"Clinical picture without jaundice, systemic toxicity, or cholestatic labs: “Bilirubin, Total: 0.6 mg/dL… Alanine Aminotransferase (ALT): 23.0 IU/L… T: 98.2  P: 77.”\",\n      \"reason\": \"Imaging findings of a normal gallbladder and biliary tree are consistent with the benign hepatobiliary labs and absence of biliary sepsis.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Acute hepatobiliary disease such as biliary colic or acute cholecystitis is a leading suspected cause of this acute right‑sided abdominal pain.\",\n    \"reason\": \"Normal hepatobiliary ultrasound substantially lowers the probability of acute biliary disease, refining it from a leading suspicion to a challenged alternative and promoting appendicitis and other intra‑abdominal causes as primary considerations.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What intra‑abdominal pathology, particularly in the right lower quadrant, is responsible for this acute localized abdominal pain now that hepatobiliary causes have been largely excluded?\",\n    \"target\": \"appendix and adjacent bowel/mesentery, and broader abdominopelvic organs, to identify or exclude appendicitis and alternative intra‑abdominal causes of acute right‑sided pain\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a specific cause such as appendicitis, bowel inflammation, obstruction, or another focal intra‑abdominal process would direct the team toward targeted interventions such as surgery, antibiotics, or other appropriate therapies.\",\n    \"negative_answer_changes\": \"If no actionable intra‑abdominal pathology is identified, the team may reconsider the diagnosis, pursue non‑imaging evaluation, observation, or alternative modalities while maintaining conservative management.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of complications such as perforation, abscess, free air, or significant fluid collections that would alter urgency and management strategy?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_app_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and structural assessment of the appendix and adjacent cecum/right lower quadrant structures\",\n        \"why_required\": \"Determining whether appendicitis explains the pain requires adequate visualization of the appendix region and surrounding tissues.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_sources\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Assessment of other abdominopelvic organs (bowel, mesentery, urinary tract, gynecologic structures where visible) for alternative causes of acute right‑sided abdominal pain\",\n        \"why_required\": \"If the appendix is not clearly abnormal, alternative intra‑abdominal sources must be evaluated to localize the cause of pain.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, absence, and character of complications such as perforation, abscess, free air, or significant fluid collections\",\n        \"why_required\": \"Detecting complications informs urgency, need for emergent surgery, and potential need for drainage or broader antibiotic coverage.\"\n      }\n    ],\n    \"evidence\": [\n      \"“The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.… quite tender to palpation locally over RLQ and R mid abdomen.”\",\n      \"Ultrasound: “The gallbladder is normal… The pancreas is normal.… The visualized portions of the right kidney are normal.”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_app_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"The prior ultrasound focused on hepatobiliary structures and right kidney: “The liver is normal… The gallbladder is normal… The pancreas is normal.… The visualized portions of the right kidney are normal.”\"\n        ],\n        \"reason\": \"No prior imaging has visualized or assessed the appendix or detailed right lower quadrant bowel/mesentery.\"\n      },\n      {\n        \"requirement_key\": \"req_alt_sources\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Ultrasound: “The gallbladder is normal… The pancreas is normal.… The visualized portions of the right kidney are normal.”\"\n        ],\n        \"reason\": \"Hepatobiliary, pancreatic, and upper right renal sources have been imaged and appear normal, but bowel, pelvic, appendiceal, and non‑visualized urinary or gynecologic sources have not been assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Vitals and lactate are reassuring: “T: 98.2  P: 77… Lactate: 1.4 mmol/L (ref 0.5-2.0).”\"\n        ],\n        \"reason\": \"Clinical stability makes severe complications less likely but does not image or characterize intra‑abdominal perforation, abscess, or free air.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"The localization and characterization of the intra‑abdominal source, especially appendicitis and its complications, remain unaddressed by prior imaging despite partial exclusion of hepatobiliary and some renal causes.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast‑enhanced CT of the abdomen and pelvis can visualize the appendix, bowel, mesentery, solid organs, and many pelvic structures, and is well suited to identify appendicitis, alternative intra‑abdominal causes, and complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not specify detailed consideration of gynecologic etiologies or whether radiation exposure and alternative modalities (e.g., focused pelvic ultrasound) were weighed, so the relative prioritization of CT over other options is not explicit.\"\n  },\n  \"derived_transition\": \"reroute\",\n  \"alternative_reconstruction\": \"An alternative account is that the CT is primarily intended as a broad abdominopelvic survey for any surgical abdomen (including but not limited to appendicitis, perforation, obstruction, or occult malignancy) after a negative hepatobiliary ultrasound, framing the central question as existence_or_identity of any acute surgical intra‑abdominal pathology rather than focused source_localization to the appendix.\"\n}",
+            "request_id": "gen-1788194131-0Dg7Fbbrb2Intrr4RtET",
+            "usage": {
+              "completion_tokens": 2631,
+              "prompt_tokens": 5290,
+              "total_tokens": 7921,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1920,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0307625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0307625,
+                "upstream_inference_prompt_cost": 0.0044525,
+                "upstream_inference_completions_cost": 0.02631
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute right‑sided abdominal pain now localizing to the right lower quadrant with migratory pattern and focal RLQ/R mid‑abdominal tenderness, without systemic instability or clear alternative non‑gastrointestinal source.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "symptom and exam syndrome level",
+            "status": "established",
+            "evidence": [
+              "“developed primarily right  sided abdominal pain approximately 12 hrs prior to presentation… The  pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”",
+              "“abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Acute appendicitis is a leading suspected cause of the current right‑sided abdominal pain after hepatobiliary pathology was not demonstrated on targeted ultrasound.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "disease level",
+            "status": "likely",
+            "evidence": [
+              "“The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.”",
+              "Ultrasound: “The gallbladder is normal, and the common bile duct measures 5 mm, not dilated.… The pancreas is normal.… The visualized portions of the right kidney are normal.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Acute hepatobiliary pathology (biliary colic or acute cholecystitis) is now less likely as the primary source of pain because focused hepatobiliary ultrasound was normal.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "disease/organ level",
+            "status": "challenged",
+            "evidence": [
+              "Ultrasound: “The gallbladder is normal, and the common bile duct measures 5 mm, not dilated.… There is no intrahepatic biliary duct dilatation.… The pancreas is normal.”",
+              "Labs and vitals are reassuring without cholestatic pattern or sepsis: “Alanine Aminotransferase (ALT): 23.0 IU/L… Bilirubin, Total: 0.6 mg/dL… T: 98.2  P: 77  BP: 112/68  RR: 18  O2sat: 99% on RA”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient’s renal function and hemodynamics remain adequate for intravenous contrast administration.",
+            "type": "other",
+            "other_proposed_type": "intervention_risk_context",
+            "level": "system/physiology level",
+            "status": "established",
+            "evidence": [
+              "“Creatinine: 0.9 mg/dL (ref 0.4-1.1)… Estimated GFR = 68 if non African-American (mL/min/1.73 m2).”",
+              "On admission: “BP: 112/68… PT: 10.8 sec… INR(PT): 1.0.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is currently no laboratory evidence of urinary tract infection, nephrolithiasis, pancreatitis, or pregnancy to explain the abdominal pain.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "syndrome and lab pattern level",
+            "status": "established",
+            "evidence": [
+              "Urinalysis: “Leukocytes: NEG.… Nitrite: NEG.… RBC: <1.… Bacteria: FEW.”",
+              "“Lipase: 38.0 IU/L (ref 0.0-60.0)… HCG, Urine, Qualitative: NEGATIVE.”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there imaging evidence of acute hepatobiliary pathology accounting for this acute right‑sided abdominal pain?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "negative",
+          "effect_on_previous_question": "The right upper abdominal ultrasound adequately visualized the hepatobiliary structures and was normal, effectively refuting acute hepatobiliary disease as the primary source of pain and shifting diagnostic focus toward other intra‑abdominal causes such as appendicitis.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "Ultrasound: “The gallbladder is normal, and the common bile duct measures 5 mm, not dilated.… There is no intrahepatic biliary duct dilatation.”",
+            "evidence_stream_2": "Clinical picture without jaundice, systemic toxicity, or cholestatic labs: “Bilirubin, Total: 0.6 mg/dL… Alanine Aminotransferase (ALT): 23.0 IU/L… T: 98.2  P: 77.”",
+            "reason": "Imaging findings of a normal gallbladder and biliary tree are consistent with the benign hepatobiliary labs and absence of biliary sepsis."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "Acute hepatobiliary disease such as biliary colic or acute cholecystitis is a leading suspected cause of this acute right‑sided abdominal pain.",
+          "reason": "Normal hepatobiliary ultrasound substantially lowers the probability of acute biliary disease, refining it from a leading suspicion to a challenged alternative and promoting appendicitis and other intra‑abdominal causes as primary considerations."
+        },
+        "current_question": {
+          "primary": "What intra‑abdominal pathology, particularly in the right lower quadrant, is responsible for this acute localized abdominal pain now that hepatobiliary causes have been largely excluded?",
+          "target": "appendix and adjacent bowel/mesentery, and broader abdominopelvic organs, to identify or exclude appendicitis and alternative intra‑abdominal causes of acute right‑sided pain",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a specific cause such as appendicitis, bowel inflammation, obstruction, or another focal intra‑abdominal process would direct the team toward targeted interventions such as surgery, antibiotics, or other appropriate therapies.",
+          "negative_answer_changes": "If no actionable intra‑abdominal pathology is identified, the team may reconsider the diagnosis, pursue non‑imaging evaluation, observation, or alternative modalities while maintaining conservative management.",
+          "secondary_questions": [
+            "Is there imaging evidence of complications such as perforation, abscess, free air, or significant fluid collections that would alter urgency and management strategy?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_app_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization and structural assessment of the appendix and adjacent cecum/right lower quadrant structures",
+              "why_required": "Determining whether appendicitis explains the pain requires adequate visualization of the appendix region and surrounding tissues."
+            },
+            {
+              "requirement_key": "req_alt_sources",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Assessment of other abdominopelvic organs (bowel, mesentery, urinary tract, gynecologic structures where visible) for alternative causes of acute right‑sided abdominal pain",
+              "why_required": "If the appendix is not clearly abnormal, alternative intra‑abdominal sources must be evaluated to localize the cause of pain."
+            },
+            {
+              "requirement_key": "req_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, absence, and character of complications such as perforation, abscess, free air, or significant fluid collections",
+              "why_required": "Detecting complications informs urgency, need for emergent surgery, and potential need for drainage or broader antibiotic coverage."
+            }
+          ],
+          "evidence": [
+            "“The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.… quite tender to palpation locally over RLQ and R mid abdomen.”",
+            "Ultrasound: “The gallbladder is normal… The pancreas is normal.… The visualized portions of the right kidney are normal.”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_app_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "The prior ultrasound focused on hepatobiliary structures and right kidney: “The liver is normal… The gallbladder is normal… The pancreas is normal.… The visualized portions of the right kidney are normal.”"
+              ],
+              "reason": "No prior imaging has visualized or assessed the appendix or detailed right lower quadrant bowel/mesentery."
+            },
+            {
+              "requirement_key": "req_alt_sources",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "Ultrasound: “The gallbladder is normal… The pancreas is normal.… The visualized portions of the right kidney are normal.”"
+              ],
+              "reason": "Hepatobiliary, pancreatic, and upper right renal sources have been imaged and appear normal, but bowel, pelvic, appendiceal, and non‑visualized urinary or gynecologic sources have not been assessed."
+            },
+            {
+              "requirement_key": "req_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Vitals and lactate are reassuring: “T: 98.2  P: 77… Lactate: 1.4 mmol/L (ref 0.5-2.0).”"
+              ],
+              "reason": "Clinical stability makes severe complications less likely but does not image or characterize intra‑abdominal perforation, abscess, or free air."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "The localization and characterization of the intra‑abdominal source, especially appendicitis and its complications, remain unaddressed by prior imaging despite partial exclusion of hepatobiliary and some renal causes."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast‑enhanced CT of the abdomen and pelvis can visualize the appendix, bowel, mesentery, solid organs, and many pelvic structures, and is well suited to identify appendicitis, alternative intra‑abdominal causes, and complications.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not specify detailed consideration of gynecologic etiologies or whether radiation exposure and alternative modalities (e.g., focused pelvic ultrasound) were weighed, so the relative prioritization of CT over other options is not explicit."
+        },
+        "derived_transition": "reroute",
+        "alternative_reconstruction": "An alternative account is that the CT is primarily intended as a broad abdominopelvic survey for any surgical abdomen (including but not limited to appendicitis, perforation, obstruction, or occult malignancy) after a negative hepatobiliary ultrasound, framing the central question as existence_or_identity of any acute surgical intra‑abdominal pathology rather than focused source_localization to the appendix."
+      },
+      "validation_errors": []
+    }
+  ]
+}

@@ -1,0 +1,999 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 25976986,
+  "source_path": "results/annotation_experiment/full/pancreatitis_25976986.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "d9f0c01a505663454371289ea7f45995b2ea8f897a72053d8e90ad1bd738deb9",
+  "validator_version": "2.0.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "b3da2786c4f667131afbb26140638d4080ae3cc54b5c11a885873a22c620cf42",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "b3da2786c4f667131afbb26140638d4080ae3cc54b5c11a885873a22c620cf42",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute hepatobiliary process causing right upper quadrant and epigastric pain with cholestatic liver injury and jaundice.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome",
+                  "status": "likely",
+                  "evidence": [
+                    "His exam was notable for ... tenderness to palpation in RUQ",
+                    "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5.",
+                    "Gamma Glutamyltransferase: 1118.0 IU/L (ref 8.0-61.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Biliary obstruction from gallbladder or common bile duct pathology (e.g., cholelithiasis, choledocholithiasis, cholecystitis) is a suspected cause of the patient’s presentation.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis element",
+                  "status": "suspected",
+                  "evidence": [
+                    "tenderness to palpation in RUQ",
+                    "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5.",
+                    "Gamma Glutamyltransferase: 1118.0 IU/L (ref 8.0-61.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Gallbladder ultrasound and CT abdomen/pelvis performed in the ED did not show an acute intra-abdominal process or gallbladder pathology, but may have been limited or incomplete for the current focused question.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "test-result interpretation",
+                  "status": "established",
+                  "evidence": [
+                    "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+                    "RUQ US revealed fatty liver only."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is clinical concern for a biliary colic or transient obstruction episode that may not have been captured or fully characterized on the initial ED imaging.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic mechanism hypothesis",
+                  "status": "suspected",
+                  "evidence": [
+                    "He reports that at approximately 8pm ... he deveoped abdominal pain. ... The pain improved for several hours ... Shortly afterwards however his pain returned and steadily worsened",
+                    "GI was consulted in the ED and recommended consideration of HIDA or MRCP."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Nonbiliary causes of liver test elevation such as viral hepatitis and acetaminophen toxicity are less likely in this presentation.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis element",
+                  "status": "challenged",
+                  "evidence": [
+                    "Hepatitis A Virus Antibody: NEGATIVE.",
+                    "Hepatitis B Surface Antigen: NEGATIVE.",
+                    "Hepatitis C Virus Antibody: NEGATIVE.",
+                    "Acetaminophen: NEG. (ref 10.0-30.0)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision; the hepatobiliary syndrome and suspected biliary obstruction are inferred from the presenting history, labs, and prior ED imaging summary."
+              },
+              "current_question": {
+                "primary": "Is there gallbladder or extrahepatic biliary pathology, such as stones, wall changes, or bile duct dilation, that could explain this patient’s acute right upper quadrant pain and cholestatic liver injury?",
+                "target": "gallbladder and extrahepatic bile ducts",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Would support biliary obstruction or gallbladder disease as the source, prompting focused hepatobiliary management (e.g., surgical or endoscopic consultation, possible ERCP or cholecystectomy).",
+                "negative_answer_changes": "Would reduce the likelihood of obstructive gallbladder disease, prompting consideration of alternative hepatic or nonbiliary causes and possibly more advanced imaging such as HIDA or MRCP as already suggested.",
+                "secondary_questions": [
+                  "Is there evidence of severity such as marked bile duct dilation or complicated cholecystitis that would require urgent intervention?",
+                  "Is there progression or evolution of biliary findings compared with the ED RUQ ultrasound, in the setting of recurrent pain after admission?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_visualize_biliary",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Clear visualization and assessment of the gallbladder and common bile duct.",
+                    "why_required": "Detecting or excluding structural biliary abnormalities requires adequate visualization of these structures."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones, sludge, gallbladder wall thickening, pericholecystic fluid, or bile duct dilation.",
+                    "why_required": "These findings define whether gallbladder or ductal pathology exists to explain the symptoms and labs."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of bile duct dilation or complicated features (e.g., significant wall thickening, fluid collections) if present.",
+                    "why_required": "Severity assessment informs urgency and type of intervention (e.g., emergent ERCP vs. elective management)."
+                  }
+                ],
+                "evidence": [
+                  "He describes his abdominal pain as ... location is in his epigastrium and radiating to both his right and left flank ... tenderness to palpation in RUQ",
+                  "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5. ... Gamma Glutamyltransferase: 1118.0 IU/L",
+                  "GI was consulted in the ED and recommended consideration of HIDA or MRCP."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_visualize_biliary",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "RUQ US revealed fatty liver only.",
+                      "CT Abd/Pelvis did not reveal an acute intra-abdominal process."
+                    ],
+                    "reason": "Prior CT and RUQ ultrasound were performed and noted as not showing an acute process, but details about common bile duct visualization or quality of gallbladder assessment are not provided, so current biliary visualization is incompletely characterized."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+                      "RUQ US revealed fatty liver only."
+                    ],
+                    "reason": "The absence of reported biliary pathology on CT and RUQ ultrasound argues against overt biliary disease, but given limited detail and ongoing symptoms with abnormal labs, this does not fully exclude gallbladder or ductal pathology."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT Abd/Pelvis did not reveal an acute intra-abdominal process."
+                    ],
+                    "reason": "No specific information is provided about bile duct caliber or complication severity, so the extent and urgency of any possible biliary process remain undetermined."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Initial CT and RUQ ultrasound did not show an acute process but lacked sufficient detail regarding biliary structures and severity, leaving the central biliary question incompletely resolved."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A focused liver or gallbladder ultrasound can directly visualize the gallbladder and bile ducts to identify stones, wall changes, or ductal dilation that explain cholestatic labs and RUQ pain.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "It is not fully clear why a repeat or focused single-organ abdominal ultrasound is chosen instead of proceeding directly to HIDA or MRCP as GI suggested; this may relate to availability, need to reassess after symptom change, or limited initial ultrasound, which are not documented."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute hepatobiliary process causing right upper quadrant and epigastric pain with cholestatic liver injury and jaundice.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"His exam was notable for ... tenderness to palpation in RUQ\",\n        \"Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5.\",\n        \"Gamma Glutamyltransferase: 1118.0 IU/L (ref 8.0-61.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary obstruction from gallbladder or common bile duct pathology (e.g., cholelithiasis, choledocholithiasis, cholecystitis) is a suspected cause of the patient’s presentation.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis element\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"tenderness to palpation in RUQ\",\n        \"Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5.\",\n        \"Gamma Glutamyltransferase: 1118.0 IU/L (ref 8.0-61.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallbladder ultrasound and CT abdomen/pelvis performed in the ED did not show an acute intra-abdominal process or gallbladder pathology, but may have been limited or incomplete for the current focused question.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"test-result interpretation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\",\n        \"RUQ US revealed fatty liver only.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is clinical concern for a biliary colic or transient obstruction episode that may not have been captured or fully characterized on the initial ED imaging.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic mechanism hypothesis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"He reports that at approximately 8pm ... he deveoped abdominal pain. ... The pain improved for several hours ... Shortly afterwards however his pain returned and steadily worsened\",\n        \"GI was consulted in the ED and recommended consideration of HIDA or MRCP.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Nonbiliary causes of liver test elevation such as viral hepatitis and acetaminophen toxicity are less likely in this presentation.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis element\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Hepatitis A Virus Antibody: NEGATIVE.\",\n        \"Hepatitis B Surface Antigen: NEGATIVE.\",\n        \"Hepatitis C Virus Antibody: NEGATIVE.\",\n        \"Acetaminophen: NEG. (ref 10.0-30.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision; the hepatobiliary syndrome and suspected biliary obstruction are inferred from the presenting history, labs, and prior ED imaging summary.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there gallbladder or extrahepatic biliary pathology, such as stones, wall changes, or bile duct dilation, that could explain this patient’s acute right upper quadrant pain and cholestatic liver injury?\",\n    \"target\": \"gallbladder and extrahepatic bile ducts\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Would support biliary obstruction or gallbladder disease as the source, prompting focused hepatobiliary management (e.g., surgical or endoscopic consultation, possible ERCP or cholecystectomy).\",\n    \"negative_answer_changes\": \"Would reduce the likelihood of obstructive gallbladder disease, prompting consideration of alternative hepatic or nonbiliary causes and possibly more advanced imaging such as HIDA or MRCP as already suggested.\",\n    \"secondary_questions\": [\n      \"Is there evidence of severity such as marked bile duct dilation or complicated cholecystitis that would require urgent intervention?\",\n      \"Is there progression or evolution of biliary findings compared with the ED RUQ ultrasound, in the setting of recurrent pain after admission?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_biliary\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Clear visualization and assessment of the gallbladder and common bile duct.\",\n        \"why_required\": \"Detecting or excluding structural biliary abnormalities requires adequate visualization of these structures.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, sludge, gallbladder wall thickening, pericholecystic fluid, or bile duct dilation.\",\n        \"why_required\": \"These findings define whether gallbladder or ductal pathology exists to explain the symptoms and labs.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of bile duct dilation or complicated features (e.g., significant wall thickening, fluid collections) if present.\",\n        \"why_required\": \"Severity assessment informs urgency and type of intervention (e.g., emergent ERCP vs. elective management).\"\n      }\n    ],\n    \"evidence\": [\n      \"He describes his abdominal pain as ... location is in his epigastrium and radiating to both his right and left flank ... tenderness to palpation in RUQ\",\n      \"Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5. ... Gamma Glutamyltransferase: 1118.0 IU/L\",\n      \"GI was consulted in the ED and recommended consideration of HIDA or MRCP.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_biliary\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"RUQ US revealed fatty liver only.\",\n          \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\"\n        ],\n        \"reason\": \"Prior CT and RUQ ultrasound were performed and noted as not showing an acute process, but details about common bile duct visualization or quality of gallbladder assessment are not provided, so current biliary visualization is incompletely characterized.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\",\n          \"RUQ US revealed fatty liver only.\"\n        ],\n        \"reason\": \"The absence of reported biliary pathology on CT and RUQ ultrasound argues against overt biliary disease, but given limited detail and ongoing symptoms with abnormal labs, this does not fully exclude gallbladder or ductal pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\"\n        ],\n        \"reason\": \"No specific information is provided about bile duct caliber or complication severity, so the extent and urgency of any possible biliary process remain undetermined.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Initial CT and RUQ ultrasound did not show an acute process but lacked sufficient detail regarding biliary structures and severity, leaving the central biliary question incompletely resolved.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A focused liver or gallbladder ultrasound can directly visualize the gallbladder and bile ducts to identify stones, wall changes, or ductal dilation that explain cholestatic labs and RUQ pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"It is not fully clear why a repeat or focused single-organ abdominal ultrasound is chosen instead of proceeding directly to HIDA or MRCP as GI suggested; this may relate to availability, need to reassess after symptom change, or limited initial ultrasound, which are not documented.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788190733-IejvvCknFPPFOjeG8BEA",
+            "usage": {
+              "completion_tokens": 2164,
+              "prompt_tokens": 3756,
+              "total_tokens": 5920,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.026335,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.026335,
+                "upstream_inference_prompt_cost": 0.004695,
+                "upstream_inference_completions_cost": 0.02164
+              }
+            }
+          },
+          "validation_errors": [
+            "assumption_0_bad_evidence_count",
+            "assumption_1_bad_evidence_count",
+            "assumption_4_bad_evidence_count",
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "d21e2f356bfc1fbdb2db5e99d4dff6c573700378bfd85c198aec5d9cee35e69c",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute hepatobiliary syndrome with right upper quadrant and epigastric pain plus cholestatic liver test abnormalities.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall clinical syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "His exam was notable for being uncomfortable appearing, tenderness to palpation in RUQ",
+                    "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Obstructive or biliary etiologies such as gallbladder disease or biliary obstruction are suspected as the cause of his acute hepatobiliary syndrome.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis",
+                  "status": "suspected",
+                  "evidence": [
+                    "RUQ US revealed fatty liver only.",
+                    "GI was consulted in the ED and recommended consideration of HIDA or MRCP."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Primary hepatocellular disease from viral hepatitis is unlikely as the cause of his current presentation.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative diagnosis",
+                  "status": "excluded",
+                  "evidence": [
+                    "Hepatitis A Virus Antibody: NEGATIVE.",
+                    "Hepatitis B Surface Antigen: NEGATIVE."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The prior CT abdomen/pelvis and right upper quadrant ultrasound did not identify an acute intra-abdominal process explaining his current pain.",
+                  "type": "other",
+                  "other_proposed_type": "prior_imaging_summary",
+                  "level": "test-level synthesis",
+                  "status": "established",
+                  "evidence": [
+                    "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+                    "RUQ US revealed fatty liver only."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Alcohol-related liver disease is a possible background contributor but not clearly the sole explanation for this acute presentation.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "risk factor / background disease",
+                  "status": "suspected",
+                  "evidence": [
+                    "___ male with history of GERD, hypertension, atrial  fibrillation, and alcohol abuse was admitted with abdominal  pain.",
+                    "RUQ US revealed fatty liver only."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable because this is the first decision point.",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No prior imaging decision state exists at this first step."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first reconstruction step so all assumptions are being established de novo."
+              },
+              "current_question": {
+                "primary": "Is there a focal hepatobiliary structural abnormality in the liver or gallbladder that explains this patient’s acute right upper quadrant/epigastric pain and cholestatic liver test abnormalities?",
+                "target": "liver parenchyma and gallbladder (including lumen and wall) as potential sources of obstructive or inflammatory hepatobiliary disease",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "A detected liver or gallbladder structural lesion (e.g., cholecystitis, mass, or focal biliary abnormality) would localize the source of disease and guide targeted hepatobiliary management or further biliary imaging.",
+                "negative_answer_changes": "Absence of a focal liver or gallbladder abnormality would reduce the likelihood of these as the primary pain source and shift attention toward extra-biliary causes or more distal biliary obstruction.",
+                "secondary_questions": [
+                  "Is there imaging evidence of biliary obstruction or cholecystitis severity that would necessitate urgent intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_visualize_hepatobiliary",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate grayscale and Doppler assessment of liver parenchyma and gallbladder morphology.",
+                    "why_required": "The question cannot be addressed unless the liver and gallbladder are sufficiently visualized to detect structural abnormalities."
+                  },
+                  {
+                    "requirement_key": "req_presence_focal_lesion",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of focal structural abnormalities in the liver (e.g., mass, lesion) or gallbladder (e.g., wall thickening, stones, sludge, pericholecystic fluid).",
+                    "why_required": "Determining whether a focal lesion exists is necessary to decide if these organs are the source of the acute syndrome."
+                  },
+                  {
+                    "requirement_key": "req_severity_obstruction_inflammation",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity or extent of any identified inflammatory or obstructive hepatobiliary process involving the liver or gallbladder.",
+                    "why_required": "Characterizing severity helps determine urgency and type of hepatobiliary intervention or further testing (e.g., MRCP, HIDA)."
+                  }
+                ],
+                "evidence": [
+                  "His exam was notable for being uncomfortable appearing, tenderness to palpation in RUQ, guiac positive yellow stool.",
+                  "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_visualize_hepatobiliary",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "RUQ US revealed fatty liver only.",
+                      "CT Abd/Pelvis did not reveal an acute intra-abdominal process."
+                    ],
+                    "reason": "Prior CT and RUQ ultrasound visualized the region but did not systematically target liver-only or gallbladder-only pathology for this admission; they provide some assessment but leave residual concern given ongoing symptoms and abnormal labs."
+                  },
+                  {
+                    "requirement_key": "req_presence_focal_lesion",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "RUQ US revealed fatty liver only.",
+                      "CT Abd/Pelvis did not reveal an acute intra-abdominal process."
+                    ],
+                    "reason": "Existing imaging did not demonstrate focal acute pathology, which somewhat argues against a major focal lesion but may miss subtle or evolving disease that a targeted single-organ ultrasound could better characterize."
+                  },
+                  {
+                    "requirement_key": "req_severity_obstruction_inflammation",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "GI was consulted in the ED and recommended consideration of HIDA or MRCP.",
+                      "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5."
+                    ],
+                    "reason": "Neither the CT nor the generic RUQ ultrasound described the degree of biliary obstruction or gallbladder inflammatory changes in detail, so severity remains undetermined."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Prior imaging partially assessed hepatobiliary structures but did not fully clarify the presence or severity of a focal liver or gallbladder source for the acute syndrome."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A focused single-organ abdominal ultrasound of the liver or gallbladder can directly visualize these structures and detect or better characterize hepatobiliary lesions, obstruction, or inflammation underlying the acute presentation.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "It is not clear from the chart why a repeat or more targeted ultrasound was chosen instead of proceeding directly to HIDA or MRCP as suggested by GI, or why the order is framed as a single-organ liver-or-gallbladder study rather than comprehensive RUQ imaging."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute hepatobiliary syndrome with right upper quadrant and epigastric pain plus cholestatic liver test abnormalities.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"His exam was notable for being uncomfortable appearing, tenderness to palpation in RUQ\",\n        \"Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Obstructive or biliary etiologies such as gallbladder disease or biliary obstruction are suspected as the cause of his acute hepatobiliary syndrome.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"RUQ US revealed fatty liver only.\",\n        \"GI was consulted in the ED and recommended consideration of HIDA or MRCP.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Primary hepatocellular disease from viral hepatitis is unlikely as the cause of his current presentation.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative diagnosis\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"Hepatitis A Virus Antibody: NEGATIVE.\",\n        \"Hepatitis B Surface Antigen: NEGATIVE.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The prior CT abdomen/pelvis and right upper quadrant ultrasound did not identify an acute intra-abdominal process explaining his current pain.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"prior_imaging_summary\",\n      \"level\": \"test-level synthesis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\",\n        \"RUQ US revealed fatty liver only.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Alcohol-related liver disease is a possible background contributor but not clearly the sole explanation for this acute presentation.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"risk factor / background disease\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"___ male with history of GERD, hypertension, atrial  fibrillation, and alcohol abuse was admitted with abdominal  pain.\",\n        \"RUQ US revealed fatty liver only.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable because this is the first decision point.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging decision state exists at this first step.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first reconstruction step so all assumptions are being established de novo.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a focal hepatobiliary structural abnormality in the liver or gallbladder that explains this patient’s acute right upper quadrant/epigastric pain and cholestatic liver test abnormalities?\",\n    \"target\": \"liver parenchyma and gallbladder (including lumen and wall) as potential sources of obstructive or inflammatory hepatobiliary disease\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"A detected liver or gallbladder structural lesion (e.g., cholecystitis, mass, or focal biliary abnormality) would localize the source of disease and guide targeted hepatobiliary management or further biliary imaging.\",\n    \"negative_answer_changes\": \"Absence of a focal liver or gallbladder abnormality would reduce the likelihood of these as the primary pain source and shift attention toward extra-biliary causes or more distal biliary obstruction.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of biliary obstruction or cholecystitis severity that would necessitate urgent intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_hepatobiliary\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate grayscale and Doppler assessment of liver parenchyma and gallbladder morphology.\",\n        \"why_required\": \"The question cannot be addressed unless the liver and gallbladder are sufficiently visualized to detect structural abnormalities.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_focal_lesion\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of focal structural abnormalities in the liver (e.g., mass, lesion) or gallbladder (e.g., wall thickening, stones, sludge, pericholecystic fluid).\",\n        \"why_required\": \"Determining whether a focal lesion exists is necessary to decide if these organs are the source of the acute syndrome.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_obstruction_inflammation\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity or extent of any identified inflammatory or obstructive hepatobiliary process involving the liver or gallbladder.\",\n        \"why_required\": \"Characterizing severity helps determine urgency and type of hepatobiliary intervention or further testing (e.g., MRCP, HIDA).\"\n      }\n    ],\n    \"evidence\": [\n      \"His exam was notable for being uncomfortable appearing, tenderness to palpation in RUQ, guiac positive yellow stool.\",\n      \"Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_hepatobiliary\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"RUQ US revealed fatty liver only.\",\n          \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\"\n        ],\n        \"reason\": \"Prior CT and RUQ ultrasound visualized the region but did not systematically target liver-only or gallbladder-only pathology for this admission; they provide some assessment but leave residual concern given ongoing symptoms and abnormal labs.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_focal_lesion\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"RUQ US revealed fatty liver only.\",\n          \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\"\n        ],\n        \"reason\": \"Existing imaging did not demonstrate focal acute pathology, which somewhat argues against a major focal lesion but may miss subtle or evolving disease that a targeted single-organ ultrasound could better characterize.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_obstruction_inflammation\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"GI was consulted in the ED and recommended consideration of HIDA or MRCP.\",\n          \"Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5.\"\n        ],\n        \"reason\": \"Neither the CT nor the generic RUQ ultrasound described the degree of biliary obstruction or gallbladder inflammatory changes in detail, so severity remains undetermined.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Prior imaging partially assessed hepatobiliary structures but did not fully clarify the presence or severity of a focal liver or gallbladder source for the acute syndrome.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A focused single-organ abdominal ultrasound of the liver or gallbladder can directly visualize these structures and detect or better characterize hepatobiliary lesions, obstruction, or inflammation underlying the acute presentation.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"It is not clear from the chart why a repeat or more targeted ultrasound was chosen instead of proceeding directly to HIDA or MRCP as suggested by GI, or why the order is framed as a single-organ liver-or-gallbladder study rather than comprehensive RUQ imaging.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788190754-ZFU8yMa5F6QSSng4wolk",
+            "usage": {
+              "completion_tokens": 2012,
+              "prompt_tokens": 3819,
+              "total_tokens": 5831,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02489375,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02489375,
+                "upstream_inference_prompt_cost": 0.00477375,
+                "upstream_inference_completions_cost": 0.02012
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute hepatobiliary syndrome with right upper quadrant and epigastric pain plus cholestatic liver test abnormalities.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "overall clinical syndrome",
+            "status": "established",
+            "evidence": [
+              "His exam was notable for being uncomfortable appearing, tenderness to palpation in RUQ",
+              "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Obstructive or biliary etiologies such as gallbladder disease or biliary obstruction are suspected as the cause of his acute hepatobiliary syndrome.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "differential diagnosis",
+            "status": "suspected",
+            "evidence": [
+              "RUQ US revealed fatty liver only.",
+              "GI was consulted in the ED and recommended consideration of HIDA or MRCP."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Primary hepatocellular disease from viral hepatitis is unlikely as the cause of his current presentation.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "alternative diagnosis",
+            "status": "excluded",
+            "evidence": [
+              "Hepatitis A Virus Antibody: NEGATIVE.",
+              "Hepatitis B Surface Antigen: NEGATIVE."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The prior CT abdomen/pelvis and right upper quadrant ultrasound did not identify an acute intra-abdominal process explaining his current pain.",
+            "type": "other",
+            "other_proposed_type": "prior_imaging_summary",
+            "level": "test-level synthesis",
+            "status": "established",
+            "evidence": [
+              "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+              "RUQ US revealed fatty liver only."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Alcohol-related liver disease is a possible background contributor but not clearly the sole explanation for this acute presentation.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "risk factor / background disease",
+            "status": "suspected",
+            "evidence": [
+              "___ male with history of GERD, hypertension, atrial  fibrillation, and alcohol abuse was admitted with abdominal  pain.",
+              "RUQ US revealed fatty liver only."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable because this is the first decision point.",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "No prior imaging decision state exists at this first step."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first reconstruction step so all assumptions are being established de novo."
+        },
+        "current_question": {
+          "primary": "Is there a focal hepatobiliary structural abnormality in the liver or gallbladder that explains this patient’s acute right upper quadrant/epigastric pain and cholestatic liver test abnormalities?",
+          "target": "liver parenchyma and gallbladder (including lumen and wall) as potential sources of obstructive or inflammatory hepatobiliary disease",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "A detected liver or gallbladder structural lesion (e.g., cholecystitis, mass, or focal biliary abnormality) would localize the source of disease and guide targeted hepatobiliary management or further biliary imaging.",
+          "negative_answer_changes": "Absence of a focal liver or gallbladder abnormality would reduce the likelihood of these as the primary pain source and shift attention toward extra-biliary causes or more distal biliary obstruction.",
+          "secondary_questions": [
+            "Is there imaging evidence of biliary obstruction or cholecystitis severity that would necessitate urgent intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_visualize_hepatobiliary",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate grayscale and Doppler assessment of liver parenchyma and gallbladder morphology.",
+              "why_required": "The question cannot be addressed unless the liver and gallbladder are sufficiently visualized to detect structural abnormalities."
+            },
+            {
+              "requirement_key": "req_presence_focal_lesion",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of focal structural abnormalities in the liver (e.g., mass, lesion) or gallbladder (e.g., wall thickening, stones, sludge, pericholecystic fluid).",
+              "why_required": "Determining whether a focal lesion exists is necessary to decide if these organs are the source of the acute syndrome."
+            },
+            {
+              "requirement_key": "req_severity_obstruction_inflammation",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity or extent of any identified inflammatory or obstructive hepatobiliary process involving the liver or gallbladder.",
+              "why_required": "Characterizing severity helps determine urgency and type of hepatobiliary intervention or further testing (e.g., MRCP, HIDA)."
+            }
+          ],
+          "evidence": [
+            "His exam was notable for being uncomfortable appearing, tenderness to palpation in RUQ, guiac positive yellow stool.",
+            "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_visualize_hepatobiliary",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "RUQ US revealed fatty liver only.",
+                "CT Abd/Pelvis did not reveal an acute intra-abdominal process."
+              ],
+              "reason": "Prior CT and RUQ ultrasound visualized the region but did not systematically target liver-only or gallbladder-only pathology for this admission; they provide some assessment but leave residual concern given ongoing symptoms and abnormal labs."
+            },
+            {
+              "requirement_key": "req_presence_focal_lesion",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "RUQ US revealed fatty liver only.",
+                "CT Abd/Pelvis did not reveal an acute intra-abdominal process."
+              ],
+              "reason": "Existing imaging did not demonstrate focal acute pathology, which somewhat argues against a major focal lesion but may miss subtle or evolving disease that a targeted single-organ ultrasound could better characterize."
+            },
+            {
+              "requirement_key": "req_severity_obstruction_inflammation",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "GI was consulted in the ED and recommended consideration of HIDA or MRCP.",
+                "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5."
+              ],
+              "reason": "Neither the CT nor the generic RUQ ultrasound described the degree of biliary obstruction or gallbladder inflammatory changes in detail, so severity remains undetermined."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Prior imaging partially assessed hepatobiliary structures but did not fully clarify the presence or severity of a focal liver or gallbladder source for the acute syndrome."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A focused single-organ abdominal ultrasound of the liver or gallbladder can directly visualize these structures and detect or better characterize hepatobiliary lesions, obstruction, or inflammation underlying the acute presentation.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "It is not clear from the chart why a repeat or more targeted ultrasound was chosen instead of proceeding directly to HIDA or MRCP as suggested by GI, or why the order is framed as a single-organ liver-or-gallbladder study rather than comprehensive RUQ imaging."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABDOMEN W/CONTRAST)",
+      "request_prompt_sha256": "19fe28ac535b6dccc1b7e2023c4e68241858314480cc420285911882e83cc649",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "19fe28ac535b6dccc1b7e2023c4e68241858314480cc420285911882e83cc649",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute cholestatic hepatobiliary process with right upper quadrant/epigastric pain, hyperbilirubinemia, markedly elevated GGT, and modest transaminase/alkaline phosphatase elevations.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "overall clinical syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "His exam was notable for being uncomfortable appearing, tenderness to palpation in RUQ",
+                    "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5. Gamma Glutamyltransferase: 1118.0 IU/L"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Extrahepatic biliary obstruction such as choledocholithiasis or occult obstructing lesion remains a significant concern despite a normal-caliber common bile duct on limited ultrasound.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "leading etiologic hypothesis",
+                  "status": "likely",
+                  "evidence": [
+                    "GI was consulted in the ED and recommended consideration of HIDA or MRCP.",
+                    "The common bile duct measures 3 mm and is normal. No intrahepatic biliary dilatation is present."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The prior right upper quadrant ultrasound was technically limited and may have missed subtle or extra-biliary causes of pain and obstruction.",
+                  "type": "other",
+                  "other_proposed_type": "test_limitation_or_uncertainty",
+                  "level": "test performance/limitations",
+                  "status": "established",
+                  "evidence": [
+                    "Examination of the abdomen is limited due to poor sonographic penetration.",
+                    "Within these limitations the liver appears heterogeneous and echogenic consistent with fatty infiltration."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Primary hepatocellular disease from viral hepatitis is an unlikely explanation for this acute presentation.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative diagnosis",
+                  "status": "excluded",
+                  "evidence": [
+                    "Hepatitis A Virus Antibody: NEGATIVE.",
+                    "Hepatitis B Surface Antigen: NEGATIVE. Hepatitis C Virus Antibody: NEGATIVE."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "An intra-abdominal process not confined to the gallbladder or liver (e.g., pancreatic, duodenal, or other upper abdominal pathology) is a possible alternative source of the patient’s pain and biochemical abnormalities.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "competing diagnostic frame",
+                  "status": "suspected",
+                  "evidence": [
+                    "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+                    "He describes his abdominal pain as ... location is in his epigastrium and radiating to both his right and left flank, duration has been constant and worsening, and the pain worsens with eating."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there a focal hepatobiliary structural abnormality in the liver or gallbladder that explains this patient’s acute right upper quadrant/epigastric pain and cholestatic liver test abnormalities?",
+                "study_adequacy": "limited_but_diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "negative",
+                "effect_on_previous_question": "The limited but overall reassuring liver/gallbladder ultrasound, showing only fatty infiltration with a normal-caliber common bile duct and no gallstones or wall thickening, decreased the likelihood of a primary gallbladder or gross liver structural lesion as the source of symptoms but did not exclude subtle biliary obstruction or extrahepatobiliary causes, leaving the prior question only partially answered.",
+                "discordance": {
+                  "label": "indeterminate",
+                  "evidence_stream_1": "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+                  "evidence_stream_2": "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5. Gamma Glutamyltransferase: 1118.0 IU/L",
+                  "reason": "Biochemical evidence of significant cholestasis and ongoing pain contrasts with cross-sectional and sonographic imaging that have not shown a clear source, but this tension reflects potential false negatives rather than clear contradiction."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "Obstructive or biliary etiologies such as gallbladder disease or biliary obstruction are suspected as the cause of his acute hepatobiliary syndrome.",
+                "reason": "After a limited yet negative gallbladder-focused ultrasound, attention shifts from gallbladder-only pathology toward possible extrahepatic biliary obstruction or alternative intra-abdominal sources while still prioritizing an obstructive cholestatic mechanism."
+              },
+              "current_question": {
+                "primary": "Is there a structural cause in the upper abdomen, including the pancreas, bile ducts, or adjacent organs, that explains this patient’s acute epigastric/RUQ pain and cholestatic liver test abnormalities?",
+                "target": "upper abdominal viscera and biliary tree (pancreas, extrahepatic bile ducts, liver surface, duodenum, and surrounding structures) as potential sources of obstruction or other pathology",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a structural lesion such as choledocholithiasis, pancreatic or periampullary mass, duodenal pathology, or other focal upper abdominal process would localize the source of obstruction/pain and direct urgent gastroenterology, surgical, or endoscopic intervention.",
+                "negative_answer_changes": "Failure to identify a structural cause on dedicated contrast CT would reduce the likelihood of a CT-detectable obstructing or inflammatory lesion, prompting reliance on functional biliary studies, endoscopic assessment, or consideration of nonstructural hepatobiliary etiologies.",
+                "secondary_questions": [
+                  "Is there CT evidence of complications such as pancreatitis, perforation, or ischemia that would alter the urgency or type of intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_upper_abd_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comprehensive contrast-enhanced visualization of the upper abdominal organs, including liver surface, pancreas, extrahepatic bile ducts, gallbladder region, duodenum, and surrounding soft tissues.",
+                    "why_required": "The presence or absence of a structural cause cannot be judged without adequately imaging all major candidate source organs for obstructive or inflammatory pathology."
+                  },
+                  {
+                    "requirement_key": "req_presence_structural_cause",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of discrete structural lesions such as stones in the extrahepatic bile ducts, pancreatic or periampullary mass, localized inflammation, perforation, or other focal abnormalities that could account for obstruction and pain.",
+                    "why_required": "Determining whether any structural lesion exists is necessary to localize the source and define the immediate management pathway."
+                  },
+                  {
+                    "requirement_key": "req_severity_complications",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Severity and extent of any identified inflammatory or obstructive process and associated complications (e.g., degree of pancreatitis, fluid collections, ischemia).",
+                    "why_required": "Characterizing the severity and complications is essential to decide on the urgency of intervention and choice between medical, endoscopic, or surgical management."
+                  }
+                ],
+                "evidence": [
+                  "GI was consulted in the ED and recommended consideration of HIDA or MRCP.",
+                  "CT Abd/Pelvis did not reveal an acute intra-abdominal process. RUQ US revealed fatty liver only."
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_upper_abd_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+                      "Examination of the abdomen is limited due to poor sonographic penetration."
+                    ],
+                    "reason": "A prior CT abdomen/pelvis did image the upper abdomen, but the report is non-specific about dedicated arterial/venous phase assessment of hepatobiliary and pancreatic structures, and the follow-up order for a contrast CT abdomen suggests clinicians consider the previous CT insufficient for detailed upper abdominal evaluation."
+                  },
+                  {
+                    "requirement_key": "req_presence_structural_cause",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+                      "The gallbladder is unremarkable, without stones, sludge, or wall thickening. The common bile duct measures 3 mm and is normal."
+                    ],
+                    "reason": "Combined CT and limited ultrasound did not show a clear structural lesion, which weighs against a large or obvious process but leaves concern for subtle, evolving, or previously occult causes, especially in the context of worsening symptoms and marked cholestasis."
+                  },
+                  {
+                    "requirement_key": "req_severity_complications",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+                      "Lipase: 37.0 IU/L (ref 0.0-60.0)"
+                    ],
+                    "reason": "No prior imaging report describes the severity or extent of any specific inflammatory or obstructive process, and normal lipase makes pancreatitis less likely but does not address other potential complications, so severity remains undetermined."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Existing CT and limited ultrasound modestly reduce the likelihood of a major structural cause but lack the detailed, contrast-enhanced upper abdominal assessment needed to confidently localize or exclude a subtle obstructive or inflammatory source and its complications."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT abdomen can comprehensively evaluate the pancreas, extrahepatic bile ducts, liver surface, duodenum, and surrounding structures for obstructing lesions, inflammatory changes, or complications that explain the patient’s cholestatic labs and persistent epigastric/RUQ pain.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not clarify why CT abdomen with contrast was chosen at this point instead of or before MRCP/HIDA despite GI’s recommendation, nor why a repeat CT is expected to add information beyond the prior non-acute CT A/P, such as concerns about interval change or different contrast phases."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "Alternatively, the CT abdomen with contrast may have been ordered primarily to reassess for non-biliary intra-abdominal causes of pain (e.g., occult bowel ischemia, mesenteric pathology, or subtle perforation) that could present with epigastric pain and systemic cholestatic features despite previously unrevealing imaging, shifting the main question toward detecting any alternative acute abdominal catastrophe rather than specifically localizing a biliary source."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute cholestatic hepatobiliary process with right upper quadrant/epigastric pain, hyperbilirubinemia, markedly elevated GGT, and modest transaminase/alkaline phosphatase elevations.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"His exam was notable for being uncomfortable appearing, tenderness to palpation in RUQ\",\n        \"Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5. Gamma Glutamyltransferase: 1118.0 IU/L\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Extrahepatic biliary obstruction such as choledocholithiasis or occult obstructing lesion remains a significant concern despite a normal-caliber common bile duct on limited ultrasound.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"leading etiologic hypothesis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"GI was consulted in the ED and recommended consideration of HIDA or MRCP.\",\n        \"The common bile duct measures 3 mm and is normal. No intrahepatic biliary dilatation is present.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The prior right upper quadrant ultrasound was technically limited and may have missed subtle or extra-biliary causes of pain and obstruction.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"test_limitation_or_uncertainty\",\n      \"level\": \"test performance/limitations\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Examination of the abdomen is limited due to poor sonographic penetration.\",\n        \"Within these limitations the liver appears heterogeneous and echogenic consistent with fatty infiltration.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Primary hepatocellular disease from viral hepatitis is an unlikely explanation for this acute presentation.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative diagnosis\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"Hepatitis A Virus Antibody: NEGATIVE.\",\n        \"Hepatitis B Surface Antigen: NEGATIVE. Hepatitis C Virus Antibody: NEGATIVE.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"An intra-abdominal process not confined to the gallbladder or liver (e.g., pancreatic, duodenal, or other upper abdominal pathology) is a possible alternative source of the patient’s pain and biochemical abnormalities.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing diagnostic frame\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\",\n        \"He describes his abdominal pain as ... location is in his epigastrium and radiating to both his right and left flank, duration has been constant and worsening, and the pain worsens with eating.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there a focal hepatobiliary structural abnormality in the liver or gallbladder that explains this patient’s acute right upper quadrant/epigastric pain and cholestatic liver test abnormalities?\",\n    \"study_adequacy\": \"limited_but_diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"negative\",\n    \"effect_on_previous_question\": \"The limited but overall reassuring liver/gallbladder ultrasound, showing only fatty infiltration with a normal-caliber common bile duct and no gallstones or wall thickening, decreased the likelihood of a primary gallbladder or gross liver structural lesion as the source of symptoms but did not exclude subtle biliary obstruction or extrahepatobiliary causes, leaving the prior question only partially answered.\",\n    \"discordance\": {\n      \"label\": \"indeterminate\",\n      \"evidence_stream_1\": \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\",\n      \"evidence_stream_2\": \"Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5. Gamma Glutamyltransferase: 1118.0 IU/L\",\n      \"reason\": \"Biochemical evidence of significant cholestasis and ongoing pain contrasts with cross-sectional and sonographic imaging that have not shown a clear source, but this tension reflects potential false negatives rather than clear contradiction.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Obstructive or biliary etiologies such as gallbladder disease or biliary obstruction are suspected as the cause of his acute hepatobiliary syndrome.\",\n    \"reason\": \"After a limited yet negative gallbladder-focused ultrasound, attention shifts from gallbladder-only pathology toward possible extrahepatic biliary obstruction or alternative intra-abdominal sources while still prioritizing an obstructive cholestatic mechanism.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a structural cause in the upper abdomen, including the pancreas, bile ducts, or adjacent organs, that explains this patient’s acute epigastric/RUQ pain and cholestatic liver test abnormalities?\",\n    \"target\": \"upper abdominal viscera and biliary tree (pancreas, extrahepatic bile ducts, liver surface, duodenum, and surrounding structures) as potential sources of obstruction or other pathology\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a structural lesion such as choledocholithiasis, pancreatic or periampullary mass, duodenal pathology, or other focal upper abdominal process would localize the source of obstruction/pain and direct urgent gastroenterology, surgical, or endoscopic intervention.\",\n    \"negative_answer_changes\": \"Failure to identify a structural cause on dedicated contrast CT would reduce the likelihood of a CT-detectable obstructing or inflammatory lesion, prompting reliance on functional biliary studies, endoscopic assessment, or consideration of nonstructural hepatobiliary etiologies.\",\n    \"secondary_questions\": [\n      \"Is there CT evidence of complications such as pancreatitis, perforation, or ischemia that would alter the urgency or type of intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_upper_abd_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comprehensive contrast-enhanced visualization of the upper abdominal organs, including liver surface, pancreas, extrahepatic bile ducts, gallbladder region, duodenum, and surrounding soft tissues.\",\n        \"why_required\": \"The presence or absence of a structural cause cannot be judged without adequately imaging all major candidate source organs for obstructive or inflammatory pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_structural_cause\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of discrete structural lesions such as stones in the extrahepatic bile ducts, pancreatic or periampullary mass, localized inflammation, perforation, or other focal abnormalities that could account for obstruction and pain.\",\n        \"why_required\": \"Determining whether any structural lesion exists is necessary to localize the source and define the immediate management pathway.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_complications\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Severity and extent of any identified inflammatory or obstructive process and associated complications (e.g., degree of pancreatitis, fluid collections, ischemia).\",\n        \"why_required\": \"Characterizing the severity and complications is essential to decide on the urgency of intervention and choice between medical, endoscopic, or surgical management.\"\n      }\n    ],\n    \"evidence\": [\n      \"GI was consulted in the ED and recommended consideration of HIDA or MRCP.\",\n      \"CT Abd/Pelvis did not reveal an acute intra-abdominal process. RUQ US revealed fatty liver only.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_upper_abd_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\",\n          \"Examination of the abdomen is limited due to poor sonographic penetration.\"\n        ],\n        \"reason\": \"A prior CT abdomen/pelvis did image the upper abdomen, but the report is non-specific about dedicated arterial/venous phase assessment of hepatobiliary and pancreatic structures, and the follow-up order for a contrast CT abdomen suggests clinicians consider the previous CT insufficient for detailed upper abdominal evaluation.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_structural_cause\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\",\n          \"The gallbladder is unremarkable, without stones, sludge, or wall thickening. The common bile duct measures 3 mm and is normal.\"\n        ],\n        \"reason\": \"Combined CT and limited ultrasound did not show a clear structural lesion, which weighs against a large or obvious process but leaves concern for subtle, evolving, or previously occult causes, especially in the context of worsening symptoms and marked cholestasis.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_complications\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT Abd/Pelvis did not reveal an acute intra-abdominal process.\",\n          \"Lipase: 37.0 IU/L (ref 0.0-60.0)\"\n        ],\n        \"reason\": \"No prior imaging report describes the severity or extent of any specific inflammatory or obstructive process, and normal lipase makes pancreatitis less likely but does not address other potential complications, so severity remains undetermined.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Existing CT and limited ultrasound modestly reduce the likelihood of a major structural cause but lack the detailed, contrast-enhanced upper abdominal assessment needed to confidently localize or exclude a subtle obstructive or inflammatory source and its complications.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT abdomen can comprehensively evaluate the pancreas, extrahepatic bile ducts, liver surface, duodenum, and surrounding structures for obstructing lesions, inflammatory changes, or complications that explain the patient’s cholestatic labs and persistent epigastric/RUQ pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not clarify why CT abdomen with contrast was chosen at this point instead of or before MRCP/HIDA despite GI’s recommendation, nor why a repeat CT is expected to add information beyond the prior non-acute CT A/P, such as concerns about interval change or different contrast phases.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"Alternatively, the CT abdomen with contrast may have been ordered primarily to reassess for non-biliary intra-abdominal causes of pain (e.g., occult bowel ischemia, mesenteric pathology, or subtle perforation) that could present with epigastric pain and systemic cholestatic features despite previously unrevealing imaging, shifting the main question toward detecting any alternative acute abdominal catastrophe rather than specifically localizing a biliary source.\"\n}",
+            "request_id": "gen-1788190771-1WC9qGJMIEgliRoTxFdM",
+            "usage": {
+              "completion_tokens": 2613,
+              "prompt_tokens": 5788,
+              "total_tokens": 8401,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2432,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.030629,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.030629,
+                "upstream_inference_prompt_cost": 0.004499,
+                "upstream_inference_completions_cost": 0.02613
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute cholestatic hepatobiliary process with right upper quadrant/epigastric pain, hyperbilirubinemia, markedly elevated GGT, and modest transaminase/alkaline phosphatase elevations.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "overall clinical syndrome",
+            "status": "established",
+            "evidence": [
+              "His exam was notable for being uncomfortable appearing, tenderness to palpation in RUQ",
+              "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5. Gamma Glutamyltransferase: 1118.0 IU/L"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Extrahepatic biliary obstruction such as choledocholithiasis or occult obstructing lesion remains a significant concern despite a normal-caliber common bile duct on limited ultrasound.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "leading etiologic hypothesis",
+            "status": "likely",
+            "evidence": [
+              "GI was consulted in the ED and recommended consideration of HIDA or MRCP.",
+              "The common bile duct measures 3 mm and is normal. No intrahepatic biliary dilatation is present."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The prior right upper quadrant ultrasound was technically limited and may have missed subtle or extra-biliary causes of pain and obstruction.",
+            "type": "other",
+            "other_proposed_type": "test_limitation_or_uncertainty",
+            "level": "test performance/limitations",
+            "status": "established",
+            "evidence": [
+              "Examination of the abdomen is limited due to poor sonographic penetration.",
+              "Within these limitations the liver appears heterogeneous and echogenic consistent with fatty infiltration."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Primary hepatocellular disease from viral hepatitis is an unlikely explanation for this acute presentation.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "alternative diagnosis",
+            "status": "excluded",
+            "evidence": [
+              "Hepatitis A Virus Antibody: NEGATIVE.",
+              "Hepatitis B Surface Antigen: NEGATIVE. Hepatitis C Virus Antibody: NEGATIVE."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "An intra-abdominal process not confined to the gallbladder or liver (e.g., pancreatic, duodenal, or other upper abdominal pathology) is a possible alternative source of the patient’s pain and biochemical abnormalities.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "competing diagnostic frame",
+            "status": "suspected",
+            "evidence": [
+              "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+              "He describes his abdominal pain as ... location is in his epigastrium and radiating to both his right and left flank, duration has been constant and worsening, and the pain worsens with eating."
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there a focal hepatobiliary structural abnormality in the liver or gallbladder that explains this patient’s acute right upper quadrant/epigastric pain and cholestatic liver test abnormalities?",
+          "study_adequacy": "limited_but_diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "negative",
+          "effect_on_previous_question": "The limited but overall reassuring liver/gallbladder ultrasound, showing only fatty infiltration with a normal-caliber common bile duct and no gallstones or wall thickening, decreased the likelihood of a primary gallbladder or gross liver structural lesion as the source of symptoms but did not exclude subtle biliary obstruction or extrahepatobiliary causes, leaving the prior question only partially answered.",
+          "discordance": {
+            "label": "indeterminate",
+            "evidence_stream_1": "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+            "evidence_stream_2": "Labs were notable for ALT 107, AST 140, Alk Phos 150, and TB 5. Gamma Glutamyltransferase: 1118.0 IU/L",
+            "reason": "Biochemical evidence of significant cholestasis and ongoing pain contrasts with cross-sectional and sonographic imaging that have not shown a clear source, but this tension reflects potential false negatives rather than clear contradiction."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "Obstructive or biliary etiologies such as gallbladder disease or biliary obstruction are suspected as the cause of his acute hepatobiliary syndrome.",
+          "reason": "After a limited yet negative gallbladder-focused ultrasound, attention shifts from gallbladder-only pathology toward possible extrahepatic biliary obstruction or alternative intra-abdominal sources while still prioritizing an obstructive cholestatic mechanism."
+        },
+        "current_question": {
+          "primary": "Is there a structural cause in the upper abdomen, including the pancreas, bile ducts, or adjacent organs, that explains this patient’s acute epigastric/RUQ pain and cholestatic liver test abnormalities?",
+          "target": "upper abdominal viscera and biliary tree (pancreas, extrahepatic bile ducts, liver surface, duodenum, and surrounding structures) as potential sources of obstruction or other pathology",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a structural lesion such as choledocholithiasis, pancreatic or periampullary mass, duodenal pathology, or other focal upper abdominal process would localize the source of obstruction/pain and direct urgent gastroenterology, surgical, or endoscopic intervention.",
+          "negative_answer_changes": "Failure to identify a structural cause on dedicated contrast CT would reduce the likelihood of a CT-detectable obstructing or inflammatory lesion, prompting reliance on functional biliary studies, endoscopic assessment, or consideration of nonstructural hepatobiliary etiologies.",
+          "secondary_questions": [
+            "Is there CT evidence of complications such as pancreatitis, perforation, or ischemia that would alter the urgency or type of intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_upper_abd_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Comprehensive contrast-enhanced visualization of the upper abdominal organs, including liver surface, pancreas, extrahepatic bile ducts, gallbladder region, duodenum, and surrounding soft tissues.",
+              "why_required": "The presence or absence of a structural cause cannot be judged without adequately imaging all major candidate source organs for obstructive or inflammatory pathology."
+            },
+            {
+              "requirement_key": "req_presence_structural_cause",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of discrete structural lesions such as stones in the extrahepatic bile ducts, pancreatic or periampullary mass, localized inflammation, perforation, or other focal abnormalities that could account for obstruction and pain.",
+              "why_required": "Determining whether any structural lesion exists is necessary to localize the source and define the immediate management pathway."
+            },
+            {
+              "requirement_key": "req_severity_complications",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Severity and extent of any identified inflammatory or obstructive process and associated complications (e.g., degree of pancreatitis, fluid collections, ischemia).",
+              "why_required": "Characterizing the severity and complications is essential to decide on the urgency of intervention and choice between medical, endoscopic, or surgical management."
+            }
+          ],
+          "evidence": [
+            "GI was consulted in the ED and recommended consideration of HIDA or MRCP.",
+            "CT Abd/Pelvis did not reveal an acute intra-abdominal process. RUQ US revealed fatty liver only."
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_upper_abd_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+                "Examination of the abdomen is limited due to poor sonographic penetration."
+              ],
+              "reason": "A prior CT abdomen/pelvis did image the upper abdomen, but the report is non-specific about dedicated arterial/venous phase assessment of hepatobiliary and pancreatic structures, and the follow-up order for a contrast CT abdomen suggests clinicians consider the previous CT insufficient for detailed upper abdominal evaluation."
+            },
+            {
+              "requirement_key": "req_presence_structural_cause",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+                "The gallbladder is unremarkable, without stones, sludge, or wall thickening. The common bile duct measures 3 mm and is normal."
+              ],
+              "reason": "Combined CT and limited ultrasound did not show a clear structural lesion, which weighs against a large or obvious process but leaves concern for subtle, evolving, or previously occult causes, especially in the context of worsening symptoms and marked cholestasis."
+            },
+            {
+              "requirement_key": "req_severity_complications",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT Abd/Pelvis did not reveal an acute intra-abdominal process.",
+                "Lipase: 37.0 IU/L (ref 0.0-60.0)"
+              ],
+              "reason": "No prior imaging report describes the severity or extent of any specific inflammatory or obstructive process, and normal lipase makes pancreatitis less likely but does not address other potential complications, so severity remains undetermined."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Existing CT and limited ultrasound modestly reduce the likelihood of a major structural cause but lack the detailed, contrast-enhanced upper abdominal assessment needed to confidently localize or exclude a subtle obstructive or inflammatory source and its complications."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT abdomen can comprehensively evaluate the pancreas, extrahepatic bile ducts, liver surface, duodenum, and surrounding structures for obstructing lesions, inflammatory changes, or complications that explain the patient’s cholestatic labs and persistent epigastric/RUQ pain.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not clarify why CT abdomen with contrast was chosen at this point instead of or before MRCP/HIDA despite GI’s recommendation, nor why a repeat CT is expected to add information beyond the prior non-acute CT A/P, such as concerns about interval change or different contrast phases."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "Alternatively, the CT abdomen with contrast may have been ordered primarily to reassess for non-biliary intra-abdominal causes of pain (e.g., occult bowel ischemia, mesenteric pathology, or subtle perforation) that could present with epigastric pain and systemic cholestatic features despite previously unrevealing imaging, shifting the main question toward detecting any alternative acute abdominal catastrophe rather than specifically localizing a biliary source."
+      },
+      "validation_errors": []
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0.0-development-manual-adjudication",
+  "source_prompt_sha256": "d9f0c01a505663454371289ea7f45995b2ea8f897a72053d8e90ad1bd738deb9",
+  "purpose": "Preserve model outputs unchanged while recording human corrections that downstream analyses must apply first.",
+  "adjudication_rule": "For each listed coding_id, replace the named top-level fields inside steps[].accepted with replacement_fields; retain the original model result and attempts for audit.",
+  "corrections": [
+    {
+      "coding_id": "appendicitis:29310170:s1",
+      "source_file": "openai__gpt-5.1/appendicitis_29310170.json",
+      "review_status": "adjudicated",
+      "reason": "The visible chart supports a broad acute abdominal source-localization question but does not support a specific biliary target. The model cited the literal current order as question evidence and assigned well-supported intent despite acknowledging that the right-lower-quadrant presentation did not explain the hepatobiliary focus.",
+      "replacement_fields": {
+        "current_question": {
+          "primary": "What intra-abdominal source explains the patient's acute right-lower-quadrant pain, nausea, vomiting, and leukocytosis?",
+          "target": "an intra-abdominal source of the acute abdominal syndrome; the exact organ target is not established by the pre-order chart",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Localizing a structural abdominal source would direct organ-specific treatment or further targeted evaluation.",
+          "negative_answer_changes": "Failure to identify a source within the structures assessed would leave the broader right-lower-quadrant differential unresolved and support evaluation with a test capable of assessing appendiceal, bowel, and pelvic sources.",
+          "secondary_questions": [],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_source_assessment",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate assessment of the plausible abdominal source structures implicated by the right-lower-quadrant presentation.",
+              "why_required": "A source cannot be localized unless the clinically plausible target structures are assessed."
+            },
+            {
+              "requirement_key": "req_source_localization",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Localization of any abnormality that could account for the acute pain, vomiting, and inflammatory laboratory findings.",
+              "why_required": "The management pathway depends on which organ or compartment is responsible."
+            },
+            {
+              "requirement_key": "req_alternative_discrimination",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Discrimination among appendiceal, bowel, pelvic, hepatobiliary, and other plausible abdominal sources without assuming a biliary target from the order name.",
+              "why_required": "The pre-order presentation does not establish one organ-specific cause."
+            }
+          ],
+          "evidence": [
+            "___ yo F with h/o developmental delay presents with 24 hours of  RLQ abd pain with associated nausea and vomiting.",
+            "White Blood Cells: 12.2 K/uL (ref 4.0-10.0)"
+          ]
+        },
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_source_assessment",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "No prior abdominal imaging is available before this order."
+            },
+            {
+              "requirement_key": "req_source_localization",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Symptoms and leukocytosis establish an acute syndrome but do not anatomically localize its cause."
+            },
+            {
+              "requirement_key": "req_alternative_discrimination",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Abd: Obese. Well-healed laparoscopy scars. Nontender. Not clear if distended."
+              ],
+              "reason": "The pre-order examination and laboratory data do not discriminate among the plausible abdominal sources."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "The broad source-localization question is not answered before the first imaging order."
+        },
+        "current_order_fit": {
+          "test_question_capability": "partially_capable",
+          "why_this_order_could_answer": "A focused liver or gallbladder ultrasound can identify a hepatobiliary source if present, but it cannot adequately assess the appendix, much of the bowel, or pelvic sources implicated by the right-lower-quadrant presentation.",
+          "intent_support": "weakly_supported",
+          "unsupported_residual": "The chart provides no right-upper-quadrant findings, liver-test abnormality, or other non-order evidence establishing a hepatobiliary target; the reason for choosing a liver/gallbladder study over broader right-lower-quadrant imaging remains unexplained."
+        }
+      }
+    }
+  ]
+}

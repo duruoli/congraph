@@ -1,0 +1,700 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 20180280,
+  "source_path": "results/annotation_experiment/full/diverticulitis_20180280.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABDOMEN W/CONTRAST)",
+      "request_prompt_sha256": "0640709d2205bb2ea1e9c8fd1bd786f5970a6630dcecde68ecc4a3be37744be2",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "0640709d2205bb2ea1e9c8fd1bd786f5970a6630dcecde68ecc4a3be37744be2",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute abdominal pain syndrome with vomiting on a background of prior colorectal surgery for colon cancer.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation/syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "“earlier this week, when she had some abdominal pain and constipation… yesterday had sharper pain with emesis… the pain has improved a bit but persisted so she came to the ER.”",
+                    "“.colon cancer in ___, no postop chemo/radiation … s/p ?left colectomy ___ (___)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is a suspected acute intra-abdominal surgical pathology such as bowel obstruction, perforation, or ischemia causing diffuse abdominal tenderness with rebound and systemic inflammatory response.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis for syndrome",
+                  "status": "suspected",
+                  "evidence": [
+                    "“Abd: soft, diffuse tap tenderness, with rebound, no guarding, non-distended; midline incision”",
+                    "“White Blood Cells: 14.0 K/uL… Neutrophils: 87.0 %… Bands: 5.0 %”"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient has chronic kidney disease with reduced baseline renal function.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "organ dysfunction/comorbidity",
+                  "status": "established",
+                  "evidence": [
+                    "“.renal insufficiency,”",
+                    "“Estimated GFR = 27 if non African-American… Creatinine: 1.8 mg/dL (ref 0.4-1.1)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is a concern for intra-abdominal complication related to prior colorectal surgery, such as adhesional small bowel obstruction or anastomotic pathology.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "post-surgical complication differential",
+                  "status": "suspected",
+                  "evidence": [
+                    "“.colon cancer in ___… s/p ?left colectomy ___ (___)”",
+                    "“abdominal pain and constipation… yesterday had sharper pain with emesis.”"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient is hemodynamically stable but tachycardic with possible new or known atrial fibrillation (irregularly irregular rhythm), raising concern for embolic or low-flow abdominal ischemic processes.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "potential causative mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "“Tc 99.1, HR 120, BP 124/83… CV: irreg irreg”",
+                    "“Urea Nitrogen: 33.0 mg/dL… Bicarbonate: 18.0 mEq/L… Anion Gap: 18.0 mEq/L”"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No prior imaging or prior question at this first decision point."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision, so all assumptions are newly established from the baseline chart."
+              },
+              "current_question": {
+                "primary": "What acute intra-abdominal process is responsible for this patient’s new abdominal pain, vomiting, rebound tenderness, and leukocytosis in the setting of prior colorectal surgery?",
+                "target": "acute intra-abdominal pathology such as bowel obstruction, perforation, or ischemia",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If a specific acute intra-abdominal pathology is identified, clinicians can direct urgent management such as surgical consultation, bowel rest, antibiotics, or possible operative intervention.",
+                "negative_answer_changes": "If no significant acute intra-abdominal pathology is identified, clinicians may pursue alternative explanations for symptoms, adjust the need for emergent surgery, and focus on medical management or non-abdominal sources.",
+                "secondary_questions": [
+                  "Is there radiologic evidence of postoperative complications related to the prior left colectomy, such as adhesional obstruction or an anastomotic problem?",
+                  "What is the extent and distribution of any detected intra-abdominal process (e.g., level of obstruction or areas of ischemia or inflammation)?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_assessment",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and assessment of abdominal viscera and bowel, including small bowel, colon, mesentery, and peritoneal cavity.",
+                    "why_required": "Identifying or excluding a structural intra-abdominal process requires adequate visualization of these organs."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of specific acute pathologies such as bowel obstruction, free air, free fluid, focal inflammatory changes, or signs of ischemia.",
+                    "why_required": "Determining whether an acute surgical or medical abdominal process exists is central to explaining the patient’s symptoms and leukocytosis."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Anatomic localization of any detected abnormality within the abdomen (e.g., level of obstruction, segment of bowel affected, location of perforation or inflammation).",
+                    "why_required": "Localization guides decisions about surgical approach, urgency, and targeted management."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characterization of complications such as abscess, peritonitis, pneumoperitoneum, or ischemic bowel.",
+                    "why_required": "Complications change the urgency and type of intervention, including need for emergent surgery and antibiotics."
+                  }
+                ],
+                "evidence": [
+                  "“earlier this week, when she had some abdominal pain and constipation… yesterday had sharper pain with emesis… the pain has improved a bit but persisted so she came to the ER.”",
+                  "“Abd: soft, diffuse tap tenderness, with rebound, no guarding, non-distended; midline incision… White Blood Cells: 14.0 K/uL… .colon cancer in ___… s/p ?left colectomy ___ (___)”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_assessment",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "No prior abdominal imaging is available, so the abdominal viscera and bowel have not been visualized for this acute episode."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Laboratory and exam findings suggest but do not confirm or exclude obstruction, perforation, or ischemia; imaging evidence on their presence or absence is not yet available."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Although abdominal tenderness is diffuse, there is no objective anatomic localization of any underlying lesion without imaging."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "Potential complications like abscess, perforation, or ischemic changes cannot be assessed from the clinical and lab data alone."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key dimensions of the acute intra-abdominal question remain unaddressed because no prior imaging has been performed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen can visualize bowel, solid organs, mesentery, and peritoneal space to detect and localize obstruction, perforation, inflammatory changes, ischemia, and related complications.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The choice of IV contrast in the setting of reduced GFR is not fully explained but is plausibly outweighed by the need to evaluate for serious acute pathology."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal pain syndrome with vomiting on a background of prior colorectal surgery for colon cancer.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation/syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“earlier this week, when she had some abdominal pain and constipation… yesterday had sharper pain with emesis… the pain has improved a bit but persisted so she came to the ER.”\",\n        \"“.colon cancer in ___, no postop chemo/radiation … s/p ?left colectomy ___ (___)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is a suspected acute intra-abdominal surgical pathology such as bowel obstruction, perforation, or ischemia causing diffuse abdominal tenderness with rebound and systemic inflammatory response.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis for syndrome\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“Abd: soft, diffuse tap tenderness, with rebound, no guarding, non-distended; midline incision”\",\n        \"“White Blood Cells: 14.0 K/uL… Neutrophils: 87.0 %… Bands: 5.0 %”\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient has chronic kidney disease with reduced baseline renal function.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ dysfunction/comorbidity\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“.renal insufficiency,”\",\n        \"“Estimated GFR = 27 if non African-American… Creatinine: 1.8 mg/dL (ref 0.4-1.1)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is a concern for intra-abdominal complication related to prior colorectal surgery, such as adhesional small bowel obstruction or anastomotic pathology.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"post-surgical complication differential\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“.colon cancer in ___… s/p ?left colectomy ___ (___)”\",\n        \"“abdominal pain and constipation… yesterday had sharper pain with emesis.”\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient is hemodynamically stable but tachycardic with possible new or known atrial fibrillation (irregularly irregular rhythm), raising concern for embolic or low-flow abdominal ischemic processes.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"potential causative mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“Tc 99.1, HR 120, BP 124/83… CV: irreg irreg”\",\n        \"“Urea Nitrogen: 33.0 mg/dL… Bicarbonate: 18.0 mEq/L… Anion Gap: 18.0 mEq/L”\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging or prior question at this first decision point.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision, so all assumptions are newly established from the baseline chart.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What acute intra-abdominal process is responsible for this patient’s new abdominal pain, vomiting, rebound tenderness, and leukocytosis in the setting of prior colorectal surgery?\",\n    \"target\": \"acute intra-abdominal pathology such as bowel obstruction, perforation, or ischemia\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If a specific acute intra-abdominal pathology is identified, clinicians can direct urgent management such as surgical consultation, bowel rest, antibiotics, or possible operative intervention.\",\n    \"negative_answer_changes\": \"If no significant acute intra-abdominal pathology is identified, clinicians may pursue alternative explanations for symptoms, adjust the need for emergent surgery, and focus on medical management or non-abdominal sources.\",\n    \"secondary_questions\": [\n      \"Is there radiologic evidence of postoperative complications related to the prior left colectomy, such as adhesional obstruction or an anastomotic problem?\",\n      \"What is the extent and distribution of any detected intra-abdominal process (e.g., level of obstruction or areas of ischemia or inflammation)?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_assessment\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and assessment of abdominal viscera and bowel, including small bowel, colon, mesentery, and peritoneal cavity.\",\n        \"why_required\": \"Identifying or excluding a structural intra-abdominal process requires adequate visualization of these organs.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of specific acute pathologies such as bowel obstruction, free air, free fluid, focal inflammatory changes, or signs of ischemia.\",\n        \"why_required\": \"Determining whether an acute surgical or medical abdominal process exists is central to explaining the patient’s symptoms and leukocytosis.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Anatomic localization of any detected abnormality within the abdomen (e.g., level of obstruction, segment of bowel affected, location of perforation or inflammation).\",\n        \"why_required\": \"Localization guides decisions about surgical approach, urgency, and targeted management.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characterization of complications such as abscess, peritonitis, pneumoperitoneum, or ischemic bowel.\",\n        \"why_required\": \"Complications change the urgency and type of intervention, including need for emergent surgery and antibiotics.\"\n      }\n    ],\n    \"evidence\": [\n      \"“earlier this week, when she had some abdominal pain and constipation… yesterday had sharper pain with emesis… the pain has improved a bit but persisted so she came to the ER.”\",\n      \"“Abd: soft, diffuse tap tenderness, with rebound, no guarding, non-distended; midline incision… White Blood Cells: 14.0 K/uL… .colon cancer in ___… s/p ?left colectomy ___ (___)”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_assessment\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No prior abdominal imaging is available, so the abdominal viscera and bowel have not been visualized for this acute episode.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Laboratory and exam findings suggest but do not confirm or exclude obstruction, perforation, or ischemia; imaging evidence on their presence or absence is not yet available.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Although abdominal tenderness is diffuse, there is no objective anatomic localization of any underlying lesion without imaging.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"Potential complications like abscess, perforation, or ischemic changes cannot be assessed from the clinical and lab data alone.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key dimensions of the acute intra-abdominal question remain unaddressed because no prior imaging has been performed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen can visualize bowel, solid organs, mesentery, and peritoneal space to detect and localize obstruction, perforation, inflammatory changes, ischemia, and related complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of IV contrast in the setting of reduced GFR is not fully explained but is plausibly outweighed by the need to evaluate for serious acute pathology.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788193226-kxSzjTD78QALNHQ3YLPl",
+            "usage": {
+              "completion_tokens": 2172,
+              "prompt_tokens": 3252,
+              "total_tokens": 5424,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.025785,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.025785,
+                "upstream_inference_prompt_cost": 0.004065,
+                "upstream_inference_completions_cost": 0.02172
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute abdominal pain syndrome with vomiting on a background of prior colorectal surgery for colon cancer.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation/syndrome",
+            "status": "established",
+            "evidence": [
+              "“earlier this week, when she had some abdominal pain and constipation… yesterday had sharper pain with emesis… the pain has improved a bit but persisted so she came to the ER.”",
+              "“.colon cancer in ___, no postop chemo/radiation … s/p ?left colectomy ___ (___)”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is a suspected acute intra-abdominal surgical pathology such as bowel obstruction, perforation, or ischemia causing diffuse abdominal tenderness with rebound and systemic inflammatory response.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "differential diagnosis for syndrome",
+            "status": "suspected",
+            "evidence": [
+              "“Abd: soft, diffuse tap tenderness, with rebound, no guarding, non-distended; midline incision”",
+              "“White Blood Cells: 14.0 K/uL… Neutrophils: 87.0 %… Bands: 5.0 %”"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient has chronic kidney disease with reduced baseline renal function.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "organ dysfunction/comorbidity",
+            "status": "established",
+            "evidence": [
+              "“.renal insufficiency,”",
+              "“Estimated GFR = 27 if non African-American… Creatinine: 1.8 mg/dL (ref 0.4-1.1)”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is a concern for intra-abdominal complication related to prior colorectal surgery, such as adhesional small bowel obstruction or anastomotic pathology.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "post-surgical complication differential",
+            "status": "suspected",
+            "evidence": [
+              "“.colon cancer in ___… s/p ?left colectomy ___ (___)”",
+              "“abdominal pain and constipation… yesterday had sharper pain with emesis.”"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient is hemodynamically stable but tachycardic with possible new or known atrial fibrillation (irregularly irregular rhythm), raising concern for embolic or low-flow abdominal ischemic processes.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "potential causative mechanism",
+            "status": "suspected",
+            "evidence": [
+              "“Tc 99.1, HR 120, BP 124/83… CV: irreg irreg”",
+              "“Urea Nitrogen: 33.0 mg/dL… Bicarbonate: 18.0 mEq/L… Anion Gap: 18.0 mEq/L”"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "No prior imaging or prior question at this first decision point."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision, so all assumptions are newly established from the baseline chart."
+        },
+        "current_question": {
+          "primary": "What acute intra-abdominal process is responsible for this patient’s new abdominal pain, vomiting, rebound tenderness, and leukocytosis in the setting of prior colorectal surgery?",
+          "target": "acute intra-abdominal pathology such as bowel obstruction, perforation, or ischemia",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If a specific acute intra-abdominal pathology is identified, clinicians can direct urgent management such as surgical consultation, bowel rest, antibiotics, or possible operative intervention.",
+          "negative_answer_changes": "If no significant acute intra-abdominal pathology is identified, clinicians may pursue alternative explanations for symptoms, adjust the need for emergent surgery, and focus on medical management or non-abdominal sources.",
+          "secondary_questions": [
+            "Is there radiologic evidence of postoperative complications related to the prior left colectomy, such as adhesional obstruction or an anastomotic problem?",
+            "What is the extent and distribution of any detected intra-abdominal process (e.g., level of obstruction or areas of ischemia or inflammation)?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_assessment",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization and assessment of abdominal viscera and bowel, including small bowel, colon, mesentery, and peritoneal cavity.",
+              "why_required": "Identifying or excluding a structural intra-abdominal process requires adequate visualization of these organs."
+            },
+            {
+              "requirement_key": "req_presence_pathology",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of specific acute pathologies such as bowel obstruction, free air, free fluid, focal inflammatory changes, or signs of ischemia.",
+              "why_required": "Determining whether an acute surgical or medical abdominal process exists is central to explaining the patient’s symptoms and leukocytosis."
+            },
+            {
+              "requirement_key": "req_localization",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Anatomic localization of any detected abnormality within the abdomen (e.g., level of obstruction, segment of bowel affected, location of perforation or inflammation).",
+              "why_required": "Localization guides decisions about surgical approach, urgency, and targeted management."
+            },
+            {
+              "requirement_key": "req_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and characterization of complications such as abscess, peritonitis, pneumoperitoneum, or ischemic bowel.",
+              "why_required": "Complications change the urgency and type of intervention, including need for emergent surgery and antibiotics."
+            }
+          ],
+          "evidence": [
+            "“earlier this week, when she had some abdominal pain and constipation… yesterday had sharper pain with emesis… the pain has improved a bit but persisted so she came to the ER.”",
+            "“Abd: soft, diffuse tap tenderness, with rebound, no guarding, non-distended; midline incision… White Blood Cells: 14.0 K/uL… .colon cancer in ___… s/p ?left colectomy ___ (___)”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_assessment",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "No prior abdominal imaging is available, so the abdominal viscera and bowel have not been visualized for this acute episode."
+            },
+            {
+              "requirement_key": "req_presence_pathology",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Laboratory and exam findings suggest but do not confirm or exclude obstruction, perforation, or ischemia; imaging evidence on their presence or absence is not yet available."
+            },
+            {
+              "requirement_key": "req_localization",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Although abdominal tenderness is diffuse, there is no objective anatomic localization of any underlying lesion without imaging."
+            },
+            {
+              "requirement_key": "req_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [],
+              "reason": "Potential complications like abscess, perforation, or ischemic changes cannot be assessed from the clinical and lab data alone."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key dimensions of the acute intra-abdominal question remain unaddressed because no prior imaging has been performed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen can visualize bowel, solid organs, mesentery, and peritoneal space to detect and localize obstruction, perforation, inflammatory changes, ischemia, and related complications.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The choice of IV contrast in the setting of reduced GFR is not fully explained but is plausibly outweighed by the need to evaluate for serious acute pathology."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABDOMEN W/O CONTRAST)",
+      "request_prompt_sha256": "832c9f4a284d615c753d3efd0598bb3d9cba4057252e02afd43fb1bd64ae64b6",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "832c9f4a284d615c753d3efd0598bb3d9cba4057252e02afd43fb1bd64ae64b6",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has multiple pelvic air-containing collections and new small anterior pelvic fluid collections with persistent pneumoperitoneum in the setting of sigmoid diverticular disease and prior colorectal surgery.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "post-surgical/intra-abdominal complication frame",
+                  "status": "established",
+                  "evidence": [
+                    "“An air-filled collection is seen to lie in the left hemipelvis, lateral to the sigmoid colon… The second collection, which lies anterior to the rectum also contains mainly air… A third pelvic collecion lying above the sigmoid colon… Three new smaller more anterior fluid collections are seen… Again free air is seen throughout the peritoneal cavity… The sigmoid colon is markedly thickened with evidence of diverticular disease.”",
+                    "“.colon cancer in ___, no postop chemo/radiation … s/p ?left colectomy ___ (___)”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "What acute intra-abdominal process is responsible for this patient’s new abdominal pain, vomiting, rebound tenderness, and leukocytosis in the setting of prior colorectal surgery?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The contrast CT abdomen demonstrated ongoing free intraperitoneal air with multiple pelvic air/fluid collections and markedly thickened sigmoid colon with diverticular disease, establishing an intra-abdominal inflammatory/perforated process with associated collections and resolving small-bowel dilatation.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "“Again free air is seen throughout the peritoneal cavity however there is less free air today.… An air-filled collection is seen to lie in the left hemipelvis… The second collection… A third pelvic collecion… Three new smaller more anterior fluid collections are seen… The sigmoid colon is markedly thickened with evidence of diverticular disease.”",
+                  "evidence_stream_2": "“Abd: soft, diffuse tap tenderness, with rebound… White Blood Cells: 14.0 K/uL… Bands: 5.0 %.”",
+                  "reason": "Imaging-confirmed pneumoperitoneum and pelvic collections are consistent with the clinically suspected acute intra-abdominal process causing pain and leukocytosis."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "There is a suspected acute intra-abdominal surgical pathology such as bowel obstruction, perforation, or ischemia causing diffuse abdominal tenderness with rebound and systemic inflammatory response.",
+                "reason": "Prior CT specifically identified persistent pneumoperitoneum, multiple pelvic collections, and markedly thickened diverticular sigmoid colon, refining the vague acute abdominal process into a perforated/inflammatory colonic source with associated collections rather than undifferentiated obstruction or ischemia."
+              },
+              "current_question": {
+                "primary": "What is the current burden and evolution of pneumoperitoneum and intra-abdominal collections, and are there additional abdominal complications that need to be identified to guide ongoing management?",
+                "target": "extent and evolution of free intraperitoneal air, pelvic and anterior abdominal collections, and any new or worsening intra-abdominal pathology",
+                "type": "severity_or_extent",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Demonstration of persistent or enlarging free air or collections, or new complications, would support escalation such as drainage, surgical consultation or re-intervention, and adjustment of antibiotics and monitoring.",
+                "negative_answer_changes": "Reduction or resolution of free air and collections with no new complications would support continued or de-escalated conservative management and might lessen the urgency of invasive intervention.",
+                "secondary_questions": [
+                  "Has the size, number, or distribution of pelvic and anterior abdominal collections changed since the prior contrast CT?",
+                  "Is there any new or progressive bowel wall abnormality or other intra-abdominal complication not previously identified?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_structures_visualized",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization of peritoneal cavity, bowel, and previously described pelvic and anterior abdominal collections.",
+                    "why_required": "Assessing evolution of known free air and collections and detecting new pathology requires re-visualization of these structures."
+                  },
+                  {
+                    "requirement_key": "req_extent_evolution",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comparison of the amount of free intraperitoneal air and the size/number of collections to prior CT to assess progression or improvement.",
+                    "why_required": "Changes in burden of free air and collections directly inform the need for continued conservative care versus drainage or surgery."
+                  },
+                  {
+                    "requirement_key": "req_new_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of any new intra-abdominal complications such as new abscesses, increasing fluid components, or evolving bowel pathology.",
+                    "why_required": "New or worsening complications would alter prognosis and prompt changes in management strategy."
+                  }
+                ],
+                "evidence": [
+                  "“Again free air is seen throughout the peritoneal cavity however there is less free air today.… An air-filled collection is seen to lie in the left hemipelvis… The second collection… A third pelvic collecion lying above the sigmoid colon… Three new smaller more anterior fluid collections are seen… The sigmoid colon is markedly thickened with evidence of diverticular disease.”",
+                  "“The dilated loops of small bowel have resolved.”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_structures_visualized",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "sufficiently_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“Axial images from the lung bases to the symphysis pubis were obtained after oral and intravenous contrast.”",
+                      "“An air-filled collection is seen… The second collection… A third pelvic collecion… Three new smaller more anterior fluid collections are seen… The sigmoid colon is markedly thickened…”"
+                    ],
+                    "reason": "The prior contrast-enhanced CT provided comprehensive visualization of the peritoneal cavity, bowel, and all described collections at that time."
+                  },
+                  {
+                    "requirement_key": "req_extent_evolution",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“Again free air is seen throughout the peritoneal cavity however there is less free air today.”",
+                      "“An air-filled collection… now measures 25 x 50 mm… previously measured 16 x 55 mm… The second collection… previously measured 36 x 56 mm… now measures 55 x 75 mm… A third pelvic collecion… is nes since the previous CT.… Three new smaller more anterior fluid collections are seen…”"
+                    ],
+                    "reason": "The prior CT compared current findings to an even earlier CT, documenting interval changes in free air and collection sizes, but cannot inform further evolution beyond that time point."
+                  },
+                  {
+                    "requirement_key": "req_new_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“A third pelvic collecion lying above the sigmoid colon… is nes since the previous CT.… Three new smaller more anterior fluid collections are seen…”"
+                    ],
+                    "reason": "The prior CT identified new collections compared with an earlier exam, establishing complications at that time, but cannot exclude additional new complications developing after that scan."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "The contrast CT defined the presence and initial evolution of free air and collections but cannot address their subsequent trajectory or any later-developing complications, leaving the refined management question only partially answered."
+              },
+              "current_order_fit": {
+                "test_question_capability": "partially_capable",
+                "why_this_order_could_answer": "A non-contrast CT abdomen can reliably depict free intraperitoneal air and the size and number of gas and fluid collections, allowing interval assessment of their extent and detection of gross new complications while avoiding further IV contrast in a patient with chronic kidney disease.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The choice of omitting IV contrast specifically—despite its prior use—may reflect renal risk, prior contrast load, or clinical stability, but the exact trade-off between contrast detail and radiation/renal risks is not explicitly documented."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has multiple pelvic air-containing collections and new small anterior pelvic fluid collections with persistent pneumoperitoneum in the setting of sigmoid diverticular disease and prior colorectal surgery.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"post-surgical/intra-abdominal complication frame\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“An air-filled collection is seen to lie in the left hemipelvis, lateral to the sigmoid colon… The second collection, which lies anterior to the rectum also contains mainly air… A third pelvic collecion lying above the sigmoid colon… Three new smaller more anterior fluid collections are seen… Again free air is seen throughout the peritoneal cavity… The sigmoid colon is markedly thickened with evidence of diverticular disease.”\",\n        \"“.colon cancer in ___, no postop chemo/radiation … s/p ?left colectomy ___ (___)”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"What acute intra-abdominal process is responsible for this patient’s new abdominal pain, vomiting, rebound tenderness, and leukocytosis in the setting of prior colorectal surgery?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The contrast CT abdomen demonstrated ongoing free intraperitoneal air with multiple pelvic air/fluid collections and markedly thickened sigmoid colon with diverticular disease, establishing an intra-abdominal inflammatory/perforated process with associated collections and resolving small-bowel dilatation.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"“Again free air is seen throughout the peritoneal cavity however there is less free air today.… An air-filled collection is seen to lie in the left hemipelvis… The second collection… A third pelvic collecion… Three new smaller more anterior fluid collections are seen… The sigmoid colon is markedly thickened with evidence of diverticular disease.”\",\n      \"evidence_stream_2\": \"“Abd: soft, diffuse tap tenderness, with rebound… White Blood Cells: 14.0 K/uL… Bands: 5.0 %.”\",\n      \"reason\": \"Imaging-confirmed pneumoperitoneum and pelvic collections are consistent with the clinically suspected acute intra-abdominal process causing pain and leukocytosis.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"There is a suspected acute intra-abdominal surgical pathology such as bowel obstruction, perforation, or ischemia causing diffuse abdominal tenderness with rebound and systemic inflammatory response.\",\n    \"reason\": \"Prior CT specifically identified persistent pneumoperitoneum, multiple pelvic collections, and markedly thickened diverticular sigmoid colon, refining the vague acute abdominal process into a perforated/inflammatory colonic source with associated collections rather than undifferentiated obstruction or ischemia.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the current burden and evolution of pneumoperitoneum and intra-abdominal collections, and are there additional abdominal complications that need to be identified to guide ongoing management?\",\n    \"target\": \"extent and evolution of free intraperitoneal air, pelvic and anterior abdominal collections, and any new or worsening intra-abdominal pathology\",\n    \"type\": \"severity_or_extent\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Demonstration of persistent or enlarging free air or collections, or new complications, would support escalation such as drainage, surgical consultation or re-intervention, and adjustment of antibiotics and monitoring.\",\n    \"negative_answer_changes\": \"Reduction or resolution of free air and collections with no new complications would support continued or de-escalated conservative management and might lessen the urgency of invasive intervention.\",\n    \"secondary_questions\": [\n      \"Has the size, number, or distribution of pelvic and anterior abdominal collections changed since the prior contrast CT?\",\n      \"Is there any new or progressive bowel wall abnormality or other intra-abdominal complication not previously identified?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_structures_visualized\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization of peritoneal cavity, bowel, and previously described pelvic and anterior abdominal collections.\",\n        \"why_required\": \"Assessing evolution of known free air and collections and detecting new pathology requires re-visualization of these structures.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_evolution\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comparison of the amount of free intraperitoneal air and the size/number of collections to prior CT to assess progression or improvement.\",\n        \"why_required\": \"Changes in burden of free air and collections directly inform the need for continued conservative care versus drainage or surgery.\"\n      },\n      {\n        \"requirement_key\": \"req_new_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of any new intra-abdominal complications such as new abscesses, increasing fluid components, or evolving bowel pathology.\",\n        \"why_required\": \"New or worsening complications would alter prognosis and prompt changes in management strategy.\"\n      }\n    ],\n    \"evidence\": [\n      \"“Again free air is seen throughout the peritoneal cavity however there is less free air today.… An air-filled collection is seen to lie in the left hemipelvis… The second collection… A third pelvic collecion lying above the sigmoid colon… Three new smaller more anterior fluid collections are seen… The sigmoid colon is markedly thickened with evidence of diverticular disease.”\",\n      \"“The dilated loops of small bowel have resolved.”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_structures_visualized\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"sufficiently_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“Axial images from the lung bases to the symphysis pubis were obtained after oral and intravenous contrast.”\",\n          \"“An air-filled collection is seen… The second collection… A third pelvic collecion… Three new smaller more anterior fluid collections are seen… The sigmoid colon is markedly thickened…”\"\n        ],\n        \"reason\": \"The prior contrast-enhanced CT provided comprehensive visualization of the peritoneal cavity, bowel, and all described collections at that time.\"\n      },\n      {\n        \"requirement_key\": \"req_extent_evolution\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“Again free air is seen throughout the peritoneal cavity however there is less free air today.”\",\n          \"“An air-filled collection… now measures 25 x 50 mm… previously measured 16 x 55 mm… The second collection… previously measured 36 x 56 mm… now measures 55 x 75 mm… A third pelvic collecion… is nes since the previous CT.… Three new smaller more anterior fluid collections are seen…”\"\n        ],\n        \"reason\": \"The prior CT compared current findings to an even earlier CT, documenting interval changes in free air and collection sizes, but cannot inform further evolution beyond that time point.\"\n      },\n      {\n        \"requirement_key\": \"req_new_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“A third pelvic collecion lying above the sigmoid colon… is nes since the previous CT.… Three new smaller more anterior fluid collections are seen…”\"\n        ],\n        \"reason\": \"The prior CT identified new collections compared with an earlier exam, establishing complications at that time, but cannot exclude additional new complications developing after that scan.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"The contrast CT defined the presence and initial evolution of free air and collections but cannot address their subsequent trajectory or any later-developing complications, leaving the refined management question only partially answered.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"partially_capable\",\n    \"why_this_order_could_answer\": \"A non-contrast CT abdomen can reliably depict free intraperitoneal air and the size and number of gas and fluid collections, allowing interval assessment of their extent and detection of gross new complications while avoiding further IV contrast in a patient with chronic kidney disease.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The choice of omitting IV contrast specifically—despite its prior use—may reflect renal risk, prior contrast load, or clinical stability, but the exact trade-off between contrast detail and radiation/renal risks is not explicitly documented.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788193243-OUGeqBTyMuG1RQCNV9nR",
+            "usage": {
+              "completion_tokens": 1972,
+              "prompt_tokens": 5880,
+              "total_tokens": 7852,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 1920,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02491,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02491,
+                "upstream_inference_prompt_cost": 0.00519,
+                "upstream_inference_completions_cost": 0.01972
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has multiple pelvic air-containing collections and new small anterior pelvic fluid collections with persistent pneumoperitoneum in the setting of sigmoid diverticular disease and prior colorectal surgery.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "post-surgical/intra-abdominal complication frame",
+            "status": "established",
+            "evidence": [
+              "“An air-filled collection is seen to lie in the left hemipelvis, lateral to the sigmoid colon… The second collection, which lies anterior to the rectum also contains mainly air… A third pelvic collecion lying above the sigmoid colon… Three new smaller more anterior fluid collections are seen… Again free air is seen throughout the peritoneal cavity… The sigmoid colon is markedly thickened with evidence of diverticular disease.”",
+              "“.colon cancer in ___, no postop chemo/radiation … s/p ?left colectomy ___ (___)”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "What acute intra-abdominal process is responsible for this patient’s new abdominal pain, vomiting, rebound tenderness, and leukocytosis in the setting of prior colorectal surgery?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The contrast CT abdomen demonstrated ongoing free intraperitoneal air with multiple pelvic air/fluid collections and markedly thickened sigmoid colon with diverticular disease, establishing an intra-abdominal inflammatory/perforated process with associated collections and resolving small-bowel dilatation.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "“Again free air is seen throughout the peritoneal cavity however there is less free air today.… An air-filled collection is seen to lie in the left hemipelvis… The second collection… A third pelvic collecion… Three new smaller more anterior fluid collections are seen… The sigmoid colon is markedly thickened with evidence of diverticular disease.”",
+            "evidence_stream_2": "“Abd: soft, diffuse tap tenderness, with rebound… White Blood Cells: 14.0 K/uL… Bands: 5.0 %.”",
+            "reason": "Imaging-confirmed pneumoperitoneum and pelvic collections are consistent with the clinically suspected acute intra-abdominal process causing pain and leukocytosis."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "There is a suspected acute intra-abdominal surgical pathology such as bowel obstruction, perforation, or ischemia causing diffuse abdominal tenderness with rebound and systemic inflammatory response.",
+          "reason": "Prior CT specifically identified persistent pneumoperitoneum, multiple pelvic collections, and markedly thickened diverticular sigmoid colon, refining the vague acute abdominal process into a perforated/inflammatory colonic source with associated collections rather than undifferentiated obstruction or ischemia."
+        },
+        "current_question": {
+          "primary": "What is the current burden and evolution of pneumoperitoneum and intra-abdominal collections, and are there additional abdominal complications that need to be identified to guide ongoing management?",
+          "target": "extent and evolution of free intraperitoneal air, pelvic and anterior abdominal collections, and any new or worsening intra-abdominal pathology",
+          "type": "severity_or_extent",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Demonstration of persistent or enlarging free air or collections, or new complications, would support escalation such as drainage, surgical consultation or re-intervention, and adjustment of antibiotics and monitoring.",
+          "negative_answer_changes": "Reduction or resolution of free air and collections with no new complications would support continued or de-escalated conservative management and might lessen the urgency of invasive intervention.",
+          "secondary_questions": [
+            "Has the size, number, or distribution of pelvic and anterior abdominal collections changed since the prior contrast CT?",
+            "Is there any new or progressive bowel wall abnormality or other intra-abdominal complication not previously identified?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_structures_visualized",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Visualization of peritoneal cavity, bowel, and previously described pelvic and anterior abdominal collections.",
+              "why_required": "Assessing evolution of known free air and collections and detecting new pathology requires re-visualization of these structures."
+            },
+            {
+              "requirement_key": "req_extent_evolution",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Comparison of the amount of free intraperitoneal air and the size/number of collections to prior CT to assess progression or improvement.",
+              "why_required": "Changes in burden of free air and collections directly inform the need for continued conservative care versus drainage or surgery."
+            },
+            {
+              "requirement_key": "req_new_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of any new intra-abdominal complications such as new abscesses, increasing fluid components, or evolving bowel pathology.",
+              "why_required": "New or worsening complications would alter prognosis and prompt changes in management strategy."
+            }
+          ],
+          "evidence": [
+            "“Again free air is seen throughout the peritoneal cavity however there is less free air today.… An air-filled collection is seen to lie in the left hemipelvis… The second collection… A third pelvic collecion lying above the sigmoid colon… Three new smaller more anterior fluid collections are seen… The sigmoid colon is markedly thickened with evidence of diverticular disease.”",
+            "“The dilated loops of small bowel have resolved.”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_structures_visualized",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "sufficiently_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“Axial images from the lung bases to the symphysis pubis were obtained after oral and intravenous contrast.”",
+                "“An air-filled collection is seen… The second collection… A third pelvic collecion… Three new smaller more anterior fluid collections are seen… The sigmoid colon is markedly thickened…”"
+              ],
+              "reason": "The prior contrast-enhanced CT provided comprehensive visualization of the peritoneal cavity, bowel, and all described collections at that time."
+            },
+            {
+              "requirement_key": "req_extent_evolution",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“Again free air is seen throughout the peritoneal cavity however there is less free air today.”",
+                "“An air-filled collection… now measures 25 x 50 mm… previously measured 16 x 55 mm… The second collection… previously measured 36 x 56 mm… now measures 55 x 75 mm… A third pelvic collecion… is nes since the previous CT.… Three new smaller more anterior fluid collections are seen…”"
+              ],
+              "reason": "The prior CT compared current findings to an even earlier CT, documenting interval changes in free air and collection sizes, but cannot inform further evolution beyond that time point."
+            },
+            {
+              "requirement_key": "req_new_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“A third pelvic collecion lying above the sigmoid colon… is nes since the previous CT.… Three new smaller more anterior fluid collections are seen…”"
+              ],
+              "reason": "The prior CT identified new collections compared with an earlier exam, establishing complications at that time, but cannot exclude additional new complications developing after that scan."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "The contrast CT defined the presence and initial evolution of free air and collections but cannot address their subsequent trajectory or any later-developing complications, leaving the refined management question only partially answered."
+        },
+        "current_order_fit": {
+          "test_question_capability": "partially_capable",
+          "why_this_order_could_answer": "A non-contrast CT abdomen can reliably depict free intraperitoneal air and the size and number of gas and fluid collections, allowing interval assessment of their extent and detection of gross new complications while avoiding further IV contrast in a patient with chronic kidney disease.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The choice of omitting IV contrast specifically—despite its prior use—may reflect renal risk, prior contrast load, or clinical stability, but the exact trade-off between contrast detail and radiation/renal risks is not explicitly documented."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

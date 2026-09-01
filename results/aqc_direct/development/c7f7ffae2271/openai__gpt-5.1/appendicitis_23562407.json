@@ -1,0 +1,840 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "appendicitis",
+  "hadm_id": 23562407,
+  "source_path": "results/annotation_experiment/full/appendicitis_23562407.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (US APPENDIX)",
+      "request_prompt_sha256": "f892592a10bbb0c3953faedc39d8c6326a8e780097ad42e9e215cf48a223c16a",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "f892592a10bbb0c3953faedc39d8c6326a8e780097ad42e9e215cf48a223c16a",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute febrile right lower quadrant abdominal pain syndrome.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation",
+                  "status": "established",
+                  "evidence": [
+                    "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+                    "VS: T 101.7 ... ABDOMEN: mild tenderness on palpation of the RLQ."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is recently pregnant with ongoing low-level hCG after therapeutic abortion with D&C eight weeks ago and last menstrual period two weeks ago.",
+                  "type": "other",
+                  "other_proposed_type": "reproductive_status",
+                  "level": "clinical background",
+                  "status": "established",
+                  "evidence": [
+                    "s/p therapeutic abortion with  D&C 8 weeks ago and LMP 2 weeks ago",
+                    "Human Chorionic Gonadotropin: 9.0 mIU/mL"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Acute appendicitis is a leading diagnostic consideration for this patient’s febrile right lower quadrant abdominal pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "working diagnosis",
+                  "status": "suspected",
+                  "evidence": [
+                    "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+                    "ABDOMEN: mild tenderness on palpation of the RLQ. Stomach is  otherwise soft, non-distended, with no rebound or guarding."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Pelvic or gynecologic sources of pain (e.g., infection or retained products) are alternative explanations for the febrile right lower quadrant pain in this recently pregnant patient.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis",
+                  "status": "suspected",
+                  "evidence": [
+                    "Patient is a ___ female s/p therapeutic abortion with  D&C 8 weeks ago and LMP 2 weeks ago, who presents for 1 day  history of RLQ abdominal pain and fever",
+                    "HCG, Urine, Qualitative: POSITIVE."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is no current laboratory evidence of sepsis or hemodynamic instability despite fever.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "physiologic status",
+                  "status": "established",
+                  "evidence": [
+                    "White Blood Cells: 7.1 K/uL (ref 4.0-10.0)",
+                    "VS: T 101.7, HR 91, BP 126/75, RR 18, O2 99% RA"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First imaging decision; no prior imaging to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point, so the working assumptions are being established from the presenting history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Does this patient’s acute febrile right lower quadrant pain arise from appendicitis in the right lower quadrant rather than another intra-abdominal or pelvic source?",
+                "target": "appendix and adjacent right lower quadrant structures",
+                "type": "alternative_source",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If appendicitis is confirmed, initiate appendicitis-directed management (surgical consultation, antibiotics, and possible appendectomy) and de-emphasize alternative pelvic or other abdominal sources.",
+                "negative_answer_changes": "If appendicitis is not supported, shift evaluation toward alternative intra-abdominal or gynecologic causes of febrile right lower quadrant pain in this recently pregnant patient.",
+                "secondary_questions": [
+                  "Is there imaging evidence of periappendiceal inflammation or complication such as abscess that would affect the urgency or type of intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_visualize_appendix",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Direct visualization or adequate sonographic assessment of the appendix in the right lower quadrant.",
+                    "why_required": "Determining whether the patient’s symptoms arise from appendicitis requires adequately imaging the appendix or confidently assessing that it is not inflamed."
+                  },
+                  {
+                    "requirement_key": "req_appendicitis_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of sonographic signs of appendicitis (e.g., non-compressible dilated appendix, wall thickening, surrounding inflammation).",
+                    "why_required": "Identifying or excluding appendicitis guides whether to pursue appendectomy and appendicitis-directed therapy versus other diagnostic pathways."
+                  },
+                  {
+                    "requirement_key": "req_RLQ_localization",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Localization of any inflammatory or mass-like process within the right lower quadrant adjacent to the cecum and pelvis.",
+                    "why_required": "Localization clarifies whether the right lower quadrant pain arises from the appendix or another nearby structure."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of appendicitis-related complications such as abscess or perforation if inflammation is present.",
+                    "why_required": "Detecting complications affects urgency, choice of operative versus non-operative management, and need for drainage."
+                  }
+                ],
+                "evidence": [
+                  "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+                  "ABDOMEN: mild tenderness on palpation of the RLQ. Stomach is  otherwise soft, non-distended, with no rebound or guarding."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_visualize_appendix",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "No prior imaging has been performed, so the appendix has not been visualized or assessed."
+                  },
+                  {
+                    "requirement_key": "req_appendicitis_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "Clinical findings suggest but do not establish appendicitis; there is no imaging evidence to confirm or exclude it."
+                  },
+                  {
+                    "requirement_key": "req_RLQ_localization",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "ABDOMEN: mild tenderness on palpation of the RLQ."
+                    ],
+                    "reason": "Pain and tenderness localize clinically to the right lower quadrant, but no imaging has localized an underlying anatomic process."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "There is no imaging or other objective evidence describing abscess, perforation, or other appendiceal complications."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key aspects of whether appendicitis is the source of this patient’s right lower quadrant pain remain unaddressed before ordering imaging."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right lower quadrant/appendix-focused abdominal ultrasound can directly visualize the appendix, assess for inflammatory changes, localize pathology, and detect some complications, helping determine whether appendicitis explains the febrile right lower quadrant pain.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order does not by itself clarify evaluation of alternative gynecologic etiologies related to the recent pregnancy termination, which may require dedicated pelvic imaging."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute febrile right lower quadrant abdominal pain syndrome.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"who presents for 1 day  history of RLQ abdominal pain and fever up to ___\",\n        \"VS: T 101.7 ... ABDOMEN: mild tenderness on palpation of the RLQ.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is recently pregnant with ongoing low-level hCG after therapeutic abortion with D&C eight weeks ago and last menstrual period two weeks ago.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"reproductive_status\",\n      \"level\": \"clinical background\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"s/p therapeutic abortion with  D&C 8 weeks ago and LMP 2 weeks ago\",\n        \"Human Chorionic Gonadotropin: 9.0 mIU/mL\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute appendicitis is a leading diagnostic consideration for this patient’s febrile right lower quadrant abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"working diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"who presents for 1 day  history of RLQ abdominal pain and fever up to ___\",\n        \"ABDOMEN: mild tenderness on palpation of the RLQ. Stomach is  otherwise soft, non-distended, with no rebound or guarding.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Pelvic or gynecologic sources of pain (e.g., infection or retained products) are alternative explanations for the febrile right lower quadrant pain in this recently pregnant patient.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"Patient is a ___ female s/p therapeutic abortion with  D&C 8 weeks ago and LMP 2 weeks ago, who presents for 1 day  history of RLQ abdominal pain and fever\",\n        \"HCG, Urine, Qualitative: POSITIVE.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is no current laboratory evidence of sepsis or hemodynamic instability despite fever.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic status\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"White Blood Cells: 7.1 K/uL (ref 4.0-10.0)\",\n        \"VS: T 101.7, HR 91, BP 126/75, RR 18, O2 99% RA\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First imaging decision; no prior imaging to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point, so the working assumptions are being established from the presenting history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Does this patient’s acute febrile right lower quadrant pain arise from appendicitis in the right lower quadrant rather than another intra-abdominal or pelvic source?\",\n    \"target\": \"appendix and adjacent right lower quadrant structures\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If appendicitis is confirmed, initiate appendicitis-directed management (surgical consultation, antibiotics, and possible appendectomy) and de-emphasize alternative pelvic or other abdominal sources.\",\n    \"negative_answer_changes\": \"If appendicitis is not supported, shift evaluation toward alternative intra-abdominal or gynecologic causes of febrile right lower quadrant pain in this recently pregnant patient.\",\n    \"secondary_questions\": [\n      \"Is there imaging evidence of periappendiceal inflammation or complication such as abscess that would affect the urgency or type of intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_appendix\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Direct visualization or adequate sonographic assessment of the appendix in the right lower quadrant.\",\n        \"why_required\": \"Determining whether the patient’s symptoms arise from appendicitis requires adequately imaging the appendix or confidently assessing that it is not inflamed.\"\n      },\n      {\n        \"requirement_key\": \"req_appendicitis_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of sonographic signs of appendicitis (e.g., non-compressible dilated appendix, wall thickening, surrounding inflammation).\",\n        \"why_required\": \"Identifying or excluding appendicitis guides whether to pursue appendectomy and appendicitis-directed therapy versus other diagnostic pathways.\"\n      },\n      {\n        \"requirement_key\": \"req_RLQ_localization\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Localization of any inflammatory or mass-like process within the right lower quadrant adjacent to the cecum and pelvis.\",\n        \"why_required\": \"Localization clarifies whether the right lower quadrant pain arises from the appendix or another nearby structure.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of appendicitis-related complications such as abscess or perforation if inflammation is present.\",\n        \"why_required\": \"Detecting complications affects urgency, choice of operative versus non-operative management, and need for drainage.\"\n      }\n    ],\n    \"evidence\": [\n      \"who presents for 1 day  history of RLQ abdominal pain and fever up to ___\",\n      \"ABDOMEN: mild tenderness on palpation of the RLQ. Stomach is  otherwise soft, non-distended, with no rebound or guarding.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_appendix\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior imaging has been performed, so the appendix has not been visualized or assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_appendicitis_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Clinical findings suggest but do not establish appendicitis; there is no imaging evidence to confirm or exclude it.\"\n      },\n      {\n        \"requirement_key\": \"req_RLQ_localization\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"ABDOMEN: mild tenderness on palpation of the RLQ.\"\n        ],\n        \"reason\": \"Pain and tenderness localize clinically to the right lower quadrant, but no imaging has localized an underlying anatomic process.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"There is no imaging or other objective evidence describing abscess, perforation, or other appendiceal complications.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key aspects of whether appendicitis is the source of this patient’s right lower quadrant pain remain unaddressed before ordering imaging.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right lower quadrant/appendix-focused abdominal ultrasound can directly visualize the appendix, assess for inflammatory changes, localize pathology, and detect some complications, helping determine whether appendicitis explains the febrile right lower quadrant pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order does not by itself clarify evaluation of alternative gynecologic etiologies related to the recent pregnancy termination, which may require dedicated pelvic imaging.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788226515-QsV12UZijrbEpyNgZwIu",
+            "usage": {
+              "completion_tokens": 2089,
+              "prompt_tokens": 3405,
+              "total_tokens": 5494,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02514625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02514625,
+                "upstream_inference_prompt_cost": 0.00425625,
+                "upstream_inference_completions_cost": 0.02089
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute febrile right lower quadrant abdominal pain syndrome.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation",
+            "status": "established",
+            "evidence": [
+              "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+              "VS: T 101.7 ... ABDOMEN: mild tenderness on palpation of the RLQ."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is recently pregnant with ongoing low-level hCG after therapeutic abortion with D&C eight weeks ago and last menstrual period two weeks ago.",
+            "type": "other",
+            "other_proposed_type": "reproductive_status",
+            "level": "clinical background",
+            "status": "established",
+            "evidence": [
+              "s/p therapeutic abortion with  D&C 8 weeks ago and LMP 2 weeks ago",
+              "Human Chorionic Gonadotropin: 9.0 mIU/mL"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Acute appendicitis is a leading diagnostic consideration for this patient’s febrile right lower quadrant abdominal pain.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "working diagnosis",
+            "status": "suspected",
+            "evidence": [
+              "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+              "ABDOMEN: mild tenderness on palpation of the RLQ. Stomach is  otherwise soft, non-distended, with no rebound or guarding."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Pelvic or gynecologic sources of pain (e.g., infection or retained products) are alternative explanations for the febrile right lower quadrant pain in this recently pregnant patient.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "differential diagnosis",
+            "status": "suspected",
+            "evidence": [
+              "Patient is a ___ female s/p therapeutic abortion with  D&C 8 weeks ago and LMP 2 weeks ago, who presents for 1 day  history of RLQ abdominal pain and fever",
+              "HCG, Urine, Qualitative: POSITIVE."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "There is no current laboratory evidence of sepsis or hemodynamic instability despite fever.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "physiologic status",
+            "status": "established",
+            "evidence": [
+              "White Blood Cells: 7.1 K/uL (ref 4.0-10.0)",
+              "VS: T 101.7, HR 91, BP 126/75, RR 18, O2 99% RA"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First imaging decision; no prior imaging to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point, so the working assumptions are being established from the presenting history, exam, and labs."
+        },
+        "current_question": {
+          "primary": "Does this patient’s acute febrile right lower quadrant pain arise from appendicitis in the right lower quadrant rather than another intra-abdominal or pelvic source?",
+          "target": "appendix and adjacent right lower quadrant structures",
+          "type": "alternative_source",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If appendicitis is confirmed, initiate appendicitis-directed management (surgical consultation, antibiotics, and possible appendectomy) and de-emphasize alternative pelvic or other abdominal sources.",
+          "negative_answer_changes": "If appendicitis is not supported, shift evaluation toward alternative intra-abdominal or gynecologic causes of febrile right lower quadrant pain in this recently pregnant patient.",
+          "secondary_questions": [
+            "Is there imaging evidence of periappendiceal inflammation or complication such as abscess that would affect the urgency or type of intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_visualize_appendix",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Direct visualization or adequate sonographic assessment of the appendix in the right lower quadrant.",
+              "why_required": "Determining whether the patient’s symptoms arise from appendicitis requires adequately imaging the appendix or confidently assessing that it is not inflamed."
+            },
+            {
+              "requirement_key": "req_appendicitis_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of sonographic signs of appendicitis (e.g., non-compressible dilated appendix, wall thickening, surrounding inflammation).",
+              "why_required": "Identifying or excluding appendicitis guides whether to pursue appendectomy and appendicitis-directed therapy versus other diagnostic pathways."
+            },
+            {
+              "requirement_key": "req_RLQ_localization",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Localization of any inflammatory or mass-like process within the right lower quadrant adjacent to the cecum and pelvis.",
+              "why_required": "Localization clarifies whether the right lower quadrant pain arises from the appendix or another nearby structure."
+            },
+            {
+              "requirement_key": "req_complication",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of appendicitis-related complications such as abscess or perforation if inflammation is present.",
+              "why_required": "Detecting complications affects urgency, choice of operative versus non-operative management, and need for drainage."
+            }
+          ],
+          "evidence": [
+            "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+            "ABDOMEN: mild tenderness on palpation of the RLQ. Stomach is  otherwise soft, non-distended, with no rebound or guarding."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_visualize_appendix",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "No prior imaging has been performed, so the appendix has not been visualized or assessed."
+            },
+            {
+              "requirement_key": "req_appendicitis_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "Clinical findings suggest but do not establish appendicitis; there is no imaging evidence to confirm or exclude it."
+            },
+            {
+              "requirement_key": "req_RLQ_localization",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "ABDOMEN: mild tenderness on palpation of the RLQ."
+              ],
+              "reason": "Pain and tenderness localize clinically to the right lower quadrant, but no imaging has localized an underlying anatomic process."
+            },
+            {
+              "requirement_key": "req_complication",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "There is no imaging or other objective evidence describing abscess, perforation, or other appendiceal complications."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key aspects of whether appendicitis is the source of this patient’s right lower quadrant pain remain unaddressed before ordering imaging."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right lower quadrant/appendix-focused abdominal ultrasound can directly visualize the appendix, assess for inflammatory changes, localize pathology, and detect some complications, helping determine whether appendicitis explains the febrile right lower quadrant pain.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The order does not by itself clarify evaluation of alternative gynecologic etiologies related to the recent pregnancy termination, which may require dedicated pelvic imaging."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "4d1b8ac6db2e086983a71ee8e78bb440058933750e297d0623e49edc4e0bfd4a",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "4d1b8ac6db2e086983a71ee8e78bb440058933750e297d0623e49edc4e0bfd4a",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute febrile right lower quadrant abdominal pain syndrome.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation",
+                  "status": "established",
+                  "evidence": [
+                    "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+                    "VS: T 101.7 ... ABDOMEN: mild tenderness on palpation of the RLQ."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is recently pregnant with low-level serum and positive urine hCG after therapeutic abortion with D&C eight weeks ago and last menstrual period two weeks ago, with an IUD in place and no intrauterine gestation visualized.",
+                  "type": "other",
+                  "other_proposed_type": "reproductive_status",
+                  "level": "clinical background",
+                  "status": "established",
+                  "evidence": [
+                    "s/p therapeutic abortion with  D&C 8 weeks ago and LMP 2 weeks ago",
+                    "IUD appears in appropriate position.  No intrauterine gestation is visualized."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Acute appendicitis remains a leading diagnostic consideration for this patient’s febrile right lower quadrant abdominal pain despite a nonvisualized appendix on ultrasound.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "working diagnosis",
+                  "status": "suspected",
+                  "evidence": [
+                    "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+                    "Targeted images of the right lower quadrant were acquired and the appendix was not visualized."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Pelvic or gynecologic sources of pain, including complications related to recent pregnancy termination or possible ectopic gestation, are alternative explanations for the febrile right lower quadrant pain given positive hCG, lack of intrauterine pregnancy, and small free pelvic fluid.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "differential diagnosis",
+                  "status": "suspected",
+                  "evidence": [
+                    "No intrauterine gestation is visualized.",
+                    "Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The appendix has not yet been adequately assessed by imaging because it was not visualized on targeted right lower quadrant ultrasound.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "diagnostic workup status",
+                  "status": "established",
+                  "evidence": [
+                    "Targeted images of the right lower quadrant were acquired and the appendix was not visualized."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Does this patient’s acute febrile right lower quadrant pain arise from appendicitis in the right lower quadrant rather than another intra-abdominal or pelvic source?",
+                "study_adequacy": "nondiagnostic",
+                "test_question_capability": "partially_capable",
+                "result_status": "indeterminate",
+                "effect_on_previous_question": "The combined early obstetric and appendix-focused ultrasound did not visualize the appendix and showed no intrauterine pregnancy or adnexal mass, so it did not resolve whether appendicitis or another abdominal/pelvic process is causing the right lower quadrant pain.",
+                "discordance": {
+                  "label": "indeterminate",
+                  "evidence_stream_1": "Targeted images of the right lower quadrant were acquired and the appendix was not visualized.",
+                  "evidence_stream_2": "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+                  "reason": "Clinical suspicion for appendicitis or other intra-abdominal pathology persists, but the ultrasound was unable to visualize the appendix, leaving the main diagnostic question unanswered rather than truly discordant."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The appendix has not yet been adequately assessed by imaging because it was not visualized on targeted right lower quadrant ultrasound.",
+                "reason": "New ultrasound findings demonstrate nonvisualization of the appendix and thus refine the prior workup status without resolving the leading diagnostic considerations."
+              },
+              "current_question": {
+                "primary": "What is the underlying intra-abdominal or pelvic cause of this patient’s acute febrile right lower quadrant pain when ultrasound did not visualize the appendix or identify a definitive pelvic source?",
+                "target": "appendix and other intra-abdominal and pelvic structures in the right lower quadrant and pelvis",
+                "type": "alternative_source",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If CT identifies appendicitis or another specific intra-abdominal or pelvic pathology, clinicians can initiate targeted management such as surgery, antibiotics, or gynecologic intervention and narrow the differential.",
+                "negative_answer_changes": "If CT does not show appendicitis or another focal intra-abdominal or pelvic source, clinicians may reconsider the diagnosis, pursue non-imaging evaluations, or alternative imaging, and adjust management away from surgical or gynecologic emergencies.",
+                "secondary_questions": [
+                  "Is there CT evidence of appendicitis or other inflammatory, infectious, or hemorrhagic pathology in the right lower quadrant or pelvis that explains the fever and pain?",
+                  "Are there CT signs of complications such as abscess, perforation, or significant fluid collections that would change the urgency or type of intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_ct_global_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comprehensive visualization of the appendix and adjacent intra-abdominal and pelvic structures in the right lower quadrant and pelvis.",
+                    "why_required": "Determining the cause of right lower quadrant pain after nondiagnostic ultrasound requires adequately imaging the appendix and nearby organs to detect or exclude pathology."
+                  },
+                  {
+                    "requirement_key": "req_ct_appendicitis_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of CT signs of appendicitis, including appendiceal enlargement, wall thickening, periappendiceal fat stranding, or appendicolith.",
+                    "why_required": "Clarifying whether appendicitis is present directly guides the need for surgical consultation and appendicitis-directed treatment."
+                  },
+                  {
+                    "requirement_key": "req_ct_alt_pelvic_source",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Identification or exclusion of alternative intra-abdominal or pelvic sources of pain such as adnexal pathology, pelvic inflammatory disease, bowel inflammation, or other focal lesions.",
+                    "why_required": "Alternative abdominal or pelvic causes must be evaluated because ultrasound did not show appendicitis and the patient has reproductive risk factors and fever."
+                  },
+                  {
+                    "requirement_key": "req_ct_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, extent, and character of complications such as abscess, perforation, or significant free fluid or collections.",
+                    "why_required": "Detecting complications determines urgency, need for drainage, and whether nonoperative management is appropriate."
+                  }
+                ],
+                "evidence": [
+                  "Targeted images of the right lower quadrant were acquired and the appendix was not visualized.",
+                  "Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified."
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_ct_global_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Targeted images of the right lower quadrant were acquired and the appendix was not visualized."
+                    ],
+                    "reason": "Ultrasound attempted targeted right lower quadrant imaging but failed to visualize the appendix, and did not provide comprehensive assessment of all intra-abdominal and pelvic structures relevant to the pain."
+                  },
+                  {
+                    "requirement_key": "req_ct_appendicitis_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Targeted images of the right lower quadrant were acquired and the appendix was not visualized."
+                    ],
+                    "reason": "Because the appendix was not seen, ultrasound neither confirmed nor excluded appendicitis."
+                  },
+                  {
+                    "requirement_key": "req_ct_alt_pelvic_source",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "No intrauterine gestation is visualized.",
+                      "Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified."
+                    ],
+                    "reason": "Ultrasound excluded a visible intrauterine pregnancy and adnexal mass but did not identify a definitive alternative pelvic or intra-abdominal source, leaving other causes insufficiently evaluated."
+                  },
+                  {
+                    "requirement_key": "req_ct_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified."
+                    ],
+                    "reason": "Ultrasound did not show abscesses or large collections but is limited in detecting deeper or non-pelvic complications, so absence of major complications is suggested but not definitively established."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "The nondiagnostic ultrasound left the appendix unassessed and did not identify a clear alternative source, so the main question about the cause of febrile right lower quadrant pain remains largely unresolved."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix and surrounding intra-abdominal and pelvic structures, detect appendicitis or alternative sources, and assess for complications in a patient with nondiagnostic ultrasound.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The order does not on its own distinguish between prioritizing appendicitis versus gynecologic or other abdominal etiologies as the leading concern, and it does not clarify radiation risk-benefit deliberations in a patient with low-level persistent hCG."
+              },
+              "derived_transition": "remedy",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute febrile right lower quadrant abdominal pain syndrome.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"who presents for 1 day  history of RLQ abdominal pain and fever up to ___\",\n        \"VS: T 101.7 ... ABDOMEN: mild tenderness on palpation of the RLQ.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is recently pregnant with low-level serum and positive urine hCG after therapeutic abortion with D&C eight weeks ago and last menstrual period two weeks ago, with an IUD in place and no intrauterine gestation visualized.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"reproductive_status\",\n      \"level\": \"clinical background\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"s/p therapeutic abortion with  D&C 8 weeks ago and LMP 2 weeks ago\",\n        \"IUD appears in appropriate position.  No intrauterine gestation is visualized.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute appendicitis remains a leading diagnostic consideration for this patient’s febrile right lower quadrant abdominal pain despite a nonvisualized appendix on ultrasound.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"working diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"who presents for 1 day  history of RLQ abdominal pain and fever up to ___\",\n        \"Targeted images of the right lower quadrant were acquired and the appendix was not visualized.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Pelvic or gynecologic sources of pain, including complications related to recent pregnancy termination or possible ectopic gestation, are alternative explanations for the febrile right lower quadrant pain given positive hCG, lack of intrauterine pregnancy, and small free pelvic fluid.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"differential diagnosis\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"No intrauterine gestation is visualized.\",\n        \"Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The appendix has not yet been adequately assessed by imaging because it was not visualized on targeted right lower quadrant ultrasound.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"diagnostic workup status\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Targeted images of the right lower quadrant were acquired and the appendix was not visualized.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Does this patient’s acute febrile right lower quadrant pain arise from appendicitis in the right lower quadrant rather than another intra-abdominal or pelvic source?\",\n    \"study_adequacy\": \"nondiagnostic\",\n    \"test_question_capability\": \"partially_capable\",\n    \"result_status\": \"indeterminate\",\n    \"effect_on_previous_question\": \"The combined early obstetric and appendix-focused ultrasound did not visualize the appendix and showed no intrauterine pregnancy or adnexal mass, so it did not resolve whether appendicitis or another abdominal/pelvic process is causing the right lower quadrant pain.\",\n    \"discordance\": {\n      \"label\": \"indeterminate\",\n      \"evidence_stream_1\": \"Targeted images of the right lower quadrant were acquired and the appendix was not visualized.\",\n      \"evidence_stream_2\": \"who presents for 1 day  history of RLQ abdominal pain and fever up to ___\",\n      \"reason\": \"Clinical suspicion for appendicitis or other intra-abdominal pathology persists, but the ultrasound was unable to visualize the appendix, leaving the main diagnostic question unanswered rather than truly discordant.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The appendix has not yet been adequately assessed by imaging because it was not visualized on targeted right lower quadrant ultrasound.\",\n    \"reason\": \"New ultrasound findings demonstrate nonvisualization of the appendix and thus refine the prior workup status without resolving the leading diagnostic considerations.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the underlying intra-abdominal or pelvic cause of this patient’s acute febrile right lower quadrant pain when ultrasound did not visualize the appendix or identify a definitive pelvic source?\",\n    \"target\": \"appendix and other intra-abdominal and pelvic structures in the right lower quadrant and pelvis\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If CT identifies appendicitis or another specific intra-abdominal or pelvic pathology, clinicians can initiate targeted management such as surgery, antibiotics, or gynecologic intervention and narrow the differential.\",\n    \"negative_answer_changes\": \"If CT does not show appendicitis or another focal intra-abdominal or pelvic source, clinicians may reconsider the diagnosis, pursue non-imaging evaluations, or alternative imaging, and adjust management away from surgical or gynecologic emergencies.\",\n    \"secondary_questions\": [\n      \"Is there CT evidence of appendicitis or other inflammatory, infectious, or hemorrhagic pathology in the right lower quadrant or pelvis that explains the fever and pain?\",\n      \"Are there CT signs of complications such as abscess, perforation, or significant fluid collections that would change the urgency or type of intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_ct_global_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comprehensive visualization of the appendix and adjacent intra-abdominal and pelvic structures in the right lower quadrant and pelvis.\",\n        \"why_required\": \"Determining the cause of right lower quadrant pain after nondiagnostic ultrasound requires adequately imaging the appendix and nearby organs to detect or exclude pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_appendicitis_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of CT signs of appendicitis, including appendiceal enlargement, wall thickening, periappendiceal fat stranding, or appendicolith.\",\n        \"why_required\": \"Clarifying whether appendicitis is present directly guides the need for surgical consultation and appendicitis-directed treatment.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_alt_pelvic_source\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Identification or exclusion of alternative intra-abdominal or pelvic sources of pain such as adnexal pathology, pelvic inflammatory disease, bowel inflammation, or other focal lesions.\",\n        \"why_required\": \"Alternative abdominal or pelvic causes must be evaluated because ultrasound did not show appendicitis and the patient has reproductive risk factors and fever.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, extent, and character of complications such as abscess, perforation, or significant free fluid or collections.\",\n        \"why_required\": \"Detecting complications determines urgency, need for drainage, and whether nonoperative management is appropriate.\"\n      }\n    ],\n    \"evidence\": [\n      \"Targeted images of the right lower quadrant were acquired and the appendix was not visualized.\",\n      \"Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_ct_global_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Targeted images of the right lower quadrant were acquired and the appendix was not visualized.\"\n        ],\n        \"reason\": \"Ultrasound attempted targeted right lower quadrant imaging but failed to visualize the appendix, and did not provide comprehensive assessment of all intra-abdominal and pelvic structures relevant to the pain.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_appendicitis_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Targeted images of the right lower quadrant were acquired and the appendix was not visualized.\"\n        ],\n        \"reason\": \"Because the appendix was not seen, ultrasound neither confirmed nor excluded appendicitis.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_alt_pelvic_source\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"No intrauterine gestation is visualized.\",\n          \"Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified.\"\n        ],\n        \"reason\": \"Ultrasound excluded a visible intrauterine pregnancy and adnexal mass but did not identify a definitive alternative pelvic or intra-abdominal source, leaving other causes insufficiently evaluated.\"\n      },\n      {\n        \"requirement_key\": \"req_ct_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified.\"\n        ],\n        \"reason\": \"Ultrasound did not show abscesses or large collections but is limited in detecting deeper or non-pelvic complications, so absence of major complications is suggested but not definitively established.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"The nondiagnostic ultrasound left the appendix unassessed and did not identify a clear alternative source, so the main question about the cause of febrile right lower quadrant pain remains largely unresolved.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix and surrounding intra-abdominal and pelvic structures, detect appendicitis or alternative sources, and assess for complications in a patient with nondiagnostic ultrasound.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The order does not on its own distinguish between prioritizing appendicitis versus gynecologic or other abdominal etiologies as the leading concern, and it does not clarify radiation risk-benefit deliberations in a patient with low-level persistent hCG.\"\n  },\n  \"derived_transition\": \"remedy\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788226538-ZhOT1iEd1QtAjD6EFoGI",
+            "usage": {
+              "completion_tokens": 2434,
+              "prompt_tokens": 5447,
+              "total_tokens": 7881,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.03114875,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.03114875,
+                "upstream_inference_prompt_cost": 0.00680875,
+                "upstream_inference_completions_cost": 0.02434
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute febrile right lower quadrant abdominal pain syndrome.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation",
+            "status": "established",
+            "evidence": [
+              "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+              "VS: T 101.7 ... ABDOMEN: mild tenderness on palpation of the RLQ."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is recently pregnant with low-level serum and positive urine hCG after therapeutic abortion with D&C eight weeks ago and last menstrual period two weeks ago, with an IUD in place and no intrauterine gestation visualized.",
+            "type": "other",
+            "other_proposed_type": "reproductive_status",
+            "level": "clinical background",
+            "status": "established",
+            "evidence": [
+              "s/p therapeutic abortion with  D&C 8 weeks ago and LMP 2 weeks ago",
+              "IUD appears in appropriate position.  No intrauterine gestation is visualized."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Acute appendicitis remains a leading diagnostic consideration for this patient’s febrile right lower quadrant abdominal pain despite a nonvisualized appendix on ultrasound.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "working diagnosis",
+            "status": "suspected",
+            "evidence": [
+              "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+              "Targeted images of the right lower quadrant were acquired and the appendix was not visualized."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Pelvic or gynecologic sources of pain, including complications related to recent pregnancy termination or possible ectopic gestation, are alternative explanations for the febrile right lower quadrant pain given positive hCG, lack of intrauterine pregnancy, and small free pelvic fluid.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "differential diagnosis",
+            "status": "suspected",
+            "evidence": [
+              "No intrauterine gestation is visualized.",
+              "Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The appendix has not yet been adequately assessed by imaging because it was not visualized on targeted right lower quadrant ultrasound.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "diagnostic workup status",
+            "status": "established",
+            "evidence": [
+              "Targeted images of the right lower quadrant were acquired and the appendix was not visualized."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Does this patient’s acute febrile right lower quadrant pain arise from appendicitis in the right lower quadrant rather than another intra-abdominal or pelvic source?",
+          "study_adequacy": "nondiagnostic",
+          "test_question_capability": "partially_capable",
+          "result_status": "indeterminate",
+          "effect_on_previous_question": "The combined early obstetric and appendix-focused ultrasound did not visualize the appendix and showed no intrauterine pregnancy or adnexal mass, so it did not resolve whether appendicitis or another abdominal/pelvic process is causing the right lower quadrant pain.",
+          "discordance": {
+            "label": "indeterminate",
+            "evidence_stream_1": "Targeted images of the right lower quadrant were acquired and the appendix was not visualized.",
+            "evidence_stream_2": "who presents for 1 day  history of RLQ abdominal pain and fever up to ___",
+            "reason": "Clinical suspicion for appendicitis or other intra-abdominal pathology persists, but the ultrasound was unable to visualize the appendix, leaving the main diagnostic question unanswered rather than truly discordant."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The appendix has not yet been adequately assessed by imaging because it was not visualized on targeted right lower quadrant ultrasound.",
+          "reason": "New ultrasound findings demonstrate nonvisualization of the appendix and thus refine the prior workup status without resolving the leading diagnostic considerations."
+        },
+        "current_question": {
+          "primary": "What is the underlying intra-abdominal or pelvic cause of this patient’s acute febrile right lower quadrant pain when ultrasound did not visualize the appendix or identify a definitive pelvic source?",
+          "target": "appendix and other intra-abdominal and pelvic structures in the right lower quadrant and pelvis",
+          "type": "alternative_source",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If CT identifies appendicitis or another specific intra-abdominal or pelvic pathology, clinicians can initiate targeted management such as surgery, antibiotics, or gynecologic intervention and narrow the differential.",
+          "negative_answer_changes": "If CT does not show appendicitis or another focal intra-abdominal or pelvic source, clinicians may reconsider the diagnosis, pursue non-imaging evaluations, or alternative imaging, and adjust management away from surgical or gynecologic emergencies.",
+          "secondary_questions": [
+            "Is there CT evidence of appendicitis or other inflammatory, infectious, or hemorrhagic pathology in the right lower quadrant or pelvis that explains the fever and pain?",
+            "Are there CT signs of complications such as abscess, perforation, or significant fluid collections that would change the urgency or type of intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_ct_global_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Comprehensive visualization of the appendix and adjacent intra-abdominal and pelvic structures in the right lower quadrant and pelvis.",
+              "why_required": "Determining the cause of right lower quadrant pain after nondiagnostic ultrasound requires adequately imaging the appendix and nearby organs to detect or exclude pathology."
+            },
+            {
+              "requirement_key": "req_ct_appendicitis_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of CT signs of appendicitis, including appendiceal enlargement, wall thickening, periappendiceal fat stranding, or appendicolith.",
+              "why_required": "Clarifying whether appendicitis is present directly guides the need for surgical consultation and appendicitis-directed treatment."
+            },
+            {
+              "requirement_key": "req_ct_alt_pelvic_source",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Identification or exclusion of alternative intra-abdominal or pelvic sources of pain such as adnexal pathology, pelvic inflammatory disease, bowel inflammation, or other focal lesions.",
+              "why_required": "Alternative abdominal or pelvic causes must be evaluated because ultrasound did not show appendicitis and the patient has reproductive risk factors and fever."
+            },
+            {
+              "requirement_key": "req_ct_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence, extent, and character of complications such as abscess, perforation, or significant free fluid or collections.",
+              "why_required": "Detecting complications determines urgency, need for drainage, and whether nonoperative management is appropriate."
+            }
+          ],
+          "evidence": [
+            "Targeted images of the right lower quadrant were acquired and the appendix was not visualized.",
+            "Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified."
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_ct_global_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Targeted images of the right lower quadrant were acquired and the appendix was not visualized."
+              ],
+              "reason": "Ultrasound attempted targeted right lower quadrant imaging but failed to visualize the appendix, and did not provide comprehensive assessment of all intra-abdominal and pelvic structures relevant to the pain."
+            },
+            {
+              "requirement_key": "req_ct_appendicitis_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Targeted images of the right lower quadrant were acquired and the appendix was not visualized."
+              ],
+              "reason": "Because the appendix was not seen, ultrasound neither confirmed nor excluded appendicitis."
+            },
+            {
+              "requirement_key": "req_ct_alt_pelvic_source",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "partially_addressed",
+              "direction": "mixed",
+              "supporting_evidence": [
+                "No intrauterine gestation is visualized.",
+                "Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified."
+              ],
+              "reason": "Ultrasound excluded a visible intrauterine pregnancy and adnexal mass but did not identify a definitive alternative pelvic or intra-abdominal source, leaving other causes insufficiently evaluated."
+            },
+            {
+              "requirement_key": "req_ct_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "Small simple free pelvic fluid is noted.  No adnexal mass or cystic collection is identified."
+              ],
+              "reason": "Ultrasound did not show abscesses or large collections but is limited in detecting deeper or non-pelvic complications, so absence of major complications is suggested but not definitively established."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "The nondiagnostic ultrasound left the appendix unassessed and did not identify a clear alternative source, so the main question about the cause of febrile right lower quadrant pain remains largely unresolved."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Contrast-enhanced CT of the abdomen and pelvis can reliably visualize the appendix and surrounding intra-abdominal and pelvic structures, detect appendicitis or alternative sources, and assess for complications in a patient with nondiagnostic ultrasound.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The order does not on its own distinguish between prioritizing appendicitis versus gynecologic or other abdominal etiologies as the leading concern, and it does not clarify radiation risk-benefit deliberations in a patient with low-level persistent hCG."
+        },
+        "derived_transition": "remedy",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

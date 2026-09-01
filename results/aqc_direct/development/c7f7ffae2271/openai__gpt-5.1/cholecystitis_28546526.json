@@ -1,0 +1,592 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 28546526,
+  "source_path": "results/annotation_experiment/full/cholecystitis_28546526.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "87bf1cc77961980a0ad5bbce80c76554b4c827250386f88d72d8f6fba8e8b034",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "87bf1cc77961980a0ad5bbce80c76554b4c827250386f88d72d8f6fba8e8b034",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient is experiencing an acute biliary-type pain syndrome with recurrent right upper quadrant and epigastric pain associated with nausea and vomiting.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "presented with recurrent RUQ pain, nausea, and vomiting",
+                    "developed a strong burning pain in her RUQ and the epigastrium, which later became sharp and persistent"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has a prior history of gallstones and prior similar biliary colic symptoms.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease",
+                  "status": "established",
+                  "evidence": [
+                    "she was told that she had gallstones",
+                    "The patient reports a history of similar symptoms which occurred approximately ___ years ago"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Current episode may represent recurrent symptomatic cholelithiasis or acute cholecystitis despite normal liver chemistries and lipase.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease",
+                  "status": "suspected",
+                  "evidence": [
+                    "recurrent RUQ pain, nausea, and vomiting",
+                    "Bilirubin, Total: 0.2 mg/dL; Asparate Aminotransferase (AST): 27.0 IU/L; Alanine Aminotransferase (ALT): 29.0 IU/L; Lipase: 44.0 IU/L"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Significant biliary obstruction or acute pancreatitis are unlikely at this time given normal bilirubin and lipase levels.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "broad disease class",
+                  "status": "challenged",
+                  "evidence": [
+                    "Bilirubin, Total: 0.2 mg/dL (ref 0.0-1.5)",
+                    "Lipase: 44.0 IU/L (ref 0.0-60.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is no current clinical or laboratory evidence of sepsis or hemodynamic instability related to the abdominal pain.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "overall clinical status",
+                  "status": "established",
+                  "evidence": [
+                    "GENERAL: No acute distress, appears her stated age. Pleasant and cooperative with the examiner.",
+                    "White Blood Cells: 9.8 K/uL (ref 4.0-11.0)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable because this is the first imaging decision.",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No prior imaging or prior question at this initial step."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point so all assumptions are newly established from the presenting history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "What is the current structural status of the gallbladder and adjacent biliary structures as a potential source of this acute right upper quadrant pain episode?",
+                "target": "gallbladder and proximal biliary system (including stones, wall inflammation, and ductal dilatation)",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming gallstones or acute cholecystitis would support a biliary source for the pain and prompt surgical or procedural planning and biliary-focused management.",
+                "negative_answer_changes": "If no gallbladder pathology is found, clinicians would need to consider non-biliary causes of pain and possibly pursue alternative imaging or evaluations.",
+                "secondary_questions": [
+                  "Is there sonographic evidence of acute cholecystitis, such as gallbladder wall thickening, pericholecystic fluid, or a positive sonographic Murphy sign?",
+                  "Is there biliary ductal dilatation that would suggest occult obstruction despite normal liver chemistries?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_gb_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Visualization and basic assessment of the gallbladder and common bile duct to detect stones or structural abnormalities.",
+                    "why_required": "Identifying or excluding gallstones or obvious structural disease is necessary to determine if the biliary system explains the acute pain."
+                  },
+                  {
+                    "requirement_key": "req_presence_cholelithiasis",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones or sludge in the gallbladder or proximal bile ducts.",
+                    "why_required": "Symptomatic cholelithiasis is a leading explanation for biliary-type pain and guides decisions about cholecystectomy."
+                  },
+                  {
+                    "requirement_key": "req_cholecystitis_signs",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of gallbladder inflammation, including wall thickness, pericholecystic fluid, and tenderness to probe pressure.",
+                    "why_required": "Differentiating biliary colic from acute cholecystitis affects urgency and type of intervention and monitoring."
+                  },
+                  {
+                    "requirement_key": "req_duct_dilation",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of biliary ductal dilatation suggestive of obstruction.",
+                    "why_required": "Ductal dilatation would raise concern for choledocholithiasis or obstruction despite normal laboratory tests and could alter management."
+                  }
+                ],
+                "evidence": [
+                  "The patient is a ___ year old female with a distant history of  biliary colic who presented with recurrent RUQ pain, nausea, and  vomiting.",
+                  "she was told that she  had gallstones."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_gb_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [],
+                    "reason": "No prior imaging has been performed in this episode, so the current structural status of the gallbladder and bile ducts has not been assessed."
+                  },
+                  {
+                    "requirement_key": "req_presence_cholelithiasis",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "she was told that she had gallstones."
+                    ],
+                    "reason": "Past history suggests gallstones, but no imaging in this episode confirms their current presence or number."
+                  },
+                  {
+                    "requirement_key": "req_cholecystitis_signs",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "GENERAL: No acute distress, appears her stated age.",
+                      "White Blood Cells: 9.8 K/uL (ref 4.0-11.0)"
+                    ],
+                    "reason": "Clinical and laboratory data do not show severe illness, but gallbladder wall inflammation and acute cholecystitis signs have not been imaged."
+                  },
+                  {
+                    "requirement_key": "req_duct_dilation",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Bilirubin, Total: 0.2 mg/dL (ref 0.0-1.5)",
+                      "Alkaline Phosphatase: 60.0 IU/L (ref 35.0-105.0)"
+                    ],
+                    "reason": "Normal bilirubin and alkaline phosphatase argue against major obstruction, but actual duct caliber has not been evaluated without imaging."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "No imaging has yet been obtained to characterize the gallbladder or biliary tree, so all key requirements for determining a biliary source remain unaddressed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant abdominal ultrasound focused on the liver or gallbladder can visualize gallstones, gallbladder wall characteristics, pericholecystic fluid, and bile duct caliber, directly addressing the suspected biliary source of pain.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The single-organ specification leaves some ambiguity about how comprehensively the common bile duct and adjacent structures will be assessed, and non-biliary causes of pain are not addressed by this order."
+              },
+              "derived_transition": "remedy",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient is experiencing an acute biliary-type pain syndrome with recurrent right upper quadrant and epigastric pain associated with nausea and vomiting.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"presented with recurrent RUQ pain, nausea, and vomiting\",\n        \"developed a strong burning pain in her RUQ and the epigastrium, which later became sharp and persistent\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has a prior history of gallstones and prior similar biliary colic symptoms.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"she was told that she had gallstones\",\n        \"The patient reports a history of similar symptoms which occurred approximately ___ years ago\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Current episode may represent recurrent symptomatic cholelithiasis or acute cholecystitis despite normal liver chemistries and lipase.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"recurrent RUQ pain, nausea, and vomiting\",\n        \"Bilirubin, Total: 0.2 mg/dL; Asparate Aminotransferase (AST): 27.0 IU/L; Alanine Aminotransferase (ALT): 29.0 IU/L; Lipase: 44.0 IU/L\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Significant biliary obstruction or acute pancreatitis are unlikely at this time given normal bilirubin and lipase levels.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"broad disease class\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Bilirubin, Total: 0.2 mg/dL (ref 0.0-1.5)\",\n        \"Lipase: 44.0 IU/L (ref 0.0-60.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is no current clinical or laboratory evidence of sepsis or hemodynamic instability related to the abdominal pain.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall clinical status\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"GENERAL: No acute distress, appears her stated age. Pleasant and cooperative with the examiner.\",\n        \"White Blood Cells: 9.8 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable because this is the first imaging decision.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior imaging or prior question at this initial step.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point so all assumptions are newly established from the presenting history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the current structural status of the gallbladder and adjacent biliary structures as a potential source of this acute right upper quadrant pain episode?\",\n    \"target\": \"gallbladder and proximal biliary system (including stones, wall inflammation, and ductal dilatation)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming gallstones or acute cholecystitis would support a biliary source for the pain and prompt surgical or procedural planning and biliary-focused management.\",\n    \"negative_answer_changes\": \"If no gallbladder pathology is found, clinicians would need to consider non-biliary causes of pain and possibly pursue alternative imaging or evaluations.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of acute cholecystitis, such as gallbladder wall thickening, pericholecystic fluid, or a positive sonographic Murphy sign?\",\n      \"Is there biliary ductal dilatation that would suggest occult obstruction despite normal liver chemistries?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_gb_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Visualization and basic assessment of the gallbladder and common bile duct to detect stones or structural abnormalities.\",\n        \"why_required\": \"Identifying or excluding gallstones or obvious structural disease is necessary to determine if the biliary system explains the acute pain.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_cholelithiasis\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones or sludge in the gallbladder or proximal bile ducts.\",\n        \"why_required\": \"Symptomatic cholelithiasis is a leading explanation for biliary-type pain and guides decisions about cholecystectomy.\"\n      },\n      {\n        \"requirement_key\": \"req_cholecystitis_signs\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of gallbladder inflammation, including wall thickness, pericholecystic fluid, and tenderness to probe pressure.\",\n        \"why_required\": \"Differentiating biliary colic from acute cholecystitis affects urgency and type of intervention and monitoring.\"\n      },\n      {\n        \"requirement_key\": \"req_duct_dilation\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of biliary ductal dilatation suggestive of obstruction.\",\n        \"why_required\": \"Ductal dilatation would raise concern for choledocholithiasis or obstruction despite normal laboratory tests and could alter management.\"\n      }\n    ],\n    \"evidence\": [\n      \"The patient is a ___ year old female with a distant history of  biliary colic who presented with recurrent RUQ pain, nausea, and  vomiting.\",\n      \"she was told that she  had gallstones.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_gb_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [],\n        \"reason\": \"No prior imaging has been performed in this episode, so the current structural status of the gallbladder and bile ducts has not been assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_cholelithiasis\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"she was told that she had gallstones.\"\n        ],\n        \"reason\": \"Past history suggests gallstones, but no imaging in this episode confirms their current presence or number.\"\n      },\n      {\n        \"requirement_key\": \"req_cholecystitis_signs\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"GENERAL: No acute distress, appears her stated age.\",\n          \"White Blood Cells: 9.8 K/uL (ref 4.0-11.0)\"\n        ],\n        \"reason\": \"Clinical and laboratory data do not show severe illness, but gallbladder wall inflammation and acute cholecystitis signs have not been imaged.\"\n      },\n      {\n        \"requirement_key\": \"req_duct_dilation\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Bilirubin, Total: 0.2 mg/dL (ref 0.0-1.5)\",\n          \"Alkaline Phosphatase: 60.0 IU/L (ref 35.0-105.0)\"\n        ],\n        \"reason\": \"Normal bilirubin and alkaline phosphatase argue against major obstruction, but actual duct caliber has not been evaluated without imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No imaging has yet been obtained to characterize the gallbladder or biliary tree, so all key requirements for determining a biliary source remain unaddressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant abdominal ultrasound focused on the liver or gallbladder can visualize gallstones, gallbladder wall characteristics, pericholecystic fluid, and bile duct caliber, directly addressing the suspected biliary source of pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The single-organ specification leaves some ambiguity about how comprehensively the common bile duct and adjacent structures will be assessed, and non-biliary causes of pain are not addressed by this order.\"\n  },\n  \"derived_transition\": \"remedy\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788225769-dgMBHDnGWvkb8sWut0B3",
+            "usage": {
+              "completion_tokens": 2186,
+              "prompt_tokens": 3172,
+              "total_tokens": 5358,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.025825,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.025825,
+                "upstream_inference_prompt_cost": 0.003965,
+                "upstream_inference_completions_cost": 0.02186
+              }
+            }
+          },
+          "validation_errors": [
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "956a17c0ce2817a8354ec726d9dd0f45c872534465080921c66a5bf4f1722b53",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute biliary-type pain syndrome localized to the right upper quadrant and epigastrium with nausea and vomiting.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation/syndrome",
+                  "status": "established",
+                  "evidence": [
+                    "presented with recurrent RUQ pain, nausea, and vomiting",
+                    "developed a strong burning pain in her RUQ and the epigastrium, which later became sharp and persistent"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has a prior history of gallstones documented during a similar episode of symptoms years ago.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific prior diagnosis",
+                  "status": "established",
+                  "evidence": [
+                    "she was told that she had gallstones",
+                    "history of similar symptoms which occurred approximately ___ years ago"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Current laboratory studies do not show biochemical evidence of hepatocellular injury, cholestasis, or pancreatitis.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "physiologic/biochemical status",
+                  "status": "established",
+                  "evidence": [
+                    "Bilirubin, Total: 0.2 mg/dL (ref 0.0-1.5)",
+                    "Asparate Aminotransferase (AST): 27.0 IU/L (ref 0.0-40.0); Lipase: 44.0 IU/L (ref 0.0-60.0); Alkaline Phosphatase: 60.0 IU/L (ref 35.0-105.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Acute cholecystitis or symptomatic cholelithiasis is a likely cause of the current RUQ pain given the biliary colic history and normal lipase and liver function tests.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "working etiologic diagnosis",
+                  "status": "likely",
+                  "evidence": [
+                    "distant history of biliary colic who presented with recurrent RUQ pain, nausea, and vomiting",
+                    "Lipase: 44.0 IU/L (ref 0.0-60.0); Bilirubin, Total: 0.2 mg/dL (ref 0.0-1.5)"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "no prior imaging or question to update at this first decision point",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "no prior imaging or competing evidence streams at the initial step"
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point, so the assumptions are being established de novo from the baseline presentation and labs."
+              },
+              "current_question": {
+                "primary": "Is there imaging evidence of gallbladder pathology, such as gallstones or acute cholecystitis, that explains the patient’s acute right upper quadrant pain?",
+                "target": "gallbladder pathology (e.g., cholelithiasis or acute cholecystitis) as a source of RUQ pain",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirm a biliary source for the pain, supporting surgical or procedural management (e.g., cholecystectomy or further biliary evaluation) and reducing emphasis on non-biliary causes.",
+                "negative_answer_changes": "Reduce the likelihood that the gallbladder is the pain source and prompt reconsideration of alternative diagnoses or additional imaging of other abdominal organs.",
+                "secondary_questions": [
+                  "Are there secondary signs of complicated gallbladder disease such as wall thickening, pericholecystic fluid, or biliary ductal dilation?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_gb_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the gallbladder and proximal biliary tree.",
+                    "why_required": "The presence or absence of gallstones and inflammatory changes can only be determined if the gallbladder and adjacent ducts are adequately assessed."
+                  },
+                  {
+                    "requirement_key": "req_stones_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones or sludge within the gallbladder or cystic duct.",
+                    "why_required": "Identifying gallstones or obstructing material is central to determining if biliary colic or cholecystitis is the cause of symptoms."
+                  },
+                  {
+                    "requirement_key": "req_inflammation_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of inflammatory or complicating features such as gallbladder wall thickening, pericholecystic fluid, or biliary ductal dilation.",
+                    "why_required": "These features help distinguish simple biliary colic from acute or complicated cholecystitis and guide urgency of management."
+                  }
+                ],
+                "evidence": [
+                  "distant history of biliary colic who presented with recurrent RUQ pain, nausea, and vomiting",
+                  "she was told that she had gallstones"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_gb_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "No prior imaging has been performed, so the gallbladder and biliary tree have not yet been directly visualized in this episode."
+                  },
+                  {
+                    "requirement_key": "req_stones_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "There is historical mention of gallstones but no current imaging to confirm or exclude stones in this episode."
+                  },
+                  {
+                    "requirement_key": "req_inflammation_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "## Imaging resulted before this decision point\n(none)"
+                    ],
+                    "reason": "Clinical exam and labs do not image gallbladder wall or pericholecystic tissues, so inflammatory or complicating features remain unassessed."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key imaging-based requirements regarding gallbladder pathology remain unaddressed because no abdominal imaging has yet been performed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "Right upper quadrant abdominal ultrasound focused on the liver and gallbladder can visualize gallstones, wall thickening, pericholecystic fluid, and ductal dilation, directly addressing whether gallbladder disease explains the pain.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "It remains somewhat unclear whether there is also concern for primary liver pathology beyond biliary disease, as liver-related symptoms or lab abnormalities are not prominent."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute biliary-type pain syndrome localized to the right upper quadrant and epigastrium with nausea and vomiting.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation/syndrome\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"presented with recurrent RUQ pain, nausea, and vomiting\",\n        \"developed a strong burning pain in her RUQ and the epigastrium, which later became sharp and persistent\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has a prior history of gallstones documented during a similar episode of symptoms years ago.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific prior diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"she was told that she had gallstones\",\n        \"history of similar symptoms which occurred approximately ___ years ago\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Current laboratory studies do not show biochemical evidence of hepatocellular injury, cholestasis, or pancreatitis.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic/biochemical status\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Bilirubin, Total: 0.2 mg/dL (ref 0.0-1.5)\",\n        \"Asparate Aminotransferase (AST): 27.0 IU/L (ref 0.0-40.0); Lipase: 44.0 IU/L (ref 0.0-60.0); Alkaline Phosphatase: 60.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Acute cholecystitis or symptomatic cholelithiasis is a likely cause of the current RUQ pain given the biliary colic history and normal lipase and liver function tests.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"working etiologic diagnosis\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"distant history of biliary colic who presented with recurrent RUQ pain, nausea, and vomiting\",\n        \"Lipase: 44.0 IU/L (ref 0.0-60.0); Bilirubin, Total: 0.2 mg/dL (ref 0.0-1.5)\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging or question to update at this first decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"no prior imaging or competing evidence streams at the initial step\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point, so the assumptions are being established de novo from the baseline presentation and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there imaging evidence of gallbladder pathology, such as gallstones or acute cholecystitis, that explains the patient’s acute right upper quadrant pain?\",\n    \"target\": \"gallbladder pathology (e.g., cholelithiasis or acute cholecystitis) as a source of RUQ pain\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirm a biliary source for the pain, supporting surgical or procedural management (e.g., cholecystectomy or further biliary evaluation) and reducing emphasis on non-biliary causes.\",\n    \"negative_answer_changes\": \"Reduce the likelihood that the gallbladder is the pain source and prompt reconsideration of alternative diagnoses or additional imaging of other abdominal organs.\",\n    \"secondary_questions\": [\n      \"Are there secondary signs of complicated gallbladder disease such as wall thickening, pericholecystic fluid, or biliary ductal dilation?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_gb_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder and proximal biliary tree.\",\n        \"why_required\": \"The presence or absence of gallstones and inflammatory changes can only be determined if the gallbladder and adjacent ducts are adequately assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_stones_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones or sludge within the gallbladder or cystic duct.\",\n        \"why_required\": \"Identifying gallstones or obstructing material is central to determining if biliary colic or cholecystitis is the cause of symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_inflammation_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of inflammatory or complicating features such as gallbladder wall thickening, pericholecystic fluid, or biliary ductal dilation.\",\n        \"why_required\": \"These features help distinguish simple biliary colic from acute or complicated cholecystitis and guide urgency of management.\"\n      }\n    ],\n    \"evidence\": [\n      \"distant history of biliary colic who presented with recurrent RUQ pain, nausea, and vomiting\",\n      \"she was told that she had gallstones\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_gb_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"No prior imaging has been performed, so the gallbladder and biliary tree have not yet been directly visualized in this episode.\"\n      },\n      {\n        \"requirement_key\": \"req_stones_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"There is historical mention of gallstones but no current imaging to confirm or exclude stones in this episode.\"\n      },\n      {\n        \"requirement_key\": \"req_inflammation_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"## Imaging resulted before this decision point\\n(none)\"\n        ],\n        \"reason\": \"Clinical exam and labs do not image gallbladder wall or pericholecystic tissues, so inflammatory or complicating features remain unassessed.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key imaging-based requirements regarding gallbladder pathology remain unaddressed because no abdominal imaging has yet been performed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"Right upper quadrant abdominal ultrasound focused on the liver and gallbladder can visualize gallstones, wall thickening, pericholecystic fluid, and ductal dilation, directly addressing whether gallbladder disease explains the pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"It remains somewhat unclear whether there is also concern for primary liver pathology beyond biliary disease, as liver-related symptoms or lab abnormalities are not prominent.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788225792-uRyJbJVnYtCqC9TokNnZ",
+            "usage": {
+              "completion_tokens": 1852,
+              "prompt_tokens": 3208,
+              "total_tokens": 5060,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2944,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.019218,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.019218,
+                "upstream_inference_prompt_cost": 0.000698,
+                "upstream_inference_completions_cost": 0.01852
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute biliary-type pain syndrome localized to the right upper quadrant and epigastrium with nausea and vomiting.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical presentation/syndrome",
+            "status": "established",
+            "evidence": [
+              "presented with recurrent RUQ pain, nausea, and vomiting",
+              "developed a strong burning pain in her RUQ and the epigastrium, which later became sharp and persistent"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has a prior history of gallstones documented during a similar episode of symptoms years ago.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific prior diagnosis",
+            "status": "established",
+            "evidence": [
+              "she was told that she had gallstones",
+              "history of similar symptoms which occurred approximately ___ years ago"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Current laboratory studies do not show biochemical evidence of hepatocellular injury, cholestasis, or pancreatitis.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "physiologic/biochemical status",
+            "status": "established",
+            "evidence": [
+              "Bilirubin, Total: 0.2 mg/dL (ref 0.0-1.5)",
+              "Asparate Aminotransferase (AST): 27.0 IU/L (ref 0.0-40.0); Lipase: 44.0 IU/L (ref 0.0-60.0); Alkaline Phosphatase: 60.0 IU/L (ref 35.0-105.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Acute cholecystitis or symptomatic cholelithiasis is a likely cause of the current RUQ pain given the biliary colic history and normal lipase and liver function tests.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "working etiologic diagnosis",
+            "status": "likely",
+            "evidence": [
+              "distant history of biliary colic who presented with recurrent RUQ pain, nausea, and vomiting",
+              "Lipase: 44.0 IU/L (ref 0.0-60.0); Bilirubin, Total: 0.2 mg/dL (ref 0.0-1.5)"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "no prior imaging or question to update at this first decision point",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "no prior imaging or competing evidence streams at the initial step"
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point, so the assumptions are being established de novo from the baseline presentation and labs."
+        },
+        "current_question": {
+          "primary": "Is there imaging evidence of gallbladder pathology, such as gallstones or acute cholecystitis, that explains the patient’s acute right upper quadrant pain?",
+          "target": "gallbladder pathology (e.g., cholelithiasis or acute cholecystitis) as a source of RUQ pain",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirm a biliary source for the pain, supporting surgical or procedural management (e.g., cholecystectomy or further biliary evaluation) and reducing emphasis on non-biliary causes.",
+          "negative_answer_changes": "Reduce the likelihood that the gallbladder is the pain source and prompt reconsideration of alternative diagnoses or additional imaging of other abdominal organs.",
+          "secondary_questions": [
+            "Are there secondary signs of complicated gallbladder disease such as wall thickening, pericholecystic fluid, or biliary ductal dilation?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_gb_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the gallbladder and proximal biliary tree.",
+              "why_required": "The presence or absence of gallstones and inflammatory changes can only be determined if the gallbladder and adjacent ducts are adequately assessed."
+            },
+            {
+              "requirement_key": "req_stones_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones or sludge within the gallbladder or cystic duct.",
+              "why_required": "Identifying gallstones or obstructing material is central to determining if biliary colic or cholecystitis is the cause of symptoms."
+            },
+            {
+              "requirement_key": "req_inflammation_complication",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and character of inflammatory or complicating features such as gallbladder wall thickening, pericholecystic fluid, or biliary ductal dilation.",
+              "why_required": "These features help distinguish simple biliary colic from acute or complicated cholecystitis and guide urgency of management."
+            }
+          ],
+          "evidence": [
+            "distant history of biliary colic who presented with recurrent RUQ pain, nausea, and vomiting",
+            "she was told that she had gallstones"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_gb_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "No prior imaging has been performed, so the gallbladder and biliary tree have not yet been directly visualized in this episode."
+            },
+            {
+              "requirement_key": "req_stones_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "There is historical mention of gallstones but no current imaging to confirm or exclude stones in this episode."
+            },
+            {
+              "requirement_key": "req_inflammation_complication",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "## Imaging resulted before this decision point\n(none)"
+              ],
+              "reason": "Clinical exam and labs do not image gallbladder wall or pericholecystic tissues, so inflammatory or complicating features remain unassessed."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "All key imaging-based requirements regarding gallbladder pathology remain unaddressed because no abdominal imaging has yet been performed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "Right upper quadrant abdominal ultrasound focused on the liver and gallbladder can visualize gallstones, wall thickening, pericholecystic fluid, and ductal dilation, directly addressing whether gallbladder disease explains the pain.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "It remains somewhat unclear whether there is also concern for primary liver pathology beyond biliary disease, as liver-related symptoms or lab abnormalities are not prominent."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

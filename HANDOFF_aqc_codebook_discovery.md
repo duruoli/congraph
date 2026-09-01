@@ -1,5 +1,23 @@
 # A/Q/C Track B handoff：冻结 GPT-5.1 DIRECT 并启动 development 标注
 
+## 2026-09-01 later checkpoint：132位已完成，repeat 规则进入 validator 2.2 bridge
+
+- 当前共完成132位互不重复的 development 患者；尚余103位。final test 58位、109步仍未读取。
+- 扩大批次 `data/aqc_direct/batch_c7f7ffae_003.json` 完成32位、62步；一次网络中断后用新增的 `--patient-manifest` 精确恢复原获授权名单，没有动态扩展患者范围。记录费用 `$2.082012`，最终 validator 2.1 为62/62有效。
+- 批次审计发现 exact repeat、证据字段混入概括和 order-driven over-rationalization 边界。13步人工纠正位于 `results/aqc_direct/development/c7f7ffae2271/manual_adjudication_batch_003.json`；应用后 validator 2.2 为62/62有效，低证据忠实度候选为0，原模型输出不覆盖。
+- 当前 prompt 是独立的 clinical reasoning annotation 任务，A/Q/C 为主体。为保持顶层 schema 连续性，`current_order_fit` 保留为仅含两个正交关系的轻量复核包：`question_grounding` 判断 Record→Q（病历是否支持“这是医生关心的问题”），`test_question_capability` 判断 Test→Q（检查能否回答 Q）。旧的 `intent_support`、理由、gap 字段均删除；这里不标注 normative appropriateness。活动 prompt 不含 DIRECT/RECODE 等旧研究术语，旧兼容逻辑位于 `experiments/aqc/legacy_recode_prompts.py`。新输出 wrapper 为 `2.0.0-development`，validator 为 `3.0.0`，prompt hash 为 `ca9e5be6060aa40099adb947b8be59aa817e12039eac0d4ec020e78beb4e306d`。旧批次仍按其原 schema/validator 保存，不作静默迁移。
+- 新 hash 的 bridge dry run 已选12位、18步：appendicitis、cholecystitis、pancreatitis 各4位；diverticulitis 的 development 候选已全部标注。该批尚未发送，必须重新取得对这12位、OpenRouter、GPT-5.1、DIRECT用途及无费用停止线的明确授权后才能执行。
+
+## 2026-09-01 continuation checkpoint：新版 bridge 通过，可扩大批次
+
+- Development 仍为235位、433步；final test 58位、109步未读取。
+- 当前共完成100位互不重复的 development 患者：旧 prompt 76位，加两轮新患者 bridge 各12位。
+- 第一轮 bridge 使用 prompt hash `d9f0c01a505663454371289ea7f45995b2ea8f897a72053d8e90ad1bd738deb9`，12位、18步、18/18最终结构有效，记录费用 `$0.518180`。人工审计发现 `appendicitis:29310170:s1` 把当前医嘱名称作为 question evidence 并过度锁定胆道目标；原模型输出保持不变，人工纠正 overlay 位于 `results/aqc_direct/development/d9f0c01a5056/manual_adjudication.json`。
+- 因上述问题，prompt 增加“当前医嘱是决策上下文而非临床证据”的规则；validator 升至 `2.1.0`，禁止 literal current order 作为 question evidence。当前冻结候选 hash 为 `c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9`。
+- 第二轮 bridge 使用该 hash，12位、22步。一次 repair-only 运行只修复了1个失败步骤；最终22/22步有效。含 superseded attempts 的记录费用为 `$0.762669`。语义审计确认未再出现依赖医嘱名称锁定具体 question 的错误；repeat、低支持度和复合 assumption 检查通过。审计见 `results/aqc_direct/development/c7f7ffae2271/bridge_batch_audit.md`。
+- 尚余135位 development 患者。下一批 dry run 已选32位、62步，疾病分布为 appendicitis 9、cholecystitis 9、diverticulitis 5、pancreatitis 9；diverticulitis 较少是因为其未标注候选先耗尽。该批仍需单独取得对 OpenRouter、GPT-5.1、DIRECT 用途和无费用停止线的明确授权后才能加 `--execute`。
+- 继续保持：不读取 final test；同一 prompt hash 下可恢复执行；全量 validator 复扫；只定向 repair 无效步骤；所有 repeat 和低支持度输出100%人工复核，其他步骤至少抽查20%。
+
 > 2026-08-31 状态：development split、codebook discovery、两轮 saturation check、
 > DIRECT/RECODE framework check 和 DIRECT 模型小样本 pilot 已完成。新对话不要重做 discovery、
 > framework check 或模型海选，也不要打开 final test；当前任务是冻结 GPT-5.1

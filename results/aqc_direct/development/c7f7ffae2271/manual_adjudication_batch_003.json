@@ -1,0 +1,385 @@
+{
+  "schema_version": "1.0.0-development-manual-adjudication-json-patch",
+  "source_prompt_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "source_batch_manifest": "data/aqc_direct/batch_c7f7ffae_003.json",
+  "purpose": "Preserve model calls unchanged while correcting repeat-order support and temporal coverage errors found in targeted human review.",
+  "patch_scope": "Each JSON Patch path is relative to the listed steps[].accepted object. Downstream analysis must apply these patches before using the affected fields.",
+  "corrections": [
+    {
+      "coding_id": "appendicitis:27993727:s2",
+      "reason": "The exact-repeat CT asks for a new current/interval assessment, but the prior CT alone was allowed to make aggregate coverage sufficient and the undocumented repeat trigger was still labeled well-supported.",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/current_question/primary",
+          "value": "Has the established acute appendicitis progressed or developed new complications since the prior CT, or is additional current delineation needed for management?"
+        },
+        {
+          "op": "add",
+          "path": "/current_question/answer_requirements/-",
+          "value": {
+            "requirement_key": "req_interval_change",
+            "id": "temporal_course_or_response",
+            "other_proposed_dimension": "",
+            "dimension": "Interval change in appendiceal inflammation, anatomic extent, or complication status since the prior CT.",
+            "why_required": "A repeated CT is only explained by information needed at a new time point or by a newly supported management need."
+          }
+        },
+        {
+          "op": "add",
+          "path": "/coverage/requirements/-",
+          "value": {
+            "requirement_key": "req_interval_change",
+            "requirement_id": "temporal_course_or_response",
+            "status": "unaddressed",
+            "direction": "no_direction",
+            "supporting_evidence": [],
+            "reason": "The prior CT establishes the earlier state but cannot by itself show subsequent interval change."
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/coverage/aggregate",
+          "value": "partially_answered"
+        },
+        {
+          "op": "replace",
+          "path": "/coverage/aggregate_reason",
+          "value": "The prior CT sufficiently establishes baseline appendicitis and its earlier complication status, but it cannot answer whether the state has changed at the repeated-study time point."
+        },
+        {
+          "op": "replace",
+          "path": "/current_order_fit/intent_support",
+          "value": "weakly_supported"
+        },
+        {
+          "op": "replace",
+          "path": "/current_order_fit/unsupported_residual",
+          "value": "No new symptom, laboratory change, treatment response, operative-planning need, or other temporal trigger is documented to explain repeating the same contrast CT after the prior study had already diagnosed uncomplicated appendicitis."
+        }
+      ]
+    },
+    {
+      "coding_id": "pancreatitis:22944548:s4",
+      "reason": "The output itself states that no exact temporal trigger for the repeat CT is documented.",
+      "operations": [
+        {"op": "replace", "path": "/current_order_fit/intent_support", "value": "weakly_supported"}
+      ]
+    },
+    {
+      "coding_id": "pancreatitis:28361244:s3",
+      "reason": "The repeated CT is framed as reassessment, but the output acknowledges that the re-imaging trigger is unspecified.",
+      "operations": [
+        {"op": "replace", "path": "/current_order_fit/intent_support", "value": "weakly_supported"}
+      ]
+    },
+    {
+      "coding_id": "pancreatitis:28361244:s4",
+      "reason": "The repeated CT asks about interval progression while the clinical trigger remains undocumented.",
+      "operations": [
+        {"op": "replace", "path": "/current_order_fit/intent_support", "value": "weakly_supported"}
+      ]
+    },
+    {
+      "coding_id": "pancreatitis:28361244:s5",
+      "reason": "The repeat hepatobiliary ultrasound lacks a documented new jaundice, pain localization, laboratory change, or other timing trigger.",
+      "operations": [
+        {"op": "replace", "path": "/current_order_fit/intent_support", "value": "weakly_supported"}
+      ]
+    },
+    {
+      "coding_id": "pancreatitis:28361244:s6",
+      "reason": "The repeated CT asks about interval progression while the output acknowledges that its exact trigger is unspecified.",
+      "operations": [
+        {"op": "replace", "path": "/current_order_fit/intent_support", "value": "weakly_supported"}
+      ]
+    },
+    {
+      "coding_id": "appendicitis:25665153:s1",
+      "reason": "The order implies a hepatobiliary question, but the RLQ-predominant chart supports that intent only weakly. The correction preserves the order-implied Q, records the chart-order gap and chart-first alternative, and removes mixed quote-plus-inference evidence.",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/assumptions",
+          "value": [
+            {
+              "proposition": "The patient has acute migratory right-sided abdominal pain now localized to the right lower and right mid abdomen, with nausea and nonbilious emesis but no peritoneal signs.",
+              "type": "syndrome_or_source_frame",
+              "other_proposed_type": "",
+              "level": "clinical syndrome",
+              "status": "established",
+              "evidence": [
+                "Ms. ___ is a ___ y/o female who developed primarily right sided abdominal pain approximately 12 hrs prior to presentation, followed by some nausea and nonbilious emesis.",
+                "Abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "Acute appendicitis or another right-lower-quadrant inflammatory process is a leading suspected source of the migratory localized pain.",
+              "type": "disease_or_finding_identity",
+              "other_proposed_type": "",
+              "level": "disease hypothesis",
+              "status": "likely",
+              "evidence": [
+                "The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.",
+                "Abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen."
+              ],
+              "support": "well_supported"
+            },
+            {
+              "proposition": "A hepatobiliary source remains possible but is not specifically supported by right-upper-quadrant findings or abnormal liver chemistries in the visible chart.",
+              "type": "alternative_source",
+              "other_proposed_type": "",
+              "level": "alternative organ source",
+              "status": "suspected",
+              "evidence": [
+                "Ms. ___ is a ___ y/o female who developed primarily right sided abdominal pain approximately 12 hrs prior to presentation.",
+                "Alanine Aminotransferase (ALT): 23.0 IU/L (ref 0.0-40.0)"
+              ],
+              "support": "weakly_supported"
+            }
+          ]
+        },
+        {
+          "op": "replace",
+          "path": "/current_question",
+          "value": {
+            "primary": "What intra-abdominal source explains this patient’s acute migratory right-sided pain now localized to the right lower quadrant?",
+            "target": "appendiceal, bowel, pelvic, hepatobiliary, or other intra-abdominal source of the localized pain",
+            "type": "source_localization",
+            "other_proposed_type": "",
+            "positive_answer_changes": "Localizing a structural source would direct organ-specific medical, surgical, or further diagnostic management.",
+            "negative_answer_changes": "Failure to identify a source within the structures assessed would leave appendiceal, bowel, pelvic, and other causes unresolved and support broader imaging.",
+            "secondary_questions": [],
+            "answer_requirements": [
+              {
+                "requirement_key": "req_source_assessment",
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate assessment of the clinically plausible abdominal source structures, especially the right lower quadrant.",
+                "why_required": "The source cannot be localized unless the structures implicated by the presentation are assessed."
+              },
+              {
+                "requirement_key": "req_source_localization",
+                "id": "anatomic_localization",
+                "other_proposed_dimension": "",
+                "dimension": "Localization of any abnormality that could account for the migratory localized pain and vomiting.",
+                "why_required": "Management depends on which organ or compartment is responsible."
+              },
+              {
+                "requirement_key": "req_alternative_discrimination",
+                "id": "alternative_source_discrimination",
+                "other_proposed_dimension": "",
+                "dimension": "Discrimination among appendiceal, bowel, pelvic, hepatobiliary, and other plausible abdominal sources.",
+                "why_required": "The pre-order chart does not establish a hepatobiliary target and clinically favors a right-lower-quadrant process."
+              }
+            ],
+            "evidence": [
+              "The pain has gradually migrated towards her right lower quadrant in the past few hours, and is constant and sharp.",
+              "Abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen."
+            ]
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/coverage",
+          "value": {
+            "requirements": [
+              {
+                "requirement_key": "req_source_assessment",
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No prior abdominal imaging is available before this order."
+              },
+              {
+                "requirement_key": "req_source_localization",
+                "requirement_id": "anatomic_localization",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "The clinical presentation localizes symptoms but does not establish the causative organ."
+              },
+              {
+                "requirement_key": "req_alternative_discrimination",
+                "requirement_id": "alternative_source_discrimination",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No pre-order imaging discriminates among the plausible abdominal sources."
+              }
+            ],
+            "aggregate": "unanswered",
+            "aggregate_reason": "The broad source-localization question remains unanswered before the first imaging order."
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/current_question",
+          "value": {
+            "primary": "Is a hepatobiliary source responsible for this acute right-sided abdominal pain?",
+            "target": "gallbladder and hepatobiliary source of the acute pain",
+            "type": "existence_or_identity",
+            "other_proposed_type": "",
+            "positive_answer_changes": "A hepatobiliary abnormality would support organ-specific treatment or surgical evaluation.",
+            "negative_answer_changes": "No hepatobiliary abnormality would shift attention toward appendicitis or another right-lower-quadrant source.",
+            "secondary_questions": [],
+            "answer_requirements": [
+              {
+                "requirement_key": "req_target_assessment",
+                "id": "target_visualization_or_assessment",
+                "other_proposed_dimension": "",
+                "dimension": "Adequate assessment of the gallbladder and adjacent hepatobiliary structures.",
+                "why_required": "A hepatobiliary source cannot be evaluated without assessing the implicated structures."
+              },
+              {
+                "requirement_key": "req_hb_abnormality",
+                "id": "presence_or_absence",
+                "other_proposed_dimension": "",
+                "dimension": "Presence or absence of a hepatobiliary abnormality that could explain the pain.",
+                "why_required": "The inferred question asks whether hepatobiliary pathology accounts for the presentation."
+              }
+            ],
+            "evidence": [
+              "Ms. ___ is a ___ y/o female who developed primarily right sided abdominal pain approximately 12 hrs prior to presentation, followed by some nausea and nonbilious emesis.",
+              "Abdomen: soft, nondistended, mildly obese, quite tender to palpation locally over RLQ and R mid abdomen."
+            ]
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/coverage",
+          "value": {
+            "requirements": [
+              {
+                "requirement_key": "req_target_assessment",
+                "requirement_id": "target_visualization_or_assessment",
+                "status": "unaddressed",
+                "direction": "no_direction",
+                "supporting_evidence": [],
+                "reason": "No prior hepatobiliary imaging is available before this order."
+              },
+              {
+                "requirement_key": "req_hb_abnormality",
+                "requirement_id": "presence_or_absence",
+                "status": "partially_addressed",
+                "direction": "refutes",
+                "supporting_evidence": [
+                  "Alanine Aminotransferase (ALT): 23.0 IU/L (ref 0.0-40.0)",
+                  "Bilirubin, Total: 0.6 mg/dL (ref 0.0-1.5)"
+                ],
+                "reason": "Normal liver chemistries provide limited evidence against some hepatobiliary processes but do not exclude gallbladder disease."
+              }
+            ],
+            "aggregate": "partially_answered",
+            "aggregate_reason": "The laboratory findings provide limited negative evidence, while the hepatobiliary structures remain unassessed before the ultrasound."
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/current_order_fit",
+          "value": {
+            "test_question_capability": "capable",
+            "why_this_order_could_answer": "A focused liver or gallbladder ultrasound can assess the hepatobiliary source implied by the order.",
+            "intent_support": "weakly_supported",
+            "unsupported_residual": "The chart lacks right-upper-quadrant localization, abnormal liver chemistries, or another specific reason for prioritizing a hepatobiliary source over the RLQ-predominant alternatives."
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/alternative_reconstruction",
+          "value": "The chart alone more strongly supports a broad source-localization question centered on appendicitis or another right-lower-quadrant inflammatory process."
+        }
+      ]
+    },
+    {
+      "coding_id": "diverticulitis:29479584:s2",
+      "reason": "One assumption evidence item was a model summary rather than a quote, and the timing rationale for a second cross-sectional study before surgery was only inferential.",
+      "operations": [
+        {"op": "remove", "path": "/assumptions/4/evidence/0"},
+        {"op": "replace", "path": "/current_order_fit/intent_support", "value": "weakly_supported"}
+      ]
+    },
+    {
+      "coding_id": "cholecystitis:27269012:s1",
+      "reason": "An absence-of-prior-imaging summary was placed in supporting_evidence rather than reason.",
+      "operations": [
+        {"op": "replace", "path": "/coverage/requirements/0/supporting_evidence", "value": []}
+      ]
+    },
+    {
+      "coding_id": "diverticulitis:28903179:s1",
+      "reason": "Two absence summaries were placed in supporting_evidence rather than reason.",
+      "operations": [
+        {"op": "replace", "path": "/coverage/requirements/0/supporting_evidence", "value": []},
+        {"op": "replace", "path": "/coverage/requirements/2/supporting_evidence", "value": []}
+      ]
+    },
+    {
+      "coding_id": "cholecystitis:24743494:s1",
+      "reason": "Three absence summaries were placed in supporting_evidence rather than reason.",
+      "operations": [
+        {"op": "replace", "path": "/coverage/requirements/0/supporting_evidence", "value": []},
+        {"op": "replace", "path": "/coverage/requirements/2/supporting_evidence", "value": []},
+        {"op": "replace", "path": "/coverage/requirements/3/supporting_evidence", "value": []}
+      ]
+    },
+    {
+      "coding_id": "diverticulitis:28396688:s1",
+      "reason": "An absence summary was placed in supporting_evidence rather than reason.",
+      "operations": [
+        {"op": "replace", "path": "/coverage/requirements/3/supporting_evidence", "value": []}
+      ]
+    },
+    {
+      "coding_id": "pancreatitis:28938137:s1",
+      "reason": "Several evidence entries mixed raw chart text with model interpretation or absence summaries; the hemodynamic and alternative-etiology propositions were also more certain than their evidence supported.",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/assumptions/2/evidence/1",
+          "value": "Alkaline Phosphatase: 308.0 IU/L (ref 39.0-117.0)"
+        },
+        {
+          "op": "replace",
+          "path": "/assumptions/3",
+          "value": {
+            "proposition": "There is no laboratory evidence of leukocytosis or lactic acidosis at presentation.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "physiologic severity",
+            "status": "established",
+            "evidence": [
+              "White Blood Cells: 6.1 K/uL (ref 4.0-11.0)",
+              "Lactate: 0.8 mmol/L (ref 0.5-2.0)"
+            ],
+            "support": "well_supported"
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/assumptions/4",
+          "value": {
+            "proposition": "Non-biliary causes of pancreatitis are not adequately characterized in the visible chart.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "etiologic alternatives",
+            "status": "unclear",
+            "evidence": ["Past Medical History: none    Social History: ___"],
+            "support": "unclear"
+          }
+        },
+        {
+          "op": "replace",
+          "path": "/current_question/evidence/1",
+          "value": "Alkaline Phosphatase: 308.0 IU/L (ref 39.0-117.0)"
+        },
+        {"op": "replace", "path": "/coverage/requirements/0/supporting_evidence", "value": []},
+        {"op": "replace", "path": "/coverage/requirements/1/supporting_evidence", "value": []},
+        {"op": "replace", "path": "/coverage/requirements/2/supporting_evidence", "value": []},
+        {"op": "replace", "path": "/coverage/requirements/3/supporting_evidence", "value": []}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,657 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "diverticulitis",
+  "hadm_id": 27065737,
+  "source_path": "results/annotation_experiment/full/diverticulitis_27065737.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "CT Abdomen (CT ABD & PELVIS WITH CONTRAST)",
+      "request_prompt_sha256": "d6ab6f654265d5db7f2ed0355151de4ed1ea8af2c2bb41898be9df003f8bf714",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "d6ab6f654265d5db7f2ed0355151de4ed1ea8af2c2bb41898be9df003f8bf714",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute abdomen with focal periumbilical tenderness and rebound concerning for intra-abdominal pathology.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome/clinical presentation",
+                  "status": "likely",
+                  "evidence": [
+                    "Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area",
+                    "Mr. ___ ... p/w  abdominal pain. Abdominal pain started at 8pm 1 day PTA ... the pain became progressively worse."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is a high suspicion for an intra-abdominal inflammatory, infectious, or obstructive process as the cause of the acute abdominal pain.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "mechanism/etiologic category",
+                  "status": "suspected",
+                  "evidence": [
+                    "White Blood Cells: 21.7 K/uL (ref 4.0-11.0)",
+                    "Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is immunocompromised from HIV and prior Hodgkin's lymphoma treatment, increasing risk for atypical or occult intra-abdominal infections and malignancy-related complications.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "host factor/comorbidity",
+                  "status": "established",
+                  "evidence": [
+                    "Mr. ___ is a ___ year old male with a history of HIV, s/p  lymphadenectomy, Hodgkin's Lymphoma s/p splenectomy",
+                    "PMH: parotitis, HIV, Hodgkin's, HTN, cryptococcal meningitis"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The prior chest radiograph shows no evidence of thoracic source for the current symptoms.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "anatomic source",
+                  "status": "excluded",
+                  "evidence": [
+                    "Lungs are clear.  Pulmonary vasculature is normal.  No pleural effusion or pneumothorax is seen.",
+                    "There are no acute osseous abnormalities."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has adequate renal function to safely receive IV contrast for abdominal CT imaging.",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "physiologic suitability",
+                  "status": "established",
+                  "evidence": [
+                    "Creatinine: 0.8 mg/dL (ref 0.5-1.2)",
+                    "Estimated GFR = >75 if non African-American (mL/min/1.73 m2)."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable as this is the first imaging decision point being modeled.",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "No prior A/Q/C state or keyed clinical question exists before this first decision."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point; all assumptions are newly established from the baseline chart and prior chest imaging."
+              },
+              "current_question": {
+                "primary": "What is the intra-abdominal source and nature of this patient’s acute periumbilical abdominal pain and leukocytosis?",
+                "target": "intra-abdominal organs and mesentery for causes such as appendicitis, bowel obstruction, ischemia, perforation, abscess, or other inflammatory/infectious processes",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming a specific intra-abdominal pathology (e.g., appendicitis, obstruction, abscess, ischemia) would guide urgent surgical versus medical management and targeted therapy.",
+                "negative_answer_changes": "If no significant intra-abdominal pathology is identified, the team would reconsider non-structural, extra-abdominal, or early/subtle causes and may pursue alternative diagnostics or observation.",
+                "secondary_questions": [
+                  "Is there evidence of complicated intra-abdominal disease such as perforation, abscess, or ischemia requiring urgent intervention?",
+                  "What is the extent and exact location of any identified intra-abdominal inflammatory or obstructive process to guide operative planning?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_assessment",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comprehensive visualization of abdominal and pelvic viscera (bowel, mesentery, solid organs, peritoneum) for structural abnormalities.",
+                    "why_required": "Identifying or excluding a focal intra-abdominal lesion requires adequate visualization of the relevant organs and peritoneal spaces."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of acute intra-abdominal pathology such as appendicitis, bowel obstruction, free air, free fluid, abscess, or mass.",
+                    "why_required": "Determining whether there is a definite intra-abdominal cause for the acute pain and leukocytosis directly informs whether urgent intervention is needed."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Precise anatomic localization of any detected intra-abdominal abnormality (e.g., specific bowel segment, mesentery, solid organ).",
+                    "why_required": "Localization is necessary to distinguish among possible etiologies and to plan surgical or interventional approaches if needed."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and character of complications such as perforation, abscess, ischemia, or bowel compromise.",
+                    "why_required": "Detecting complications determines urgency, need for surgery, and intensity of monitoring or supportive care."
+                  }
+                ],
+                "evidence": [
+                  "Mr. ___ is a ___ year old male with a history of HIV, s/p  lymphadenectomy, Hodgkin's Lymphoma s/p splenectomy, p/w  abdominal pain.",
+                  "Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area",
+                  "White Blood Cells: 21.7 K/uL (ref 4.0-11.0)"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_assessment",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Prior imaging 1: Radiograph Chest (CHEST (PA & LAT))",
+                      "Lungs are clear.  Pulmonary vasculature is normal.  No pleural effusion or pneumothorax is seen."
+                    ],
+                    "reason": "Only a chest radiograph has been performed, which does not visualize the abdomen or pelvis, so intra-abdominal targets remain unassessed."
+                  },
+                  {
+                    "requirement_key": "req_presence_pathology",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Heart size is normal.  Mediastinal and hilar contours are within normal limits.",
+                      "Lungs are clear.  Pulmonary vasculature is normal."
+                    ],
+                    "reason": "The chest X-ray excludes an acute thoracic process but provides no information on the presence or absence of intra-abdominal pathology."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "PA and lateral views of the chest.",
+                      "There are no acute osseous abnormalities."
+                    ],
+                    "reason": "No imaging has localized any intra-abdominal lesion; clinical exam only localizes tenderness, not a specific internal structure."
+                  },
+                  {
+                    "requirement_key": "req_complication",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Lactate: 1.0 mmol/L (ref 0.5-2.0)",
+                      "Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area"
+                    ],
+                    "reason": "While exam and normal lactate do not strongly suggest advanced ischemia, they cannot exclude early perforation, obstruction, or other complications without imaging."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "All key requirements for defining and localizing an intra-abdominal source remain unaddressed because only a normal chest radiograph is available."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize abdominal organs, detect acute inflammatory, infectious, obstructive, or ischemic processes, and characterize complications such as perforation or abscess.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not specify any single suspected diagnosis (e.g., appendicitis versus obstruction versus lymphoma recurrence), so the exact leading differential within intra-abdominal causes remains uncertain."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdomen with focal periumbilical tenderness and rebound concerning for intra-abdominal pathology.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome/clinical presentation\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area\",\n        \"Mr. ___ ... p/w  abdominal pain. Abdominal pain started at 8pm 1 day PTA ... the pain became progressively worse.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is a high suspicion for an intra-abdominal inflammatory, infectious, or obstructive process as the cause of the acute abdominal pain.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"mechanism/etiologic category\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"White Blood Cells: 21.7 K/uL (ref 4.0-11.0)\",\n        \"Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is immunocompromised from HIV and prior Hodgkin's lymphoma treatment, increasing risk for atypical or occult intra-abdominal infections and malignancy-related complications.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"host factor/comorbidity\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Mr. ___ is a ___ year old male with a history of HIV, s/p  lymphadenectomy, Hodgkin's Lymphoma s/p splenectomy\",\n        \"PMH: parotitis, HIV, Hodgkin's, HTN, cryptococcal meningitis\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The prior chest radiograph shows no evidence of thoracic source for the current symptoms.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"anatomic source\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"Lungs are clear.  Pulmonary vasculature is normal.  No pleural effusion or pneumothorax is seen.\",\n        \"There are no acute osseous abnormalities.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has adequate renal function to safely receive IV contrast for abdominal CT imaging.\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic suitability\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Creatinine: 0.8 mg/dL (ref 0.5-1.2)\",\n        \"Estimated GFR = >75 if non African-American (mL/min/1.73 m2).\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable as this is the first imaging decision point being modeled.\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"No prior A/Q/C state or keyed clinical question exists before this first decision.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; all assumptions are newly established from the baseline chart and prior chest imaging.\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the intra-abdominal source and nature of this patient’s acute periumbilical abdominal pain and leukocytosis?\",\n    \"target\": \"intra-abdominal organs and mesentery for causes such as appendicitis, bowel obstruction, ischemia, perforation, abscess, or other inflammatory/infectious processes\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming a specific intra-abdominal pathology (e.g., appendicitis, obstruction, abscess, ischemia) would guide urgent surgical versus medical management and targeted therapy.\",\n    \"negative_answer_changes\": \"If no significant intra-abdominal pathology is identified, the team would reconsider non-structural, extra-abdominal, or early/subtle causes and may pursue alternative diagnostics or observation.\",\n    \"secondary_questions\": [\n      \"Is there evidence of complicated intra-abdominal disease such as perforation, abscess, or ischemia requiring urgent intervention?\",\n      \"What is the extent and exact location of any identified intra-abdominal inflammatory or obstructive process to guide operative planning?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_assessment\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comprehensive visualization of abdominal and pelvic viscera (bowel, mesentery, solid organs, peritoneum) for structural abnormalities.\",\n        \"why_required\": \"Identifying or excluding a focal intra-abdominal lesion requires adequate visualization of the relevant organs and peritoneal spaces.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute intra-abdominal pathology such as appendicitis, bowel obstruction, free air, free fluid, abscess, or mass.\",\n        \"why_required\": \"Determining whether there is a definite intra-abdominal cause for the acute pain and leukocytosis directly informs whether urgent intervention is needed.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Precise anatomic localization of any detected intra-abdominal abnormality (e.g., specific bowel segment, mesentery, solid organ).\",\n        \"why_required\": \"Localization is necessary to distinguish among possible etiologies and to plan surgical or interventional approaches if needed.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and character of complications such as perforation, abscess, ischemia, or bowel compromise.\",\n        \"why_required\": \"Detecting complications determines urgency, need for surgery, and intensity of monitoring or supportive care.\"\n      }\n    ],\n    \"evidence\": [\n      \"Mr. ___ is a ___ year old male with a history of HIV, s/p  lymphadenectomy, Hodgkin's Lymphoma s/p splenectomy, p/w  abdominal pain.\",\n      \"Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area\",\n      \"White Blood Cells: 21.7 K/uL (ref 4.0-11.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_assessment\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Prior imaging 1: Radiograph Chest (CHEST (PA & LAT))\",\n          \"Lungs are clear.  Pulmonary vasculature is normal.  No pleural effusion or pneumothorax is seen.\"\n        ],\n        \"reason\": \"Only a chest radiograph has been performed, which does not visualize the abdomen or pelvis, so intra-abdominal targets remain unassessed.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_pathology\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Heart size is normal.  Mediastinal and hilar contours are within normal limits.\",\n          \"Lungs are clear.  Pulmonary vasculature is normal.\"\n        ],\n        \"reason\": \"The chest X-ray excludes an acute thoracic process but provides no information on the presence or absence of intra-abdominal pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"PA and lateral views of the chest.\",\n          \"There are no acute osseous abnormalities.\"\n        ],\n        \"reason\": \"No imaging has localized any intra-abdominal lesion; clinical exam only localizes tenderness, not a specific internal structure.\"\n      },\n      {\n        \"requirement_key\": \"req_complication\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Lactate: 1.0 mmol/L (ref 0.5-2.0)\",\n          \"Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area\"\n        ],\n        \"reason\": \"While exam and normal lactate do not strongly suggest advanced ischemia, they cannot exclude early perforation, obstruction, or other complications without imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"All key requirements for defining and localizing an intra-abdominal source remain unaddressed because only a normal chest radiograph is available.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize abdominal organs, detect acute inflammatory, infectious, obstructive, or ischemic processes, and characterize complications such as perforation or abscess.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not specify any single suspected diagnosis (e.g., appendicitis versus obstruction versus lymphoma recurrence), so the exact leading differential within intra-abdominal causes remains uncertain.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788192882-uthWTJegeKyK6WRa9GI8",
+            "usage": {
+              "completion_tokens": 2349,
+              "prompt_tokens": 3483,
+              "total_tokens": 5832,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02784375,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02784375,
+                "upstream_inference_prompt_cost": 0.00435375,
+                "upstream_inference_completions_cost": 0.02349
+              }
+            }
+          },
+          "validation_errors": [
+            "bad_question_evidence_count"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "c66f03189324711015bbb6d88beea5c9d79f839886e72fe9217b74d3fbd88295",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute abdominal pain syndrome with focal periumbilical tenderness and rebound concerning for an intra-abdominal surgical process such as appendicitis or other focal source.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "symptom complex / potential surgical abdomen",
+                  "status": "suspected",
+                  "evidence": [
+                    "“p/w  abdominal pain. Abdominal pain started at 8pm 1 day PTA… the pain became progressively worse.”",
+                    "“Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has systemic inflammation with marked leukocytosis that raises concern for an acute intra-abdominal inflammatory or infectious process.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "physiologic / laboratory abnormality",
+                  "status": "established",
+                  "evidence": [
+                    "“White Blood Cells: 21.7 K/uL (ref 4.0-11.0)”",
+                    "“WBC Count: 20.1 K/uL (ref 4.0-11.0)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient is immunocompromised due to HIV and prior Hodgkin’s lymphoma with splenectomy, increasing risk for atypical or severe intra-abdominal infection or malignancy-related pathology.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "host risk factors",
+                  "status": "established",
+                  "evidence": [
+                    "“history of HIV, s/p  lymphadenectomy, Hodgkin's Lymphoma s/p splenectomy”",
+                    "“PMH: parotitis, HIV, Hodgkin's, HTN, cryptococcal meningitis… lap splenectomy”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Thoracic causes of the current symptoms such as pneumonia or cardiogenic pulmonary disease are unlikely contributors.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "competing anatomic source",
+                  "status": "excluded",
+                  "evidence": [
+                    "“Lungs are clear.  Pulmonary vasculature is normal.  No pleural effusion or pneumothorax is seen.”",
+                    "“Heart size is normal.  Mediastinal and hilar contours are within normal limits.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Renal function is adequate to permit the safe use of iodinated IV contrast for abdominal CT.",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "physiologic suitability for contrast",
+                  "status": "established",
+                  "evidence": [
+                    "“Creatinine: 0.8 mg/dL (ref 0.5-1.2)”",
+                    "“Estimated GFR = >75 if non African-American (mL/min/1.73 m2).  Estimated GFR = >75 if African-American (mL/min/1.73 m2).”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "no prior imaging question exists at this first decision point",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "no prior question or conflicting evidence streams at this initial step"
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "this is the first decision point so assumptions are being established de novo"
+              },
+              "current_question": {
+                "primary": "What is the intra-abdominal source and anatomic focus of this patient’s acute periumbilical abdominal pain and systemic inflammation?",
+                "target": "intra-abdominal organs and mesentery as potential sources of acute focal inflammatory, infectious, obstructive, or ischemic pathology",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a focal intra-abdominal pathology (e.g., appendicitis, diverticulitis, obstruction, abscess, or malignancy-related process) would guide specific medical or surgical intervention and targeted therapy.",
+                "negative_answer_changes": "If no significant intra-abdominal source is found, clinicians would reconsider alternative diagnoses, non-abdominal sources, or functional etiologies and adjust management away from urgent abdominal intervention.",
+                "secondary_questions": [
+                  "Is there evidence of acute complications such as perforation, abscess, obstruction, or ischemia that would alter urgency and type of management?",
+                  "Is there any new or recurrent malignancy or lymphadenopathy related to prior Hodgkin’s lymphoma that could explain the abdominal symptoms?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_source_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comprehensive visualization and assessment of abdominal and pelvic viscera and mesentery for acute pathology corresponding to the periumbilical tenderness.",
+                    "why_required": "Determining the source of pain and inflammation requires directly assessing abdominal organs and mesentery for structural or inflammatory changes."
+                  },
+                  {
+                    "requirement_key": "req_presence_acute_pathology",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of focal intra-abdominal inflammatory, infectious, obstructive, or ischemic lesions (e.g., appendicitis, diverticulitis, obstruction, abscess).",
+                    "why_required": "Management hinges on whether there is a discrete treatable abdominal lesion versus non-focal or non-abdominal causes."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence and characterization of complications such as perforation, abscess, or free air/fluid that would change urgency of care.",
+                    "why_required": "Detecting complications determines need for emergent surgical or interventional radiology management versus conservative treatment."
+                  },
+                  {
+                    "requirement_key": "req_malignancy_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent of any intra-abdominal lymphadenopathy or masses that could reflect malignancy or lymphoproliferative disease related to Hodgkin’s history.",
+                    "why_required": "In a patient with prior Hodgkin’s lymphoma, defining extent of any mass or lymphadenopathy is necessary for staging, oncologic planning, and explaining symptoms."
+                  }
+                ],
+                "evidence": [
+                  "“p/w  abdominal pain. Abdominal pain started at 8pm 1 day PTA… the pain became progressively worse.”",
+                  "“Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_source_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“CHEST (PA & LAT)… Lungs are clear… Heart size is normal.”"
+                    ],
+                    "reason": "Only a chest radiograph has been performed, which does not visualize the abdominal or pelvic organs, so the intra-abdominal source has not been assessed."
+                  },
+                  {
+                    "requirement_key": "req_presence_acute_pathology",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No abdominal imaging results are reported prior to this decision point."
+                    ],
+                    "reason": "There is no imaging-based assessment of whether a focal intra-abdominal lesion is present or absent; labs and exam suggest but do not localize the pathology."
+                  },
+                  {
+                    "requirement_key": "req_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No cross-sectional abdominal imaging findings are available before the current order."
+                    ],
+                    "reason": "Potential complications such as perforation or abscess cannot be evaluated without abdominal imaging; current data are purely clinical and laboratory."
+                  },
+                  {
+                    "requirement_key": "req_malignancy_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“history of HIV, s/p  lymphadenectomy, Hodgkin's Lymphoma s/p splenectomy”"
+                    ],
+                    "reason": "Prior lymphoma and splenectomy are known, but there is no imaging of current intra-abdominal lymphadenopathy or masses to assess extent or recurrence."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Before the CT abdomen and pelvis, no available imaging or tests directly visualize or characterize intra-abdominal pathology, so all defined requirements remain unaddressed."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize abdominal viscera, detect focal inflammatory, infectious, obstructive, ischemic, or malignant processes, and identify complications such as perforation or abscess.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact leading diagnostic hypothesis (e.g., appendicitis vs. small bowel obstruction vs. malignancy-related process) cannot be specified from the chart alone, so the order is best explained as a broad search for an acute intra-abdominal source."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute abdominal pain syndrome with focal periumbilical tenderness and rebound concerning for an intra-abdominal surgical process such as appendicitis or other focal source.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"symptom complex / potential surgical abdomen\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“p/w  abdominal pain. Abdominal pain started at 8pm 1 day PTA… the pain became progressively worse.”\",\n        \"“Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has systemic inflammation with marked leukocytosis that raises concern for an acute intra-abdominal inflammatory or infectious process.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic / laboratory abnormality\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“White Blood Cells: 21.7 K/uL (ref 4.0-11.0)”\",\n        \"“WBC Count: 20.1 K/uL (ref 4.0-11.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient is immunocompromised due to HIV and prior Hodgkin’s lymphoma with splenectomy, increasing risk for atypical or severe intra-abdominal infection or malignancy-related pathology.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"host risk factors\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“history of HIV, s/p  lymphadenectomy, Hodgkin's Lymphoma s/p splenectomy”\",\n        \"“PMH: parotitis, HIV, Hodgkin's, HTN, cryptococcal meningitis… lap splenectomy”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Thoracic causes of the current symptoms such as pneumonia or cardiogenic pulmonary disease are unlikely contributors.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing anatomic source\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"“Lungs are clear.  Pulmonary vasculature is normal.  No pleural effusion or pneumothorax is seen.”\",\n        \"“Heart size is normal.  Mediastinal and hilar contours are within normal limits.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Renal function is adequate to permit the safe use of iodinated IV contrast for abdominal CT.\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic suitability for contrast\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“Creatinine: 0.8 mg/dL (ref 0.5-1.2)”\",\n        \"“Estimated GFR = >75 if non African-American (mL/min/1.73 m2).  Estimated GFR = >75 if African-American (mL/min/1.73 m2).”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"no prior imaging question exists at this first decision point\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"no prior question or conflicting evidence streams at this initial step\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"this is the first decision point so assumptions are being established de novo\"\n  },\n  \"current_question\": {\n    \"primary\": \"What is the intra-abdominal source and anatomic focus of this patient’s acute periumbilical abdominal pain and systemic inflammation?\",\n    \"target\": \"intra-abdominal organs and mesentery as potential sources of acute focal inflammatory, infectious, obstructive, or ischemic pathology\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a focal intra-abdominal pathology (e.g., appendicitis, diverticulitis, obstruction, abscess, or malignancy-related process) would guide specific medical or surgical intervention and targeted therapy.\",\n    \"negative_answer_changes\": \"If no significant intra-abdominal source is found, clinicians would reconsider alternative diagnoses, non-abdominal sources, or functional etiologies and adjust management away from urgent abdominal intervention.\",\n    \"secondary_questions\": [\n      \"Is there evidence of acute complications such as perforation, abscess, obstruction, or ischemia that would alter urgency and type of management?\",\n      \"Is there any new or recurrent malignancy or lymphadenopathy related to prior Hodgkin’s lymphoma that could explain the abdominal symptoms?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_source_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comprehensive visualization and assessment of abdominal and pelvic viscera and mesentery for acute pathology corresponding to the periumbilical tenderness.\",\n        \"why_required\": \"Determining the source of pain and inflammation requires directly assessing abdominal organs and mesentery for structural or inflammatory changes.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_acute_pathology\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of focal intra-abdominal inflammatory, infectious, obstructive, or ischemic lesions (e.g., appendicitis, diverticulitis, obstruction, abscess).\",\n        \"why_required\": \"Management hinges on whether there is a discrete treatable abdominal lesion versus non-focal or non-abdominal causes.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence and characterization of complications such as perforation, abscess, or free air/fluid that would change urgency of care.\",\n        \"why_required\": \"Detecting complications determines need for emergent surgical or interventional radiology management versus conservative treatment.\"\n      },\n      {\n        \"requirement_key\": \"req_malignancy_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of any intra-abdominal lymphadenopathy or masses that could reflect malignancy or lymphoproliferative disease related to Hodgkin’s history.\",\n        \"why_required\": \"In a patient with prior Hodgkin’s lymphoma, defining extent of any mass or lymphadenopathy is necessary for staging, oncologic planning, and explaining symptoms.\"\n      }\n    ],\n    \"evidence\": [\n      \"“p/w  abdominal pain. Abdominal pain started at 8pm 1 day PTA… the pain became progressively worse.”\",\n      \"“Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_source_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“CHEST (PA & LAT)… Lungs are clear… Heart size is normal.”\"\n        ],\n        \"reason\": \"Only a chest radiograph has been performed, which does not visualize the abdominal or pelvic organs, so the intra-abdominal source has not been assessed.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_acute_pathology\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No abdominal imaging results are reported prior to this decision point.\"\n        ],\n        \"reason\": \"There is no imaging-based assessment of whether a focal intra-abdominal lesion is present or absent; labs and exam suggest but do not localize the pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No cross-sectional abdominal imaging findings are available before the current order.\"\n        ],\n        \"reason\": \"Potential complications such as perforation or abscess cannot be evaluated without abdominal imaging; current data are purely clinical and laboratory.\"\n      },\n      {\n        \"requirement_key\": \"req_malignancy_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“history of HIV, s/p  lymphadenectomy, Hodgkin's Lymphoma s/p splenectomy”\"\n        ],\n        \"reason\": \"Prior lymphoma and splenectomy are known, but there is no imaging of current intra-abdominal lymphadenopathy or masses to assess extent or recurrence.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Before the CT abdomen and pelvis, no available imaging or tests directly visualize or characterize intra-abdominal pathology, so all defined requirements remain unaddressed.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize abdominal viscera, detect focal inflammatory, infectious, obstructive, ischemic, or malignant processes, and identify complications such as perforation or abscess.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact leading diagnostic hypothesis (e.g., appendicitis vs. small bowel obstruction vs. malignancy-related process) cannot be specified from the chart alone, so the order is best explained as a broad search for an acute intra-abdominal source.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788192900-2nD3Q2H1xYYKecn1aWcm",
+            "usage": {
+              "completion_tokens": 2331,
+              "prompt_tokens": 3517,
+              "total_tokens": 5848,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3328,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02396225,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02396225,
+                "upstream_inference_prompt_cost": 0.00065225,
+                "upstream_inference_completions_cost": 0.02331
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute abdominal pain syndrome with focal periumbilical tenderness and rebound concerning for an intra-abdominal surgical process such as appendicitis or other focal source.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "symptom complex / potential surgical abdomen",
+            "status": "suspected",
+            "evidence": [
+              "“p/w  abdominal pain. Abdominal pain started at 8pm 1 day PTA… the pain became progressively worse.”",
+              "“Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has systemic inflammation with marked leukocytosis that raises concern for an acute intra-abdominal inflammatory or infectious process.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "physiologic / laboratory abnormality",
+            "status": "established",
+            "evidence": [
+              "“White Blood Cells: 21.7 K/uL (ref 4.0-11.0)”",
+              "“WBC Count: 20.1 K/uL (ref 4.0-11.0)”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient is immunocompromised due to HIV and prior Hodgkin’s lymphoma with splenectomy, increasing risk for atypical or severe intra-abdominal infection or malignancy-related pathology.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "host risk factors",
+            "status": "established",
+            "evidence": [
+              "“history of HIV, s/p  lymphadenectomy, Hodgkin's Lymphoma s/p splenectomy”",
+              "“PMH: parotitis, HIV, Hodgkin's, HTN, cryptococcal meningitis… lap splenectomy”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Thoracic causes of the current symptoms such as pneumonia or cardiogenic pulmonary disease are unlikely contributors.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "competing anatomic source",
+            "status": "excluded",
+            "evidence": [
+              "“Lungs are clear.  Pulmonary vasculature is normal.  No pleural effusion or pneumothorax is seen.”",
+              "“Heart size is normal.  Mediastinal and hilar contours are within normal limits.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Renal function is adequate to permit the safe use of iodinated IV contrast for abdominal CT.",
+            "type": "intervention_or_device_state",
+            "other_proposed_type": "",
+            "level": "physiologic suitability for contrast",
+            "status": "established",
+            "evidence": [
+              "“Creatinine: 0.8 mg/dL (ref 0.5-1.2)”",
+              "“Estimated GFR = >75 if non African-American (mL/min/1.73 m2).  Estimated GFR = >75 if African-American (mL/min/1.73 m2).”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "no prior imaging question exists at this first decision point",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "no prior question or conflicting evidence streams at this initial step"
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "this is the first decision point so assumptions are being established de novo"
+        },
+        "current_question": {
+          "primary": "What is the intra-abdominal source and anatomic focus of this patient’s acute periumbilical abdominal pain and systemic inflammation?",
+          "target": "intra-abdominal organs and mesentery as potential sources of acute focal inflammatory, infectious, obstructive, or ischemic pathology",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a focal intra-abdominal pathology (e.g., appendicitis, diverticulitis, obstruction, abscess, or malignancy-related process) would guide specific medical or surgical intervention and targeted therapy.",
+          "negative_answer_changes": "If no significant intra-abdominal source is found, clinicians would reconsider alternative diagnoses, non-abdominal sources, or functional etiologies and adjust management away from urgent abdominal intervention.",
+          "secondary_questions": [
+            "Is there evidence of acute complications such as perforation, abscess, obstruction, or ischemia that would alter urgency and type of management?",
+            "Is there any new or recurrent malignancy or lymphadenopathy related to prior Hodgkin’s lymphoma that could explain the abdominal symptoms?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_source_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Comprehensive visualization and assessment of abdominal and pelvic viscera and mesentery for acute pathology corresponding to the periumbilical tenderness.",
+              "why_required": "Determining the source of pain and inflammation requires directly assessing abdominal organs and mesentery for structural or inflammatory changes."
+            },
+            {
+              "requirement_key": "req_presence_acute_pathology",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of focal intra-abdominal inflammatory, infectious, obstructive, or ischemic lesions (e.g., appendicitis, diverticulitis, obstruction, abscess).",
+              "why_required": "Management hinges on whether there is a discrete treatable abdominal lesion versus non-focal or non-abdominal causes."
+            },
+            {
+              "requirement_key": "req_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence and characterization of complications such as perforation, abscess, or free air/fluid that would change urgency of care.",
+              "why_required": "Detecting complications determines need for emergent surgical or interventional radiology management versus conservative treatment."
+            },
+            {
+              "requirement_key": "req_malignancy_extent",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent of any intra-abdominal lymphadenopathy or masses that could reflect malignancy or lymphoproliferative disease related to Hodgkin’s history.",
+              "why_required": "In a patient with prior Hodgkin’s lymphoma, defining extent of any mass or lymphadenopathy is necessary for staging, oncologic planning, and explaining symptoms."
+            }
+          ],
+          "evidence": [
+            "“p/w  abdominal pain. Abdominal pain started at 8pm 1 day PTA… the pain became progressively worse.”",
+            "“Abd: mildly distended, +BS, soft, TTP in periumbilical area, focal rebound guarding in periumbilical area”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_source_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“CHEST (PA & LAT)… Lungs are clear… Heart size is normal.”"
+              ],
+              "reason": "Only a chest radiograph has been performed, which does not visualize the abdominal or pelvic organs, so the intra-abdominal source has not been assessed."
+            },
+            {
+              "requirement_key": "req_presence_acute_pathology",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No abdominal imaging results are reported prior to this decision point."
+              ],
+              "reason": "There is no imaging-based assessment of whether a focal intra-abdominal lesion is present or absent; labs and exam suggest but do not localize the pathology."
+            },
+            {
+              "requirement_key": "req_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No cross-sectional abdominal imaging findings are available before the current order."
+              ],
+              "reason": "Potential complications such as perforation or abscess cannot be evaluated without abdominal imaging; current data are purely clinical and laboratory."
+            },
+            {
+              "requirement_key": "req_malignancy_extent",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“history of HIV, s/p  lymphadenectomy, Hodgkin's Lymphoma s/p splenectomy”"
+              ],
+              "reason": "Prior lymphoma and splenectomy are known, but there is no imaging of current intra-abdominal lymphadenopathy or masses to assess extent or recurrence."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Before the CT abdomen and pelvis, no available imaging or tests directly visualize or characterize intra-abdominal pathology, so all defined requirements remain unaddressed."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A contrast-enhanced CT of the abdomen and pelvis can comprehensively visualize abdominal viscera, detect focal inflammatory, infectious, obstructive, ischemic, or malignant processes, and identify complications such as perforation or abscess.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The exact leading diagnostic hypothesis (e.g., appendicitis vs. small bowel obstruction vs. malignancy-related process) cannot be specified from the chart alone, so the order is best explained as a broad search for an acute intra-abdominal source."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

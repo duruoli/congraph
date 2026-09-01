@@ -24,7 +24,7 @@ from scripts.run_aqc_framework_check import validate_output  # noqa: E402
 DEV = ROOT / "data" / "aqc_development"
 PILOT = ROOT / "data" / "aqc_direct" / "pilot_manifest.json"
 RESULTS = ROOT / "results" / "aqc_direct"
-VALIDATOR_VERSION = "2.0.0"
+VALIDATOR_VERSION = "3.0.0"
 RETRY_PROTOCOL_VERSION = "1.0.0-validator-feedback"
 DEFAULT_MODELS = [
     "anthropic/claude-sonnet-4.6",
@@ -46,7 +46,7 @@ def slug(model: str) -> str:
 
 
 def prompt_version_hash() -> str:
-    return digest(prompts.DIRECT_SYSTEM + json.dumps(prompts.output_contract(), sort_keys=True))
+    return digest(prompts.ANNOTATION_SYSTEM + json.dumps(prompts.output_contract(), sort_keys=True))
 
 
 def load_patients(scope: str) -> list[dict[str, Any]]:
@@ -94,10 +94,18 @@ def result_is_valid(result: dict[str, Any], expected_steps: int) -> bool:
     steps = result.get("steps")
     if not isinstance(steps, list) or len(steps) != expected_steps:
         return False
-    return all(
-        not validate_output(step.get("accepted"), is_first_step=index == 0)
-        for index, step in enumerate(steps)
-    )
+    seen_orders: set[str] = set()
+    for index, step in enumerate(steps):
+        ordered = str(step.get("ordered", ""))
+        if validate_output(
+            step.get("accepted"),
+            is_first_step=index == 0,
+            ordered=ordered,
+            is_repeat_order=ordered in seen_orders,
+        ):
+            return False
+        seen_orders.add(ordered)
+    return True
 
 
 def select_stratified_new(
@@ -161,15 +169,22 @@ def run_patient(patient: dict[str, Any], model: str, frames: dict[str, pd.DataFr
         if int(dp["step"]) != int(source_step["step"]):
             raise ValueError(f"step id mismatch: {disease}/{hadm_id}")
         old_step = old_steps[step_index] if step_index < len(old_steps) else None
+        is_repeat_order = any(
+            previous_dp["ordered"] == dp["ordered"]
+            for previous_dp in record["decision_points"][:step_index]
+        )
         if isinstance(old_step, dict) and not validate_output(
-            old_step.get("accepted"), is_first_step=step_index == 0
+            old_step.get("accepted"),
+            is_first_step=step_index == 0,
+            ordered=str(dp["ordered"]),
+            is_repeat_order=is_repeat_order,
         ):
             reused_step = dict(old_step)
             reused_step["reused"] = True
             steps.append(reused_step)
             prior = old_step["accepted"]
             continue
-        user = prompts.build_direct_user(dp, record["baseline"], prior)
+        user = prompts.build_annotation_user(dp, record["baseline"], prior)
         attempts = []
         retry_errors: list[str] = []
         for attempt_index in range(retries + 1):
@@ -182,12 +197,17 @@ def run_patient(patient: dict[str, Any], model: str, frames: dict[str, pd.DataFr
                     + "\n- ".join(retry_errors)
                 )
             call = call_json(
-                prompts.DIRECT_SYSTEM, attempt_user, model=model, temperature=0.0, max_tokens=4000
+                prompts.ANNOTATION_SYSTEM, attempt_user, model=model, temperature=0.0, max_tokens=4000
             )
-            errors = validate_output(call.get("parsed"), is_first_step=step_index == 0)
+            errors = validate_output(
+                call.get("parsed"),
+                is_first_step=step_index == 0,
+                ordered=str(dp["ordered"]),
+                is_repeat_order=is_repeat_order,
+            )
             attempts.append({
                 "attempt": attempt_index + 1,
-                "request_prompt_sha256": digest(prompts.DIRECT_SYSTEM + "\n" + attempt_user),
+                "request_prompt_sha256": digest(prompts.ANNOTATION_SYSTEM + "\n" + attempt_user),
                 "call": call,
                 "validation_errors": errors,
             })
@@ -198,7 +218,7 @@ def run_patient(patient: dict[str, Any], model: str, frames: dict[str, pd.DataFr
         new_step = {
             "step": int(dp["step"]),
             "ordered": dp["ordered"],
-            "request_prompt_sha256": digest(prompts.DIRECT_SYSTEM + "\n" + user),
+            "request_prompt_sha256": digest(prompts.ANNOTATION_SYSTEM + "\n" + user),
             "attempts": attempts,
             "accepted": accepted,
             "validation_errors": attempts[-1]["validation_errors"],
@@ -210,7 +230,7 @@ def run_patient(patient: dict[str, Any], model: str, frames: dict[str, pd.DataFr
             break
         prior = accepted
     return {
-        "schema_version": "1.0.0-development",
+        "schema_version": "2.0.0-development",
         "scope": "DIRECT empirical annotation",
         "disease_stratum_sampling_only": disease,
         "hadm_id": hadm_id,
@@ -231,6 +251,11 @@ def main() -> None:
     parser.add_argument("--limit", type=int)
     parser.add_argument("--stratified-new", type=int, metavar="N",
                         help="select N not-yet-written development patients round-robin by disease")
+    parser.add_argument(
+        "--patient-manifest",
+        type=Path,
+        help="use an exact frozen patient list for interruption-safe batch resume",
+    )
     parser.add_argument("--retries", type=int, default=2)
     cost_group = parser.add_mutually_exclusive_group()
     cost_group.add_argument("--cost-stop-usd", type=float, default=5.0)
@@ -246,7 +271,38 @@ def main() -> None:
     args = parser.parse_args()
     models = args.models or DEFAULT_MODELS
     patients = load_patients(args.scope)
-    if args.repair_existing_only:
+    if args.patient_manifest is not None:
+        if args.repair_existing_only or args.stratified_new is not None or args.limit is not None:
+            parser.error(
+                "--patient-manifest cannot be combined with --repair-existing-only, "
+                "--stratified-new, or --limit"
+            )
+        manifest_path = (
+            args.patient_manifest
+            if args.patient_manifest.is_absolute()
+            else ROOT / args.patient_manifest
+        )
+        requested = read_json(manifest_path)
+        requested_rows = requested.get("patients") if isinstance(requested, dict) else None
+        if not isinstance(requested_rows, list):
+            parser.error("--patient-manifest must contain a patients list")
+        available = {
+            (p["disease"], int(p["hadm_id"])): p
+            for p in patients
+        }
+        requested_keys = [
+            (row.get("disease"), int(row.get("hadm_id")))
+            for row in requested_rows if isinstance(row, dict)
+        ]
+        if len(requested_keys) != len(requested_rows):
+            parser.error("every patient-manifest row must be an object with disease and hadm_id")
+        if len(requested_keys) != len(set(requested_keys)):
+            parser.error("patient-manifest contains duplicate patient keys")
+        missing = [key for key in requested_keys if key not in available]
+        if missing:
+            parser.error(f"patient-manifest contains unavailable patients: {missing}")
+        patients = [available[key] for key in requested_keys]
+    elif args.repair_existing_only:
         if len(models) != 1 or not args.repair_invalid_steps:
             parser.error("--repair-existing-only requires one model and --repair-invalid-steps")
         patients = select_invalid_existing(patients, models[0], args.scope)
@@ -274,6 +330,7 @@ def main() -> None:
         "retry_protocol_version": RETRY_PROTOCOL_VERSION,
         "repair_invalid": args.repair_invalid,
         "repair_invalid_steps": args.repair_invalid_steps,
+        "patient_manifest": str(args.patient_manifest) if args.patient_manifest else None,
         "output_root": str(RESULTS.relative_to(ROOT)),
     }
     print(json.dumps(plan, ensure_ascii=False, indent=2))

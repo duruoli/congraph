@@ -1,0 +1,1172 @@
+{
+  "schema_version": "1.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 27163978,
+  "source_path": "results/annotation_experiment/full/cholecystitis_27163978.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "c7f7ffae2271dc9305d0473ae4509b1deab21ee2257341f87694dcc949796ce9",
+  "validator_version": "2.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "12881135521a497564079f3450ba76837d4df5094484d9bc9d3036503ccbeea0",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "12881135521a497564079f3450ba76837d4df5094484d9bc9d3036503ccbeea0",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute upper abdominal pain syndrome centered in the epigastric and right upper quadrant with associated nausea and vomiting.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical presentation",
+                  "status": "established",
+                  "evidence": [
+                    "“admitted with 4 days abdominal pain. It began LUQ… for last 3 days has settle in the epigastric and RUQ area… assoc with 2 days of intermittent nausea and vomiting.”",
+                    "“ABD: soft, (+) epig tender”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is biochemical evidence of pancreatic inflammation with a mildly elevated lipase in the setting of compatible upper abdominal pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "organ-level process",
+                  "status": "suspected",
+                  "evidence": [
+                    "“A Lipase was elevated.”",
+                    "“Lipase: 118.0 IU/L (ref 0.0-60.0)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Gallbladder pathology such as sludge or non-shadowing stones without definite cholecystitis has already been demonstrated on prior right upper quadrant ultrasound.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "organ-level finding",
+                  "status": "established",
+                  "evidence": [
+                    "“A RUQ u/s showed sludge vs non-shadowing stones.”",
+                    "“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Gallstone-related disease (biliary colic, choledocholithiasis, or gallstone pancreatitis) is a potential etiology of the patient’s current pain and lipase elevation despite the absence of definite cholecystitis.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "“A Lipase was elevated. A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”",
+                    "“for last 3 days has settle in the epigastric and RUQ area.”"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is no current clinical or radiographic evidence of another intra-abdominal catastrophe such as perforation or free intraperitoneal air.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "competing process",
+                  "status": "excluded",
+                  "evidence": [
+                    "“No free intraperitoneal air.”",
+                    "“ABD: soft, (+) epig tender, no R/G, no masses, no HSM”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First decision point; no prior A/Q/C state."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first reconstruction step; assumptions are being established de novo from the available chart and prior imaging."
+              },
+              "current_question": {
+                "primary": "Is the patient’s current upper abdominal pain and lipase elevation due to gallbladder or biliary pathology detectable on focused hepatobiliary ultrasound?",
+                "target": "gallbladder and proximal biliary system pathology (e.g., sludge, stones, wall changes, biliary dilation) as a source of the current pain and enzyme elevation",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If gallbladder or biliary pathology explaining symptoms is confirmed, clinicians may direct management toward biliary disease (e.g., surgical or gastroenterology consultation, medical management of gallstone-related disease).",
+                "negative_answer_changes": "If significant gallbladder or biliary pathology is not found, clinicians may downrank biliary disease as the pain source and pursue alternative causes such as non-biliary pancreatitis, peptic disease, or other GI etiologies.",
+                "secondary_questions": [
+                  "Is there sonographic evidence of complications of biliary disease such as evolving cholecystitis or biliary obstruction that were not appreciated previously?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the gallbladder and proximal biliary tree to assess for intraluminal material and wall or ductal abnormalities.",
+                    "why_required": "Determining whether the gallbladder and ducts are well seen is prerequisite to judging if biliary disease could explain the symptoms."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones, sludge, or other intraluminal gallbladder pathology that could account for biliary-type pain or trigger pancreatitis.",
+                    "why_required": "Identifying or excluding stones or sludge is central to determining a biliary etiology of the current syndrome."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, absence, or character of complications of biliary disease such as gallbladder wall thickening, pericholecystic fluid, or biliary ductal dilation.",
+                    "why_required": "Detecting cholecystitis or biliary obstruction would change the urgency and type of intervention."
+                  }
+                ],
+                "evidence": [
+                  "“for last 3 days has settle in the epigastric and RUQ area.”",
+                  "“A Lipase was elevated. A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“A RUQ u/s showed sludge vs non-shadowing stones.”"
+                    ],
+                    "reason": "A prior RUQ ultrasound visualized the gallbladder but is only summarized and may not reflect current anatomy; the present focused single-organ order suggests a need for up-to-date targeted visualization, so this requirement remains effectively unaddressed at this decision point."
+                  },
+                  {
+                    "requirement_key": "req_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“A RUQ u/s showed sludge vs non-shadowing stones.”",
+                      "“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”"
+                    ],
+                    "reason": "Prior ultrasound already indicated sludge or non-shadowing stones but without detailed characterization or correlation with evolving symptoms and lipase; it supports a biliary etiology yet does not definitively confirm or exclude it in the current state."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”",
+                      "“A RUQ u/s showed sludge vs non-shadowing stones.”"
+                    ],
+                    "reason": "Existing information indicates no cholecystitis at that earlier evaluation, but the absence of full imaging details and the ongoing symptoms mean current complication status is not fully assessed."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Earlier RUQ ultrasound and surgical assessment partially address the presence of gallbladder pathology and lack of cholecystitis, but they do not definitively resolve whether current symptoms and lipase elevation are biliary in origin or whether new or evolving complications exist."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A focused liver/gallbladder ultrasound can directly visualize gallstones, sludge, wall changes, and ductal dilation, thereby clarifying whether current symptoms are due to biliary pathology or its complications.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The precise reason for repeating or refocusing hepatobiliary imaging versus relying solely on the prior RUQ ultrasound timing and details is not explicit, including whether new or worsening symptoms, lab trends, or a specific concern like choledocholithiasis are driving this particular single-organ study."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute upper abdominal pain syndrome centered in the epigastric and right upper quadrant with associated nausea and vomiting.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical presentation\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“admitted with 4 days abdominal pain. It began LUQ… for last 3 days has settle in the epigastric and RUQ area… assoc with 2 days of intermittent nausea and vomiting.”\",\n        \"“ABD: soft, (+) epig tender”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is biochemical evidence of pancreatic inflammation with a mildly elevated lipase in the setting of compatible upper abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“A Lipase was elevated.”\",\n        \"“Lipase: 118.0 IU/L (ref 0.0-60.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallbladder pathology such as sludge or non-shadowing stones without definite cholecystitis has already been demonstrated on prior right upper quadrant ultrasound.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level finding\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“A RUQ u/s showed sludge vs non-shadowing stones.”\",\n        \"“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallstone-related disease (biliary colic, choledocholithiasis, or gallstone pancreatitis) is a potential etiology of the patient’s current pain and lipase elevation despite the absence of definite cholecystitis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“A Lipase was elevated. A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”\",\n        \"“for last 3 days has settle in the epigastric and RUQ area.”\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is no current clinical or radiographic evidence of another intra-abdominal catastrophe such as perforation or free intraperitoneal air.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"competing process\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"“No free intraperitoneal air.”\",\n        \"“ABD: soft, (+) epig tender, no R/G, no masses, no HSM”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First decision point; no prior A/Q/C state.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first reconstruction step; assumptions are being established de novo from the available chart and prior imaging.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is the patient’s current upper abdominal pain and lipase elevation due to gallbladder or biliary pathology detectable on focused hepatobiliary ultrasound?\",\n    \"target\": \"gallbladder and proximal biliary system pathology (e.g., sludge, stones, wall changes, biliary dilation) as a source of the current pain and enzyme elevation\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If gallbladder or biliary pathology explaining symptoms is confirmed, clinicians may direct management toward biliary disease (e.g., surgical or gastroenterology consultation, medical management of gallstone-related disease).\",\n    \"negative_answer_changes\": \"If significant gallbladder or biliary pathology is not found, clinicians may downrank biliary disease as the pain source and pursue alternative causes such as non-biliary pancreatitis, peptic disease, or other GI etiologies.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of complications of biliary disease such as evolving cholecystitis or biliary obstruction that were not appreciated previously?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder and proximal biliary tree to assess for intraluminal material and wall or ductal abnormalities.\",\n        \"why_required\": \"Determining whether the gallbladder and ducts are well seen is prerequisite to judging if biliary disease could explain the symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones, sludge, or other intraluminal gallbladder pathology that could account for biliary-type pain or trigger pancreatitis.\",\n        \"why_required\": \"Identifying or excluding stones or sludge is central to determining a biliary etiology of the current syndrome.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, absence, or character of complications of biliary disease such as gallbladder wall thickening, pericholecystic fluid, or biliary ductal dilation.\",\n        \"why_required\": \"Detecting cholecystitis or biliary obstruction would change the urgency and type of intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"“for last 3 days has settle in the epigastric and RUQ area.”\",\n      \"“A Lipase was elevated. A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“A RUQ u/s showed sludge vs non-shadowing stones.”\"\n        ],\n        \"reason\": \"A prior RUQ ultrasound visualized the gallbladder but is only summarized and may not reflect current anatomy; the present focused single-organ order suggests a need for up-to-date targeted visualization, so this requirement remains effectively unaddressed at this decision point.\"\n      },\n      {\n        \"requirement_key\": \"req_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“A RUQ u/s showed sludge vs non-shadowing stones.”\",\n          \"“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”\"\n        ],\n        \"reason\": \"Prior ultrasound already indicated sludge or non-shadowing stones but without detailed characterization or correlation with evolving symptoms and lipase; it supports a biliary etiology yet does not definitively confirm or exclude it in the current state.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”\",\n          \"“A RUQ u/s showed sludge vs non-shadowing stones.”\"\n        ],\n        \"reason\": \"Existing information indicates no cholecystitis at that earlier evaluation, but the absence of full imaging details and the ongoing symptoms mean current complication status is not fully assessed.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Earlier RUQ ultrasound and surgical assessment partially address the presence of gallbladder pathology and lack of cholecystitis, but they do not definitively resolve whether current symptoms and lipase elevation are biliary in origin or whether new or evolving complications exist.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A focused liver/gallbladder ultrasound can directly visualize gallstones, sludge, wall changes, and ductal dilation, thereby clarifying whether current symptoms are due to biliary pathology or its complications.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The precise reason for repeating or refocusing hepatobiliary imaging versus relying solely on the prior RUQ ultrasound timing and details is not explicit, including whether new or worsening symptoms, lab trends, or a specific concern like choledocholithiasis are driving this particular single-organ study.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788192793-43f4VM359ghyo0i8zEdR",
+            "usage": {
+              "completion_tokens": 2163,
+              "prompt_tokens": 3531,
+              "total_tokens": 5694,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02604375,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02604375,
+                "upstream_inference_prompt_cost": 0.00441375,
+                "upstream_inference_completions_cost": 0.02163
+              }
+            }
+          },
+          "validation_errors": [
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "0cf2b24ff4e487de49d2b38d3c5d2af6b2b0f45d783557fa9019e226385e3e49",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute upper abdominal pain syndrome localizing to the epigastric and right upper quadrant over several days, associated with nausea and vomiting.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "symptom complex",
+                  "status": "established",
+                  "evidence": [
+                    "“admitted with 4 days abdominal pain. It began LUQ…for last 3 days has settle in the epigastric and RUQ area…assoc with 2 days of intermittent nausea and vomiting.”",
+                    "“ABD: soft, (+) epig tender”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is a suspected hepatobiliary or gallbladder source of the upper abdominal pain, with prior ultrasound showing sludge versus non-shadowing stones but no cholecystitis and no surgical indication.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "possible organ-level disease",
+                  "status": "suspected",
+                  "evidence": [
+                    "“A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”",
+                    "“for last 3 days has settle in the epigastric and RUQ area.”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The elevated lipase suggests pancreatic involvement as a possible contributor to the epigastric pain, but frank acute pancreatitis is not clearly established.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "organ-level process",
+                  "status": "suspected",
+                  "evidence": [
+                    "“A Lipase was elevated.”",
+                    "“Lipase: 118.0 IU/L (ref 0.0-60.0)”"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": "First imaging decision; no prior A/Q/C state to compare."
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point so assumptions are being established de novo from the presenting history, exam, labs, and prior imaging."
+              },
+              "current_question": {
+                "primary": "Is there a hepatobiliary abnormality, particularly in the liver or gallbladder, that explains the patient’s acute epigastric and right upper quadrant pain?",
+                "target": "hepatobiliary system, especially gallbladder and adjacent liver",
+                "type": "source_localization",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If a hepatobiliary source such as gallbladder sludge, stones, or other structural abnormality is confirmed, management will focus on biliary disease (e.g., medical therapy, surgical or procedural consultation, and monitoring for complications).",
+                "negative_answer_changes": "If no hepatobiliary abnormality is found, attention will shift toward non-biliary causes of epigastric pain such as pancreatic, peptic, or other intra-abdominal etiologies.",
+                "secondary_questions": [
+                  "Is there sonographic evidence of gallbladder inflammation or obstruction that would change the need for surgical or procedural intervention?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_hepatobiliary",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization and assessment of the gallbladder and adjacent liver parenchyma.",
+                    "why_required": "Determining whether hepatobiliary structures are normal or abnormal is necessary to localize the source of pain to this system."
+                  },
+                  {
+                    "requirement_key": "req_presence_gallbladder_pathology",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallbladder pathology such as sludge, stones, wall thickening, pericholecystic fluid, or biliary ductal dilation.",
+                    "why_required": "Identifying or excluding common gallbladder causes of RUQ and epigastric pain is essential to decide if the hepatobiliary system explains the symptoms."
+                  },
+                  {
+                    "requirement_key": "req_complication_cholecystitis",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of inflammatory or obstructive complications (e.g., acute cholecystitis, biliary obstruction).",
+                    "why_required": "Complications would alter urgency and type of intervention, including potential need for surgery or closer monitoring."
+                  }
+                ],
+                "evidence": [
+                  "“for last 3 days has settle in the epigastric and RUQ area.”",
+                  "“A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_hepatobiliary",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No prior abdominal imaging is described aside from the earlier RUQ ultrasound, whose detailed sonographic findings and current relevance are not provided beyond “sludge vs non-shadowing stones” and “no chelecystitis.”"
+                    ],
+                    "reason": "The earlier RUQ ultrasound is summarized but not available in full, and the current clinical status may differ; a new focused assessment of liver and gallbladder has not yet been performed at this decision point."
+                  },
+                  {
+                    "requirement_key": "req_presence_gallbladder_pathology",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "“A RUQ u/s showed sludge vs non-shadowing stones.”",
+                      "“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”"
+                    ],
+                    "reason": "Prior ultrasound suggests some gallbladder abnormality (sludge vs stones) without acute cholecystitis, but the precise character, extent, and current status of pathology are incompletely defined."
+                  },
+                  {
+                    "requirement_key": "req_complication_cholecystitis",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”"
+                    ],
+                    "reason": "Surgical evaluation and prior imaging argued against cholecystitis at that time, but this does not fully exclude interval development of inflammatory or obstructive complications contributing to ongoing pain."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Prior RUQ ultrasound and surgical assessment provide partial information regarding gallbladder pathology and complications, but current localization of the pain source to the hepatobiliary system remains insufficiently defined, motivating repeat or focused imaging."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A focused liver or gallbladder ultrasound can directly visualize the hepatobiliary system, characterize gallbladder contents and wall, assess bile ducts, and detect complications that might explain RUQ and epigastric pain.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The exact reason for choosing a single-organ liver or gallbladder protocol rather than a broader abdominal evaluation (e.g., pancreas, other organs) is not fully explained by the available chart."
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute upper abdominal pain syndrome localizing to the epigastric and right upper quadrant over several days, associated with nausea and vomiting.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"symptom complex\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“admitted with 4 days abdominal pain. It began LUQ…for last 3 days has settle in the epigastric and RUQ area…assoc with 2 days of intermittent nausea and vomiting.”\",\n        \"“ABD: soft, (+) epig tender”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is a suspected hepatobiliary or gallbladder source of the upper abdominal pain, with prior ultrasound showing sludge versus non-shadowing stones but no cholecystitis and no surgical indication.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"possible organ-level disease\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”\",\n        \"“for last 3 days has settle in the epigastric and RUQ area.”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The elevated lipase suggests pancreatic involvement as a possible contributor to the epigastric pain, but frank acute pancreatitis is not clearly established.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“A Lipase was elevated.”\",\n        \"“Lipase: 118.0 IU/L (ref 0.0-60.0)”\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"First imaging decision; no prior A/Q/C state to compare.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point so assumptions are being established de novo from the presenting history, exam, labs, and prior imaging.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there a hepatobiliary abnormality, particularly in the liver or gallbladder, that explains the patient’s acute epigastric and right upper quadrant pain?\",\n    \"target\": \"hepatobiliary system, especially gallbladder and adjacent liver\",\n    \"type\": \"source_localization\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If a hepatobiliary source such as gallbladder sludge, stones, or other structural abnormality is confirmed, management will focus on biliary disease (e.g., medical therapy, surgical or procedural consultation, and monitoring for complications).\",\n    \"negative_answer_changes\": \"If no hepatobiliary abnormality is found, attention will shift toward non-biliary causes of epigastric pain such as pancreatic, peptic, or other intra-abdominal etiologies.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of gallbladder inflammation or obstruction that would change the need for surgical or procedural intervention?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_hepatobiliary\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization and assessment of the gallbladder and adjacent liver parenchyma.\",\n        \"why_required\": \"Determining whether hepatobiliary structures are normal or abnormal is necessary to localize the source of pain to this system.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_gallbladder_pathology\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallbladder pathology such as sludge, stones, wall thickening, pericholecystic fluid, or biliary ductal dilation.\",\n        \"why_required\": \"Identifying or excluding common gallbladder causes of RUQ and epigastric pain is essential to decide if the hepatobiliary system explains the symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_complication_cholecystitis\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of inflammatory or obstructive complications (e.g., acute cholecystitis, biliary obstruction).\",\n        \"why_required\": \"Complications would alter urgency and type of intervention, including potential need for surgery or closer monitoring.\"\n      }\n    ],\n    \"evidence\": [\n      \"“for last 3 days has settle in the epigastric and RUQ area.”\",\n      \"“A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_hepatobiliary\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal imaging is described aside from the earlier RUQ ultrasound, whose detailed sonographic findings and current relevance are not provided beyond “sludge vs non-shadowing stones” and “no chelecystitis.”\"\n        ],\n        \"reason\": \"The earlier RUQ ultrasound is summarized but not available in full, and the current clinical status may differ; a new focused assessment of liver and gallbladder has not yet been performed at this decision point.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_gallbladder_pathology\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"“A RUQ u/s showed sludge vs non-shadowing stones.”\",\n          \"“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”\"\n        ],\n        \"reason\": \"Prior ultrasound suggests some gallbladder abnormality (sludge vs stones) without acute cholecystitis, but the precise character, extent, and current status of pathology are incompletely defined.\"\n      },\n      {\n        \"requirement_key\": \"req_complication_cholecystitis\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”\"\n        ],\n        \"reason\": \"Surgical evaluation and prior imaging argued against cholecystitis at that time, but this does not fully exclude interval development of inflammatory or obstructive complications contributing to ongoing pain.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Prior RUQ ultrasound and surgical assessment provide partial information regarding gallbladder pathology and complications, but current localization of the pain source to the hepatobiliary system remains insufficiently defined, motivating repeat or focused imaging.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A focused liver or gallbladder ultrasound can directly visualize the hepatobiliary system, characterize gallbladder contents and wall, assess bile ducts, and detect complications that might explain RUQ and epigastric pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The exact reason for choosing a single-organ liver or gallbladder protocol rather than a broader abdominal evaluation (e.g., pancreas, other organs) is not fully explained by the available chart.\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788192816-qRWSnZ0IGChItH0VJmgC",
+            "usage": {
+              "completion_tokens": 1876,
+              "prompt_tokens": 3567,
+              "total_tokens": 5443,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3328,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.01947475,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.01947475,
+                "upstream_inference_prompt_cost": 0.00071475,
+                "upstream_inference_completions_cost": 0.01876
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute upper abdominal pain syndrome localizing to the epigastric and right upper quadrant over several days, associated with nausea and vomiting.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "symptom complex",
+            "status": "established",
+            "evidence": [
+              "“admitted with 4 days abdominal pain. It began LUQ…for last 3 days has settle in the epigastric and RUQ area…assoc with 2 days of intermittent nausea and vomiting.”",
+              "“ABD: soft, (+) epig tender”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is a suspected hepatobiliary or gallbladder source of the upper abdominal pain, with prior ultrasound showing sludge versus non-shadowing stones but no cholecystitis and no surgical indication.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "possible organ-level disease",
+            "status": "suspected",
+            "evidence": [
+              "“A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”",
+              "“for last 3 days has settle in the epigastric and RUQ area.”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The elevated lipase suggests pancreatic involvement as a possible contributor to the epigastric pain, but frank acute pancreatitis is not clearly established.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "organ-level process",
+            "status": "suspected",
+            "evidence": [
+              "“A Lipase was elevated.”",
+              "“Lipase: 118.0 IU/L (ref 0.0-60.0)”"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "First imaging decision; no prior A/Q/C state to compare."
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point so assumptions are being established de novo from the presenting history, exam, labs, and prior imaging."
+        },
+        "current_question": {
+          "primary": "Is there a hepatobiliary abnormality, particularly in the liver or gallbladder, that explains the patient’s acute epigastric and right upper quadrant pain?",
+          "target": "hepatobiliary system, especially gallbladder and adjacent liver",
+          "type": "source_localization",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If a hepatobiliary source such as gallbladder sludge, stones, or other structural abnormality is confirmed, management will focus on biliary disease (e.g., medical therapy, surgical or procedural consultation, and monitoring for complications).",
+          "negative_answer_changes": "If no hepatobiliary abnormality is found, attention will shift toward non-biliary causes of epigastric pain such as pancreatic, peptic, or other intra-abdominal etiologies.",
+          "secondary_questions": [
+            "Is there sonographic evidence of gallbladder inflammation or obstruction that would change the need for surgical or procedural intervention?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_target_hepatobiliary",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization and assessment of the gallbladder and adjacent liver parenchyma.",
+              "why_required": "Determining whether hepatobiliary structures are normal or abnormal is necessary to localize the source of pain to this system."
+            },
+            {
+              "requirement_key": "req_presence_gallbladder_pathology",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallbladder pathology such as sludge, stones, wall thickening, pericholecystic fluid, or biliary ductal dilation.",
+              "why_required": "Identifying or excluding common gallbladder causes of RUQ and epigastric pain is essential to decide if the hepatobiliary system explains the symptoms."
+            },
+            {
+              "requirement_key": "req_complication_cholecystitis",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence of inflammatory or obstructive complications (e.g., acute cholecystitis, biliary obstruction).",
+              "why_required": "Complications would alter urgency and type of intervention, including potential need for surgery or closer monitoring."
+            }
+          ],
+          "evidence": [
+            "“for last 3 days has settle in the epigastric and RUQ area.”",
+            "“A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_target_hepatobiliary",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No prior abdominal imaging is described aside from the earlier RUQ ultrasound, whose detailed sonographic findings and current relevance are not provided beyond “sludge vs non-shadowing stones” and “no chelecystitis.”"
+              ],
+              "reason": "The earlier RUQ ultrasound is summarized but not available in full, and the current clinical status may differ; a new focused assessment of liver and gallbladder has not yet been performed at this decision point."
+            },
+            {
+              "requirement_key": "req_presence_gallbladder_pathology",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "“A RUQ u/s showed sludge vs non-shadowing stones.”",
+                "“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”"
+              ],
+              "reason": "Prior ultrasound suggests some gallbladder abnormality (sludge vs stones) without acute cholecystitis, but the precise character, extent, and current status of pathology are incompletely defined."
+            },
+            {
+              "requirement_key": "req_complication_cholecystitis",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”"
+              ],
+              "reason": "Surgical evaluation and prior imaging argued against cholecystitis at that time, but this does not fully exclude interval development of inflammatory or obstructive complications contributing to ongoing pain."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Prior RUQ ultrasound and surgical assessment provide partial information regarding gallbladder pathology and complications, but current localization of the pain source to the hepatobiliary system remains insufficiently defined, motivating repeat or focused imaging."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A focused liver or gallbladder ultrasound can directly visualize the hepatobiliary system, characterize gallbladder contents and wall, assess bile ducts, and detect complications that might explain RUQ and epigastric pain.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The exact reason for choosing a single-organ liver or gallbladder protocol rather than a broader abdominal evaluation (e.g., pancreas, other organs) is not fully explained by the available chart."
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CTA ABD & PELVIS)",
+      "request_prompt_sha256": "afe8b070876e3b7ba403995756fa12f06197eff735e1b0f4d4caec2f5c7e7ece",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "afe8b070876e3b7ba403995756fa12f06197eff735e1b0f4d4caec2f5c7e7ece",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has an acute upper abdominal pain syndrome (epigastric and right upper quadrant) with leukocytosis and modest lipase elevation without a clear source on targeted hepatobiliary ultrasound.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "symptom complex with initial focused workup",
+                  "status": "established",
+                  "evidence": [
+                    "“admitted with 4 days abdominal pain. It began LUQ…for last 3 days has settle in the epigastric and RUQ area…assoc with 2 days of intermittent nausea and vomiting.”",
+                    "“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Gallbladder sludge without sonographic cholecystitis has been identified but is not considered an adequate explanation for the current presentation by surgery.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "organ-level finding",
+                  "status": "established",
+                  "evidence": [
+                    "“A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”",
+                    "“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.  Sonographic ___ sign was negative”"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "A non-biliary intra-abdominal source of pain (such as pancreatic, bowel, vascular, or other abdominal pathology) remains a concern given persistent symptoms and only partially explanatory biliary findings.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "potential alternative organ/system source",
+                  "status": "suspected",
+                  "evidence": [
+                    "“Lipase: 118.0 IU/L (ref 0.0-60.0)”",
+                    "“for last 3 days has settle in the epigastric and RUQ area…Not alleviated by anything, made worse with PO intake.”"
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there a hepatobiliary abnormality, particularly in the liver or gallbladder, that explains the patient’s acute epigastric and right upper quadrant pain?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "mixed",
+                "effect_on_previous_question": "The liver/gallbladder ultrasound adequately visualized the hepatobiliary system, confirming gallbladder sludge without cholecystitis or biliary obstruction, thereby partially supporting a biliary abnormality but largely refuting significant hepatobiliary complications as the primary cause of the acute presentation.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.”",
+                  "evidence_stream_2": "“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”",
+                  "reason": "Imaging and surgical assessment agree that there is sludge without acute cholecystitis or obstruction."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "There is a suspected hepatobiliary or gallbladder source of the upper abdominal pain, with prior ultrasound showing sludge versus non-shadowing stones but no cholecystitis and no surgical indication.",
+                "reason": "Detailed ultrasound findings and surgical evaluation clarify that hepatobiliary disease is limited to sludge without acute inflammatory or obstructive complications, so additional non-biliary intra-abdominal causes must be more strongly considered."
+              },
+              "current_question": {
+                "primary": "Is there an alternative intra-abdominal cause of this acute epigastric and right upper quadrant pain, beyond limited gallbladder sludge, that requires specific medical or surgical management?",
+                "target": "non-biliary abdominal organs and vasculature (pancreas, bowel, mesentery, vascular structures, and adjacent tissues)",
+                "type": "alternative_source",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Identifying a specific non-biliary source (e.g., pancreatic, bowel, mesenteric, or vascular pathology) would direct targeted therapy, possible surgery or intervention, and change monitoring and prognosis.",
+                "negative_answer_changes": "If no alternative intra-abdominal pathology is found, clinicians may attribute symptoms to functional or mild biliary/pancreatic disease, adjust medical management, and avoid invasive interventions while considering non-imaging evaluation.",
+                "secondary_questions": [
+                  "Is there CT evidence of pancreatitis or other inflammatory, obstructive, or ischemic process in the abdomen or pelvis contributing to the pain?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_global_abd_assessment",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Comprehensive visualization of abdominal and pelvic organs including pancreas, bowel, mesentery, solid organs, and major vessels.",
+                    "why_required": "A global assessment is needed to detect or exclude diverse non-biliary causes of acute abdominal pain."
+                  },
+                  {
+                    "requirement_key": "req_presence_alt_pathology",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of structural or inflammatory pathology such as pancreatitis, bowel obstruction or perforation, ischemia, abscess, or other acute intra-abdominal processes.",
+                    "why_required": "Determining whether a concrete lesion or process exists is essential to identify an alternative source for the pain."
+                  },
+                  {
+                    "requirement_key": "req_vascular_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of significant abdominal vascular abnormalities (e.g., aneurysm, dissection, mesenteric ischemia) that could explain or complicate the presentation.",
+                    "why_required": "Vascular emergencies can cause abdominal pain and require urgent intervention; a CT angiographic technique is suited to assess these."
+                  }
+                ],
+                "evidence": [
+                  "“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid. Sonographic ___ sign was negative”",
+                  "“Lipase: 118.0 IU/L (ref 0.0-60.0)”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_global_abd_assessment",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Only hepatobiliary ultrasound and chest radiograph are described; no prior cross-sectional imaging of the entire abdomen/pelvis is reported."
+                    ],
+                    "reason": "Existing imaging is limited to liver/gallbladder ultrasound and chest x-ray, without comprehensive visualization of all abdominal and pelvic organs."
+                  },
+                  {
+                    "requirement_key": "req_presence_alt_pathology",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“Imaged portion of the pancreas appears within normal limits, without masses or pancreatic ductal dilation, with portions of the pancreatic tail obscured by overlying bowel gas.”"
+                    ],
+                    "reason": "Targeted ultrasound suggests a normal imaged pancreas but is limited and does not evaluate bowel, mesentery, or entire pancreas and pelvis, so many alternative pathologies remain unassessed."
+                  },
+                  {
+                    "requirement_key": "req_vascular_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "No prior abdominal vascular imaging is described."
+                    ],
+                    "reason": "There is no dedicated assessment of abdominal arterial or venous structures to exclude vascular causes or complications."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Alternative intra-abdominal sources and vascular causes of pain have not been systematically evaluated beyond a limited hepatobiliary/pancreatic ultrasound."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "A CT angiography of the abdomen and pelvis provides comprehensive cross-sectional imaging of abdominal organs and vasculature, enabling detection of inflammatory, obstructive, ischemic, or vascular causes of acute abdominal pain.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The specific degree of concern for vascular pathology versus other intra-abdominal causes is not explicit in the chart, and the rationale for using an angiographic protocol instead of a standard contrast-enhanced CT abdomen/pelvis remains unstated."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "Clinicians may primarily be concerned about pancreatitis or pancreatic complications given elevated lipase and epigastric pain, using CTA abdomen/pelvis as their available contrast-enhanced CT protocol to stage pancreatitis and screen for necrosis, collections, or adjacent bowel pathology, while incidentally assessing vasculature."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has an acute upper abdominal pain syndrome (epigastric and right upper quadrant) with leukocytosis and modest lipase elevation without a clear source on targeted hepatobiliary ultrasound.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"symptom complex with initial focused workup\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“admitted with 4 days abdominal pain. It began LUQ…for last 3 days has settle in the epigastric and RUQ area…assoc with 2 days of intermittent nausea and vomiting.”\",\n        \"“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallbladder sludge without sonographic cholecystitis has been identified but is not considered an adequate explanation for the current presentation by surgery.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level finding\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”\",\n        \"“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.  Sonographic ___ sign was negative”\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"A non-biliary intra-abdominal source of pain (such as pancreatic, bowel, vascular, or other abdominal pathology) remains a concern given persistent symptoms and only partially explanatory biliary findings.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"potential alternative organ/system source\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"“Lipase: 118.0 IU/L (ref 0.0-60.0)”\",\n        \"“for last 3 days has settle in the epigastric and RUQ area…Not alleviated by anything, made worse with PO intake.”\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there a hepatobiliary abnormality, particularly in the liver or gallbladder, that explains the patient’s acute epigastric and right upper quadrant pain?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"mixed\",\n    \"effect_on_previous_question\": \"The liver/gallbladder ultrasound adequately visualized the hepatobiliary system, confirming gallbladder sludge without cholecystitis or biliary obstruction, thereby partially supporting a biliary abnormality but largely refuting significant hepatobiliary complications as the primary cause of the acute presentation.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.”\",\n      \"evidence_stream_2\": \"“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”\",\n      \"reason\": \"Imaging and surgical assessment agree that there is sludge without acute cholecystitis or obstruction.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"There is a suspected hepatobiliary or gallbladder source of the upper abdominal pain, with prior ultrasound showing sludge versus non-shadowing stones but no cholecystitis and no surgical indication.\",\n    \"reason\": \"Detailed ultrasound findings and surgical evaluation clarify that hepatobiliary disease is limited to sludge without acute inflammatory or obstructive complications, so additional non-biliary intra-abdominal causes must be more strongly considered.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there an alternative intra-abdominal cause of this acute epigastric and right upper quadrant pain, beyond limited gallbladder sludge, that requires specific medical or surgical management?\",\n    \"target\": \"non-biliary abdominal organs and vasculature (pancreas, bowel, mesentery, vascular structures, and adjacent tissues)\",\n    \"type\": \"alternative_source\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Identifying a specific non-biliary source (e.g., pancreatic, bowel, mesenteric, or vascular pathology) would direct targeted therapy, possible surgery or intervention, and change monitoring and prognosis.\",\n    \"negative_answer_changes\": \"If no alternative intra-abdominal pathology is found, clinicians may attribute symptoms to functional or mild biliary/pancreatic disease, adjust medical management, and avoid invasive interventions while considering non-imaging evaluation.\",\n    \"secondary_questions\": [\n      \"Is there CT evidence of pancreatitis or other inflammatory, obstructive, or ischemic process in the abdomen or pelvis contributing to the pain?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_global_abd_assessment\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Comprehensive visualization of abdominal and pelvic organs including pancreas, bowel, mesentery, solid organs, and major vessels.\",\n        \"why_required\": \"A global assessment is needed to detect or exclude diverse non-biliary causes of acute abdominal pain.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_alt_pathology\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of structural or inflammatory pathology such as pancreatitis, bowel obstruction or perforation, ischemia, abscess, or other acute intra-abdominal processes.\",\n        \"why_required\": \"Determining whether a concrete lesion or process exists is essential to identify an alternative source for the pain.\"\n      },\n      {\n        \"requirement_key\": \"req_vascular_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of significant abdominal vascular abnormalities (e.g., aneurysm, dissection, mesenteric ischemia) that could explain or complicate the presentation.\",\n        \"why_required\": \"Vascular emergencies can cause abdominal pain and require urgent intervention; a CT angiographic technique is suited to assess these.\"\n      }\n    ],\n    \"evidence\": [\n      \"“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid. Sonographic ___ sign was negative”\",\n      \"“Lipase: 118.0 IU/L (ref 0.0-60.0)”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_global_abd_assessment\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Only hepatobiliary ultrasound and chest radiograph are described; no prior cross-sectional imaging of the entire abdomen/pelvis is reported.\"\n        ],\n        \"reason\": \"Existing imaging is limited to liver/gallbladder ultrasound and chest x-ray, without comprehensive visualization of all abdominal and pelvic organs.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_alt_pathology\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“Imaged portion of the pancreas appears within normal limits, without masses or pancreatic ductal dilation, with portions of the pancreatic tail obscured by overlying bowel gas.”\"\n        ],\n        \"reason\": \"Targeted ultrasound suggests a normal imaged pancreas but is limited and does not evaluate bowel, mesentery, or entire pancreas and pelvis, so many alternative pathologies remain unassessed.\"\n      },\n      {\n        \"requirement_key\": \"req_vascular_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"No prior abdominal vascular imaging is described.\"\n        ],\n        \"reason\": \"There is no dedicated assessment of abdominal arterial or venous structures to exclude vascular causes or complications.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Alternative intra-abdominal sources and vascular causes of pain have not been systematically evaluated beyond a limited hepatobiliary/pancreatic ultrasound.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"A CT angiography of the abdomen and pelvis provides comprehensive cross-sectional imaging of abdominal organs and vasculature, enabling detection of inflammatory, obstructive, ischemic, or vascular causes of acute abdominal pain.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The specific degree of concern for vascular pathology versus other intra-abdominal causes is not explicit in the chart, and the rationale for using an angiographic protocol instead of a standard contrast-enhanced CT abdomen/pelvis remains unstated.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"Clinicians may primarily be concerned about pancreatitis or pancreatic complications given elevated lipase and epigastric pain, using CTA abdomen/pelvis as their available contrast-enhanced CT protocol to stage pancreatitis and screen for necrosis, collections, or adjacent bowel pathology, while incidentally assessing vasculature.\"\n}",
+            "request_id": "gen-1788192837-DZtte4fi0QJLxnfIb7sX",
+            "usage": {
+              "completion_tokens": 2117,
+              "prompt_tokens": 5457,
+              "total_tokens": 7574,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2176,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02554325,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02554325,
+                "upstream_inference_prompt_cost": 0.00437325,
+                "upstream_inference_completions_cost": 0.02117
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has an acute upper abdominal pain syndrome (epigastric and right upper quadrant) with leukocytosis and modest lipase elevation without a clear source on targeted hepatobiliary ultrasound.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "symptom complex with initial focused workup",
+            "status": "established",
+            "evidence": [
+              "“admitted with 4 days abdominal pain. It began LUQ…for last 3 days has settle in the epigastric and RUQ area…assoc with 2 days of intermittent nausea and vomiting.”",
+              "“White Blood Cells: 14.1 K/uL (ref 4.0-10.0)”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Gallbladder sludge without sonographic cholecystitis has been identified but is not considered an adequate explanation for the current presentation by surgery.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "organ-level finding",
+            "status": "established",
+            "evidence": [
+              "“A RUQ u/s showed sludge vs non-shadowing stones. Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”",
+              "“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.  Sonographic ___ sign was negative”"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "A non-biliary intra-abdominal source of pain (such as pancreatic, bowel, vascular, or other abdominal pathology) remains a concern given persistent symptoms and only partially explanatory biliary findings.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "potential alternative organ/system source",
+            "status": "suspected",
+            "evidence": [
+              "“Lipase: 118.0 IU/L (ref 0.0-60.0)”",
+              "“for last 3 days has settle in the epigastric and RUQ area…Not alleviated by anything, made worse with PO intake.”"
+            ],
+            "support": "weakly_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there a hepatobiliary abnormality, particularly in the liver or gallbladder, that explains the patient’s acute epigastric and right upper quadrant pain?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "mixed",
+          "effect_on_previous_question": "The liver/gallbladder ultrasound adequately visualized the hepatobiliary system, confirming gallbladder sludge without cholecystitis or biliary obstruction, thereby partially supporting a biliary abnormality but largely refuting significant hepatobiliary complications as the primary cause of the acute presentation.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.”",
+            "evidence_stream_2": "“Was seen by surgery who did not feel surgical intervention was warranted and no chelecystitis.”",
+            "reason": "Imaging and surgical assessment agree that there is sludge without acute cholecystitis or obstruction."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "There is a suspected hepatobiliary or gallbladder source of the upper abdominal pain, with prior ultrasound showing sludge versus non-shadowing stones but no cholecystitis and no surgical indication.",
+          "reason": "Detailed ultrasound findings and surgical evaluation clarify that hepatobiliary disease is limited to sludge without acute inflammatory or obstructive complications, so additional non-biliary intra-abdominal causes must be more strongly considered."
+        },
+        "current_question": {
+          "primary": "Is there an alternative intra-abdominal cause of this acute epigastric and right upper quadrant pain, beyond limited gallbladder sludge, that requires specific medical or surgical management?",
+          "target": "non-biliary abdominal organs and vasculature (pancreas, bowel, mesentery, vascular structures, and adjacent tissues)",
+          "type": "alternative_source",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Identifying a specific non-biliary source (e.g., pancreatic, bowel, mesenteric, or vascular pathology) would direct targeted therapy, possible surgery or intervention, and change monitoring and prognosis.",
+          "negative_answer_changes": "If no alternative intra-abdominal pathology is found, clinicians may attribute symptoms to functional or mild biliary/pancreatic disease, adjust medical management, and avoid invasive interventions while considering non-imaging evaluation.",
+          "secondary_questions": [
+            "Is there CT evidence of pancreatitis or other inflammatory, obstructive, or ischemic process in the abdomen or pelvis contributing to the pain?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_global_abd_assessment",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Comprehensive visualization of abdominal and pelvic organs including pancreas, bowel, mesentery, solid organs, and major vessels.",
+              "why_required": "A global assessment is needed to detect or exclude diverse non-biliary causes of acute abdominal pain."
+            },
+            {
+              "requirement_key": "req_presence_alt_pathology",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of structural or inflammatory pathology such as pancreatitis, bowel obstruction or perforation, ischemia, abscess, or other acute intra-abdominal processes.",
+              "why_required": "Determining whether a concrete lesion or process exists is essential to identify an alternative source for the pain."
+            },
+            {
+              "requirement_key": "req_vascular_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence of significant abdominal vascular abnormalities (e.g., aneurysm, dissection, mesenteric ischemia) that could explain or complicate the presentation.",
+              "why_required": "Vascular emergencies can cause abdominal pain and require urgent intervention; a CT angiographic technique is suited to assess these."
+            }
+          ],
+          "evidence": [
+            "“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid. Sonographic ___ sign was negative”",
+            "“Lipase: 118.0 IU/L (ref 0.0-60.0)”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_global_abd_assessment",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Only hepatobiliary ultrasound and chest radiograph are described; no prior cross-sectional imaging of the entire abdomen/pelvis is reported."
+              ],
+              "reason": "Existing imaging is limited to liver/gallbladder ultrasound and chest x-ray, without comprehensive visualization of all abdominal and pelvic organs."
+            },
+            {
+              "requirement_key": "req_presence_alt_pathology",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“Imaged portion of the pancreas appears within normal limits, without masses or pancreatic ductal dilation, with portions of the pancreatic tail obscured by overlying bowel gas.”"
+              ],
+              "reason": "Targeted ultrasound suggests a normal imaged pancreas but is limited and does not evaluate bowel, mesentery, or entire pancreas and pelvis, so many alternative pathologies remain unassessed."
+            },
+            {
+              "requirement_key": "req_vascular_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "No prior abdominal vascular imaging is described."
+              ],
+              "reason": "There is no dedicated assessment of abdominal arterial or venous structures to exclude vascular causes or complications."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Alternative intra-abdominal sources and vascular causes of pain have not been systematically evaluated beyond a limited hepatobiliary/pancreatic ultrasound."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "A CT angiography of the abdomen and pelvis provides comprehensive cross-sectional imaging of abdominal organs and vasculature, enabling detection of inflammatory, obstructive, ischemic, or vascular causes of acute abdominal pain.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The specific degree of concern for vascular pathology versus other intra-abdominal causes is not explicit in the chart, and the rationale for using an angiographic protocol instead of a standard contrast-enhanced CT abdomen/pelvis remains unstated."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "Clinicians may primarily be concerned about pancreatitis or pancreatic complications given elevated lipase and epigastric pain, using CTA abdomen/pelvis as their available contrast-enhanced CT protocol to stage pancreatitis and screen for necrosis, collections, or adjacent bowel pathology, while incidentally assessing vasculature."
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 3,
+      "ordered": "MRCP Abdomen (MRCP (MR ABD W&W/OC))",
+      "request_prompt_sha256": "81a9cb2e9684a4effa4976140a8f669182689358aa6abb7e157162989dd5b6f2",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "81a9cb2e9684a4effa4976140a8f669182689358aa6abb7e157162989dd5b6f2",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis centered in the pancreatic body and tail with surrounding fat stranding and no loculated fluid collection on CTA.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "organ-level diagnosis",
+                  "status": "established",
+                  "evidence": [
+                    "“There is fat stranding surrounding the pancreatic body and tail likely related to pancreatitis.  No loculated fluid collection.”",
+                    "“Lipase: 118.0 IU/L (ref 0.0-60.0)”"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there an alternative intra-abdominal cause of this acute epigastric and right upper quadrant pain, beyond limited gallbladder sludge, that requires specific medical or surgical management?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "CTA abdomen and pelvis provided a comprehensive evaluation of abdominal organs and vasculature and demonstrated inflammatory changes around the pancreatic body and tail consistent with pancreatitis without vascular catastrophe or other acute alternative source, thereby identifying a concrete non-biliary cause for the pain while not showing major vascular complications.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "“There is fat stranding surrounding the pancreatic body and tail likely related to pancreatitis.”",
+                  "evidence_stream_2": "“Lipase: 118.0 IU/L (ref 0.0-60.0)”",
+                  "reason": "Cross-sectional imaging evidence of pancreatitis aligns with the elevated lipase and epigastric pain syndrome."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "A non-biliary intra-abdominal source of pain remains a concern given persistent symptoms and only partially explanatory biliary findings.",
+                "reason": "CTA localized the non-biliary source to the pancreas by showing peripancreatic fat stranding consistent with pancreatitis, converting a broad alternative-source concern into a specific diagnosed etiology."
+              },
+              "current_question": {
+                "primary": "Is there biliary or pancreatic ductal pathology, such as choledocholithiasis or obstructing lesions, contributing to or triggering this acute pancreatitis and upper abdominal pain?",
+                "target": "biliary tree and pancreatic ducts (common bile duct, intrahepatic ducts, cystic duct, pancreatic duct) and potential intraluminal or mural obstructing lesions",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Demonstrating choledocholithiasis, biliary obstruction, or a ductal lesion would support a biliary/ductal mechanism for pancreatitis and could prompt targeted interventions such as ERCP, cholecystectomy planning, or closer oncologic/gastroenterologic evaluation.",
+                "negative_answer_changes": "If MRCP shows no stones, strictures, or obstructing ductal lesions, clinicians may attribute the pancreatitis to non-biliary causes (e.g., medication such as chronic NSAID use or other idiopathic mechanisms), avoid invasive biliary procedures, and focus on conservative management and longitudinal surveillance of incidental lesions.",
+                "secondary_questions": [
+                  "Is there choledocholithiasis or subtle biliary obstruction not detected on prior ultrasound and CTA that would alter management?",
+                  "Are there additional pancreatic ductal abnormalities or communication with the small pancreatic tail cystic lesion (likely side-branch IPMN) that are relevant to the current episode and future risk?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_biliary_tree_assessment",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "High-quality visualization of the intrahepatic and extrahepatic bile ducts, cystic duct, and gallbladder contents for stones, sludge, or strictures.",
+                    "why_required": "Determining whether occult biliary obstruction or stones are present is essential to establish a biliary etiology for the pancreatitis and guide potential ERCP or surgical intervention."
+                  },
+                  {
+                    "requirement_key": "req_choledocho_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of choledocholithiasis, obstructing sludge, or stricturing lesions in the common bile duct.",
+                    "why_required": "Identifying or excluding choledocholithiasis directly informs whether an endoscopic or surgical biliary intervention is indicated."
+                  },
+                  {
+                    "requirement_key": "req_pancreatic_duct_character",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Characterization of the main pancreatic duct and its branches, including dilation, strictures, communication with the 8 mm tail lesion, or features suggesting IPMN or other cystic neoplasm.",
+                    "why_required": "Pancreatic duct anatomy and its relationship to the small tail lesion help clarify mechanisms of pancreatitis and influence long-term surveillance and potential specialty referral."
+                  }
+                ],
+                "evidence": [
+                  "“There is fat stranding surrounding the pancreatic body and tail likely related to pancreatitis.”",
+                  "“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.”"
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_biliary_tree_assessment",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "mixed",
+                    "supporting_evidence": [
+                      "“There is no evidence of intrahepatic or extrahepatic biliary dilatation.”",
+                      "“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.  Sonographic ___ sign was negative”"
+                    ],
+                    "reason": "Ultrasound and CTA show a non-dilated biliary tree and gallbladder sludge without cholecystitis, but neither modality optimally visualizes small ductal stones or subtle strictures throughout the entire biliary tree."
+                  },
+                  {
+                    "requirement_key": "req_choledocho_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "“The CBD measures 4 mm.”",
+                      "“There is no evidence of intrahepatic or extrahepatic biliary dilatation.”"
+                    ],
+                    "reason": "A normal-caliber CBD and absence of biliary ductal dilatation make significant obstructing choledocholithiasis less likely, but they do not definitively exclude small or intermittently obstructing stones or sludge."
+                  },
+                  {
+                    "requirement_key": "req_pancreatic_duct_character",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "“There is a 8 mm hypodense lesion the tail of pancreas likely side branch IPMN.”"
+                    ],
+                    "reason": "Prior ultrasound and CTA identify a small probable side-branch IPMN but provide limited detail on main pancreatic duct caliber, branching pattern, or direct communication with the cystic lesion in the context of pancreatitis."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Existing ultrasound and CTA partially evaluate the biliary tree and suggest no major obstruction but do not definitively address small-duct stones, subtle strictures, or detailed pancreatic ductal anatomy relevant to the etiology of pancreatitis."
+              },
+              "current_order_fit": {
+                "test_question_capability": "capable",
+                "why_this_order_could_answer": "MRCP provides high-resolution, noninvasive imaging of the biliary and pancreatic ducts, well suited to detect choledocholithiasis, strictures, and ductal communication with small pancreatic cystic lesions that may underlie or modify the course of pancreatitis.",
+                "intent_support": "well_supported",
+                "unsupported_residual": "The chart does not clearly distinguish whether the primary concern is occult choledocholithiasis versus characterization of the incidental pancreatic tail lesion and duct, or both, and it does not explicitly state any abnormal liver chemistries or recurrent attacks that might strengthen the biliary-etiology hypothesis."
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "Clinicians may be primarily using MRCP to stage pancreatitis and plan long-term surveillance of the small pancreatic tail lesion (probable side-branch IPMN) by better defining pancreatic ductal anatomy and lesion communication, while secondarily excluding subtle biliary obstruction as a trigger."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis centered in the pancreatic body and tail with surrounding fat stranding and no loculated fluid collection on CTA.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ-level diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"“There is fat stranding surrounding the pancreatic body and tail likely related to pancreatitis.  No loculated fluid collection.”\",\n        \"“Lipase: 118.0 IU/L (ref 0.0-60.0)”\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there an alternative intra-abdominal cause of this acute epigastric and right upper quadrant pain, beyond limited gallbladder sludge, that requires specific medical or surgical management?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"CTA abdomen and pelvis provided a comprehensive evaluation of abdominal organs and vasculature and demonstrated inflammatory changes around the pancreatic body and tail consistent with pancreatitis without vascular catastrophe or other acute alternative source, thereby identifying a concrete non-biliary cause for the pain while not showing major vascular complications.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"“There is fat stranding surrounding the pancreatic body and tail likely related to pancreatitis.”\",\n      \"evidence_stream_2\": \"“Lipase: 118.0 IU/L (ref 0.0-60.0)”\",\n      \"reason\": \"Cross-sectional imaging evidence of pancreatitis aligns with the elevated lipase and epigastric pain syndrome.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"A non-biliary intra-abdominal source of pain remains a concern given persistent symptoms and only partially explanatory biliary findings.\",\n    \"reason\": \"CTA localized the non-biliary source to the pancreas by showing peripancreatic fat stranding consistent with pancreatitis, converting a broad alternative-source concern into a specific diagnosed etiology.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there biliary or pancreatic ductal pathology, such as choledocholithiasis or obstructing lesions, contributing to or triggering this acute pancreatitis and upper abdominal pain?\",\n    \"target\": \"biliary tree and pancreatic ducts (common bile duct, intrahepatic ducts, cystic duct, pancreatic duct) and potential intraluminal or mural obstructing lesions\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Demonstrating choledocholithiasis, biliary obstruction, or a ductal lesion would support a biliary/ductal mechanism for pancreatitis and could prompt targeted interventions such as ERCP, cholecystectomy planning, or closer oncologic/gastroenterologic evaluation.\",\n    \"negative_answer_changes\": \"If MRCP shows no stones, strictures, or obstructing ductal lesions, clinicians may attribute the pancreatitis to non-biliary causes (e.g., medication such as chronic NSAID use or other idiopathic mechanisms), avoid invasive biliary procedures, and focus on conservative management and longitudinal surveillance of incidental lesions.\",\n    \"secondary_questions\": [\n      \"Is there choledocholithiasis or subtle biliary obstruction not detected on prior ultrasound and CTA that would alter management?\",\n      \"Are there additional pancreatic ductal abnormalities or communication with the small pancreatic tail cystic lesion (likely side-branch IPMN) that are relevant to the current episode and future risk?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_biliary_tree_assessment\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"High-quality visualization of the intrahepatic and extrahepatic bile ducts, cystic duct, and gallbladder contents for stones, sludge, or strictures.\",\n        \"why_required\": \"Determining whether occult biliary obstruction or stones are present is essential to establish a biliary etiology for the pancreatitis and guide potential ERCP or surgical intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_choledocho_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of choledocholithiasis, obstructing sludge, or stricturing lesions in the common bile duct.\",\n        \"why_required\": \"Identifying or excluding choledocholithiasis directly informs whether an endoscopic or surgical biliary intervention is indicated.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreatic_duct_character\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Characterization of the main pancreatic duct and its branches, including dilation, strictures, communication with the 8 mm tail lesion, or features suggesting IPMN or other cystic neoplasm.\",\n        \"why_required\": \"Pancreatic duct anatomy and its relationship to the small tail lesion help clarify mechanisms of pancreatitis and influence long-term surveillance and potential specialty referral.\"\n      }\n    ],\n    \"evidence\": [\n      \"“There is fat stranding surrounding the pancreatic body and tail likely related to pancreatitis.”\",\n      \"“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.”\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_biliary_tree_assessment\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"mixed\",\n        \"supporting_evidence\": [\n          \"“There is no evidence of intrahepatic or extrahepatic biliary dilatation.”\",\n          \"“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.  Sonographic ___ sign was negative”\"\n        ],\n        \"reason\": \"Ultrasound and CTA show a non-dilated biliary tree and gallbladder sludge without cholecystitis, but neither modality optimally visualizes small ductal stones or subtle strictures throughout the entire biliary tree.\"\n      },\n      {\n        \"requirement_key\": \"req_choledocho_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"“The CBD measures 4 mm.”\",\n          \"“There is no evidence of intrahepatic or extrahepatic biliary dilatation.”\"\n        ],\n        \"reason\": \"A normal-caliber CBD and absence of biliary ductal dilatation make significant obstructing choledocholithiasis less likely, but they do not definitively exclude small or intermittently obstructing stones or sludge.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreatic_duct_character\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"“There is a 8 mm hypodense lesion the tail of pancreas likely side branch IPMN.”\"\n        ],\n        \"reason\": \"Prior ultrasound and CTA identify a small probable side-branch IPMN but provide limited detail on main pancreatic duct caliber, branching pattern, or direct communication with the cystic lesion in the context of pancreatitis.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Existing ultrasound and CTA partially evaluate the biliary tree and suggest no major obstruction but do not definitively address small-duct stones, subtle strictures, or detailed pancreatic ductal anatomy relevant to the etiology of pancreatitis.\"\n  },\n  \"current_order_fit\": {\n    \"test_question_capability\": \"capable\",\n    \"why_this_order_could_answer\": \"MRCP provides high-resolution, noninvasive imaging of the biliary and pancreatic ducts, well suited to detect choledocholithiasis, strictures, and ductal communication with small pancreatic cystic lesions that may underlie or modify the course of pancreatitis.\",\n    \"intent_support\": \"well_supported\",\n    \"unsupported_residual\": \"The chart does not clearly distinguish whether the primary concern is occult choledocholithiasis versus characterization of the incidental pancreatic tail lesion and duct, or both, and it does not explicitly state any abnormal liver chemistries or recurrent attacks that might strengthen the biliary-etiology hypothesis.\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"Clinicians may be primarily using MRCP to stage pancreatitis and plan long-term surveillance of the small pancreatic tail lesion (probable side-branch IPMN) by better defining pancreatic ductal anatomy and lesion communication, while secondarily excluding subtle biliary obstruction as a trigger.\"\n}",
+            "request_id": "gen-1788192859-dXSQLE0o2t4JhJxWyV21",
+            "usage": {
+              "completion_tokens": 1967,
+              "prompt_tokens": 6389,
+              "total_tokens": 8356,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2432,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02492025,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02492025,
+                "upstream_inference_prompt_cost": 0.00525025,
+                "upstream_inference_completions_cost": 0.01967
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis centered in the pancreatic body and tail with surrounding fat stranding and no loculated fluid collection on CTA.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "organ-level diagnosis",
+            "status": "established",
+            "evidence": [
+              "“There is fat stranding surrounding the pancreatic body and tail likely related to pancreatitis.  No loculated fluid collection.”",
+              "“Lipase: 118.0 IU/L (ref 0.0-60.0)”"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there an alternative intra-abdominal cause of this acute epigastric and right upper quadrant pain, beyond limited gallbladder sludge, that requires specific medical or surgical management?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "CTA abdomen and pelvis provided a comprehensive evaluation of abdominal organs and vasculature and demonstrated inflammatory changes around the pancreatic body and tail consistent with pancreatitis without vascular catastrophe or other acute alternative source, thereby identifying a concrete non-biliary cause for the pain while not showing major vascular complications.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "“There is fat stranding surrounding the pancreatic body and tail likely related to pancreatitis.”",
+            "evidence_stream_2": "“Lipase: 118.0 IU/L (ref 0.0-60.0)”",
+            "reason": "Cross-sectional imaging evidence of pancreatitis aligns with the elevated lipase and epigastric pain syndrome."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "A non-biliary intra-abdominal source of pain remains a concern given persistent symptoms and only partially explanatory biliary findings.",
+          "reason": "CTA localized the non-biliary source to the pancreas by showing peripancreatic fat stranding consistent with pancreatitis, converting a broad alternative-source concern into a specific diagnosed etiology."
+        },
+        "current_question": {
+          "primary": "Is there biliary or pancreatic ductal pathology, such as choledocholithiasis or obstructing lesions, contributing to or triggering this acute pancreatitis and upper abdominal pain?",
+          "target": "biliary tree and pancreatic ducts (common bile duct, intrahepatic ducts, cystic duct, pancreatic duct) and potential intraluminal or mural obstructing lesions",
+          "type": "etiology_or_mechanism",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Demonstrating choledocholithiasis, biliary obstruction, or a ductal lesion would support a biliary/ductal mechanism for pancreatitis and could prompt targeted interventions such as ERCP, cholecystectomy planning, or closer oncologic/gastroenterologic evaluation.",
+          "negative_answer_changes": "If MRCP shows no stones, strictures, or obstructing ductal lesions, clinicians may attribute the pancreatitis to non-biliary causes (e.g., medication such as chronic NSAID use or other idiopathic mechanisms), avoid invasive biliary procedures, and focus on conservative management and longitudinal surveillance of incidental lesions.",
+          "secondary_questions": [
+            "Is there choledocholithiasis or subtle biliary obstruction not detected on prior ultrasound and CTA that would alter management?",
+            "Are there additional pancreatic ductal abnormalities or communication with the small pancreatic tail cystic lesion (likely side-branch IPMN) that are relevant to the current episode and future risk?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_biliary_tree_assessment",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "High-quality visualization of the intrahepatic and extrahepatic bile ducts, cystic duct, and gallbladder contents for stones, sludge, or strictures.",
+              "why_required": "Determining whether occult biliary obstruction or stones are present is essential to establish a biliary etiology for the pancreatitis and guide potential ERCP or surgical intervention."
+            },
+            {
+              "requirement_key": "req_choledocho_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of choledocholithiasis, obstructing sludge, or stricturing lesions in the common bile duct.",
+              "why_required": "Identifying or excluding choledocholithiasis directly informs whether an endoscopic or surgical biliary intervention is indicated."
+            },
+            {
+              "requirement_key": "req_pancreatic_duct_character",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Characterization of the main pancreatic duct and its branches, including dilation, strictures, communication with the 8 mm tail lesion, or features suggesting IPMN or other cystic neoplasm.",
+              "why_required": "Pancreatic duct anatomy and its relationship to the small tail lesion help clarify mechanisms of pancreatitis and influence long-term surveillance and potential specialty referral."
+            }
+          ],
+          "evidence": [
+            "“There is fat stranding surrounding the pancreatic body and tail likely related to pancreatitis.”",
+            "“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.”"
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_biliary_tree_assessment",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "mixed",
+              "supporting_evidence": [
+                "“There is no evidence of intrahepatic or extrahepatic biliary dilatation.”",
+                "“There is mobile sludge within the gallbladder with no gallbladder wall thickening or pericholecystic fluid.  Sonographic ___ sign was negative”"
+              ],
+              "reason": "Ultrasound and CTA show a non-dilated biliary tree and gallbladder sludge without cholecystitis, but neither modality optimally visualizes small ductal stones or subtle strictures throughout the entire biliary tree."
+            },
+            {
+              "requirement_key": "req_choledocho_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "“The CBD measures 4 mm.”",
+                "“There is no evidence of intrahepatic or extrahepatic biliary dilatation.”"
+              ],
+              "reason": "A normal-caliber CBD and absence of biliary ductal dilatation make significant obstructing choledocholithiasis less likely, but they do not definitively exclude small or intermittently obstructing stones or sludge."
+            },
+            {
+              "requirement_key": "req_pancreatic_duct_character",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "“There is a 8 mm hypodense lesion the tail of pancreas likely side branch IPMN.”"
+              ],
+              "reason": "Prior ultrasound and CTA identify a small probable side-branch IPMN but provide limited detail on main pancreatic duct caliber, branching pattern, or direct communication with the cystic lesion in the context of pancreatitis."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Existing ultrasound and CTA partially evaluate the biliary tree and suggest no major obstruction but do not definitively address small-duct stones, subtle strictures, or detailed pancreatic ductal anatomy relevant to the etiology of pancreatitis."
+        },
+        "current_order_fit": {
+          "test_question_capability": "capable",
+          "why_this_order_could_answer": "MRCP provides high-resolution, noninvasive imaging of the biliary and pancreatic ducts, well suited to detect choledocholithiasis, strictures, and ductal communication with small pancreatic cystic lesions that may underlie or modify the course of pancreatitis.",
+          "intent_support": "well_supported",
+          "unsupported_residual": "The chart does not clearly distinguish whether the primary concern is occult choledocholithiasis versus characterization of the incidental pancreatic tail lesion and duct, or both, and it does not explicitly state any abnormal liver chemistries or recurrent attacks that might strengthen the biliary-etiology hypothesis."
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "Clinicians may be primarily using MRCP to stage pancreatitis and plan long-term surveillance of the small pancreatic tail lesion (probable side-branch IPMN) by better defining pancreatic ductal anatomy and lesion communication, while secondarily excluding subtle biliary obstruction as a trigger."
+      },
+      "validation_errors": []
+    }
+  ]
+}
