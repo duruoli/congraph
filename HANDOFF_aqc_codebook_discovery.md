@@ -1,5 +1,81 @@
 # A/Q/C development annotation handoff
 
+## 2026-09-02 latest checkpoint: bridge 006 fully adjudicated and quality-cleared
+
+> **新对话从本节开始；本节覆盖下方 bridge 006 pending-authorization checkpoint。**
+> final test 临床内容仍未读取。主 annotation prompt 未修改，SHA-256 仍为
+> `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`；validator 为 `3.1.0`。
+
+- bridge 006 冻结 manifest、causal-mask review、主生成和 manifest-scoped invalid-step repairs 的细节见下一节。
+  主 annotation 共 73 calls，记录费用 `$1.896766`。
+- 经第二次明确授权，7 个 dry-run targeted payload 仅发送至 OpenRouter `openai/gpt-5.1`，用于局部 A/Q/C
+  temporal/discordance repair：7 calls / 7 request IDs / 7 usage objects，18,233 prompt tokens、1,535
+  completion tokens，记录费用 `$0.038141`。2 个 step 产生通过门禁的修补：
+  `cholecystitis:25217286:s2` 的伪 discordance 改为 `not_applicable`；
+  `cholecystitis:24636219:s2` 增加 temporal requirement 及对应 coverage。其余 5 个保留原判断。
+- 主 annotation + targeted 的记录总费用为 `$1.934907`；OpenRouter billing 仍为权威值。
+- 剩余 12 个 algorithmic `nonverbatim_unresolved` 已逐项人工裁决：合并 lab 行缩减为逐字 source line，
+  absence/technique summaries 删除，拼错的 lab name 修正，非连续的院外 CT 摘要恢复为完整逐字句；
+  `appendicitis:25547534:s2` 将“假设 vs 阴性检查”伪 discordance 改为 `not_applicable`。
+- 最终 non-destructive overlay：
+  `results/aqc_direct/development/697923b99721/manual_adjudication_bridge_006.json`，共覆盖 20 steps；原始模型
+  输出未覆盖。最终 algorithmic 重扫：31 steps、0 issues、0 unresolved nonverbatim、0 remaining operations、
+  0 invalid。最终 batch audit：20/20 patients、31/31 steps、0 validator invalid、0 low-evidence-fidelity items。
+- 唯一 exact repeat `appendicitis:22881737:s2` 已人工核对：它是实际第二次 CT，报告与第一次不同，不是重复
+  数据。repeat 本身不足以强制 temporal requirement；由于可见材料没有明确说明当前 Q 是 interval response，
+  保留原 Q，不作猜测性改写。
+- `scripts/aqc_algorithmic_auditor.py` 的空-assumption-evidence 修补已回归 bridge 004 makeup、005、006，三批
+  normalization 后均为 0 invalid。
+- Development 当前共完成 84 位互不重复患者；尚余 51 位。继续排除 final test。
+
+### 下一步
+
+1. 若继续 annotation，按同一规则冻结下一批全新 development manifest，排除已完成 84 位患者与 final test。
+2. 先 causal-mask preflight + 人工裁决；外发前对新冻结批次、OpenRouter、`openai/gpt-5.1`、A/Q/C 用途和
+   cost-stop 策略重新取得明确授权。
+3. 生成后继续 validator → algorithmic auditor → targeted dry-run；targeted 的实际候选 payload 另行授权。
+
+## 2026-09-02 latest checkpoint: bridge 006 generated; targeted payload awaiting authorization
+
+> **新对话从本节开始；本节覆盖下方 checkpoint 的“下一步”。**
+> final test 临床内容仍未读取。主 annotation prompt 未修改，SHA-256 仍为
+> `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`；validator 为 `3.1.0`。
+
+- 冻结 manifest：`data/aqc_direct/bridge_697923b99721_006.json`；SHA-256
+  `10698BD5A2F362DBF3557B23139AF32809FE4DFAD490635F437EFC319FEDEAEC`。共 20 位全新 development
+  患者 / 31 steps：appendicitis 4、cholecystitis 8、pancreatitis 8。
+- causal-mask preflight 命中 3 个候选：`cholecystitis:22023307:s2` 确认为当前 CT 结果泄漏并做精确、
+  hash-bound 的内存 redaction；另 2 个确认为院外既往检查。review 位于
+  `data/aqc_direct/bridge_697923b99721_006_leakage_review.json`；复验 `blocking=false`。
+- 经明确授权，冻结批次仅发送至 OpenRouter `openai/gpt-5.1`，用于 A/Q/C development annotation，采用
+  `--no-cost-stop`。普通生成后 5 位患者含无效 step，第一次 manifest-scoped repair 后仍余
+  `cholecystitis:24308410:s1` 不可解析；第二次仅修复该 step 后，31/31 均通过 validator 3.1.0。
+- 共保留 73 attempts / 73 request IDs / 73 usage objects，285,677 prompt tokens、170,239 completion tokens，
+  记录累计费用 `$1.896766`；OpenRouter billing 仍为权威值。
+- batch audit：20/20 patients、31/31 steps、0 current-validator invalid、0 low-evidence-fidelity items；有 1 个
+  exact repeat：`appendicitis:22881737:s2`。人工检查确认它是实际第二次 CT（报告与第一次不同），不是重复
+  数据文件；是否应把 Q 改写为 temporal follow-up 仍属于语义判断，不作机械改写。
+- algorithmic auditor 初次在 `appendicitis:22881737:s1` 删除唯一 scaffolding evidence 后留下空 evidence，
+  自己制造 validator 错误。`scripts/aqc_algorithmic_auditor.py` 已修正：若 assumptions 超过最少 3 项，整体
+  删除失去全部合法 evidence 的 assumption；否则回退该操作并留给 adjudication。bridge 004 makeup、005、
+  006 回归均为 normalization 后 0 invalid。bridge 006 当前为 42 issues / 18 steps、29 个确定性 operations、
+  12 个 unresolved nonverbatim；proposed overlay 尚未合并为最终 adjudication。
+- targeted auditor dry-run 形成 7-step 实际 payload，尚未外发：2 temporal
+  (`cholecystitis:24636219:s2`, `pancreatitis:21775506:s1`)；5 discordance
+  (`cholecystitis:25217286:s2`, `pancreatitis:28920003:s2`, `appendicitis:25547534:s2`,
+  `cholecystitis:22023307:s2`, `pancreatitis:24197495:s2`)。prompt hashes 保持 temporal
+  `c3a7693366a61fece4ad14837a69565d5fa2a660ea67901e1ab06f0ad9b3a66b`、discordance
+  `3b9c140b3b828e1c5a04fd7a98ddddd1a30fc3b0182e49c11888f61ec016e88d`。
+
+### 下一步
+
+1. 先取得上述 7-step targeted payload 发送至 OpenRouter `openai/gpt-5.1`、用于局部 temporal/discordance
+   A/Q/C repair 的明确授权；此前只保留 dry-run。
+2. 获授权后运行 targeted `--execute`，然后重跑 algorithmic auditor + validator；若 targeted correction
+   引入新 nonverbatim evidence 或硬错误则拒绝该 correction。
+3. 人工裁决剩余 12 个 nonverbatim evidence 和 exact-repeat 的 temporal 语义；只将通过复验的 overlay
+   提升为最终 adjudication，原始模型输出不得覆盖。
+
 ## 2026-09-02 latest checkpoint: post-generation quality gate implemented through targeted-auditor dry-run
 
 > **新对话从本节开始；本节覆盖下方 checkpoint 中关于 active validator 和下一步流程的旧说明。**

@@ -229,6 +229,40 @@ def audit_and_normalize(
         else:
             issues.append({"path": path, "kind": "nonverbatim_unresolved", "quote": quote})
 
+    # Removing a forbidden/empty item can leave an assumption with no evidence.
+    # When the output has more than the required three assumptions, the only
+    # deterministic repair is to remove that now-unsupported assumption rather
+    # than emit an invalid empty evidence list.  If removal would violate the
+    # minimum assumption count, retain the original item and leave the issue for
+    # adjudication instead of manufacturing a validator failure.
+    assumptions = value.get("assumptions")
+    if isinstance(assumptions, list):
+        provisional = apply_operations(value, operations)
+        empty_indices = [
+            index
+            for index, assumption in enumerate(provisional.get("assumptions") or [])
+            if isinstance(assumption, dict) and not (assumption.get("evidence") or [])
+        ]
+        removable = max(0, len(assumptions) - 3)
+        for index in reversed(empty_indices):
+            prefix = f"/assumptions/{index}/"
+            operations = [
+                operation for operation in operations
+                if not str(operation["path"]).startswith(prefix)
+            ]
+            if removable:
+                operations.append({"op": "remove", "path": f"/assumptions/{index}"})
+                issues.append({
+                    "path": f"/assumptions/{index}",
+                    "kind": "unsupported_assumption_removed",
+                })
+                removable -= 1
+            else:
+                issues.append({
+                    "path": f"/assumptions/{index}",
+                    "kind": "unsupported_assumption_unresolved_minimum_count",
+                })
+
     previous = value.get("previous_order_update")
     if is_first_step and isinstance(previous, dict):
         for field in ("study_adequacy", "test_question_capability", "result_status"):

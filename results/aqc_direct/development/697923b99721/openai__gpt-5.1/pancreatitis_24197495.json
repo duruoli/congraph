@@ -1,0 +1,844 @@
+{
+  "schema_version": "2.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 24197495,
+  "source_path": "results/annotation_experiment/full/pancreatitis_24197495.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1",
+  "validator_version": "3.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "causal_mask_algorithm_version": "1.1.0-hpi-current-report-overlap-reviewed-redaction",
+  "causal_mask_review": "data\\aqc_direct\\bridge_697923b99721_006_leakage_review.json",
+  "causal_mask_review_sha256": "06a4fd08244937b92a9a31aba121db4887ab77d57a399b33fd2e4577cd64b2e3",
+  "original_hpi_sha256": "f9ace336ff4d224a942500627e83f09a400ee205e18e95e6a91d8f18385ae44d",
+  "filtered_hpi_sha256": "17770db6da91ce993f3e62a8333e515e5e2c8d5fb8d13d654d6ae6a68c94096d",
+  "applied_hpi_redactions": [],
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "d6a77e06b95abee5f1f6925f5ebc71fd5cd15d2e039bbe75f467a3f2849b8905",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "d6a77e06b95abee5f1f6925f5ebc71fd5cd15d2e039bbe75f467a3f2849b8905",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis causing her current abdominal pain.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome",
+                  "status": "likely",
+                  "evidence": [
+                    "Pain began at 10pm ___ described as sharp, constant ___ abdominal pain that radiates around to her back.",
+                    "Labs significant for Lipase of 2632."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Gallstone disease (biliary pancreatitis or choledocholithiasis) is a possible etiology of this acute pancreatitis.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "A ___ female with obesity and compensated cirrhosis ___ NASH presented to the ED with acute onset abdominal pain.",
+                    "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Alcohol is not clearly sufficient to explain this episode of pancreatitis.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism",
+                  "status": "challenged",
+                  "evidence": [
+                    "She does drink alcohol. She says she has ___ drinks per week, usually 1 day per week.",
+                    "She did have 2 glasses of wine with lunch the day prior to admission."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has underlying chronic liver disease from NASH cirrhosis, which increases the importance and risk of biliary pathology.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "disease extent and context",
+                  "status": "established",
+                  "evidence": [
+                    "Past Medical History: -Cirrhosis due to nonalcoholic steatohepatitis",
+                    "Albumin: 2.8 g/dL (ref 3.5-5.2)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "No prior imaging has evaluated the gallbladder or biliary tree in this episode.",
+                  "type": "other",
+                  "other_proposed_type": "diagnostic_context",
+                  "level": "diagnostic history",
+                  "status": "established",
+                  "evidence": [
+                    "Pt had an U/S which showed no ascites",
+                    "CXR with no free air or other abnormality."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision point, so baseline assumptions are being set."
+              },
+              "current_question": {
+                "primary": "Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, that explains or complicates this episode of acute pancreatitis?",
+                "target": "gallbladder and extrahepatic biliary tree (gallstones, wall inflammation, ductal dilation/obstruction)",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Support diagnosis of biliary pancreatitis or choledocholithiasis and prompt consideration of GI/surgical consultation and specific biliary interventions.",
+                "negative_answer_changes": "Shift focus toward non-biliary causes of pancreatitis (e.g., medication, idiopathic, less likely alcohol) and avoid unnecessary biliary procedures.",
+                "secondary_questions": [
+                  "Is there sonographic evidence of acute cholecystitis (e.g., wall thickening, pericholecystic fluid) that would alter management?",
+                  "Is there intra- or extrahepatic bile duct dilation suggesting significant obstruction that may need urgent decompression?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_visualize_gb",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization and assessment of the gallbladder for stones, sludge, wall thickness, and pericholecystic fluid.",
+                    "why_required": "Determining whether gallbladder pathology is present is essential to identify biliary pancreatitis or cholecystitis as an etiology."
+                  },
+                  {
+                    "requirement_key": "req_biliary_obstruction",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of common bile duct dilation or obstructing stone at the distal CBD.",
+                    "why_required": "Detecting biliary obstruction or choledocholithiasis would explain pancreatitis and guide need for ERCP or other intervention."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Anatomic localization of any stones or obstructive lesions to gallbladder, cystic duct, or common bile duct.",
+                    "why_required": "Localization determines whether cholecystectomy alone or endoscopic/surgical bile duct intervention is required."
+                  },
+                  {
+                    "requirement_key": "req_cholecystitis",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Evidence of acute cholecystitis or other gallbladder complications (e.g., marked wall thickening, pericholecystic fluid, sonographic Murphy sign).",
+                    "why_required": "Complicated gallbladder disease would change urgency and type of surgical or medical management."
+                  }
+                ],
+                "evidence": [
+                  "Labs significant for Lipase of 2632.",
+                  "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_visualize_gb",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Pt had an U/S which showed no ascites"
+                    ],
+                    "reason": "The prior ultrasound was noted only to assess for ascites; no information about gallbladder visualization, stones, or wall characteristics is documented."
+                  },
+                  {
+                    "requirement_key": "req_biliary_obstruction",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+                    ],
+                    "reason": "Biochemical cholestasis suggests possible obstruction, but there is no imaging description of common bile duct size or obstructing lesions."
+                  },
+                  {
+                    "requirement_key": "req_localization",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "She has no known history of gall stones."
+                    ],
+                    "reason": "There is no current imaging evidence of stones in any biliary segment, so no anatomic localization has been achieved."
+                  },
+                  {
+                    "requirement_key": "req_cholecystitis",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Abdomen: BS+. Soft, nondistended. Mild tenderness to palpation  just left of epigastric, otherwise nontender."
+                    ],
+                    "reason": "Physical exam does not show classic right upper quadrant findings, and there is no imaging yet to characterize cholecystitis or other complications."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "No prior study in this episode has been documented to evaluate the gallbladder or biliary tree, leaving all biliary etiology and complication questions unanswered."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": "An alternative but related reconstruction is that the primary question is whether there is any acute hepatobiliary complication of cirrhosis (including biliary obstruction, portal vein changes not well seen on this exam, or incidental masses) in a cirrhotic patient with abdominal pain and cholestatic labs. Under that framing, the ultrasound is still aimed at identifying a structural hepatobiliary cause for pain and abnormal liver tests, with biliary pancreatitis as one of several considerations; coverage remains essentially unaddressed before this order, and the ordered liver/gallbladder ultrasound is still an appropriate test to answer it."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis causing her current abdominal pain.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Pain began at 10pm ___ described as sharp, constant ___ abdominal pain that radiates around to her back.\",\n        \"Labs significant for Lipase of 2632.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallstone disease (biliary pancreatitis or choledocholithiasis) is a possible etiology of this acute pancreatitis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"A ___ female with obesity and compensated cirrhosis ___ NASH presented to the ED with acute onset abdominal pain.\",\n        \"Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Alcohol is not clearly sufficient to explain this episode of pancreatitis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"She does drink alcohol. She says she has ___ drinks per week, usually 1 day per week.\",\n        \"She did have 2 glasses of wine with lunch the day prior to admission.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has underlying chronic liver disease from NASH cirrhosis, which increases the importance and risk of biliary pathology.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease extent and context\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Past Medical History: -Cirrhosis due to nonalcoholic steatohepatitis\",\n        \"Albumin: 2.8 g/dL (ref 3.5-5.2)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"No prior imaging has evaluated the gallbladder or biliary tree in this episode.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"diagnostic_context\",\n      \"level\": \"diagnostic history\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Pt had an U/S which showed no ascites\",\n        \"CXR with no free air or other abnormality.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision point, so baseline assumptions are being set.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, that explains or complicates this episode of acute pancreatitis?\",\n    \"target\": \"gallbladder and extrahepatic biliary tree (gallstones, wall inflammation, ductal dilation/obstruction)\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Support diagnosis of biliary pancreatitis or choledocholithiasis and prompt consideration of GI/surgical consultation and specific biliary interventions.\",\n    \"negative_answer_changes\": \"Shift focus toward non-biliary causes of pancreatitis (e.g., medication, idiopathic, less likely alcohol) and avoid unnecessary biliary procedures.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of acute cholecystitis (e.g., wall thickening, pericholecystic fluid) that would alter management?\",\n      \"Is there intra- or extrahepatic bile duct dilation suggesting significant obstruction that may need urgent decompression?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_gb\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization and assessment of the gallbladder for stones, sludge, wall thickness, and pericholecystic fluid.\",\n        \"why_required\": \"Determining whether gallbladder pathology is present is essential to identify biliary pancreatitis or cholecystitis as an etiology.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_obstruction\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of common bile duct dilation or obstructing stone at the distal CBD.\",\n        \"why_required\": \"Detecting biliary obstruction or choledocholithiasis would explain pancreatitis and guide need for ERCP or other intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Anatomic localization of any stones or obstructive lesions to gallbladder, cystic duct, or common bile duct.\",\n        \"why_required\": \"Localization determines whether cholecystectomy alone or endoscopic/surgical bile duct intervention is required.\"\n      },\n      {\n        \"requirement_key\": \"req_cholecystitis\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Evidence of acute cholecystitis or other gallbladder complications (e.g., marked wall thickening, pericholecystic fluid, sonographic Murphy sign).\",\n        \"why_required\": \"Complicated gallbladder disease would change urgency and type of surgical or medical management.\"\n      }\n    ],\n    \"evidence\": [\n      \"Labs significant for Lipase of 2632.\",\n      \"Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_gb\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Pt had an U/S which showed no ascites\"\n        ],\n        \"reason\": \"The prior ultrasound was noted only to assess for ascites; no information about gallbladder visualization, stones, or wall characteristics is documented.\"\n      },\n      {\n        \"requirement_key\": \"req_biliary_obstruction\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)\"\n        ],\n        \"reason\": \"Biochemical cholestasis suggests possible obstruction, but there is no imaging description of common bile duct size or obstructing lesions.\"\n      },\n      {\n        \"requirement_key\": \"req_localization\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"She has no known history of gall stones.\"\n        ],\n        \"reason\": \"There is no current imaging evidence of stones in any biliary segment, so no anatomic localization has been achieved.\"\n      },\n      {\n        \"requirement_key\": \"req_cholecystitis\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Abdomen: BS+. Soft, nondistended. Mild tenderness to palpation  just left of epigastric, otherwise nontender.\"\n        ],\n        \"reason\": \"Physical exam does not show classic right upper quadrant findings, and there is no imaging yet to characterize cholecystitis or other complications.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"No prior study in this episode has been documented to evaluate the gallbladder or biliary tree, leaving all biliary etiology and complication questions unanswered.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"An alternative but related reconstruction is that the primary question is whether there is any acute hepatobiliary complication of cirrhosis (including biliary obstruction, portal vein changes not well seen on this exam, or incidental masses) in a cirrhotic patient with abdominal pain and cholestatic labs. Under that framing, the ultrasound is still aimed at identifying a structural hepatobiliary cause for pain and abnormal liver tests, with biliary pancreatitis as one of several considerations; coverage remains essentially unaddressed before this order, and the ordered liver/gallbladder ultrasound is still an appropriate test to answer it.\"\n}",
+            "request_id": "gen-1788325270-YYl0BwK9L1UIkDrtNHqQ",
+            "usage": {
+              "completion_tokens": 2124,
+              "prompt_tokens": 3412,
+              "total_tokens": 5536,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.025505,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.025505,
+                "upstream_inference_prompt_cost": 0.004265,
+                "upstream_inference_completions_cost": 0.02124
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis causing her current abdominal pain.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome",
+            "status": "likely",
+            "evidence": [
+              "Pain began at 10pm ___ described as sharp, constant ___ abdominal pain that radiates around to her back.",
+              "Labs significant for Lipase of 2632."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Gallstone disease (biliary pancreatitis or choledocholithiasis) is a possible etiology of this acute pancreatitis.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism",
+            "status": "suspected",
+            "evidence": [
+              "A ___ female with obesity and compensated cirrhosis ___ NASH presented to the ED with acute onset abdominal pain.",
+              "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "Alcohol is not clearly sufficient to explain this episode of pancreatitis.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism",
+            "status": "challenged",
+            "evidence": [
+              "She does drink alcohol. She says she has ___ drinks per week, usually 1 day per week.",
+              "She did have 2 glasses of wine with lunch the day prior to admission."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has underlying chronic liver disease from NASH cirrhosis, which increases the importance and risk of biliary pathology.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "disease extent and context",
+            "status": "established",
+            "evidence": [
+              "Past Medical History: -Cirrhosis due to nonalcoholic steatohepatitis",
+              "Albumin: 2.8 g/dL (ref 3.5-5.2)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "No prior imaging has evaluated the gallbladder or biliary tree in this episode.",
+            "type": "other",
+            "other_proposed_type": "diagnostic_context",
+            "level": "diagnostic history",
+            "status": "established",
+            "evidence": [
+              "Pt had an U/S which showed no ascites",
+              "CXR with no free air or other abnormality."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision point, so baseline assumptions are being set."
+        },
+        "current_question": {
+          "primary": "Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, that explains or complicates this episode of acute pancreatitis?",
+          "target": "gallbladder and extrahepatic biliary tree (gallstones, wall inflammation, ductal dilation/obstruction)",
+          "type": "etiology_or_mechanism",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Support diagnosis of biliary pancreatitis or choledocholithiasis and prompt consideration of GI/surgical consultation and specific biliary interventions.",
+          "negative_answer_changes": "Shift focus toward non-biliary causes of pancreatitis (e.g., medication, idiopathic, less likely alcohol) and avoid unnecessary biliary procedures.",
+          "secondary_questions": [
+            "Is there sonographic evidence of acute cholecystitis (e.g., wall thickening, pericholecystic fluid) that would alter management?",
+            "Is there intra- or extrahepatic bile duct dilation suggesting significant obstruction that may need urgent decompression?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_visualize_gb",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization and assessment of the gallbladder for stones, sludge, wall thickness, and pericholecystic fluid.",
+              "why_required": "Determining whether gallbladder pathology is present is essential to identify biliary pancreatitis or cholecystitis as an etiology."
+            },
+            {
+              "requirement_key": "req_biliary_obstruction",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of common bile duct dilation or obstructing stone at the distal CBD.",
+              "why_required": "Detecting biliary obstruction or choledocholithiasis would explain pancreatitis and guide need for ERCP or other intervention."
+            },
+            {
+              "requirement_key": "req_localization",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Anatomic localization of any stones or obstructive lesions to gallbladder, cystic duct, or common bile duct.",
+              "why_required": "Localization determines whether cholecystectomy alone or endoscopic/surgical bile duct intervention is required."
+            },
+            {
+              "requirement_key": "req_cholecystitis",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Evidence of acute cholecystitis or other gallbladder complications (e.g., marked wall thickening, pericholecystic fluid, sonographic Murphy sign).",
+              "why_required": "Complicated gallbladder disease would change urgency and type of surgical or medical management."
+            }
+          ],
+          "evidence": [
+            "Labs significant for Lipase of 2632.",
+            "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_visualize_gb",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Pt had an U/S which showed no ascites"
+              ],
+              "reason": "The prior ultrasound was noted only to assess for ascites; no information about gallbladder visualization, stones, or wall characteristics is documented."
+            },
+            {
+              "requirement_key": "req_biliary_obstruction",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+              ],
+              "reason": "Biochemical cholestasis suggests possible obstruction, but there is no imaging description of common bile duct size or obstructing lesions."
+            },
+            {
+              "requirement_key": "req_localization",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "She has no known history of gall stones."
+              ],
+              "reason": "There is no current imaging evidence of stones in any biliary segment, so no anatomic localization has been achieved."
+            },
+            {
+              "requirement_key": "req_cholecystitis",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "Abdomen: BS+. Soft, nondistended. Mild tenderness to palpation  just left of epigastric, otherwise nontender."
+              ],
+              "reason": "Physical exam does not show classic right upper quadrant findings, and there is no imaging yet to characterize cholecystitis or other complications."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "No prior study in this episode has been documented to evaluate the gallbladder or biliary tree, leaving all biliary etiology and complication questions unanswered."
+        },
+        "current_order_fit": {
+          "question_grounding": "well_supported",
+          "test_question_capability": "capable"
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": "An alternative but related reconstruction is that the primary question is whether there is any acute hepatobiliary complication of cirrhosis (including biliary obstruction, portal vein changes not well seen on this exam, or incidental masses) in a cirrhotic patient with abdominal pain and cholestatic labs. Under that framing, the ultrasound is still aimed at identifying a structural hepatobiliary cause for pain and abnormal liver tests, with biliary pancreatitis as one of several considerations; coverage remains essentially unaddressed before this order, and the ordered liver/gallbladder ultrasound is still an appropriate test to answer it."
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "MRCP Abdomen (MRCP (MR ABD W&W/OC))",
+      "request_prompt_sha256": "a5a723c7f6dc98309f36b12e0c3eaf651702d86a0c117bdec78454de6eae67db",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "a5a723c7f6dc98309f36b12e0c3eaf651702d86a0c117bdec78454de6eae67db",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis causing her current abdominal pain.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "clinical syndrome",
+                  "status": "likely",
+                  "evidence": [
+                    "Pain began at 10pm ___ described as sharp, constant ___ abdominal pain that radiates around to her back.",
+                    "Labs significant for Lipase of 2632."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Gallstone disease is present and is a likely etiology of this acute pancreatitis.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism",
+                  "status": "likely",
+                  "evidence": [
+                    "The gallbladder is partly distended and full of stones with slight gallbladder wall edema.",
+                    "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Choledocholithiasis or occult biliary obstruction remains a concern despite a normal-caliber common bile duct on ultrasound.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "specific etiologic mechanism",
+                  "status": "suspected",
+                  "evidence": [
+                    "There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm.",
+                    "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "The patient has underlying chronic liver disease from NASH cirrhosis, which increases the importance and risk of biliary pathology and portal venous abnormalities.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "disease extent and context",
+                  "status": "established",
+                  "evidence": [
+                    "Past Medical History: -Cirrhosis due to nonalcoholic steatohepatitis",
+                    "Increased echogenicity and coarsened echotexture of the liver is consistent with cirrhosis.  No focal liver lesions are identified."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The pancreas has not yet been visualized during this episode, so the extent and complications of pancreatitis are unknown.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "disease extent",
+                  "status": "established",
+                  "evidence": [
+                    "The pancreas is not visualized.",
+                    "Labs significant for Lipase of 2632."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, that explains or complicates this episode of acute pancreatitis?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The abdominal ultrasound demonstrated a gallbladder full of stones with slight wall edema and a normal-caliber common bile duct without ductal dilatation, sufficiently answering the question about gallbladder pathology and significantly addressing but not completely excluding biliary obstruction or choledocholithiasis.",
+                "discordance": {
+                  "label": "indeterminate",
+                  "evidence_stream_1": "There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm.",
+                  "evidence_stream_2": "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)",
+                  "reason": "Biochemical cholestasis contrasts with a nondilated common bile duct, which does not prove obstruction but leaves some residual uncertainty about occult choledocholithiasis."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "Gallstone disease (biliary pancreatitis or choledocholithiasis) is a possible etiology of this acute pancreatitis.",
+                "reason": "New ultrasound findings of a gallbladder full of stones increase certainty that gallstone disease underlies the pancreatitis and shift focus toward possible choledocholithiasis despite a nondilated duct."
+              },
+              "current_question": {
+                "primary": "Is there choledocholithiasis or other obstructing pathology of the biliary tree contributing to this gallstone pancreatitis, and what is the extent and nature of pancreatitis and any associated complications?",
+                "target": "common bile duct and intra-/extra-hepatic biliary tree, and the pancreas including peripancreatic tissues",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirmation of choledocholithiasis or biliary obstruction or significant local pancreatic complications would prompt urgent GI/surgical consultation and consideration of ERCP or other interventions, and inform prognosis and level of care.",
+                "negative_answer_changes": "Absence of choledocholithiasis or major local complications would support conservative management of gallstone pancreatitis and defer invasive biliary interventions.",
+                "secondary_questions": [
+                  "What is the severity and morphologic pattern of pancreatitis (e.g., interstitial vs. necrotizing) and are there local complications such as fluid collections or necrosis?",
+                  "Is there any additional hepatobiliary or portal venous abnormality relevant to her cirrhosis that would alter management?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_bileduct_assess",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "High-quality visualization and assessment of the common bile duct and proximal biliary tree for stones, strictures, or other obstructing lesions.",
+                    "why_required": "Directly visualizing the biliary tree is necessary to detect or exclude choledocholithiasis or other causes of obstruction in gallstone pancreatitis."
+                  },
+                  {
+                    "requirement_key": "req_obstruction_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of choledocholithiasis or other obstructing pathology within the biliary tree.",
+                    "why_required": "Determining whether obstruction is present guides the need and urgency for ERCP or other decompressive procedures."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent and pattern of pancreatic inflammation, including involvement of peripancreatic tissues and presence of necrosis.",
+                    "why_required": "Severity and morphologic extent of pancreatitis influence prognosis, level of monitoring, and consideration of transfer or intensive therapies."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characteristics of local pancreatic complications such as fluid collections, pseudocysts, or vascular involvement.",
+                    "why_required": "Identifying local complications is important for procedural planning and anticipating potential deterioration or need for intervention."
+                  }
+                ],
+                "evidence": [
+                  "The gallbladder is partly distended and full of stones with slight gallbladder wall edema.",
+                  "The pancreas is not visualized."
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_bileduct_assess",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm."
+                    ],
+                    "reason": "Ultrasound assessed the common bile duct caliber and showed no dilation, but did not directly visualize or exclude small intraluminal stones throughout the biliary tree."
+                  },
+                  {
+                    "requirement_key": "req_obstruction_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm.",
+                      "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+                    ],
+                    "reason": "A normal-caliber duct without dilation argues against high-grade obstruction, but elevated alkaline phosphatase leaves residual concern for partial or intermittent choledocholithiasis that ultrasound may miss."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "The pancreas is not visualized.",
+                      "Labs significant for Lipase of 2632."
+                    ],
+                    "reason": "Pancreatic morphology and extent of disease have not been imaged; only laboratory evidence supports the diagnosis."
+                  },
+                  {
+                    "requirement_key": "req_pancreas_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "The pancreas is not visualized."
+                    ],
+                    "reason": "No imaging has evaluated for local complications such as collections, necrosis, or vascular involvement."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Ultrasound provides limited indirect information on biliary obstruction and no information on pancreatic morphology or complications, so the key etiologic and severity questions motivating MRCP remain largely unanswered."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "An alternative view is that the primary goal of MRCP is to noninvasively stage gallstone disease in a cirrhotic patient by characterizing the entire biliary tree and portal venous system, with pancreatitis severity as a secondary consideration. Under this framing, the central question is whether there is any biliary or portal venous pathology (stones, strictures, portal vein abnormalities) that would change surgical versus endoscopic management strategy in a higher-risk cirrhotic host; pre-order coverage is still limited because ultrasound did not visualize the pancreas and only provided a coarse assessment of the bile ducts."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis causing her current abdominal pain.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"clinical syndrome\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Pain began at 10pm ___ described as sharp, constant ___ abdominal pain that radiates around to her back.\",\n        \"Labs significant for Lipase of 2632.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Gallstone disease is present and is a likely etiology of this acute pancreatitis.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"The gallbladder is partly distended and full of stones with slight gallbladder wall edema.\",\n        \"Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Choledocholithiasis or occult biliary obstruction remains a concern despite a normal-caliber common bile duct on ultrasound.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific etiologic mechanism\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm.\",\n        \"Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"The patient has underlying chronic liver disease from NASH cirrhosis, which increases the importance and risk of biliary pathology and portal venous abnormalities.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease extent and context\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Past Medical History: -Cirrhosis due to nonalcoholic steatohepatitis\",\n        \"Increased echogenicity and coarsened echotexture of the liver is consistent with cirrhosis.  No focal liver lesions are identified.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The pancreas has not yet been visualized during this episode, so the extent and complications of pancreatitis are unknown.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease extent\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"The pancreas is not visualized.\",\n        \"Labs significant for Lipase of 2632.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, that explains or complicates this episode of acute pancreatitis?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The abdominal ultrasound demonstrated a gallbladder full of stones with slight wall edema and a normal-caliber common bile duct without ductal dilatation, sufficiently answering the question about gallbladder pathology and significantly addressing but not completely excluding biliary obstruction or choledocholithiasis.\",\n    \"discordance\": {\n      \"label\": \"indeterminate\",\n      \"evidence_stream_1\": \"There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm.\",\n      \"evidence_stream_2\": \"Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)\",\n      \"reason\": \"Biochemical cholestasis contrasts with a nondilated common bile duct, which does not prove obstruction but leaves some residual uncertainty about occult choledocholithiasis.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"Gallstone disease (biliary pancreatitis or choledocholithiasis) is a possible etiology of this acute pancreatitis.\",\n    \"reason\": \"New ultrasound findings of a gallbladder full of stones increase certainty that gallstone disease underlies the pancreatitis and shift focus toward possible choledocholithiasis despite a nondilated duct.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there choledocholithiasis or other obstructing pathology of the biliary tree contributing to this gallstone pancreatitis, and what is the extent and nature of pancreatitis and any associated complications?\",\n    \"target\": \"common bile duct and intra-/extra-hepatic biliary tree, and the pancreas including peripancreatic tissues\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirmation of choledocholithiasis or biliary obstruction or significant local pancreatic complications would prompt urgent GI/surgical consultation and consideration of ERCP or other interventions, and inform prognosis and level of care.\",\n    \"negative_answer_changes\": \"Absence of choledocholithiasis or major local complications would support conservative management of gallstone pancreatitis and defer invasive biliary interventions.\",\n    \"secondary_questions\": [\n      \"What is the severity and morphologic pattern of pancreatitis (e.g., interstitial vs. necrotizing) and are there local complications such as fluid collections or necrosis?\",\n      \"Is there any additional hepatobiliary or portal venous abnormality relevant to her cirrhosis that would alter management?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_bileduct_assess\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"High-quality visualization and assessment of the common bile duct and proximal biliary tree for stones, strictures, or other obstructing lesions.\",\n        \"why_required\": \"Directly visualizing the biliary tree is necessary to detect or exclude choledocholithiasis or other causes of obstruction in gallstone pancreatitis.\"\n      },\n      {\n        \"requirement_key\": \"req_obstruction_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of choledocholithiasis or other obstructing pathology within the biliary tree.\",\n        \"why_required\": \"Determining whether obstruction is present guides the need and urgency for ERCP or other decompressive procedures.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent and pattern of pancreatic inflammation, including involvement of peripancreatic tissues and presence of necrosis.\",\n        \"why_required\": \"Severity and morphologic extent of pancreatitis influence prognosis, level of monitoring, and consideration of transfer or intensive therapies.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characteristics of local pancreatic complications such as fluid collections, pseudocysts, or vascular involvement.\",\n        \"why_required\": \"Identifying local complications is important for procedural planning and anticipating potential deterioration or need for intervention.\"\n      }\n    ],\n    \"evidence\": [\n      \"The gallbladder is partly distended and full of stones with slight gallbladder wall edema.\",\n      \"The pancreas is not visualized.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_bileduct_assess\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm.\"\n        ],\n        \"reason\": \"Ultrasound assessed the common bile duct caliber and showed no dilation, but did not directly visualize or exclude small intraluminal stones throughout the biliary tree.\"\n      },\n      {\n        \"requirement_key\": \"req_obstruction_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm.\",\n          \"Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)\"\n        ],\n        \"reason\": \"A normal-caliber duct without dilation argues against high-grade obstruction, but elevated alkaline phosphatase leaves residual concern for partial or intermittent choledocholithiasis that ultrasound may miss.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"The pancreas is not visualized.\",\n          \"Labs significant for Lipase of 2632.\"\n        ],\n        \"reason\": \"Pancreatic morphology and extent of disease have not been imaged; only laboratory evidence supports the diagnosis.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreas_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"The pancreas is not visualized.\"\n        ],\n        \"reason\": \"No imaging has evaluated for local complications such as collections, necrosis, or vascular involvement.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Ultrasound provides limited indirect information on biliary obstruction and no information on pancreatic morphology or complications, so the key etiologic and severity questions motivating MRCP remain largely unanswered.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"An alternative view is that the primary goal of MRCP is to noninvasively stage gallstone disease in a cirrhotic patient by characterizing the entire biliary tree and portal venous system, with pancreatitis severity as a secondary consideration. Under this framing, the central question is whether there is any biliary or portal venous pathology (stones, strictures, portal vein abnormalities) that would change surgical versus endoscopic management strategy in a higher-risk cirrhotic host; pre-order coverage is still limited because ultrasound did not visualize the pancreas and only provided a coarse assessment of the bile ducts.\"\n}",
+            "request_id": "gen-1788325295-U9gCCM29GjhMi2lsKHsk",
+            "usage": {
+              "completion_tokens": 2411,
+              "prompt_tokens": 5485,
+              "total_tokens": 7896,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2048,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02866225,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02866225,
+                "upstream_inference_prompt_cost": 0.00455225,
+                "upstream_inference_completions_cost": 0.02411
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis causing her current abdominal pain.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "clinical syndrome",
+            "status": "likely",
+            "evidence": [
+              "Pain began at 10pm ___ described as sharp, constant ___ abdominal pain that radiates around to her back.",
+              "Labs significant for Lipase of 2632."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Gallstone disease is present and is a likely etiology of this acute pancreatitis.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism",
+            "status": "likely",
+            "evidence": [
+              "The gallbladder is partly distended and full of stones with slight gallbladder wall edema.",
+              "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Choledocholithiasis or occult biliary obstruction remains a concern despite a normal-caliber common bile duct on ultrasound.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "specific etiologic mechanism",
+            "status": "suspected",
+            "evidence": [
+              "There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm.",
+              "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "The patient has underlying chronic liver disease from NASH cirrhosis, which increases the importance and risk of biliary pathology and portal venous abnormalities.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "disease extent and context",
+            "status": "established",
+            "evidence": [
+              "Past Medical History: -Cirrhosis due to nonalcoholic steatohepatitis",
+              "Increased echogenicity and coarsened echotexture of the liver is consistent with cirrhosis.  No focal liver lesions are identified."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The pancreas has not yet been visualized during this episode, so the extent and complications of pancreatitis are unknown.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "disease extent",
+            "status": "established",
+            "evidence": [
+              "The pancreas is not visualized.",
+              "Labs significant for Lipase of 2632."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there gallbladder or biliary pathology, such as gallstones or biliary obstruction, that explains or complicates this episode of acute pancreatitis?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The abdominal ultrasound demonstrated a gallbladder full of stones with slight wall edema and a normal-caliber common bile duct without ductal dilatation, sufficiently answering the question about gallbladder pathology and significantly addressing but not completely excluding biliary obstruction or choledocholithiasis.",
+          "discordance": {
+            "label": "indeterminate",
+            "evidence_stream_1": "There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm.",
+            "evidence_stream_2": "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)",
+            "reason": "Biochemical cholestasis contrasts with a nondilated common bile duct, which does not prove obstruction but leaves some residual uncertainty about occult choledocholithiasis."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "Gallstone disease (biliary pancreatitis or choledocholithiasis) is a possible etiology of this acute pancreatitis.",
+          "reason": "New ultrasound findings of a gallbladder full of stones increase certainty that gallstone disease underlies the pancreatitis and shift focus toward possible choledocholithiasis despite a nondilated duct."
+        },
+        "current_question": {
+          "primary": "Is there choledocholithiasis or other obstructing pathology of the biliary tree contributing to this gallstone pancreatitis, and what is the extent and nature of pancreatitis and any associated complications?",
+          "target": "common bile duct and intra-/extra-hepatic biliary tree, and the pancreas including peripancreatic tissues",
+          "type": "etiology_or_mechanism",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirmation of choledocholithiasis or biliary obstruction or significant local pancreatic complications would prompt urgent GI/surgical consultation and consideration of ERCP or other interventions, and inform prognosis and level of care.",
+          "negative_answer_changes": "Absence of choledocholithiasis or major local complications would support conservative management of gallstone pancreatitis and defer invasive biliary interventions.",
+          "secondary_questions": [
+            "What is the severity and morphologic pattern of pancreatitis (e.g., interstitial vs. necrotizing) and are there local complications such as fluid collections or necrosis?",
+            "Is there any additional hepatobiliary or portal venous abnormality relevant to her cirrhosis that would alter management?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_bileduct_assess",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "High-quality visualization and assessment of the common bile duct and proximal biliary tree for stones, strictures, or other obstructing lesions.",
+              "why_required": "Directly visualizing the biliary tree is necessary to detect or exclude choledocholithiasis or other causes of obstruction in gallstone pancreatitis."
+            },
+            {
+              "requirement_key": "req_obstruction_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of choledocholithiasis or other obstructing pathology within the biliary tree.",
+              "why_required": "Determining whether obstruction is present guides the need and urgency for ERCP or other decompressive procedures."
+            },
+            {
+              "requirement_key": "req_pancreas_extent",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent and pattern of pancreatic inflammation, including involvement of peripancreatic tissues and presence of necrosis.",
+              "why_required": "Severity and morphologic extent of pancreatitis influence prognosis, level of monitoring, and consideration of transfer or intensive therapies."
+            },
+            {
+              "requirement_key": "req_pancreas_complications",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and characteristics of local pancreatic complications such as fluid collections, pseudocysts, or vascular involvement.",
+              "why_required": "Identifying local complications is important for procedural planning and anticipating potential deterioration or need for intervention."
+            }
+          ],
+          "evidence": [
+            "The gallbladder is partly distended and full of stones with slight gallbladder wall edema.",
+            "The pancreas is not visualized."
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_bileduct_assess",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm."
+              ],
+              "reason": "Ultrasound assessed the common bile duct caliber and showed no dilation, but did not directly visualize or exclude small intraluminal stones throughout the biliary tree."
+            },
+            {
+              "requirement_key": "req_obstruction_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "There is no intra- or extra-hepatic biliary ductal dilatation.  The common bile duct measures 4 mm.",
+                "Alkaline Phosphatase: 315.0 IU/L (ref 35.0-105.0)"
+              ],
+              "reason": "A normal-caliber duct without dilation argues against high-grade obstruction, but elevated alkaline phosphatase leaves residual concern for partial or intermittent choledocholithiasis that ultrasound may miss."
+            },
+            {
+              "requirement_key": "req_pancreas_extent",
+              "requirement_id": "severity_or_extent",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "The pancreas is not visualized.",
+                "Labs significant for Lipase of 2632."
+              ],
+              "reason": "Pancreatic morphology and extent of disease have not been imaged; only laboratory evidence supports the diagnosis."
+            },
+            {
+              "requirement_key": "req_pancreas_complications",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "The pancreas is not visualized."
+              ],
+              "reason": "No imaging has evaluated for local complications such as collections, necrosis, or vascular involvement."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Ultrasound provides limited indirect information on biliary obstruction and no information on pancreatic morphology or complications, so the key etiologic and severity questions motivating MRCP remain largely unanswered."
+        },
+        "current_order_fit": {
+          "question_grounding": "well_supported",
+          "test_question_capability": "capable"
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": "An alternative view is that the primary goal of MRCP is to noninvasively stage gallstone disease in a cirrhotic patient by characterizing the entire biliary tree and portal venous system, with pancreatitis severity as a secondary consideration. Under this framing, the central question is whether there is any biliary or portal venous pathology (stones, strictures, portal vein abnormalities) that would change surgical versus endoscopic management strategy in a higher-risk cirrhotic host; pre-order coverage is still limited because ultrasound did not visualize the pancreas and only provided a coarse assessment of the bile ducts."
+      },
+      "validation_errors": []
+    }
+  ]
+}
