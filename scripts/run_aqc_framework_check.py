@@ -29,6 +29,7 @@ from scripts.build_aqc_discovery_sample import (  # noqa: E402
     stable_hash,
 )
 from scripts.build_masked_view import RAW, build_record, load_lab_map  # noqa: E402
+from scripts.aqc_validator import validate_output  # noqa: E402
 
 DATA = ROOT / "data" / "aqc_framework_check"
 RESULTS = ROOT / "results" / "aqc_framework_check"
@@ -109,7 +110,7 @@ def load_masked_record(disease: str, hadm_id: int, frames: dict[str, pd.DataFram
     return build_record(disease, hadm_id, row.iloc[0], labmap)
 
 
-def validate_output(
+def _legacy_validate_output_snapshot(
     value: Any,
     *,
     is_first_step: bool = False,

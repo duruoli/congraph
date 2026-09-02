@@ -19,12 +19,17 @@ from experiments.annotation.annotate import call_json  # noqa: E402
 from experiments.aqc import prompts  # noqa: E402
 from experiments.llm_experiment.env_loader import load_openrouter_key  # noqa: E402
 from scripts.build_masked_view import RAW, build_record, load_lab_map  # noqa: E402
-from scripts.run_aqc_framework_check import validate_output  # noqa: E402
+from scripts.audit_aqc_input_leakage import (  # noqa: E402
+    ALGORITHM_VERSION as CAUSAL_MASK_ALGORITHM_VERSION,
+    apply_reviewed_redactions,
+    audit_manifest,
+    load_reviews,
+)
+from scripts.aqc_validator import VALIDATOR_VERSION, validate_output  # noqa: E402
 
 DEV = ROOT / "data" / "aqc_development"
 PILOT = ROOT / "data" / "aqc_direct" / "pilot_manifest.json"
 RESULTS = ROOT / "results" / "aqc_direct"
-VALIDATOR_VERSION = "3.0.0"
 RETRY_PROTOCOL_VERSION = "1.0.0-validator-feedback"
 DEFAULT_MODELS = [
     "anthropic/claude-sonnet-4.6",
@@ -39,6 +44,10 @@ def read_json(path: Path) -> Any:
 
 def digest(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def file_digest(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def slug(model: str) -> str:
@@ -150,13 +159,19 @@ def select_invalid_existing(
 
 
 def run_patient(patient: dict[str, Any], model: str, frames: dict[str, pd.DataFrame],
-                labmap: dict, retries: int, existing: dict[str, Any] | None = None) -> dict[str, Any]:
+                labmap: dict, retries: int, causal_reviews: dict[str, dict[str, Any]],
+                causal_review_path: Path, existing: dict[str, Any] | None = None) -> dict[str, Any]:
     disease, hadm_id = patient["disease"], int(patient["hadm_id"])
     source = read_json(ROOT / patient["source_path"])
     row = frames[disease][frames[disease]["hadm_id"] == hadm_id]
     if row.empty:
         raise ValueError(f"raw record not found: {disease}/{hadm_id}")
     record = build_record(disease, hadm_id, row.iloc[0], labmap)
+    original_history = record["baseline"]["patient_history"]
+    filtered_history, applied_redactions = apply_reviewed_redactions(
+        original_history, disease, hadm_id, causal_reviews
+    )
+    record["baseline"]["patient_history"] = filtered_history
     if len(record["decision_points"]) != len(source["steps"]):
         raise ValueError(f"step alignment mismatch: {disease}/{hadm_id}")
 
@@ -240,6 +255,12 @@ def run_patient(patient: dict[str, Any], model: str, frames: dict[str, pd.DataFr
         "validator_version": VALIDATOR_VERSION,
         "retry_protocol_version": RETRY_PROTOCOL_VERSION,
         "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+        "causal_mask_algorithm_version": CAUSAL_MASK_ALGORITHM_VERSION,
+        "causal_mask_review": str(causal_review_path.relative_to(ROOT)),
+        "causal_mask_review_sha256": file_digest(causal_review_path),
+        "original_hpi_sha256": digest(original_history),
+        "filtered_hpi_sha256": digest(filtered_history),
+        "applied_hpi_redactions": applied_redactions,
         "steps": steps,
     }
 
@@ -256,6 +277,11 @@ def main() -> None:
         type=Path,
         help="use an exact frozen patient list for interruption-safe batch resume",
     )
+    parser.add_argument(
+        "--causal-mask-review",
+        type=Path,
+        help="manual review/redaction decisions required by the HPI leakage preflight",
+    )
     parser.add_argument("--retries", type=int, default=2)
     cost_group = parser.add_mutually_exclusive_group()
     cost_group.add_argument("--cost-stop-usd", type=float, default=5.0)
@@ -268,7 +294,13 @@ def main() -> None:
                         help="rerun only invalid/missing steps; reuse valid stored steps")
     parser.add_argument("--repair-existing-only", action="store_true",
                         help="select only stored trajectories failing the current validator")
+    parser.add_argument("--force-rerun-existing", action="store_true",
+                        help="rerun every patient in an exact manifest and retain superseded runs")
     args = parser.parse_args()
+    if args.force_rerun_existing and (args.repair_invalid or args.repair_invalid_steps):
+        parser.error("--force-rerun-existing cannot be combined with repair flags")
+    if args.force_rerun_existing and args.patient_manifest is None:
+        parser.error("--force-rerun-existing requires --patient-manifest")
     models = args.models or DEFAULT_MODELS
     patients = load_patients(args.scope)
     if args.patient_manifest is not None:
@@ -313,6 +345,24 @@ def main() -> None:
     elif args.limit is not None:
         patients = patients[:args.limit]
 
+    causal_review_path = None
+    causal_reviews: dict[str, dict[str, Any]] = {}
+    preflight = None
+    if args.causal_mask_review is not None:
+        causal_review_path = (
+            args.causal_mask_review
+            if args.causal_mask_review.is_absolute()
+            else ROOT / args.causal_mask_review
+        )
+        if args.patient_manifest is None:
+            parser.error("--causal-mask-review requires --patient-manifest")
+        causal_reviews = load_reviews(causal_review_path)
+        preflight = audit_manifest(manifest_path, causal_review_path)
+        if preflight["blocking"]:
+            parser.error("causal-mask preflight is blocking; review, redact, rebuild, or exclude")
+    if args.execute and (args.patient_manifest is None or causal_review_path is None):
+        parser.error("--execute requires --patient-manifest and --causal-mask-review")
+
     plan = {
         "scope": args.scope,
         "models": models,
@@ -330,7 +380,16 @@ def main() -> None:
         "retry_protocol_version": RETRY_PROTOCOL_VERSION,
         "repair_invalid": args.repair_invalid,
         "repair_invalid_steps": args.repair_invalid_steps,
+        "force_rerun_existing": args.force_rerun_existing,
         "patient_manifest": str(args.patient_manifest) if args.patient_manifest else None,
+        "causal_mask_review": str(args.causal_mask_review) if args.causal_mask_review else None,
+        "causal_mask_preflight": ({
+            "algorithm_version": preflight["algorithm_version"],
+            "n_candidate_steps": preflight["n_candidate_steps"],
+            "n_resolved_by_redaction": preflight["n_resolved_by_redaction"],
+            "n_cleared_prior_or_external": preflight["n_cleared_prior_or_external"],
+            "blocking": preflight["blocking"],
+        } if preflight else None),
         "output_root": str(RESULTS.relative_to(ROOT)),
     }
     print(json.dumps(plan, ensure_ascii=False, indent=2))
@@ -355,7 +414,9 @@ def main() -> None:
             out = out_dir / f"{patient['disease']}_{patient['hadm_id']}.json"
             if out.exists():
                 old_result = read_json(out)
-                if not (args.repair_invalid or args.repair_invalid_steps) or result_is_valid(
+                if args.force_rerun_existing:
+                    print(f"[{model} {index}/{len(patients)}] force rerun {out.name}")
+                elif not (args.repair_invalid or args.repair_invalid_steps) or result_is_valid(
                     old_result, int(patient["n_steps"])
                 ):
                     print(f"[{model} {index}/{len(patients)}] resume skip {out.name}")
@@ -368,6 +429,7 @@ def main() -> None:
             print(f"[{model} {index}/{len(patients)}] {patient['disease']}/{patient['hadm_id']}")
             result = run_patient(
                 patient, model, frames, labmap, args.retries,
+                causal_reviews, causal_review_path,
                 existing=old_result if args.repair_invalid_steps else None,
             )
             if old_result is not None and not args.repair_invalid_steps:

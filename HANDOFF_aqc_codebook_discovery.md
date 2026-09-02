@@ -1,6 +1,118 @@
 # A/Q/C development annotation handoff
 
+## 2026-09-02 latest checkpoint: post-generation quality gate implemented through targeted-auditor dry-run
+
+> **新对话从本节开始；本节覆盖下方 checkpoint 中关于 active validator 和下一步流程的旧说明。**
+> `HANDOFF_annotation_pipeline.md` 是第一轮 annotation 的 archive，不再记录当前 A/Q/C pipeline 进度。
+> 继续禁止读取 final test 临床内容。主 annotation prompt 未修改，活动 prompt SHA-256 仍为
+> `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`。
+
+当前完整控制流：
+
+```text
+causal-mask preflight（生成前）
+  → LLM 完整 step annotation
+  → validator（结构与跨字段硬规则）
+  → algorithmic auditor（clinical-only evidence 检查 + 确定性机械修补）
+  → targeted LLM auditor（temporal / discordance 局部语义修补）
+  → algorithmic auditor + validator 复验
+  → batch auditor（跨 step / 批次统计）
+```
+
+### 三层职责边界
+
+- `validator` 不只是筛选给 LLM auditor。它逐 step 检查 source-independent 的结构/逻辑硬规则，并在
+  修补后作为最终门禁；不判断复杂临床语义，也不直接改写输出。
+- `algorithmic auditor` 同时筛选和修改，但只自动修复答案唯一明确的机械错误，例如 evidence 中的
+  scaffolding、`(none)`、空项、首步 previous fields，以及确定性的 coverage 状态矛盾。无法唯一恢复的
+  evidence 只 flag，不猜测。
+- `targeted LLM auditor` 只处理算法不能可靠判断的局部临床语义问题，目前为 temporal 与 discordance；
+  只重判对应子块，不重新生成整个 step。
+
+因此不是“validator 将所有问题交给 LLM”，而是 validator 定位硬错误，algorithmic auditor 确定性修补
+并产生语义候选，targeted LLM auditor 局部修补，最后再由 algorithmic auditor + validator 复验。
+HPI leakage preflight 是生成前门禁，与上述生成后三层独立；主 annotation prompt 不因这些门禁而修改。
+
+### Validator 3.1.0
+
+- Active implementation：`scripts/aqc_validator.py`；DIRECT runner、framework check 和 batch audit 共用。
+- 规则按 assumptions、question/requirements、coverage、previous-order update/discordance structure、
+  sequence state、current-order fit 分区，只纳入确定性规则。
+- 新硬规则包括 coverage status/direction/aggregate 一致性、first-step previous fields 必须为
+  `not_applicable`，以及 `materially_discordant/indeterminate` 必须有两条非空 evidence streams 和 reason。
+- 旧 repeat-order temporal marker 启发式已退出硬 validator。只有 Q 真正在问相对 earlier study/treatment
+  state 的改善、恶化、进展、稳定或 response 时，才需要 `temporal_course_or_response`；repeat order 本身
+  不充分。该语义对应关系交给 targeted temporal auditor。
+- bridge 005 旧输出回归命中 6 个机械错误；makeup 5 步无 validator 3.1.0 硬错误。
+
+### Algorithmic auditor 1.0.0
+
+- Implementation：`scripts/aqc_algorithmic_auditor.py`。
+- 合法 evidence source 仅为 filtered HPI、PE、labs 和当前决策前已出结果 imaging；排除 current order、
+  prior A/Q/C、section headers、`(none)` 和 output template。
+- 检查 assumptions、current question、coverage supporting evidence 与 discordance evidence streams。
+  只有可以唯一决定的修复才写入 non-destructive proposed overlay；原 result JSON 不覆盖。
+- Evidence matcher 允许一条 evidence 合并或重排多个逐字 source sentences，但每个分句都必须在合法
+  clinical source 中逐字存在；语义相似 paraphrase 不会自动放行。
+- bridge 005：49 issues / 22 steps；43 个确定性 operations；6 个 unresolved nonverbatim；normalization
+  后 validator 3.1.0 为 0 invalid。
+- bridge 004 makeup：1 issue / 1 step；0 个确定性 operations；剩余 1 个 nonverbatim absence summary；
+  normalization 后 validator 3.1.0 为 0 invalid。
+- 稳定产物位于 `results/aqc_direct/development/697923b99721/`：
+  `algorithmic_audit_bridge_*.json`、`algorithmic_proposed_overlay_bridge_*.json`。`proposed` 表示尚未合并
+  为最终 adjudication overlay。
+
+### Targeted LLM auditor 1.0.0（仅 dry-run，尚未外发）
+
+- Prompts：`experiments/aqc/targeted_repair_prompts.py`；orchestrator：
+  `scripts/aqc_targeted_auditor.py`。
+- Temporal prompt 区分影像/病变相对 prior state 的变化与仅描述 worsening symptoms/current status；只可
+  返回 aligned、添加 temporal requirement + matching coverage、删除不当 temporal wording、或 unclear。
+- Discordance prompt 仅在两条 evidence streams 针对同一临床命题且方向相反时判冲突；明确排除 technique/
+  adequacy 差异、nonvisualization→visualization、可共存 findings 和 limited reassurance。
+- LLM 只能返回 typed local repair。合并后重跑 algorithmic auditor + validator；如引入新的 nonverbatim
+  evidence 或硬错误，则拒绝 proposed correction。
+- Prompt hashes：temporal
+  `c3a7693366a61fece4ad14837a69565d5fa2a660ea67901e1ab06f0ad9b3a66b`；discordance
+  `3b9c140b3b828e1c5a04fd7a98ddddd1a30fc3b0182e49c11888f61ec016e88d`。
+- Dry-run candidates：bridge 005 为 1 temporal + 4 discordance；makeup 为 1 temporal
+  (`pancreatitis:26486125:s1`)。未发生 targeted LLM call；运行 `--execute` 前需针对该 targeted payload
+  取得明确外发授权。
+
+### 新对话的下一步
+
+1. 读取本节，重新计算并确认主 annotation prompt hash 与 validator `3.1.0`；若不一致先报告。
+2. 为下一批全新 development 患者冻结 manifest；继续排除 final test 和所有已标注患者。
+3. 对冻结批次先运行 causal-mask preflight 并人工裁决 blocking hits。
+4. 在发送任何新临床文本前，取得该冻结批次、OpenRouter、目标模型、A/Q/C 用途及费用停止策略的明确授权。
+5. 标注后依次运行 validator → algorithmic auditor → targeted auditor；targeted 外发另以实际候选 payload
+   为界确认授权。保存原始输出、所有 attempts/usage/cost 和 non-destructive repair provenance。
+
+## 2026-09-01 bridge batch 005 completed: causal-mask-gated 20-patient GPT-5.1 annotation
+
+- Frozen manifest: `data/aqc_direct/bridge_697923b99721_005.json` (20 patients/32 steps; 7 appendicitis, 7 cholecystitis, 6 pancreatitis).
+- Prompt SHA-256 remained `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`; validator remained `3.0.0`; the annotation prompt was not modified.
+- Preflight found one confirmed HPI/current-CT restatement (`pancreatitis:27929956:s1`). Exact reviewed redaction made the preflight non-blocking before external transmission.
+- With explicit authorization, the filtered frozen batch was sent only to OpenRouter `openai/gpt-5.1` for A/Q/C annotation using `--no-cost-stop`. No final-test clinical content was read.
+- Two steps exhausted their ordinary attempts without parsed JSON; manifest-scoped `--repair-invalid-steps` repaired only those steps and retained the failed attempts. Final audit: 20/20 patients, 32/32 steps valid, 0 low-evidence-fidelity alerts.
+- One semantic wording mismatch at `pancreatitis:28226418:s2` was minimally corrected in `results/aqc_direct/development/697923b99721/manual_adjudication_bridge_005.json`; the original model output remains intact.
+- Recorded cumulative batch cost after repair: `$1.493984`. OpenRouter billing is authoritative.
+- All 32 steps generated exactly five assumptions: 122/160 `well_supported`, 38/160 `weakly_supported`. Treat this as persistent cap-filling behavior, not proof that every assumption was necessary.
+- Development coverage is now 64 unique patients; 71 development patients remain unannotated.
+
 ## 2026-09-01 bridge batch 004 completed: frozen 12-patient GPT-5.1 annotation
+
+> **Post-hoc causal-mask gate correction:** structure/content validation passed, but the later
+> HPI-to-current-report preflight found 3 confirmed current-result leaks. This batch is therefore
+> not quality-cleared until those trajectories are regenerated. Exact reviewed HPI redactions passed
+> the integrated preflight, and the three trajectories have now been regenerated and re-audited. Detection is in
+> `scripts/audit_aqc_input_leakage.py`; manual decisions are in
+> `data/aqc_direct/bridge_697923b99721_004_leakage_review.json`. The annotation prompt was not changed.
+
+> **Completed frozen work:** bridge 004 makeup contains 3 patients/5 valid steps. Bridge 005 contains
+> 20 new patients/32 valid steps; its single algorithmic hit was manually confirmed and exact-redacted.
+> Both were sent only after explicit authorization and pass causal-mask, validator, and filtered-input
+> evidence audits. Bridge 005 has one non-destructive semantic correction overlay.
 
 - The active prompt SHA-256 was re-derived as `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`; validator remained `3.0.0` and retry protocol remained `1.0.0-validator-feedback`.
 - The explicit frozen manifest is `data/aqc_direct/bridge_697923b99721_004.json`: 12 new development patients / 18 steps, with 4 appendicitis, 4 cholecystitis, and 4 pancreatitis patients. Manifest file SHA-256: `ED15D138E61A106A38A849FDFD07B9E29BEF5E93F90035A0D84F9F717AEEAEAC`.
@@ -9,7 +121,7 @@
 - Final validator 3.0.0 scan: 12/12 patients present, 18/18 steps valid, 0 exact repeats, and 0 steps with `question_grounding != well_supported`.
 - Evidence-fidelity screening flagged one step. Manual review found three non-verbatim absence summaries in `supporting_evidence`; the original model output remains unchanged and the correction overlay is `results/aqc_direct/development/697923b99721/manual_adjudication_bridge_004.json`. Re-audit with the overlay has 0 evidence-fidelity alerts.
 - Audit trail retained: 37 attempts, 37 request IDs, 37 usage objects, 154,255 prompt tokens, 86,122 completion tokens, and recorded cost `$0.962743`. OpenRouter billing remains authoritative.
-- Development now has 44 unique patients covered in total (the earlier 32 plus this frozen batch of 12); 91 development patients remain unannotated. Do not expand to them without a separately frozen manifest and new external-transmission authorization.
+- At the time this batch completed, development had 44 unique patients covered (the earlier 32 plus this frozen batch of 12). After bridge 005, the current total is 64 and 71 remain. Do not expand without a separately frozen manifest and new external-transmission authorization.
 
 ## 2026-09-01 final prompt checkpoint：新 schema 已冻结候选，下一对话开始 bridge 标注
 

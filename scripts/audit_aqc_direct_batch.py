@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import re
 import sys
@@ -19,8 +20,9 @@ import pandas as pd  # noqa: E402
 
 from experiments.aqc import prompts  # noqa: E402
 from scripts.build_masked_view import RAW, build_record, load_lab_map  # noqa: E402
+from scripts.audit_aqc_input_leakage import apply_reviewed_redactions, load_reviews  # noqa: E402
 from scripts.run_aqc_direct import read_json, slug  # noqa: E402
-from scripts.run_aqc_framework_check import validate_output  # noqa: E402
+from scripts.aqc_validator import validate_output  # noqa: E402
 
 
 def apply_json_patch(value: dict[str, Any], operations: list[dict[str, Any]]) -> dict[str, Any]:
@@ -126,6 +128,7 @@ def main() -> None:
     findings: list[dict[str, Any]] = []
     step_rows: list[dict[str, Any]] = []
     missing_files: list[str] = []
+    review_cache: dict[Path, dict[str, dict[str, Any]]] = {}
 
     for patient in patients:
         disease = str(patient["disease"])
@@ -139,6 +142,32 @@ def main() -> None:
         if row.empty:
             raise ValueError(f"raw record not found: {disease}/{hadm_id}")
         record = build_record(disease, hadm_id, row.iloc[0], labmap)
+        review_value = result.get("causal_mask_review")
+        if isinstance(review_value, str):
+            review_path = Path(review_value)
+            if not review_path.is_absolute():
+                review_path = ROOT / review_path
+            expected_review_hash = result.get("causal_mask_review_sha256")
+            actual_review_hash = hashlib.sha256(review_path.read_bytes()).hexdigest()
+            if expected_review_hash != actual_review_hash:
+                raise ValueError(f"causal-mask review hash mismatch: {path.name}")
+            if review_path not in review_cache:
+                review_cache[review_path] = load_reviews(review_path)
+            original_history = record["baseline"]["patient_history"]
+            if result.get("original_hpi_sha256") != hashlib.sha256(
+                original_history.encode("utf-8")
+            ).hexdigest():
+                raise ValueError(f"original HPI hash mismatch: {path.name}")
+            filtered_history, applied = apply_reviewed_redactions(
+                original_history, disease, hadm_id, review_cache[review_path]
+            )
+            if result.get("filtered_hpi_sha256") != hashlib.sha256(
+                filtered_history.encode("utf-8")
+            ).hexdigest():
+                raise ValueError(f"filtered HPI hash mismatch: {path.name}")
+            if result.get("applied_hpi_redactions") != applied:
+                raise ValueError(f"applied HPI redaction provenance mismatch: {path.name}")
+            record["baseline"]["patient_history"] = filtered_history
         prior: dict[str, Any] | None = None
         seen_orders: set[str] = set()
         for step, dp in zip(result.get("steps") or [], record["decision_points"], strict=True):
