@@ -38,8 +38,8 @@ from scripts.aqc_validator import VALIDATOR_VERSION, validate_output  # noqa: E4
 from scripts.build_masked_view import RAW, load_lab_map  # noqa: E402
 from scripts.run_aqc_direct import read_json, slug  # noqa: E402
 
-SCHEMA_VERSION = "1.0.0-aqc-targeted-audit"
-AUDITOR_VERSION = "1.0.0-temporal-discordance-targeted-repair"
+SCHEMA_VERSION = "1.1.0-aqc-targeted-audit"
+AUDITOR_VERSION = "1.1.0-temporal-discordance-false-positive-audit"
 
 STRONG_TEMPORAL_PATTERN = re.compile(
     r"\b(?:interval|progression|response to|changed? since|"
@@ -57,14 +57,6 @@ IMAGING_CHANGE_PATTERN = re.compile(
     r"size|extent|disease|condition)\b",
     re.I,
 )
-
-SUSPICIOUS_DISCORDANCE = re.compile(
-    r"\b(?:can coexist|compatible|different technique|improved technique|"
-    r"nonvisuali[sz]|limited study|markedly limited|not true discordance|"
-    r"rather than (?:a |true )?discordance|distinct processes?)\b",
-    re.I,
-)
-
 
 def temporal_candidate(annotation: dict[str, Any]) -> dict[str, Any] | None:
     question = annotation.get("current_question")
@@ -97,13 +89,12 @@ def discordance_candidate(annotation: dict[str, Any], is_first_step: bool) -> di
     if not isinstance(discordance, dict):
         return None
     label = discordance.get("label")
-    reason = str(discordance.get("reason") or "")
-    if label == "indeterminate":
-        return {"kind": "indeterminate_discordance_review", "reason": reason}
-    if label == "materially_discordant" and SUSPICIOUS_DISCORDANCE.search(reason):
-        return {"kind": "possibly_nonconflicting_streams", "reason": reason}
-    if label == "concordant" and re.search(r"\b(?:conflict|oppos|discordant|inconsistent)\b", reason, re.I):
-        return {"kind": "possibly_missed_discordance", "reason": reason}
+    if label in {"materially_discordant", "indeterminate"}:
+        return {
+            "kind": "discordance_false_positive_review",
+            "existing_label": label,
+            "reason": str(discordance.get("reason") or ""),
+        }
     return None
 
 
@@ -161,23 +152,49 @@ def _temporal_operations(
     return operations, []
 
 
-def _discordance_operations(response: Any) -> tuple[list[dict[str, Any]], list[str]]:
+def _discordance_operations(
+    annotation: dict[str, Any], response: Any
+) -> tuple[list[dict[str, Any]], list[str]]:
     if not isinstance(response, dict):
         return [], ["targeted_discordance_not_object"]
+    if set(response) != {"decision", "proposition", "reason"}:
+        return [], ["targeted_discordance_bad_shape"]
     decision = response.get("decision")
-    if decision not in {"aligned", "revise", "unclear"}:
+    if decision not in {"true_discordance", "false_discordance", "unclear"}:
         return [], ["targeted_discordance_bad_decision"]
-    if decision in {"aligned", "unclear"}:
+    proposition = response.get("proposition")
+    reason = response.get("reason")
+    if proposition is not None and not isinstance(proposition, str):
+        return [], ["targeted_discordance_bad_proposition"]
+    if not isinstance(reason, str) or not reason.strip():
+        return [], ["targeted_discordance_bad_reason"]
+    if decision == "true_discordance" and not (
+        isinstance(proposition, str) and proposition.strip()
+    ):
+        return [], ["targeted_discordance_true_without_proposition"]
+    if decision == "unclear":
         return [], []
-    discordance = response.get("discordance")
-    if not isinstance(discordance, dict) or set(discordance) != {
-        "label", "evidence_stream_1", "evidence_stream_2", "reason"
-    }:
-        return [], ["targeted_discordance_bad_replacement"]
+    previous = annotation.get("previous_order_update") or {}
+    discordance = previous.get("discordance") or {}
+    if decision == "true_discordance":
+        if discordance.get("label") == "materially_discordant":
+            return [], []
+        replacement = {
+            **discordance,
+            "label": "materially_discordant",
+            "reason": reason.strip(),
+        }
+    else:
+        replacement = {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": reason.strip(),
+        }
     return [{
         "op": "replace",
         "path": "/previous_order_update/discordance",
-        "value": discordance,
+        "value": replacement,
     }], []
 
 
@@ -252,6 +269,12 @@ def audit_manifest(
                     decision_point,
                     candidate,
                     _newly_visible_imaging(record["decision_points"], step_index),
+                    (
+                        result["steps"][step_index - 1].get("accepted", {}).get("assumptions")
+                        if step_index > 0
+                        and isinstance(result["steps"][step_index - 1].get("accepted"), dict)
+                        else []
+                    ),
                 ) if discordance else None,
                 "targeted_calls": [],
                 "targeted_operations": [],
@@ -280,7 +303,7 @@ def audit_manifest(
                     temperature=0.0,
                     max_tokens=900,
                 )
-                operations, errors = _discordance_operations(call.get("parsed"))
+                operations, errors = _discordance_operations(candidate, call.get("parsed"))
                 row["targeted_calls"].append({"kind": "discordance", "call": call})
                 row["repair_errors"].extend(errors)
                 if not errors:

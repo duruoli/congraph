@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0-manual-adjudication",
-  "source": "algorithmic-plus-targeted-llm-plus-manual-evidence-adjudication",
+  "source": "algorithmic-plus-targeted-llm-plus-manual-evidence-and-semantic-adjudication",
   "source_prompt_hash": "697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1",
   "validator_version": "3.1.0",
   "model": "openai/gpt-5.1",
@@ -110,6 +110,22 @@
       ]
     },
     {
+      "coding_id": "pancreatitis:28920003:s2",
+      "reason": "Manual semantic adjudication removed an incidental false discordance: subtle possible primary CT signs and absent secondary signs jointly make the study equivocal but do not oppose each other on one proposition.",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/previous_order_update/discordance",
+          "value": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "Subtle possible CT signs of early pancreatitis and absence of secondary complications can coexist; they make the study equivocal rather than forming opposing evidence about one proposition."
+          }
+        }
+      ]
+    },
+    {
       "coding_id": "appendicitis:25547534:s1",
       "reason": "Deterministic algorithmic normalization before targeted audit.",
       "operations": [
@@ -156,119 +172,166 @@
       ]
     },
     {
-      "coding_id": "cholecystitis:24636219:s2",
-      "reason": "Algorithmic normalization plus validated targeted semantic repair.",
+      "coding_id": "cholecystitis:24636219:s1",
+      "reason": "Manual chronology adjudication excluded a narrative cholecystectomy sentence contradicted by both CT examinations, which directly visualize the gallbladder, from the ex-ante A/Q/C reconstruction.",
       "operations": [
         {
           "op": "replace",
-          "path": "/current_question/answer_requirements",
+          "path": "/assumptions/3/proposition",
+          "value": "Alternative intra-abdominal pathology besides biliary disease, including pancreatitis or a complication of biliary obstruction or prior procedures, could explain or contribute to the abdominal pain."
+        },
+        {
+          "op": "remove",
+          "path": "/assumptions/4"
+        },
+        {
+          "op": "replace",
+          "path": "/current_question/primary",
+          "value": "Is there persistent biliary obstruction, choledocholithiasis, or another intra-abdominal process explaining her ongoing RUQ and epigastric pain after failed ERCPs?"
+        },
+        {
+          "op": "replace",
+          "path": "/current_question/secondary_questions",
           "value": [
-            {
-              "requirement_key": "req_visualize_biliary_pancreas",
-              "id": "target_visualization_or_assessment",
-              "other_proposed_dimension": "",
-              "dimension": "Adequate visualization of the liver, intra- and extrahepatic bile ducts, pancreas, and upper abdominal organs including perihepatic and peripancreatic spaces.",
-              "why_required": "Determining the cause of symptoms and level of obstruction or alternative pathology requires comprehensive assessment of these structures."
-            },
-            {
-              "requirement_key": "req_presence_level_obstruction",
-              "id": "presence_or_absence",
-              "other_proposed_dimension": "",
-              "dimension": "Presence or absence of persistent choledocholithiasis or other obstructing lesion, and its anatomic level (e.g., common duct, ampulla).",
-              "why_required": "Knowing whether obstruction persists and where it is located is essential to decide on repeat ERCP and plan the intervention."
-            },
-            {
-              "requirement_key": "req_severity_dilation_inflammation",
-              "id": "severity_or_extent",
-              "other_proposed_dimension": "",
-              "dimension": "Degree of biliary dilation, size of any stone or obstructing lesion, and extent of surrounding inflammatory or postoperative changes.",
-              "why_required": "Severity and extent influence procedural risk, timing, and technical approach for ERCP or alternative therapy."
-            },
-            {
-              "requirement_key": "req_complications_alt_pathology",
-              "id": "complication_presence_or_character",
-              "other_proposed_dimension": "",
-              "dimension": "Presence and characteristics of complications or alternative pathology such as bile leak, abscess, fluid collections, pancreatitis, or other intra-abdominal causes of pain.",
-              "why_required": "Detection of complications or alternative diagnoses would alter management priorities and may require additional or different interventions."
-            },
-            {
-              "requirement_key": "req_interval_change_biliary_dilation_inflammation",
-              "id": "temporal_course_or_response",
-              "other_proposed_dimension": "",
-              "dimension": "Interval change in the degree of biliary ductal dilation and surrounding inflammatory or postoperative changes compared with prior CT abdomen imaging.",
-              "why_required": "Determining whether biliary obstruction or associated inflammation is improving, stable, or progressing relative to the prior CT is important for deciding on the urgency and type of further intervention such as repeat ERCP or alternative therapy."
-            }
+            "Is there imaging evidence of pancreatitis, bile leak, abscess, or another complication of biliary obstruction or prior procedures?",
+            "What is the extent and anatomic location of any residual stones or obstruction in the biliary tree?"
           ]
         },
         {
           "op": "replace",
-          "path": "/coverage/requirements",
+          "path": "/current_question/answer_requirements/2/dimension",
+          "value": "Detection of alternative intra-abdominal causes of RUQ/epigastric pain such as pancreatitis, abscess, bile leak, or complications of biliary obstruction or prior ERCP attempts."
+        },
+        {
+          "op": "replace",
+          "path": "/current_question/answer_requirements/2/why_required",
+          "value": "If symptoms are not due to persistent biliary obstruction, identifying another source would change management and potentially avoid unnecessary repeat ERCP."
+        },
+        {
+          "op": "replace",
+          "path": "/current_question/answer_requirements/3/dimension",
+          "value": "Assessment of the degree of biliary dilation, size and number of stones if seen, and extent of associated inflammatory changes."
+        },
+        {
+          "op": "replace",
+          "path": "/current_question/evidence/1",
+          "value": "She is transferred to BID for repeat ERCP."
+        },
+        {
+          "op": "replace",
+          "path": "/coverage/requirements/0/reason",
+          "value": "Prior RUQ ultrasound and clinical assessment diagnosed gallbladder disease and an obstructing gallstone but provide limited, indirect information about current biliary anatomy and broader intra-abdominal structures."
+        },
+        {
+          "op": "remove",
+          "path": "/coverage/requirements/2/supporting_evidence/0"
+        },
+        {
+          "op": "replace",
+          "path": "/coverage/requirements/2/reason",
+          "value": "There is no cross-sectional imaging yet to evaluate complications or non-biliary causes of pain; normal lipase makes pancreatitis less likely but does not exclude other alternative sources."
+        },
+        {
+          "op": "replace",
+          "path": "/alternative_reconstruction",
+          "value": "An alternative but related framing is to stage the current severity and anatomic extent of biliary obstruction after failed ERCPs to plan a repeat ERCP. Under that account, assumptions emphasize the established obstructing stone, and the answer requirements prioritize detailed characterization of biliary dilation and complications over broad alternative-source discrimination."
+        }
+      ]
+    },
+    {
+      "coding_id": "cholecystitis:24636219:s2",
+      "reason": "Manual chronology and prior-CT integration adjudication removed unsupported post-cholecystectomy and interval-response framing while retaining the first CT as evidence about persistent obstruction and alternative pathology.",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/assumptions/1/proposition",
+          "value": "Persistent biliary obstruction remains likely after two unsuccessful ERCP attempts, but the exact obstructing lesion and level are not localized by the prior CT."
+        },
+        {
+          "op": "replace",
+          "path": "/assumptions/4/proposition",
+          "value": "Alternative intra-abdominal pathology such as pancreatitis, a collection, or another complication of biliary disease or prior procedures remains a possible contributor to RUQ/epigastric pain despite normal lipase and a prior CT without pancreatitis."
+        },
+        {
+          "op": "remove",
+          "path": "/assumptions/3"
+        },
+        {
+          "op": "replace",
+          "path": "/previous_order_update/previous_question",
+          "value": "Is there persistent biliary obstruction, choledocholithiasis, or another intra-abdominal process explaining her ongoing RUQ and epigastric pain after failed ERCPs?"
+        },
+        {
+          "op": "replace",
+          "path": "/previous_order_update/effect_on_previous_question",
+          "value": "The prior CT abdomen demonstrated moderate intrahepatic and common-duct dilation with ampullary prominence, supporting persistent biliary obstruction, but the 12 mm hyperdense focus was described within the gallbladder rather than the common duct, so the exact obstructing lesion and level remained unresolved."
+        },
+        {
+          "op": "replace",
+          "path": "/assumption_change/label",
+          "value": "retain"
+        },
+        {
+          "op": "replace",
+          "path": "/assumption_change/changed_proposition",
+          "value": "Persistent biliary obstruction remains likely after failed ERCPs, while the exact obstructing lesion and level remain uncertain."
+        },
+        {
+          "op": "replace",
+          "path": "/assumption_change/reason",
+          "value": "The prior CT supports ongoing obstruction through ductal dilation and ampullary prominence, but its 12 mm hyperdense focus is intraluminal within the gallbladder and therefore does not localize a common-duct stone."
+        },
+        {
+          "op": "replace",
+          "path": "/current_question/primary",
+          "value": "What is the current extent, level, and potential complications of biliary obstruction or other intra-abdominal pathology causing her ongoing RUQ/epigastric pain after failed ERCPs?"
+        },
+        {
+          "op": "replace",
+          "path": "/current_question/secondary_questions",
           "value": [
-            {
-              "requirement_key": "req_visualize_biliary_pancreas",
-              "requirement_id": "target_visualization_or_assessment",
-              "status": "partially_addressed",
-              "direction": "supports",
-              "supporting_evidence": [
-                "The liver is normal.  The gallbladder is dilated with a small amount of pericholecystic fluid, but no wall hyperemia and no adjacent fat stranding.",
-                "The pancreatic duct is not dilated and the pancreas is normal."
-              ],
-              "reason": "The prior CT abdomen visualized the liver, gallbladder, bile ducts, and pancreas but was limited to the upper abdomen and did not include the pelvis or fully characterize postoperative anatomy after cholecystectomy."
-            },
-            {
-              "requirement_key": "req_presence_level_obstruction",
-              "requirement_id": "presence_or_absence",
-              "status": "partially_addressed",
-              "direction": "supports",
-              "supporting_evidence": [
-                "There is moderate intrahepatic bile duct dilation and dilation of the common duct to 9 mm with prominence of the ampulla.",
-                "A 12mm intra-luminal hyperdense focus may represent a gallstone."
-              ],
-              "reason": "The CT supports the presence of obstruction and suggests a possible stone and level near the ampulla but remains somewhat equivocal about the exact obstructing lesion and its persistence after subsequent surgery."
-            },
-            {
-              "requirement_key": "req_severity_dilation_inflammation",
-              "requirement_id": "severity_or_extent",
-              "status": "partially_addressed",
-              "direction": "supports",
-              "supporting_evidence": [
-                "There is moderate intrahepatic bile duct dilation and dilation of the common duct to 9 mm with prominence of the ampulla.",
-                "The gallbladder is dilated with a small amount of pericholecystic fluid, but no wall hyperemia and no adjacent fat stranding."
-              ],
-              "reason": "CT describes moderate ductal dilation and some pericholecystic fluid, but the full extent of disease and any interval change after cholecystectomy are not documented."
-            },
-            {
-              "requirement_key": "req_complications_alt_pathology",
-              "requirement_id": "complication_presence_or_character",
-              "status": "partially_addressed",
-              "direction": "refutes",
-              "supporting_evidence": [
-                "The pancreatic duct is not dilated and the pancreas is normal.",
-                "There is no free fluid and no free air."
-              ],
-              "reason": "The prior CT refutes pancreatitis and gross free fluid or free air but cannot exclude smaller postoperative collections, bile leak, or evolving complications, and it was performed before or without explicit relation to the current post-cholecystectomy state."
-            },
-            {
-              "requirement_key": "req_interval_change_biliary_dilation_inflammation",
-              "requirement_id": "temporal_course_or_response",
-              "status": "unaddressed",
-              "direction": "no_direction",
-              "supporting_evidence": [
-                "There is moderate intrahepatic bile duct dilation and dilation of the common duct to 9 mm with prominence of the ampulla."
-              ],
-              "reason": "The pre-order CT provides only the baseline description of biliary dilation and inflammation and does not address any interval change because no post-cholecystectomy comparison study is available."
-            }
+            "Is there evidence of complications such as pancreatitis, perforation, abscess, or other collections?"
           ]
         },
         {
           "op": "replace",
-          "path": "/coverage/aggregate",
-          "value": "partially_answered"
+          "path": "/current_question/answer_requirements/2/dimension",
+          "value": "Degree of biliary dilation, size of any stone or obstructing lesion, and extent of surrounding inflammatory changes."
+        },
+        {
+          "op": "replace",
+          "path": "/current_question/answer_requirements/3/dimension",
+          "value": "Presence and characteristics of complications or alternative pathology such as pancreatitis, perforation, abscess, fluid collections, or other intra-abdominal causes of pain."
+        },
+        {
+          "op": "replace",
+          "path": "/coverage/requirements/0/reason",
+          "value": "The prior CT abdomen visualized the liver, gallbladder, bile ducts, and pancreas but was limited to the upper abdomen and did not include the pelvis or fully characterize the exact obstructing lesion."
+        },
+        {
+          "op": "replace",
+          "path": "/coverage/requirements/1/reason",
+          "value": "The prior CT supports obstruction through ductal dilation and ampullary prominence but does not directly show a common-duct stone; the described 12 mm hyperdense focus is within the gallbladder, leaving the exact obstructing lesion unresolved."
+        },
+        {
+          "op": "replace",
+          "path": "/coverage/requirements/2/reason",
+          "value": "The prior CT describes moderate ductal dilation and some pericholecystic fluid but does not fully establish the extent or clinical significance of the inflammatory changes."
+        },
+        {
+          "op": "replace",
+          "path": "/coverage/requirements/3/reason",
+          "value": "The prior CT argues against pancreatitis and gross free fluid or free air but cannot exclude smaller collections, evolving complications, or another pelvic source because the pelvis was not imaged."
         },
         {
           "op": "replace",
           "path": "/coverage/aggregate_reason",
-          "value": "Even with the added interval-change requirement, most key questions about current obstruction level, complications, and alternative pathology remain only partially addressed by the prior CT, justifying the need for the new study."
+          "value": "The prior CT supports biliary obstruction and partly assesses complications, but the exact lesion, full abdominopelvic extent, and alternative sources remain incompletely answered."
+        },
+        {
+          "op": "replace",
+          "path": "/alternative_reconstruction",
+          "value": "An alternative framing is that the new CT abdomen and pelvis primarily searches broadly for complications or alternative intra-abdominal pathology beyond the biliary tree because persistent pain and hyperbilirubinemia after failed ERCPs may not be fully explained by the biliary dilation seen on the prior CT. Under this account, assumptions place more weight on alternative complications and the answer requirements emphasize collections and inflammatory processes throughout the abdomen and pelvis."
         }
       ]
     },
@@ -343,7 +406,7 @@
     },
     {
       "coding_id": "cholecystitis:22023307:s2",
-      "reason": "Manual clinical-only evidence adjudication replaced a report-header paraphrase with the exact report sentence and removed a technique-only item.",
+      "reason": "Manual evidence and semantic adjudication replaced a report-header paraphrase, removed a technique-only item, and removed a false discordance between persistent pain and imaging negative for acute cholecystitis.",
       "operations": [
         {
           "op": "replace",
@@ -353,6 +416,32 @@
         {
           "op": "remove",
           "path": "/coverage/requirements/0/supporting_evidence/0"
+        },
+        {
+          "op": "replace",
+          "path": "/previous_order_update/discordance",
+          "value": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "Persistent RUQ pain and an ultrasound without definite acute cholecystitis can coexist; they do not give opposing answers to one clinical proposition."
+          }
+        }
+      ]
+    },
+    {
+      "coding_id": "pancreatitis:24197495:s2",
+      "reason": "Manual semantic adjudication removed an incidental false discordance: cholestatic laboratory abnormality and a nondilated common bile duct do not directly oppose each other on the presence of occult choledocholithiasis.",
+      "operations": [
+        {
+          "op": "replace",
+          "path": "/previous_order_update/discordance",
+          "value": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": "Elevated alkaline phosphatase is nonspecific and can coexist with a normal-caliber common bile duct; the findings leave occult obstruction uncertain but are not opposing evidence about one proposition."
+          }
         }
       ]
     },

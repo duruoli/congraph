@@ -15,11 +15,13 @@ Use only the supplied pre-order clinical record. Never infer from the masked cur
 Return only the requested JSON object."""
 
 
-DISCORDANCE_SYSTEM = """You review one local A/Q/C discordance judgment. Do not redo the annotation.
+DISCORDANCE_SYSTEM = """You audit one existing A/Q/C discordance flag for a false positive. Do not redo the annotation or search for missed discordance.
 
-Discordance requires two explicit, clinically important evidence streams that address the same proposition in opposing directions. Different technique or adequacy, nonvisualization followed by visualization, compatible coexisting findings, and a limited study with limited reassurance are not discordance. Use indeterminate only when the two streams plausibly conflict but the conflict cannot be resolved from the visible record.
+A proposition is one atomic, decision-relevant clinical claim that can be true or false at a specified level and time, such as disease presence, etiology, complication, anatomy, severity, or interval change. Prefer a proposition already represented in the carried-forward assumptions or the previous question; do not invent a broad topic after seeing the evidence.
 
-Use only the supplied pre-order clinical record. Never infer from the masked current result. Evidence streams must be verbatim clinical text. Preserve all unrelated fields.
+True discordance requires two explicit, credible, clinically important evidence streams that bear on the same proposition in opposing directions, are comparable in target and time, cannot be comfortably reconciled, and could change the next question or action. A new result that merely challenges or excludes a working hypothesis is a normal assumption update, not discordance, unless another explicit evidence stream still supports that same proposition. Different technique or adequacy, nonvisualization followed by visualization, compatible coexisting findings, timing or test-sensitivity differences, and limited reassurance are not discordance.
+
+Use only the supplied pre-order clinical record. Never infer from the masked current result. Return true_discordance only when every requirement above is met, false_discordance when any requirement clearly fails, and unclear only when the visible record cannot resolve the issue.
 
 Return only the requested JSON object."""
 
@@ -50,14 +52,9 @@ TEMPORAL_OUTPUT = {
 
 
 DISCORDANCE_OUTPUT = {
-    "decision": "aligned | revise | unclear",
-    "reason": "one concise sentence",
-    "discordance": {
-        "label": "concordant | materially_discordant | indeterminate | not_applicable",
-        "evidence_stream_1": "verbatim quote or empty",
-        "evidence_stream_2": "verbatim quote or empty",
-        "reason": "why the streams conflict or do not conflict",
-    },
+    "decision": "true_discordance | false_discordance | unclear",
+    "proposition": "one atomic clinical claim, or null if no shared proposition exists",
+    "reason": "one concise sentence applying the discordance criteria",
 }
 
 
@@ -100,13 +97,15 @@ def build_discordance_user(
     decision_point: dict[str, Any],
     annotation: dict[str, Any],
     newly_visible_imaging: list[dict[str, Any]],
+    carried_forward_assumptions: list[dict[str, Any]] | None = None,
 ) -> str:
     previous = annotation.get("previous_order_update") or {}
     payload = {
         "task": (
-            "Check only whether the two evidence streams conflict on the same clinical proposition. "
-            "If the existing judgment is aligned, preserve it. Otherwise return a replacement for "
-            "the discordance object only."
+            "Test only whether the existing positive or indeterminate discordance flag is genuine. "
+            "Name the single proposition at issue, then decide whether both quoted evidence streams "
+            "truly oppose each other on that proposition and the conflict remains clinically material "
+            "after ordinary explanations are considered."
         ),
         "clinical_context": {
             "baseline_relevant": _compact_baseline(record),
@@ -115,8 +114,12 @@ def build_discordance_user(
         },
         "newly_visible_imaging_since_previous_decision": newly_visible_imaging,
         "annotation_subset": {
+            "carried_forward_assumptions": carried_forward_assumptions or [],
+            "updated_assumptions": annotation.get("assumptions"),
             "previous_question": previous.get("previous_question"),
             "effect_on_previous_question": previous.get("effect_on_previous_question"),
+            "assumption_change": annotation.get("assumption_change"),
+            "current_question": annotation.get("current_question"),
             "discordance": previous.get("discordance"),
         },
         "output": DISCORDANCE_OUTPUT,
@@ -133,7 +136,15 @@ TEMPORAL_INPUT_CONTRACT = {
 DISCORDANCE_INPUT_CONTRACT = {
     "clinical_context": ["filtered patient history", "labs", "current order"],
     "new_evidence": "newly visible imaging since previous decision",
-    "annotation_subset": ["previous question", "effect on previous question", "discordance"],
+    "annotation_subset": [
+        "carried-forward assumptions",
+        "updated assumptions",
+        "previous question",
+        "effect on previous question",
+        "assumption change",
+        "current question",
+        "discordance",
+    ],
     "current_result": "masked",
 }
 

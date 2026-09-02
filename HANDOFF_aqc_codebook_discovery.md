@@ -1,5 +1,78 @@
 # A/Q/C development annotation handoff
 
+## 2026-09-02 latest checkpoint: bridge 007 frozen and causal-mask-cleared; awaiting authorization
+
+> 本节覆盖下方 checkpoint 的“下一步”。本次未调用外部模型，也未读取 final test 临床内容。
+> 主 annotation prompt SHA-256 已复核为
+> `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`；validator 为 `3.1.0`。
+
+- 已冻结 `data/aqc_direct/bridge_697923b99721_007.json`，SHA-256
+  `9BD3BF1BEAFE8258CFF2D16EB24487FE86800F6C3C6E581C1658D17566279ACA`。共 20 位全新 development
+  患者 / 36 steps：cholecystitis 10、pancreatitis 10；appendicitis 与 diverticulitis 已无剩余
+  development 候选。
+- causal-mask preflight 共命中 5 steps。人工裁决确认 3 个当前结果泄漏并配置 hash-bound 内存 redaction：
+  `cholecystitis:25366350:s1`（仅删除当前 CT 子句并保留 WBC 14.2）、
+  `pancreatitis:20009550:s1`（删除当前 CT preliminary read）、
+  `pancreatitis:25711536:s1`（删除当前 step-1 ultrasound 结果）。另外 2 个命中为院外/先前检查：
+  `cholecystitis:25626804:s1` 与 `pancreatitis:25711536:s2`。review 位于
+  `data/aqc_direct/bridge_697923b99721_007_leakage_review.json`。
+- reviewed preflight 位于
+  `data/aqc_direct/bridge_697923b99721_007_leakage_preflight_reviewed.json`：5 candidates、3 resolved by
+  redaction、2 cleared prior/external、`blocking=false`。原始临床数据未修改。
+- annotation dry-run 已通过：OpenRouter `openai/gpt-5.1`、A/Q/C development annotation、20 patients / 36
+  steps、`--no-cost-stop`；尚未使用 `--execute`，未发生外部调用。
+
+### Bridge 006 post-hoc manual semantic corrections
+
+- 原始模型输出未覆盖；只更新 non-destructive `manual_adjudication_bridge_006.json`，现覆盖 23 steps。
+  人工移除 3 个剩余假 discordance：`pancreatitis:28920003:s2`（疑似早期胰腺炎征象与缺少次级征象可共存）、
+  `cholecystitis:22023307:s2`（持续 RUQ pain 与无明确急性胆囊炎影像可共存）、
+  `pancreatitis:24197495:s2`（ALP 升高与 nondilated CBD 不直接构成对同一 proposition 的相反证据）。
+  `appendicitis:25547534:s2` 与 `cholecystitis:25217286:s2` 此前已正确修补，未重复修改。
+- `cholecystitis:24636219:s1/s2` 的 HPI 含 cholecystectomy 叙述，但两次 CT 均直接显示 gallbladder；该句不能
+  可靠地作为两个 CT 决策点之前已发生的手术状态。人工 overlay 已从 assumptions、Q、requirements、coverage
+  和 alternative reconstruction 中移除 post-cholecystectomy framing，同时保留第一次 CT 对第二步 biliary
+  obstruction、并发症及 alternative source 的实际 coverage；不再添加缺乏明确临床意图的 temporal requirement。
+  第一次 CT 的 12 mm focus 明确位于 gallbladder，不能据此定位 CBD stone；相应 assumption change 已从
+  `refine` 改为 `retain`，保留“obstruction likely、exact lesion/level unresolved”。
+- 最终复验：20/20 patients、31/31 steps、23 adjudicated steps、0 validator invalid、0 low-evidence-fidelity
+  items；对 effective overlay 再跑 algorithmic auditor 为 0 issues、0 operations、0 validation residuals。
+- 本次未调用外部模型、未读取 final test 临床内容，也未把这些偶发错误扩展成新的自动 pipeline 规则。
+
+### 下一步
+
+1. 外发前，取得对上述冻结 bridge 007、OpenRouter、`openai/gpt-5.1`、A/Q/C development annotation 与
+   `--no-cost-stop` 策略的明确授权。
+2. 获授权后执行主生成；仅对 manifest 内结构无效 step 做定向 repair，并保留 attempts、request IDs、usage
+   与 cost provenance。
+3. 依次运行 validator → algorithmic auditor → targeted auditor dry-run；targeted 的实际候选 payload 另行取得
+   外发授权，再做最终复验和 non-destructive adjudication。
+
+## 2026-09-02 latest checkpoint: discordance targeted auditor revised to false-positive audit
+
+> 主 annotation prompt 未修改，SHA-256 仍为
+> `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`；validator 仍为 `3.1.0`。
+> 本次未调用外部模型，也未读取 final test 临床内容。
+
+- `scripts/aqc_targeted_auditor.py` 与 `experiments/aqc/targeted_repair_prompts.py` 已升级为 targeted auditor
+  `1.1.0`。Discordance auditor 现在只复核已有 `materially_discordant` / `indeterminate`，用于排除假
+  discordance；不再审核 `concordant` 或主动寻找漏标。
+- Proposition 定义为在明确时间与临床层级上可判断真假的单一、decision-relevant 临床命题，优先锚定于
+  carried-forward assumptions 或 previous question。True discordance 要求两条明确、可信且重要的 evidence
+  对同一 proposition 方向相反、比较对象与时间可比、不能由技术/adequacy/时序/敏感度/可共存机制合理解释，
+  且冲突足以改变下一问题或行动。新结果仅 challenge/exclude 工作假设属于正常 assumption update，不自动构成
+  discordance。
+- Targeted 输出已简化为 `true_discordance | false_discordance | unclear` + `proposition` + 一句 `reason`。
+  `false_discordance` 确定性映射为 `not_applicable` 并清空两条 evidence streams；`true_discordance` 保留或将
+  `indeterminate` 升为 `materially_discordant`；`unclear` 不自动修改。
+- Payload 现在同时提供 carried-forward assumptions、updated assumptions、previous/current question、
+  assumption change、原 discordance 和 newly visible imaging，以保持 evidence → proposition → A/Q transition
+  的语义锚点。新的 discordance prompt SHA-256 为
+  `4992de5864b0dfa4c1e3fee271fc14a689e9ed0194d2adf9aa521535928c71fb`；temporal prompt hash 未变。
+- bridge 006 本地 dry-run：2 temporal candidates、4 discordance candidates、共 6 targeted steps、0 external
+  calls。4 个 discordance candidates 均为原 `indeterminate`；旧逻辑中用于寻找漏标的 `concordant` candidate
+  已退出。
+
 ## 2026-09-02 latest checkpoint: bridge 006 fully adjudicated and quality-cleared
 
 > **新对话从本节开始；本节覆盖下方 bridge 006 pending-authorization checkpoint。**
