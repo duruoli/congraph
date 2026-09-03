@@ -38,8 +38,8 @@ from scripts.aqc_validator import VALIDATOR_VERSION, validate_output  # noqa: E4
 from scripts.build_masked_view import RAW, load_lab_map  # noqa: E402
 from scripts.run_aqc_direct import read_json, slug  # noqa: E402
 
-SCHEMA_VERSION = "1.1.0-aqc-targeted-audit"
-AUDITOR_VERSION = "1.1.0-temporal-discordance-false-positive-audit"
+SCHEMA_VERSION = "1.2.0-aqc-targeted-audit"
+AUDITOR_VERSION = "1.2.0-explicit-temporal-dimension-audit"
 
 STRONG_TEMPORAL_PATTERN = re.compile(
     r"\b(?:interval|progression|response to|changed? since|"
@@ -75,9 +75,9 @@ def temporal_candidate(annotation: dict[str, Any]) -> dict[str, Any] | None:
         STRONG_TEMPORAL_PATTERN.search(text) or IMAGING_CHANGE_PATTERN.search(text)
     )
     if explicit_temporal and not has_temporal:
-        return {"kind": "missing_temporal_requirement", "matched_text": text}
+        return {"kind": "temporal_language_without_typed_requirement", "matched_text": text}
     if has_temporal and not explicit_temporal:
-        return {"kind": "possibly_unnecessary_temporal_requirement", "matched_text": text}
+        return {"kind": "typed_requirement_without_temporal_language", "matched_text": text}
     return None
 
 
@@ -103,52 +103,172 @@ def _temporal_operations(
 ) -> tuple[list[dict[str, Any]], list[str]]:
     if not isinstance(response, dict):
         return [], ["targeted_temporal_not_object"]
+    expected_keys = {
+        "decision",
+        "reason",
+        "revised_primary",
+        "revised_secondary_questions",
+        "temporal_requirement",
+        "temporal_coverage",
+    }
+    if set(response) != expected_keys:
+        return [], ["targeted_temporal_bad_shape"]
     decision = response.get("decision")
-    if decision not in {"aligned", "add_temporal_requirement", "remove_temporal_wording", "unclear"}:
+    if decision not in {
+        "interval_comparison_required",
+        "current_state_question_only",
+        "unclear",
+    }:
         return [], ["targeted_temporal_bad_decision"]
-    if decision in {"aligned", "unclear"}:
+    reason = response.get("reason")
+    if not isinstance(reason, str) or not reason.strip():
+        return [], ["targeted_temporal_bad_reason"]
+    revision_fields = (
+        response.get("revised_primary"),
+        response.get("revised_secondary_questions"),
+        response.get("temporal_requirement"),
+        response.get("temporal_coverage"),
+    )
+    if decision == "unclear":
+        if any(value is not None for value in revision_fields):
+            return [], ["targeted_temporal_unclear_with_revision"]
         return [], []
+
+    issue = temporal_candidate(annotation)
+    if not issue:
+        return [], ["targeted_temporal_no_candidate"]
+    question = annotation.get("current_question") or {}
+    requirements = question.get("answer_requirements") or []
+    has_temporal = any(
+        isinstance(item, dict) and item.get("id") == "temporal_course_or_response"
+        for item in requirements
+    )
     operations: list[dict[str, Any]] = []
     primary = response.get("revised_primary")
     secondary = response.get("revised_secondary_questions")
+    if primary is not None and not (isinstance(primary, str) and primary.strip()):
+        return [], ["targeted_temporal_bad_revised_primary"]
+    if secondary is not None and not (
+        isinstance(secondary, list)
+        and all(isinstance(item, str) and item.strip() for item in secondary)
+    ):
+        return [], ["targeted_temporal_bad_revised_secondary_questions"]
     if isinstance(primary, str) and primary.strip():
         operations.append({"op": "replace", "path": "/current_question/primary", "value": primary})
-    if isinstance(secondary, list) and all(isinstance(item, str) and item.strip() for item in secondary):
+    if isinstance(secondary, list):
         operations.append({
             "op": "replace", "path": "/current_question/secondary_questions", "value": secondary
         })
-    if decision == "remove_temporal_wording":
-        return (operations, []) if operations else ([], ["temporal_remove_without_revised_question"])
 
     requirement = response.get("temporal_requirement")
     temporal_coverage = response.get("temporal_coverage")
-    if not isinstance(requirement, dict) or not isinstance(temporal_coverage, dict):
-        return [], ["temporal_add_without_requirement_and_coverage"]
-    key = requirement.get("requirement_key")
-    if (
-        not isinstance(key, str) or not key.strip()
-        or requirement.get("id") != "temporal_course_or_response"
-        or temporal_coverage.get("requirement_key") != key
-        or temporal_coverage.get("requirement_id") != "temporal_course_or_response"
-    ):
-        return [], ["temporal_add_bad_requirement_binding"]
-    question = annotation["current_question"]
-    if key in {item.get("requirement_key") for item in question["answer_requirements"] if isinstance(item, dict)}:
-        return [], ["temporal_add_duplicate_requirement_key"]
-    requirements = [*question["answer_requirements"], requirement]
-    coverage_requirements = [*annotation["coverage"]["requirements"], temporal_coverage]
-    operations.extend([
-        {"op": "replace", "path": "/current_question/answer_requirements", "value": requirements},
-        {"op": "replace", "path": "/coverage/requirements", "value": coverage_requirements},
-    ])
-    aggregate = response.get("revised_aggregate")
-    if aggregate in {"unanswered", "partially_answered", "sufficiently_answered"}:
-        operations.append({"op": "replace", "path": "/coverage/aggregate", "value": aggregate})
-    aggregate_reason = response.get("revised_aggregate_reason")
-    if isinstance(aggregate_reason, str) and aggregate_reason.strip():
-        operations.append({
-            "op": "replace", "path": "/coverage/aggregate_reason", "value": aggregate_reason
-        })
+
+    if decision == "interval_comparison_required":
+        if has_temporal:
+            if requirement is not None or temporal_coverage is not None:
+                return [], ["temporal_existing_requirement_with_addition"]
+            if not operations:
+                return [], ["temporal_required_without_explicit_question_revision"]
+        else:
+            if not isinstance(requirement, dict) or not isinstance(temporal_coverage, dict):
+                return [], ["temporal_add_without_requirement_and_coverage"]
+            key = requirement.get("requirement_key")
+            if (
+                not isinstance(key, str) or not key.strip()
+                or requirement.get("id") != "temporal_course_or_response"
+                or temporal_coverage.get("requirement_key") != key
+                or temporal_coverage.get("requirement_id") != "temporal_course_or_response"
+            ):
+                return [], ["temporal_add_bad_requirement_binding"]
+            if key in {
+                item.get("requirement_key") for item in requirements if isinstance(item, dict)
+            }:
+                return [], ["temporal_add_duplicate_requirement_key"]
+            operations.extend([
+                {
+                    "op": "replace",
+                    "path": "/current_question/answer_requirements",
+                    "value": [*requirements, requirement],
+                },
+                {
+                    "op": "replace",
+                    "path": "/coverage/requirements",
+                    "value": [*annotation["coverage"]["requirements"], temporal_coverage],
+                },
+            ])
+    else:
+        if requirement is not None or temporal_coverage is not None:
+            return [], ["current_state_decision_with_temporal_addition"]
+        if has_temporal:
+            temporal_keys = {
+                item.get("requirement_key")
+                for item in requirements
+                if isinstance(item, dict) and item.get("id") == "temporal_course_or_response"
+            }
+            operations.extend([
+                {
+                    "op": "replace",
+                    "path": "/current_question/answer_requirements",
+                    "value": [
+                        item for item in requirements
+                        if not (
+                            isinstance(item, dict)
+                            and item.get("id") == "temporal_course_or_response"
+                        )
+                    ],
+                },
+                {
+                    "op": "replace",
+                    "path": "/coverage/requirements",
+                    "value": [
+                        item for item in annotation["coverage"]["requirements"]
+                        if not (
+                            isinstance(item, dict)
+                            and (
+                                item.get("requirement_id") == "temporal_course_or_response"
+                                or item.get("requirement_key") in temporal_keys
+                            )
+                        )
+                    ],
+                },
+            ])
+        elif not operations:
+            return [], ["current_state_decision_without_question_revision"]
+
+    repaired = apply_operations(annotation, operations)
+    coverage_items = repaired.get("coverage", {}).get("requirements") or []
+    statuses = [item.get("status") for item in coverage_items if isinstance(item, dict)]
+    old_aggregate = repaired.get("coverage", {}).get("aggregate")
+    compatible = (
+        old_aggregate == "sufficiently_answered"
+        and statuses
+        and all(status == "sufficiently_addressed" for status in statuses)
+    ) or (
+        old_aggregate == "partially_answered"
+        and statuses
+        and not all(status == "unaddressed" for status in statuses)
+    ) or (
+        old_aggregate == "unanswered"
+        and not any(status == "sufficiently_addressed" for status in statuses)
+    )
+    if not compatible and statuses:
+        if all(status == "sufficiently_addressed" for status in statuses):
+            aggregate = "sufficiently_answered"
+        elif all(status == "unaddressed" for status in statuses):
+            aggregate = "unanswered"
+        else:
+            aggregate = "partially_answered"
+        operations.extend([
+            {"op": "replace", "path": "/coverage/aggregate", "value": aggregate},
+            {
+                "op": "replace",
+                "path": "/coverage/aggregate_reason",
+                "value": (
+                    "Aggregate coverage was deterministically updated after the temporal "
+                    "requirement-level repair."
+                ),
+            },
+        ])
     return operations, []
 
 
@@ -279,8 +399,14 @@ def audit_manifest(
                 "targeted_calls": [],
                 "targeted_operations": [],
                 "repair_errors": [],
+                "unresolved_targeted_issues": [],
+                "temporal_decision": None,
             }
             targeted_operations: list[dict[str, Any]] = []
+            pre_unresolved = {
+                issue["path"] for issue in algorithmic["issues"]
+                if issue.get("kind") == "nonverbatim_unresolved"
+            }
             if execute and temporal:
                 call = call_json(
                     TEMPORAL_SYSTEM,
@@ -289,12 +415,50 @@ def audit_manifest(
                     temperature=0.0,
                     max_tokens=1400,
                 )
-                operations, errors = _temporal_operations(candidate, call.get("parsed"))
+                parsed = call.get("parsed")
+                if isinstance(parsed, dict):
+                    row["temporal_decision"] = parsed.get("decision")
+                operations, errors = _temporal_operations(candidate, parsed)
                 row["targeted_calls"].append({"kind": "temporal", "call": call})
                 row["repair_errors"].extend(errors)
-                if not errors:
-                    candidate = apply_operations(candidate, operations)
-                    targeted_operations.extend(operations)
+                if not errors and row["temporal_decision"] == "unclear":
+                    row["unresolved_targeted_issues"].append("temporal_classification_unclear")
+                elif not errors:
+                    tentative = apply_operations(candidate, operations)
+                    stage_audit = audit_and_normalize(
+                        tentative,
+                        record=record,
+                        decision_point=decision_point,
+                        is_first_step=is_first,
+                        is_repeat_order=ordered in seen_orders,
+                    )
+                    stage_operations = stage_audit["operations"]
+                    if stage_operations:
+                        tentative = stage_audit["repaired"]
+                    stage_unresolved = {
+                        issue["path"] for issue in stage_audit["issues"]
+                        if issue.get("kind") == "nonverbatim_unresolved"
+                    } - pre_unresolved
+                    closure_issue = temporal_candidate(tentative)
+                    stage_errors = validate_output(
+                        tentative,
+                        is_first_step=is_first,
+                        ordered=ordered,
+                        is_repeat_order=ordered in seen_orders,
+                    )
+                    if closure_issue:
+                        row["repair_errors"].append("targeted_temporal_issue_not_resolved")
+                        row["unresolved_targeted_issues"].append(closure_issue["kind"])
+                    if stage_unresolved:
+                        row["repair_errors"].append(
+                            "targeted_temporal_introduced_nonverbatim_evidence"
+                        )
+                    row["repair_errors"].extend(
+                        f"targeted_temporal_validation:{error}" for error in stage_errors
+                    )
+                    if not closure_issue and not stage_unresolved and not stage_errors:
+                        candidate = tentative
+                        targeted_operations.extend([*operations, *stage_operations])
             if execute and discordance:
                 call = call_json(
                     DISCORDANCE_SYSTEM,
@@ -319,10 +483,6 @@ def audit_manifest(
             if execute and post_target_audit["operations"]:
                 candidate = post_target_audit["repaired"]
                 targeted_operations.extend(post_target_audit["operations"])
-            pre_unresolved = {
-                issue["path"] for issue in algorithmic["issues"]
-                if issue.get("kind") == "nonverbatim_unresolved"
-            }
             post_unresolved = {
                 issue["path"] for issue in post_target_audit["issues"]
                 if issue.get("kind") == "nonverbatim_unresolved"
@@ -330,6 +490,10 @@ def audit_manifest(
             new_unresolved = sorted(post_unresolved - pre_unresolved)
             if execute and new_unresolved:
                 row["repair_errors"].append("targeted_repair_introduced_nonverbatim_evidence")
+            if execute and temporal:
+                remaining_temporal = temporal_candidate(candidate)
+                if remaining_temporal and remaining_temporal["kind"] not in row["unresolved_targeted_issues"]:
+                    row["unresolved_targeted_issues"].append(remaining_temporal["kind"])
             row["post_target_algorithmic_issues"] = post_target_audit["issues"]
             row["new_unresolved_evidence_paths"] = new_unresolved
             final_errors = validate_output(
@@ -341,7 +505,7 @@ def audit_manifest(
             row["targeted_operations"] = targeted_operations
             row["validation_errors_after_targeted"] = final_errors
             all_operations = [*algorithmic["operations"], *targeted_operations]
-            if all_operations and not final_errors and not row["repair_errors"]:
+            if all_operations and not final_errors and not new_unresolved:
                 corrections.append({
                     "coding_id": coding_id,
                     "reason": "Algorithmic normalization plus validated targeted semantic repair.",
@@ -364,6 +528,16 @@ def audit_manifest(
         "n_discordance_candidates": sum(bool(row["discordance_candidate"]) for row in rows),
         "n_targeted_calls": sum(len(row["targeted_calls"]) for row in rows),
         "n_repaired_steps": sum(bool(row["targeted_operations"]) and not row["validation_errors_after_targeted"] for row in rows),
+        "n_temporal_resolved": sum(
+            bool(row["temporal_candidate"])
+            and bool(row["temporal_decision"])
+            and not row["unresolved_targeted_issues"]
+            for row in rows
+        ),
+        "n_temporal_unresolved": sum(
+            bool(row["temporal_candidate"]) and bool(row["unresolved_targeted_issues"])
+            for row in rows
+        ),
         "rows": rows,
         "adjudication": {
             "schema_version": "1.0.0-manual-adjudication",

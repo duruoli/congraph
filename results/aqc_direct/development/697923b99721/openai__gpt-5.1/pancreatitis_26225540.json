@@ -1,0 +1,658 @@
+{
+  "schema_version": "2.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "pancreatitis",
+  "hadm_id": 26225540,
+  "source_path": "results/annotation_experiment/full/pancreatitis_26225540.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1",
+  "validator_version": "3.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "causal_mask_algorithm_version": "1.1.0-hpi-current-report-overlap-reviewed-redaction",
+  "causal_mask_review": "data\\aqc_direct\\bridge_697923b99721_007_leakage_review.json",
+  "causal_mask_review_sha256": "b8e6561e149ad12951e5ee4c749ccb87f42abd63b1456b56a7fb0ef4c87757d4",
+  "original_hpi_sha256": "311e9921b2934af031f650508c393f5c33a94111ff410c44273c5a61a6c958b3",
+  "filtered_hpi_sha256": "28f7a6f2a3726c39089411d4dc2a7d6485b947fd81f65352eb17b24b0b954734",
+  "applied_hpi_redactions": [],
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "MRCP Abdomen (MRCP (MR ABD W&W/OC))",
+      "request_prompt_sha256": "f21867193d29643088129896b197ba8733c488803717aae267d9e9132106206c",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "f21867193d29643088129896b197ba8733c488803717aae267d9e9132106206c",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific diagnosis",
+                  "status": "established",
+                  "evidence": [
+                    "She presented to ___ where she was found to have an elevated lipase",
+                    "Lipase: 7585.0 IU/L (ref 0.0-60.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Her pancreatitis is likely biliary in origin due to gallstones.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism",
+                  "status": "likely",
+                  "evidence": [
+                    "A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.",
+                    "She was found to have ... elevated transaminases (41 and 63 ALT and AST) and elevated bilirubin and alk phos."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Despite a prior RUQ ultrasound and CT, there may still be retained common bile duct stones or other obstructive biliary pathology not yet visualized.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "mechanistic cause",
+                  "status": "suspected",
+                  "evidence": [
+                    "A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.",
+                    "She was found to have ... elevated bilirubin and alk phos."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient currently has cholestatic liver test abnormalities suggestive of possible biliary obstruction or passage of a stone.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "syndrome-level process",
+                  "status": "established",
+                  "evidence": [
+                    "Bilirubin, Total: 3.4 mg/dL (ref 0.0-1.5)",
+                    "Bilirubin, Direct: 2.7 mg/dL (ref 0.0-0.3)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Clarifying the biliary tree anatomy and presence of obstruction will guide whether she needs ERCP or can be managed without invasive biliary intervention.",
+                  "type": "other",
+                  "other_proposed_type": "management_planning",
+                  "level": "management implication",
+                  "status": "likely",
+                  "evidence": [
+                    "She was found to have ... elevated bilirubin and alk phos.",
+                    "A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction."
+                  ],
+                  "support": "weakly_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision point, so assumptions are being established de novo based on history, labs, and prior CT/ultrasound."
+              },
+              "current_question": {
+                "primary": "Is there choledocholithiasis or other biliary obstruction underlying this patient’s acute pancreatitis and cholestatic liver test abnormalities?",
+                "target": "common bile duct and biliary tree for obstructing stones or strictures",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If choledocholithiasis or biliary obstruction is present, proceed toward ERCP or other biliary intervention and adjust antibiotics/supportive care accordingly.",
+                "negative_answer_changes": "If no biliary obstruction or choledocholithiasis is found, manage pancreatitis supportively, reconsider alternative etiologies, and potentially avoid invasive ERCP.",
+                "secondary_questions": [
+                  "Is there evidence of complications of pancreatitis such as necrosis, fluid collections, or pseudocyst formation?",
+                  "What is the degree of biliary ductal dilation, if any, that would indicate the severity and chronicity of obstruction?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_visualize_biliary_tree",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the common bile duct, intrahepatic ducts, and pancreatic duct.",
+                    "why_required": "Reliable assessment of obstruction or stones requires clear imaging of the biliary and pancreatic ducts."
+                  },
+                  {
+                    "requirement_key": "req_presence_stones_obstruction",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of choledocholithiasis, sludge, strictures, or other obstructing lesions in the biliary tree.",
+                    "why_required": "Determining whether a mechanical obstruction exists is central to deciding on ERCP or other intervention."
+                  },
+                  {
+                    "requirement_key": "req_severity_dilation",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of biliary and pancreatic ductal dilation or narrowing, and extent of any obstruction.",
+                    "why_required": "Extent of ductal dilation helps gauge severity and chronicity of obstruction and urgency of intervention."
+                  },
+                  {
+                    "requirement_key": "req_pancreatitis_complications",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characterization of pancreatitis-related complications such as necrosis, peripancreatic fluid collections, or pseudocyst.",
+                    "why_required": "Identifying complications may alter level of care, need for drainage, and overall management strategy."
+                  }
+                ],
+                "evidence": [
+                  "She was found to have an elevated lipase",
+                  "A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.",
+                  "She was found to have ... elevated bilirubin and alk phos."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_visualize_biliary_tree",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction."
+                    ],
+                    "reason": "Prior CT and RUQ ultrasound assessed for gallstones and CBD dilation/obstruction, but MRCP provides more sensitive ductal imaging and small stones may have been missed."
+                  },
+                  {
+                    "requirement_key": "req_presence_stones_obstruction",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction."
+                    ],
+                    "reason": "Ultrasound and CT did not show CBD dilatation or obstruction, which argues against large obstructing stones but cannot definitively exclude smaller stones or intermittent obstruction."
+                  },
+                  {
+                    "requirement_key": "req_severity_dilation",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction."
+                    ],
+                    "reason": "Absence of reported CBD dilatation suggests at most mild or no persistent obstruction, but quantitative assessment of duct size and subtle strictures is limited in the available report."
+                  },
+                  {
+                    "requirement_key": "req_pancreatitis_complications",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      ""
+                    ],
+                    "reason": "No details are provided about pancreatic necrosis or peripancreatic collections on the prior CT or ultrasound, so complications remain essentially unassessed."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Prior CT and RUQ ultrasound partially evaluated the biliary tree and argued against gross obstruction, but have limited sensitivity for small ductal stones and do not fully characterize ductal anatomy or pancreatitis complications."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "An alternative but related interpretation is that the main intent of MRCP is to characterize the severity and complications of pancreatitis (necrosis, fluid collections) rather than primarily search for choledocholithiasis, with biliary imaging as a secondary goal. In that framing, assumptions would emphasize risk stratification and prognosis of pancreatitis, the question would focus on extent of pancreatic inflammation and complications, and coverage would judge that CT/US have not yet adequately addressed the severity of pancreatitis itself."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"She presented to ___ where she was found to have an elevated lipase\",\n        \"Lipase: 7585.0 IU/L (ref 0.0-60.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Her pancreatitis is likely biliary in origin due to gallstones.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\",\n        \"She was found to have ... elevated transaminases (41 and 63 ALT and AST) and elevated bilirubin and alk phos.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Despite a prior RUQ ultrasound and CT, there may still be retained common bile duct stones or other obstructive biliary pathology not yet visualized.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"mechanistic cause\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\",\n        \"She was found to have ... elevated bilirubin and alk phos.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient currently has cholestatic liver test abnormalities suggestive of possible biliary obstruction or passage of a stone.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome-level process\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"Bilirubin, Total: 3.4 mg/dL (ref 0.0-1.5)\",\n        \"Bilirubin, Direct: 2.7 mg/dL (ref 0.0-0.3)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Clarifying the biliary tree anatomy and presence of obstruction will guide whether she needs ERCP or can be managed without invasive biliary intervention.\",\n      \"type\": \"other\",\n      \"other_proposed_type\": \"management_planning\",\n      \"level\": \"management implication\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"She was found to have ... elevated bilirubin and alk phos.\",\n        \"A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\"\n      ],\n      \"support\": \"weakly_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision point, so assumptions are being established de novo based on history, labs, and prior CT/ultrasound.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there choledocholithiasis or other biliary obstruction underlying this patient’s acute pancreatitis and cholestatic liver test abnormalities?\",\n    \"target\": \"common bile duct and biliary tree for obstructing stones or strictures\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If choledocholithiasis or biliary obstruction is present, proceed toward ERCP or other biliary intervention and adjust antibiotics/supportive care accordingly.\",\n    \"negative_answer_changes\": \"If no biliary obstruction or choledocholithiasis is found, manage pancreatitis supportively, reconsider alternative etiologies, and potentially avoid invasive ERCP.\",\n    \"secondary_questions\": [\n      \"Is there evidence of complications of pancreatitis such as necrosis, fluid collections, or pseudocyst formation?\",\n      \"What is the degree of biliary ductal dilation, if any, that would indicate the severity and chronicity of obstruction?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_biliary_tree\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the common bile duct, intrahepatic ducts, and pancreatic duct.\",\n        \"why_required\": \"Reliable assessment of obstruction or stones requires clear imaging of the biliary and pancreatic ducts.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_stones_obstruction\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of choledocholithiasis, sludge, strictures, or other obstructing lesions in the biliary tree.\",\n        \"why_required\": \"Determining whether a mechanical obstruction exists is central to deciding on ERCP or other intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_dilation\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of biliary and pancreatic ductal dilation or narrowing, and extent of any obstruction.\",\n        \"why_required\": \"Extent of ductal dilation helps gauge severity and chronicity of obstruction and urgency of intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreatitis_complications\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characterization of pancreatitis-related complications such as necrosis, peripancreatic fluid collections, or pseudocyst.\",\n        \"why_required\": \"Identifying complications may alter level of care, need for drainage, and overall management strategy.\"\n      }\n    ],\n    \"evidence\": [\n      \"She was found to have an elevated lipase\",\n      \"A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\",\n      \"She was found to have ... elevated bilirubin and alk phos.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_visualize_biliary_tree\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\"\n        ],\n        \"reason\": \"Prior CT and RUQ ultrasound assessed for gallstones and CBD dilation/obstruction, but MRCP provides more sensitive ductal imaging and small stones may have been missed.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_stones_obstruction\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\"\n        ],\n        \"reason\": \"Ultrasound and CT did not show CBD dilatation or obstruction, which argues against large obstructing stones but cannot definitively exclude smaller stones or intermittent obstruction.\"\n      },\n      {\n        \"requirement_key\": \"req_severity_dilation\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\"\n        ],\n        \"reason\": \"Absence of reported CBD dilatation suggests at most mild or no persistent obstruction, but quantitative assessment of duct size and subtle strictures is limited in the available report.\"\n      },\n      {\n        \"requirement_key\": \"req_pancreatitis_complications\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\"\n        ],\n        \"reason\": \"No details are provided about pancreatic necrosis or peripancreatic collections on the prior CT or ultrasound, so complications remain essentially unassessed.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Prior CT and RUQ ultrasound partially evaluated the biliary tree and argued against gross obstruction, but have limited sensitivity for small ductal stones and do not fully characterize ductal anatomy or pancreatitis complications.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"An alternative but related interpretation is that the main intent of MRCP is to characterize the severity and complications of pancreatitis (necrosis, fluid collections) rather than primarily search for choledocholithiasis, with biliary imaging as a secondary goal. In that framing, assumptions would emphasize risk stratification and prognosis of pancreatitis, the question would focus on extent of pancreatic inflammation and complications, and coverage would judge that CT/US have not yet adequately addressed the severity of pancreatitis itself.\"\n}",
+            "request_id": "gen-1788345189-dszJK98V6kYrNuJSOEYi",
+            "usage": {
+              "completion_tokens": 2159,
+              "prompt_tokens": 4178,
+              "total_tokens": 6337,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.0268125,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.0268125,
+                "upstream_inference_prompt_cost": 0.0052225,
+                "upstream_inference_completions_cost": 0.02159
+              }
+            }
+          },
+          "validation_errors": [
+            "question_evidence_bad_count",
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "56945993238987cacd1bb1bbd4efcd1d033744d75ddb51fc5ec3c90931e8d7a6",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute pancreatitis causing her current epigastric abdominal pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific diagnosis",
+                  "status": "established",
+                  "evidence": [
+                    "She presented to ___ where she was found to have an elevated lipase",
+                    "Lipase: 7585.0 IU/L (ref 0.0-60.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The acute pancreatitis is likely gallstone-related, given known cholelithiasis and abnormal liver tests.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "etiologic mechanism",
+                  "status": "likely",
+                  "evidence": [
+                    "___ w h/o cholelithiasis",
+                    "CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There may be transient or occult common bile duct obstruction despite no ductal dilation on prior CT/ultrasound.",
+                  "type": "etiology_or_mechanism",
+                  "other_proposed_type": "",
+                  "level": "mechanistic contributor",
+                  "status": "suspected",
+                  "evidence": [
+                    "elevated transaminases (41 and 63 ALT and AST) and elevated bilirubin and alk phos",
+                    "Bilirubin, Total: 3.4 mg/dL (ref 0.0-1.5) ... Alkaline Phosphatase: 121.0 IU/L (ref 35.0-105.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has systemic inflammatory response with possible early sepsis in the setting of pancreatitis or biliary disease.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "syndrome/severity",
+                  "status": "suspected",
+                  "evidence": [
+                    "White Blood Cells: 13.6 K/uL (ref 4.0-10.0)",
+                    "BCx were drawn. SHe was given fluid, morphine and admitted to medicine."
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "There is no clear radiographic evidence of primary pulmonary cause for her presentation aside from mild congestion and atelectasis.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "organ system involvement",
+                  "status": "likely",
+                  "evidence": [
+                    "A CXR was unremarkable",
+                    "There is mild pulmonary vascular congestion. Left base opacity with obscuration of the left hemidiaphragm is seen with may be due to atelectasis as well as dilatation of the descending aorta."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first decision point; all assumptions are newly inferred from the pre-order data."
+              },
+              "current_question": {
+                "primary": "Is there choledocholithiasis or other obstructing biliary pathology contributing to this patient’s acute pancreatitis and cholestatic liver test abnormalities, and what is the detailed biliary and pancreatic ductal anatomy?",
+                "target": "common bile duct, intrahepatic bile ducts, gallbladder, and pancreatic duct for obstructing stones or strictures",
+                "type": "etiology_or_mechanism",
+                "other_proposed_type": "",
+                "positive_answer_changes": "If obstructing stones or strictures are identified, clinicians would likely pursue therapeutic ERCP or other biliary intervention and manage as gallstone pancreatitis with obstruction.",
+                "negative_answer_changes": "If no obstructing biliary pathology is found, they would attribute pancreatitis to non-obstructive or passed-stone etiology and avoid invasive ERCP, focusing on supportive care and alternative causes.",
+                "secondary_questions": [
+                  "Is there evidence of biliary ductal dilation or stricturing that would indicate chronic or higher-grade obstruction?",
+                  "Is there associated pancreatic duct abnormality or complication that would alter the management of pancreatitis?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_visualization",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Clear visualization of the common bile duct, intrahepatic ducts, gallbladder, and pancreatic duct",
+                    "why_required": "Obstructing stones or strictures can only be assessed if the biliary and pancreatic ducts are well visualized."
+                  },
+                  {
+                    "requirement_key": "req_obstruction_presence",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of choledocholithiasis, sludge, or stricturing causing obstruction",
+                    "why_required": "Determining whether an obstructing lesion exists is critical for deciding on ERCP or other biliary intervention."
+                  },
+                  {
+                    "requirement_key": "req_anatomic_site",
+                    "id": "anatomic_localization",
+                    "other_proposed_dimension": "",
+                    "dimension": "Exact anatomic location of any obstructing stone or stricture within the biliary or pancreatic ducts",
+                    "why_required": "Interventional planning depends on knowing where the obstruction is located along the ductal system."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of biliary ductal dilation and extent of any obstruction",
+                    "why_required": "Severity of obstruction guides urgency and type of intervention and helps correlate with liver test abnormalities."
+                  }
+                ],
+                "evidence": [
+                  "CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.",
+                  "elevated transaminases (41 and 63 ALT and AST) and elevated bilirubin and alk phos"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_visualization",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "partially_addressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction."
+                    ],
+                    "reason": "Prior CT and RUQ ultrasound visualized gallbladder and gross biliary anatomy but did not provide detailed ductal imaging and may miss small or non-calcified CBD stones."
+                  },
+                  {
+                    "requirement_key": "req_obstruction_presence",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.",
+                      "Bilirubin, Total: 3.4 mg/dL (ref 0.0-1.5)"
+                    ],
+                    "reason": "Lack of CBD dilation on CT/US argues against high-grade obstruction, but persistent hyperbilirubinemia and elevated alk phos keep the possibility of occult or transient CBD obstruction open."
+                  },
+                  {
+                    "requirement_key": "req_anatomic_site",
+                    "requirement_id": "anatomic_localization",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction."
+                    ],
+                    "reason": "Existing imaging identifies gallstones but does not localize any stone within the bile ducts because no ductal stone was seen."
+                  },
+                  {
+                    "requirement_key": "req_severity",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.",
+                      "Bilirubin, Total: 3.4 mg/dL (ref 0.0-1.5)"
+                    ],
+                    "reason": "Absence of CBD dilation suggests no severe chronic obstruction, but abnormal liver tests suggest at least intermittent or mild obstruction cannot be excluded."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Prior CT and RUQ ultrasound argue against severe CBD obstruction but do not fully exclude occult choledocholithiasis or characterize ductal anatomy, so further clarification is needed."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": "A second, somewhat broader interpretation is that the clinicians primarily sought to comprehensively characterize pancreatobiliary anatomy and complications in a patient with severe acute pancreatitis (very high lipase, systemic inflammatory response, cholestatic liver tests) and known cholelithiasis, including evaluating for necrosis, fluid collections, and subtle biliary obstruction that might not have been visible on CT or ultrasound. In this framing, the main question is about overall severity and structural complications of pancreatitis with biliary involvement, rather than strictly about choledocholithiasis, but this still supports an MRCP to delineate the pancreatic and biliary ducts and guide the need for invasive intervention."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute pancreatitis causing her current epigastric abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific diagnosis\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"She presented to ___ where she was found to have an elevated lipase\",\n        \"Lipase: 7585.0 IU/L (ref 0.0-60.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The acute pancreatitis is likely gallstone-related, given known cholelithiasis and abnormal liver tests.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"etiologic mechanism\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"___ w h/o cholelithiasis\",\n        \"CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There may be transient or occult common bile duct obstruction despite no ductal dilation on prior CT/ultrasound.\",\n      \"type\": \"etiology_or_mechanism\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"mechanistic contributor\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"elevated transaminases (41 and 63 ALT and AST) and elevated bilirubin and alk phos\",\n        \"Bilirubin, Total: 3.4 mg/dL (ref 0.0-1.5) ... Alkaline Phosphatase: 121.0 IU/L (ref 35.0-105.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has systemic inflammatory response with possible early sepsis in the setting of pancreatitis or biliary disease.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"syndrome/severity\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"White Blood Cells: 13.6 K/uL (ref 4.0-10.0)\",\n        \"BCx were drawn. SHe was given fluid, morphine and admitted to medicine.\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"There is no clear radiographic evidence of primary pulmonary cause for her presentation aside from mild congestion and atelectasis.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"organ system involvement\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"A CXR was unremarkable\",\n        \"There is mild pulmonary vascular congestion. Left base opacity with obscuration of the left hemidiaphragm is seen with may be due to atelectasis as well as dilatation of the descending aorta.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first decision point; all assumptions are newly inferred from the pre-order data.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there choledocholithiasis or other obstructing biliary pathology contributing to this patient’s acute pancreatitis and cholestatic liver test abnormalities, and what is the detailed biliary and pancreatic ductal anatomy?\",\n    \"target\": \"common bile duct, intrahepatic bile ducts, gallbladder, and pancreatic duct for obstructing stones or strictures\",\n    \"type\": \"etiology_or_mechanism\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"If obstructing stones or strictures are identified, clinicians would likely pursue therapeutic ERCP or other biliary intervention and manage as gallstone pancreatitis with obstruction.\",\n    \"negative_answer_changes\": \"If no obstructing biliary pathology is found, they would attribute pancreatitis to non-obstructive or passed-stone etiology and avoid invasive ERCP, focusing on supportive care and alternative causes.\",\n    \"secondary_questions\": [\n      \"Is there evidence of biliary ductal dilation or stricturing that would indicate chronic or higher-grade obstruction?\",\n      \"Is there associated pancreatic duct abnormality or complication that would alter the management of pancreatitis?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_visualization\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Clear visualization of the common bile duct, intrahepatic ducts, gallbladder, and pancreatic duct\",\n        \"why_required\": \"Obstructing stones or strictures can only be assessed if the biliary and pancreatic ducts are well visualized.\"\n      },\n      {\n        \"requirement_key\": \"req_obstruction_presence\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of choledocholithiasis, sludge, or stricturing causing obstruction\",\n        \"why_required\": \"Determining whether an obstructing lesion exists is critical for deciding on ERCP or other biliary intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_anatomic_site\",\n        \"id\": \"anatomic_localization\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Exact anatomic location of any obstructing stone or stricture within the biliary or pancreatic ducts\",\n        \"why_required\": \"Interventional planning depends on knowing where the obstruction is located along the ductal system.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of biliary ductal dilation and extent of any obstruction\",\n        \"why_required\": \"Severity of obstruction guides urgency and type of intervention and helps correlate with liver test abnormalities.\"\n      }\n    ],\n    \"evidence\": [\n      \"CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\",\n      \"elevated transaminases (41 and 63 ALT and AST) and elevated bilirubin and alk phos\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_visualization\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\"\n        ],\n        \"reason\": \"Prior CT and RUQ ultrasound visualized gallbladder and gross biliary anatomy but did not provide detailed ductal imaging and may miss small or non-calcified CBD stones.\"\n      },\n      {\n        \"requirement_key\": \"req_obstruction_presence\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\",\n          \"Bilirubin, Total: 3.4 mg/dL (ref 0.0-1.5)\"\n        ],\n        \"reason\": \"Lack of CBD dilation on CT/US argues against high-grade obstruction, but persistent hyperbilirubinemia and elevated alk phos keep the possibility of occult or transient CBD obstruction open.\"\n      },\n      {\n        \"requirement_key\": \"req_anatomic_site\",\n        \"requirement_id\": \"anatomic_localization\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\"\n        ],\n        \"reason\": \"Existing imaging identifies gallstones but does not localize any stone within the bile ducts because no ductal stone was seen.\"\n      },\n      {\n        \"requirement_key\": \"req_severity\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.\",\n          \"Bilirubin, Total: 3.4 mg/dL (ref 0.0-1.5)\"\n        ],\n        \"reason\": \"Absence of CBD dilation suggests no severe chronic obstruction, but abnormal liver tests suggest at least intermittent or mild obstruction cannot be excluded.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Prior CT and RUQ ultrasound argue against severe CBD obstruction but do not fully exclude occult choledocholithiasis or characterize ductal anatomy, so further clarification is needed.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"A second, somewhat broader interpretation is that the clinicians primarily sought to comprehensively characterize pancreatobiliary anatomy and complications in a patient with severe acute pancreatitis (very high lipase, systemic inflammatory response, cholestatic liver tests) and known cholelithiasis, including evaluating for necrosis, fluid collections, and subtle biliary obstruction that might not have been visible on CT or ultrasound. In this framing, the main question is about overall severity and structural complications of pancreatitis with biliary involvement, rather than strictly about choledocholithiasis, but this still supports an MRCP to delineate the pancreatic and biliary ducts and guide the need for invasive intervention.\"\n}",
+            "request_id": "gen-1788345220-Q1ImhQvZw8seYLHzWMkb",
+            "usage": {
+              "completion_tokens": 2265,
+              "prompt_tokens": 4221,
+              "total_tokens": 6486,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3968,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02346225,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02346225,
+                "upstream_inference_prompt_cost": 0.00081225,
+                "upstream_inference_completions_cost": 0.02265
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute pancreatitis causing her current epigastric abdominal pain.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific diagnosis",
+            "status": "established",
+            "evidence": [
+              "She presented to ___ where she was found to have an elevated lipase",
+              "Lipase: 7585.0 IU/L (ref 0.0-60.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The acute pancreatitis is likely gallstone-related, given known cholelithiasis and abnormal liver tests.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "etiologic mechanism",
+            "status": "likely",
+            "evidence": [
+              "___ w h/o cholelithiasis",
+              "CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There may be transient or occult common bile duct obstruction despite no ductal dilation on prior CT/ultrasound.",
+            "type": "etiology_or_mechanism",
+            "other_proposed_type": "",
+            "level": "mechanistic contributor",
+            "status": "suspected",
+            "evidence": [
+              "elevated transaminases (41 and 63 ALT and AST) and elevated bilirubin and alk phos",
+              "Bilirubin, Total: 3.4 mg/dL (ref 0.0-1.5) ... Alkaline Phosphatase: 121.0 IU/L (ref 35.0-105.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has systemic inflammatory response with possible early sepsis in the setting of pancreatitis or biliary disease.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "syndrome/severity",
+            "status": "suspected",
+            "evidence": [
+              "White Blood Cells: 13.6 K/uL (ref 4.0-10.0)",
+              "BCx were drawn. SHe was given fluid, morphine and admitted to medicine."
+            ],
+            "support": "weakly_supported"
+          },
+          {
+            "proposition": "There is no clear radiographic evidence of primary pulmonary cause for her presentation aside from mild congestion and atelectasis.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "organ system involvement",
+            "status": "likely",
+            "evidence": [
+              "A CXR was unremarkable",
+              "There is mild pulmonary vascular congestion. Left base opacity with obscuration of the left hemidiaphragm is seen with may be due to atelectasis as well as dilatation of the descending aorta."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first decision point; all assumptions are newly inferred from the pre-order data."
+        },
+        "current_question": {
+          "primary": "Is there choledocholithiasis or other obstructing biliary pathology contributing to this patient’s acute pancreatitis and cholestatic liver test abnormalities, and what is the detailed biliary and pancreatic ductal anatomy?",
+          "target": "common bile duct, intrahepatic bile ducts, gallbladder, and pancreatic duct for obstructing stones or strictures",
+          "type": "etiology_or_mechanism",
+          "other_proposed_type": "",
+          "positive_answer_changes": "If obstructing stones or strictures are identified, clinicians would likely pursue therapeutic ERCP or other biliary intervention and manage as gallstone pancreatitis with obstruction.",
+          "negative_answer_changes": "If no obstructing biliary pathology is found, they would attribute pancreatitis to non-obstructive or passed-stone etiology and avoid invasive ERCP, focusing on supportive care and alternative causes.",
+          "secondary_questions": [
+            "Is there evidence of biliary ductal dilation or stricturing that would indicate chronic or higher-grade obstruction?",
+            "Is there associated pancreatic duct abnormality or complication that would alter the management of pancreatitis?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_visualization",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Clear visualization of the common bile duct, intrahepatic ducts, gallbladder, and pancreatic duct",
+              "why_required": "Obstructing stones or strictures can only be assessed if the biliary and pancreatic ducts are well visualized."
+            },
+            {
+              "requirement_key": "req_obstruction_presence",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of choledocholithiasis, sludge, or stricturing causing obstruction",
+              "why_required": "Determining whether an obstructing lesion exists is critical for deciding on ERCP or other biliary intervention."
+            },
+            {
+              "requirement_key": "req_anatomic_site",
+              "id": "anatomic_localization",
+              "other_proposed_dimension": "",
+              "dimension": "Exact anatomic location of any obstructing stone or stricture within the biliary or pancreatic ducts",
+              "why_required": "Interventional planning depends on knowing where the obstruction is located along the ductal system."
+            },
+            {
+              "requirement_key": "req_severity",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Degree of biliary ductal dilation and extent of any obstruction",
+              "why_required": "Severity of obstruction guides urgency and type of intervention and helps correlate with liver test abnormalities."
+            }
+          ],
+          "evidence": [
+            "CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.",
+            "elevated transaminases (41 and 63 ALT and AST) and elevated bilirubin and alk phos"
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_visualization",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "partially_addressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "A CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction."
+              ],
+              "reason": "Prior CT and RUQ ultrasound visualized gallbladder and gross biliary anatomy but did not provide detailed ductal imaging and may miss small or non-calcified CBD stones."
+            },
+            {
+              "requirement_key": "req_obstruction_presence",
+              "requirement_id": "presence_or_absence",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.",
+                "Bilirubin, Total: 3.4 mg/dL (ref 0.0-1.5)"
+              ],
+              "reason": "Lack of CBD dilation on CT/US argues against high-grade obstruction, but persistent hyperbilirubinemia and elevated alk phos keep the possibility of occult or transient CBD obstruction open."
+            },
+            {
+              "requirement_key": "req_anatomic_site",
+              "requirement_id": "anatomic_localization",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction."
+              ],
+              "reason": "Existing imaging identifies gallstones but does not localize any stone within the bile ducts because no ductal stone was seen."
+            },
+            {
+              "requirement_key": "req_severity",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "CT abdomen and RUQUs showed gallstones without cholecystitis or CBD dilatation/obstruction.",
+                "Bilirubin, Total: 3.4 mg/dL (ref 0.0-1.5)"
+              ],
+              "reason": "Absence of CBD dilation suggests no severe chronic obstruction, but abnormal liver tests suggest at least intermittent or mild obstruction cannot be excluded."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Prior CT and RUQ ultrasound argue against severe CBD obstruction but do not fully exclude occult choledocholithiasis or characterize ductal anatomy, so further clarification is needed."
+        },
+        "current_order_fit": {
+          "question_grounding": "well_supported",
+          "test_question_capability": "capable"
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": "A second, somewhat broader interpretation is that the clinicians primarily sought to comprehensively characterize pancreatobiliary anatomy and complications in a patient with severe acute pancreatitis (very high lipase, systemic inflammatory response, cholestatic liver tests) and known cholelithiasis, including evaluating for necrosis, fluid collections, and subtle biliary obstruction that might not have been visible on CT or ultrasound. In this framing, the main question is about overall severity and structural complications of pancreatitis with biliary involvement, rather than strictly about choledocholithiasis, but this still supports an MRCP to delineate the pancreatic and biliary ducts and guide the need for invasive intervention."
+      },
+      "validation_errors": []
+    }
+  ]
+}

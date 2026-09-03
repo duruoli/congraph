@@ -2,13 +2,18 @@
 from __future__ import annotations
 
 import hashlib
+import inspect
 import json
 from typing import Any
 
 
-TEMPORAL_SYSTEM = """You review one local A/Q/C consistency question. Do not redo the annotation.
+TEMPORAL_SYSTEM = """You audit whether interval comparison is an independent answer dimension in one local A/Q/C annotation. Do not redo the annotation.
 
-Decide whether the current clinical question truly asks for change relative to an earlier study or treatment state. A temporal requirement is needed for interval improvement, worsening, progression, stability, or response. It is not needed merely because an order is repeated or the question asks for the current presence, identity, or severity of a finding.
+Return `interval_comparison_required` only when answering the clinical question requires comparing the current state with an identifiable earlier study or treatment state and reporting improvement, worsening, progression, stability, or response. A current finding alone must be insufficient to answer that part of the question. When this is true, temporal course needs its own requirement and coverage entry even if comparison language also appears inside a severity, complication, or presence requirement, because prior evidence may cover the current-state dimension without covering interval change.
+
+Return `current_state_question_only` when the actual information need is current presence, identity, anatomy, severity, or complication status. Repeated ordering, availability of prior imaging, or adjectives such as new, evolving, persistent, or worsening do not by themselves establish an independent interval-comparison need. If such wording creates a comparison that is not independently necessary or supported, rewrite only the question wording while preserving the current-state information need.
+
+Return `unclear` only when the supplied pre-order record cannot distinguish those two cases. Do not use a generic aligned/consistent decision.
 
 Use only the supplied pre-order clinical record. Never infer from the masked current result. Preserve all unrelated fields. Evidence must be verbatim clinical text; absence of information belongs in reason with an empty evidence list.
 
@@ -27,8 +32,8 @@ Return only the requested JSON object."""
 
 
 TEMPORAL_OUTPUT = {
-    "decision": "aligned | add_temporal_requirement | remove_temporal_wording | unclear",
-    "reason": "one concise sentence",
+    "decision": "interval_comparison_required | current_state_question_only | unclear",
+    "reason": "one concise sentence explaining whether comparison with a baseline is necessary to answer Q",
     "revised_primary": "replacement string or null",
     "revised_secondary_questions": "replacement list or null",
     "temporal_requirement": {
@@ -46,8 +51,6 @@ TEMPORAL_OUTPUT = {
         "supporting_evidence": ["zero to two verbatim quotes"],
         "reason": "how pre-order evidence covers the interval comparison",
     },
-    "revised_aggregate": "unanswered | partially_answered | sufficiently_answered | null",
-    "revised_aggregate_reason": "replacement string or null",
 }
 
 
@@ -56,6 +59,28 @@ DISCORDANCE_OUTPUT = {
     "proposition": "one atomic clinical claim, or null if no shared proposition exists",
     "reason": "one concise sentence applying the discordance criteria",
 }
+
+
+TEMPORAL_TASK = (
+    "Decide whether interval comparison is independently required to answer the question. "
+    "If required and the typed requirement is missing, supply exactly one temporal requirement "
+    "and its matching coverage entry. If current-state characterization is the actual question, "
+    "remove unnecessary comparison language from the primary/secondary wording; an existing "
+    "temporal requirement and coverage entry will be removed deterministically. If a required "
+    "temporal requirement already exists but Q does not state the comparison, revise Q to make "
+    "the comparison explicit. Return exactly the six requested fields; use null for every "
+    "revision or temporal object that the chosen decision does not require. Do not assess or "
+    "revise aggregate coverage; code derives any necessary aggregate change after applying the "
+    "requirement-level repair."
+)
+
+
+DISCORDANCE_TASK = (
+    "Test only whether the existing positive or indeterminate discordance flag is genuine. "
+    "Name the single proposition at issue, then decide whether both quoted evidence streams "
+    "truly oppose each other on that proposition and the conflict remains clinically material "
+    "after ordinary explanations are considered."
+)
 
 
 def _compact_baseline(record: dict[str, Any]) -> dict[str, Any]:
@@ -70,12 +95,7 @@ def build_temporal_user(
     record: dict[str, Any], decision_point: dict[str, Any], annotation: dict[str, Any]
 ) -> str:
     payload = {
-        "task": (
-            "Check only temporal intent/requirement alignment. If aligned, return null for every "
-            "revision field. If temporal intent is explicit but the requirement is missing, add one "
-            "requirement and its matching coverage entry. If temporal wording is unsupported and "
-            "current-state characterization is the actual question, revise only the question wording."
-        ),
+        "task": TEMPORAL_TASK,
         "clinical_context": {
             "baseline_relevant": _compact_baseline(record),
             "resulted_prior_imaging": decision_point.get("visible_prior_imaging") or [],
@@ -101,12 +121,7 @@ def build_discordance_user(
 ) -> str:
     previous = annotation.get("previous_order_update") or {}
     payload = {
-        "task": (
-            "Test only whether the existing positive or indeterminate discordance flag is genuine. "
-            "Name the single proposition at issue, then decide whether both quoted evidence streams "
-            "truly oppose each other on that proposition and the conflict remains clinically material "
-            "after ordinary explanations are considered."
-        ),
+        "task": DISCORDANCE_TASK,
         "clinical_context": {
             "baseline_relevant": _compact_baseline(record),
             "current_order": decision_point.get("ordered"),
@@ -149,17 +164,35 @@ DISCORDANCE_INPUT_CONTRACT = {
 }
 
 
-def prompt_hash(system: str, output: dict[str, Any], input_contract: dict[str, Any]) -> str:
+def prompt_hash(
+    system: str,
+    task: str,
+    output: dict[str, Any],
+    input_contract: dict[str, Any],
+    builder: Any,
+) -> str:
     return hashlib.sha256(
         (
             system
+            + task
             + json.dumps(output, sort_keys=True)
             + json.dumps(input_contract, sort_keys=True)
+            + inspect.getsource(builder)
         ).encode("utf-8")
     ).hexdigest()
 
 
-TEMPORAL_PROMPT_SHA256 = prompt_hash(TEMPORAL_SYSTEM, TEMPORAL_OUTPUT, TEMPORAL_INPUT_CONTRACT)
+TEMPORAL_PROMPT_SHA256 = prompt_hash(
+    TEMPORAL_SYSTEM,
+    TEMPORAL_TASK,
+    TEMPORAL_OUTPUT,
+    TEMPORAL_INPUT_CONTRACT,
+    build_temporal_user,
+)
 DISCORDANCE_PROMPT_SHA256 = prompt_hash(
-    DISCORDANCE_SYSTEM, DISCORDANCE_OUTPUT, DISCORDANCE_INPUT_CONTRACT
+    DISCORDANCE_SYSTEM,
+    DISCORDANCE_TASK,
+    DISCORDANCE_OUTPUT,
+    DISCORDANCE_INPUT_CONTRACT,
+    build_discordance_user,
 )

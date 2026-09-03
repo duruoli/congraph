@@ -1,5 +1,194 @@
 # A/Q/C development annotation handoff
 
+## 2026-09-03 bridge 009 targeted audit complete; temporal 1.2.0 error analysis
+
+> 本节覆盖下方 bridge 009 targeted-pending checkpoint。final test 临床内容仍未读取；原始模型结果仍未覆盖，
+> 所有修正均位于 non-destructive overlay。
+
+- 经单独明确授权，bridge 009 targeted auditor 1.2.0 将 19 个 step payload 发送至 OpenRouter
+  `openai/gpt-5.1`：10 temporal candidates、9 discordance candidates，共 19 calls / 19 request IDs / 19 usage
+  objects，100,445 prompt tokens、3,825 completion tokens，记录费用 `$0.130830`。连同 bridge 009 主生成与
+  invalid-step repair，bridge 009 总记录费用为 `$3.425627`；OpenRouter billing 仍为权威值。
+- 9 个 discordance 均被 LLM 判为 `false_discordance`，逐项人工复核同意。主要错误模式是把“工作假设被阴性或
+  有限敏感度检查削弱”、不同结构上的可共存发现、不同时间点/技术下的轻度差异，以及未找到明确病因，错误标为
+  `indeterminate` 或 `materially_discordant`。这些都不是对同一、同时成立、material proposition 的不可调和反证。
+  该批没有 true-discordance 阳性例，因此只支持 auditor 排除假阳性的能力，不能估计其保留真冲突的 recall。
+- Temporal LLM 原始语义裁决为 4 个 `interval_comparison_required`、6 个
+  `current_state_question_only`；其中一个正确的 current-state revision 因 residual wording 被 lexical selector
+  继续命中，形成 9 resolved + 1 unresolved。人工 gold-like 裁决为 7 interval、3 current-state：
+  - interval：`pancreatitis:21282967:s4,s5`；`pancreatitis:25133113:s2,s3,s5,s6,s7`；
+  - current-state：`pancreatitis:21282967:s3`、`20720063:s3`、`25133113:s4`。
+- 因而 temporal 语义判断人工同意 7/10。3 个 false negatives 全在同一 serial-imaging 轨迹：s2/s3 的
+  secondary Q 明确问 duct dilation/pericholecystic fluid 相对先前检查的变化并关联 ERCP urgency，s5 更直接问
+  pancreatitis 是否 progressed、是否出现 new/enlarging collections 以及 fluid 是否 changed；这些都不能只靠当前
+  状态完整回答。尤其 s5 与被正确判为 interval 的 s6/s7 几乎同构，显示 LLM 对“主问题偏 current-state 时是否
+  应保留 secondary interval requirement”的执行不稳定，而不是 aggregate 机制问题。
+- 唯一 closure 假阳性来自关系理解不足：LLM 已把问题改为 current-state，但短语 “bile duct dilation ... causing
+  or worsening cholestasis” 被 regex 误读为 “dilation itself is worsening”。人工将其改为 “could explain
+  cholestasis” 后 closure。说明 selector 仍是高召回词法门禁，不能把 `worsening` 附近出现 imaging noun 等同于
+  明确的 interval comparison。
+- 最终 overlay 为
+  `results/aqc_direct/development/697923b99721/targeted_proposed_overlay_bridge_009.json`，其 `source` 已明确标为
+  algorithmic normalization + targeted LLM + manual adjudication，共 50 steps / 92 operations。三项 temporal
+  false negatives 已人工改为新增 typed temporal requirement/coverage；一个 closure 假阳性已人工改写；其余通过
+  的 targeted operations 与此前 20 项 manual nonverbatim 修正均已合并。最终
+  `audit_bridge_009_targeted.json`：31/31 patients、72/72 steps、0 invalid、0 low-evidence。对原 10 个 temporal
+  candidates 的 effective overlay 重跑 selector 为 10/10 closure，最终 typed temporal 为上述 7 steps。
+
+### 对 temporal auditor 的下一版建议
+
+1. Prompt 增加逐子问题的必要性测试：primary 或任一 secondary 只要明确要求与可识别 baseline 比较，且该比较会
+   独立影响 urgency、intervention 或 disease-course 判断，就必须单列 temporal；不能因 primary 可由 current study
+   回答而删除 secondary 的 interval requirement。
+2. 加入同轨迹对照例：s5/s6/s7 这类 “progressed / new or enlarging / changed compared with prior” 应保持一致；
+   `evolving complication` 仅表示当前存在性时才改为 current-state。
+3. Selector 应识别语法关系或至少要求显式 baseline/change construction。`finding ... causes worsening symptoms` 与
+   `finding itself worsened versus prior` 必须分开；单纯 noun + `worsening` 邻近窗口只能生成候选，不能用于 closure
+   失败判定。
+4. 在更多含真、假 temporal 的人工 gold 样本上验证后再自动接受 patch；bridge 009 的 7/10 说明 1.2.0 已比旧
+   `aligned` 输出更可解释，但还不适合无人复核自动合并。
+
+## 2026-09-03 latest checkpoint: bridge 009 main annotation complete and locally quality-cleared
+
+> 本节覆盖下方 bridge 008 checkpoint。final test 临床内容仍未读取；主 annotation prompt SHA-256 仍为
+> `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`，validator 为 `3.1.0`。
+
+- 未执行的 bridge 008 已由 `data/aqc_direct/bridge_697923b99721_008_superseded.json` 正式标记为 superseded；
+  bridge 008 没有发生外部调用。随后冻结 bridge 009：
+  `data/aqc_direct/bridge_697923b99721_009.json`，SHA-256
+  `422305F9756BD30809B4449DC886F2F27533957B84B95A9403EE0815FFB31582`，包含剩余全部 31 位
+  development patients / 72 steps（cholecystitis 11、pancreatitis 20），与既有 development 标注无重叠。
+- bridge 009 causal-mask preflight 命中 8 steps。人工确认 2 个当前结果泄漏并进行 hash-bound 内存脱敏：
+  `pancreatitis:21282967:s1` 的当前超声复述，以及 `pancreatitis:22470405:s1` 的两句当前 CT/胰腺复述；
+  其余 6 项为明确外院或先前 step 的检查。Reviewed preflight 为 2 resolved redactions、6 cleared
+  prior/external、`blocking=false`；原始临床数据未修改。为覆盖与 detector 命中句相邻、但 detector 未单独命中的
+  第二条明确结果复述，review redaction 现在允许额外的 exact-text + SHA-256 绑定句，同时仍要求覆盖全部 detector
+  candidates。
+- 经明确授权，已将 bridge 009 的 causal-mask-cleared payload 发送至 OpenRouter `openai/gpt-5.1`，采用
+  `--no-cost-stop` 完成主 A/Q/C annotation。首次运行 31/31 落盘，但 4 个 trajectories 因某个 step 用尽重试而提前
+  截断，共缺 9 steps；manifest-scoped `--repair-invalid-steps` 复用既有有效 steps，仅补齐这 9 steps。
+- bridge 009 共保留 121 attempts / 121 request IDs / 121 usage objects，575,637 prompt tokens、287,765
+  completion tokens，记录累计费用 `$3.294796`（OpenRouter billing 仍为权威值）。最终严格 batch audit 为
+  31/31 patients、72/72 steps、0 current-validator invalid。
+- Algorithmic auditor 初扫为 63 issues / 33 steps：43 个确定性 operations、20 个
+  `nonverbatim_unresolved`、normalization 后 0 invalid。20 项均已人工逐项裁决：非原文的 absence/inference 或当前
+  order 元数据被删除，带 heading、引号、省略号或轻微拼写偏差的临床证据恢复为可见原文。合并后的 non-destructive
+  overlay 为 `results/aqc_direct/development/697923b99721/algorithmic_proposed_overlay_bridge_009.json`（其
+  `source` 已标明包含 manual adjudication），共 33 steps / 63 operations；adjudicated audit
+  `audit_bridge_009_adjudicated.json` 为 72/72 valid、0 low-evidence findings。原始模型结果未覆盖。
+- Targeted auditor 1.2.0 已完成本地 dry-run，0 external calls：共 19 targeted steps，其中 10 temporal
+  candidates、9 discordance false-positive candidates；文件为 `targeted_audit_bridge_009_dryrun.json`。
+  Temporal/discordance 实际 payload 尚未外发，仍需单独明确授权。当前 development patients 已全部完成主标注；
+  不要把 final test 临床内容作为下一批继续读取或标注。
+
+### 下一步
+
+1. 若要用 bridge 009 验证新版 temporal auditor，取得对上述 19-step targeted payload 发送至 OpenRouter
+   `openai/gpt-5.1` 的单独授权。
+2. 获授权后运行 targeted `--execute`，人工复核 `unclear` 与每个 proposed patch，只合并通过 closure、
+   clinical-only evidence 检查和 validator 3.1.0 的修改；再与现有 33-step overlay 合并并运行最终 batch audit。
+3. Development 主标注现已无剩余患者；保持 final test 封存，除非用户之后明确改变用途并授权。
+
+## 2026-09-02 temporal auditor 1.2.0 local revision
+
+- 重新核对原始 codebook/prompt 后，temporal 判据改为：只有当回答 Q 必须把当前状态与明确的 earlier
+  study/treatment baseline 比较，并报告改善、恶化、进展、稳定或 response 时，才单列
+  `temporal_course_or_response`。重复检查、存在 prior imaging，或 `new/evolving/worsening` 等措辞本身均不充分。
+- Temporal LLM 输出不再使用含糊的 `aligned/add/remove`，而是
+  `interval_comparison_required | current_state_question_only | unclear`。前两项直接裁决时间比较是否为独立必要
+  answer dimension；`unclear` 会显式进入 unresolved，不视为通过。
+- LLM 不再生成 aggregate。代码在 requirement/coverage 局部修复后，仅在原 aggregate 与新 coverage profile
+  不兼容时确定性更新 aggregate，并同步写入机械说明，避免正确 temporal patch 因错误 aggregate 被整体拒绝。
+- 新增 typed temporal requirement 的确定性绑定检查、移除多余 typed temporal requirement 的对称路径、严格输出
+  shape、修复后重新运行 temporal selector 的 closure gate，以及 temporal 局部 patch 的独立 stage validation。失败的
+  temporal patch 不再阻断同一步中有效的 discordance/algorithmic correction。
+- Implementation：`experiments/aqc/targeted_repair_prompts.py`、`scripts/aqc_targeted_auditor.py`；auditor/schema
+  `1.2.0`；temporal prompt SHA-256
+  `86a2821abea4b01c93c7b72d1d74caed4a8bfeaca472e2056810eabe6de136ea`。Prompt hash 现同时覆盖 system、完整
+  user task、user-payload builder、output contract 和 input contract，修复了 user task/builder 改变但 hash 不变的 provenance 缺口；因此
+  discordance prompt hash 也按完整合同重新计算为
+  `1f032cb3a7fe756f4bcde8c4d146f7ae48389042aa7872fde166fc38833ffebf`。本地 6 项 unit tests 通过；bridge 007
+  dry-run 仍检出 6 temporal candidates、5 discordance candidates、0 external calls。旧 1.1.0 temporal 裁决不应
+  作为 1.2.0 下的最终语义结论；若要重新执行这 6 个 payload，仍需新的明确外发授权。
+- 用户决定不重复外发 discordance audit；原 5 个 false-discordance 裁决保持不变。6 个 temporal candidates 已按
+  1.2.0 判据人工最小裁决：`pancreatitis:29423991:s2,s5` 单列 temporal requirement/coverage，并从原
+  severity requirement 中移除重叠的 interval 语义；`pancreatitis:25210798:s2`、`29423991:s3,s4`、
+  `25711536:s2` 保留 current-state 临床目标并移除不必要的时间措辞。Overlay 现覆盖 21 steps；修复后 6/6
+  temporal selector closure、36/36 validator valid、0 low-evidence-fidelity，且未新增临床 evidence。
+- 尚未执行的 bridge 008 仍冻结为原 20 人，development 总剩余仍为 31 人。若下一轮改为一次处理全部 31 人，应先
+  明确将 bridge 008 标记为 superseded，再冻结一个无重叠的 31-person manifest；不要让 bridge 008 与新批次并存执行。
+
+## 2026-09-02 latest checkpoint: bridge 007 quality-cleared; bridge 008 causal-mask-cleared and awaiting authorization
+
+> 本节覆盖下方 bridge 007 targeted-authorization checkpoint。final test 临床内容仍未读取；主 annotation
+> prompt SHA-256 仍为 `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`，
+> validator 仍为 `3.1.0`。
+
+- 经明确授权，bridge 007 targeted auditor 1.1.0 将 9 个局部 step payload 发送至 OpenRouter
+  `openai/gpt-5.1`：6 temporal candidates、5 discordance candidates（部分重叠），共 11 calls / 11 request
+  IDs / 11 usage objects，60,027 prompt tokens、2,168 completion tokens，记录费用 `$0.081018`。
+- 5 个原 `indeterminate` discordance 均判为假冲突并安全映射为 `not_applicable`：
+  `cholecystitis:29815440:s2`、`pancreatitis:25210798:s2,s3`、`pancreatitis:25711536:s2`、
+  `pancreatitis:21889483:s2`。6 个 temporal 候选中 4 个保持原样；另 2 个新增 temporal requirement 的建议
+  因触发 `unanswered_aggregate_with_sufficient_requirement` 被门禁拒绝，未合并。
+- 最终 bridge 007 overlay 为
+  `results/aqc_direct/development/697923b99721/manual_adjudication_bridge_007.json`，覆盖 17 steps；最终 audit
+  `audit_bridge_007_targeted.json` 为 20/20 patients、36/36 steps、0 invalid、0 low-evidence、0 nonverbatim。
+  主标注与 targeted 合计记录费用 `$1.810523`。Development 当前完成 104 位，尚余 31 位。
+- 已冻结下一批 `data/aqc_direct/bridge_697923b99721_008.json`，SHA-256
+  `C40C61C131641113683A6D0413E952825A5CD7A24875D629F5B6ED67A08A6376`：20 位全新 development
+  患者 / 46 steps，cholecystitis 10、pancreatitis 10；其中 `pancreatitis:21282967` 有 7 steps。
+- bridge 008 causal-mask preflight 命中 4 steps。`pancreatitis:21282967:s1` 确认为当前超声结果 HPI 泄漏并
+  配置 hash-bound 内存 redaction；该句相对 s3/s7 已是先前检查，完整 s1 报告仍通过结构化 prior imaging
+  可见。`cholecystitis:29131507:s1` 为明确 OSH 既往超声。Reviewed preflight 为 1 resolved redaction、
+  3 cleared prior/external、`blocking=false`；原始临床数据未修改。
+- bridge 008 annotation dry-run 已通过：OpenRouter `openai/gpt-5.1`、A/Q/C development annotation、20
+  patients / 46 steps、`--no-cost-stop`；尚未 `--execute`，未发生 bridge 008 外部调用。
+
+### 下一步
+
+1. 取得对冻结 bridge 008、OpenRouter、`openai/gpt-5.1`、A/Q/C development annotation 与
+   `--no-cost-stop` 的明确授权。
+2. 获授权后执行主生成及 manifest-scoped invalid-step repair；随后依次运行 validator、algorithmic auditor、
+   人工 nonverbatim 裁决与 targeted dry-run。Targeted 实际 payload 另行授权。
+3. bridge 008 完成后 development 尚余 11 位，继续排除 final test。
+
+## 2026-09-02 latest checkpoint: bridge 007 generated and locally adjudicated; targeted payload awaiting authorization
+
+> 本节覆盖下方 bridge 007 pending-authorization checkpoint。final test 临床内容仍未读取；主 annotation prompt
+> SHA-256 仍为 `697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1`，validator
+> 仍为 `3.1.0`。
+
+- 重新核对确认 bridge 007 的 20 位患者全部属于当时剩余的 51 位未标注 development 患者；与 final/non-dev
+  和任何既有 GPT-5.1 development 结果的交集均为 0，且与确定性 `stratified-new 20` 完全一致。冻结后尚余
+  31 位 development 患者。
+- 经用户明确授权，已将 causal-mask-cleared 的冻结 bridge 007 仅发送至 OpenRouter `openai/gpt-5.1`，用于
+  A/Q/C development annotation，采用 `--no-cost-stop`。主运行 20/20 落盘；2 位患者因首步
+  `derived_transition` 非 `initial` 用尽普通重试，随后在同一授权范围内仅做 manifest-scoped invalid-step
+  repair，其余有效 step 全部复用。
+- 全批共保留 65 attempts / 65 request IDs / 65 usage objects，303,612 prompt tokens、150,839 completion
+  tokens，记录累计费用 `$1.729505`；OpenRouter billing 仍为权威值。
+- 原始 batch audit：20/20 patients、36/36 steps、0 current-validator invalid、0 low-evidence-fidelity；有 1 个
+  exact repeat：`pancreatitis:25711536:s2`，它是 step-1 技术受限后真实发生的第二次超声，不是重复文件。
+- Algorithmic auditor 初扫：28 issues / 15 steps，其中 19 个确定性 operations、9 个
+  `nonverbatim_unresolved`，normalization 后 0 invalid。9 项已逐一人工裁决：逐字恢复 8 个字段引用（其中同一
+  lab summary 出现在两个 step）、删除 1 个用当前医嘱名称充当的 assumption evidence。最终 non-destructive
+  overlay 为 `results/aqc_direct/development/697923b99721/manual_adjudication_bridge_007.json`，覆盖 15 steps；
+  原始模型结果未覆盖。复验为 36/36 valid、0 low-evidence、0 nonverbatim。
+- Targeted auditor 1.1.0 dry-run 形成 9 个实际 step、0 external calls：6 temporal candidates、5 discordance
+  candidates，部分重叠。候选为 `cholecystitis:29815440:s2`；`pancreatitis:25210798:s2,s3`；
+  `pancreatitis:29423991:s2,s3,s4,s5`；`pancreatitis:25711536:s2`；`pancreatitis:21889483:s2`。
+  Dry-run 位于 `results/aqc_direct/development/697923b99721/targeted_audit_bridge_007_dryrun.json`。
+
+### 下一步
+
+1. 取得上述 9-step targeted payload 发送至 OpenRouter `openai/gpt-5.1`、用于局部 temporal/discordance
+   A/Q/C false-positive audit/repair 的明确授权；此前不执行 targeted 外部调用。
+2. 获授权后运行 targeted `--execute`，仅接受通过 algorithmic clinical-only evidence 检查和 validator 3.1.0
+   的局部修补；然后将 targeted 结果与现有 manual overlay 合并并做最终 batch audit。
+3. 质量清除后 development 完成数将为 104，尚余 31 位；继续下一批须重新冻结 manifest、causal-mask 审核并
+   单独取得主生成授权。
+
 ## 2026-09-02 latest checkpoint: bridge 007 frozen and causal-mask-cleared; awaiting authorization
 
 > 本节覆盖下方 checkpoint 的“下一步”。本次未调用外部模型，也未读取 final test 临床内容。

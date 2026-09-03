@@ -1,0 +1,1070 @@
+{
+  "schema_version": "2.0.0-development",
+  "scope": "DIRECT empirical annotation",
+  "disease_stratum_sampling_only": "cholecystitis",
+  "hadm_id": 23105162,
+  "source_path": "results/annotation_experiment/full/cholecystitis_23105162.json",
+  "model": "openai/gpt-5.1",
+  "prompt_version_sha256": "697923b99721c21edd474848a816423fab20d3a65c1e0388c938dbf24a72d5c1",
+  "validator_version": "3.1.0",
+  "retry_protocol_version": "1.0.0-validator-feedback",
+  "causal_boundary": "pre-order chart + resulted prior imaging + prior A/Q/C + current order",
+  "causal_mask_algorithm_version": "1.1.0-hpi-current-report-overlap-reviewed-redaction",
+  "causal_mask_review": "data\\aqc_direct\\bridge_697923b99721_007_leakage_review.json",
+  "causal_mask_review_sha256": "b8e6561e149ad12951e5ee4c749ccb87f42abd63b1456b56a7fb0ef4c87757d4",
+  "original_hpi_sha256": "702f804382b11d7c8539811b1b0af0378611f467621ee7dec24cea60baefdba6",
+  "filtered_hpi_sha256": "c50683d0a17b20b192196ea103889f2f3493e866a32caf8825559f158fcfa841",
+  "applied_hpi_redactions": [],
+  "steps": [
+    {
+      "step": 1,
+      "ordered": "Ultrasound Abdomen (LIVER OR GALLBLADDER US (SINGLE ORGAN))",
+      "request_prompt_sha256": "62e2307dbf1247c73a873ca333916280301d126df2ae50d3dcc99769ac045a59",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "62e2307dbf1247c73a873ca333916280301d126df2ae50d3dcc99769ac045a59",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has symptomatic gallstone disease as the leading source of his recurrent right upper quadrant and epigastric abdominal pain.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease",
+                  "status": "likely",
+                  "evidence": [
+                    "his pain was attriburted to his known gallstones",
+                    "he has been having epigastric and RUQ pain for several weeks off an on"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "He may now have developed an acute complication of gallstones such as acute cholecystitis despite currently normal liver enzymes and lipase.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "disease complication",
+                  "status": "suspected",
+                  "evidence": [
+                    "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today",
+                    "Currently feels his pain is improving, but still has tenderness on exam."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Biliary obstruction or choledocholithiasis is unlikely at present because liver chemistries and total bilirubin are normal.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "pathophysiologic process",
+                  "status": "challenged",
+                  "evidence": [
+                    "Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)",
+                    "Alkaline Phosphatase: 103.0 IU/L (ref 40.0-130.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "He has a percutaneous abdominal tube whose position and surrounding tissues appear benign on exam.",
+                  "type": "intervention_or_device_state",
+                  "other_proposed_type": "",
+                  "level": "device status",
+                  "status": "established",
+                  "evidence": [
+                    "the site of percutanous ____  tube is without any erythema or"
+                  ],
+                  "support": "weakly_supported"
+                },
+                {
+                  "proposition": "Systemic sepsis or hemodynamic instability from an intra-abdominal source is not currently evident.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "overall physiologic state",
+                  "status": "excluded",
+                  "evidence": [
+                    "VS: temp 98.8, hr 81, bp 134/88, rr 16, O2sat 99RA",
+                    "Lactate: 1.0 mmol/L (ref 0.5-2.0)"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision point, so assumptions are being established de novo from the history, exam, and labs."
+              },
+              "current_question": {
+                "primary": "Does this patient’s current right upper quadrant and epigastric pain represent an acute biliary complication such as acute cholecystitis related to gallstones?",
+                "target": "gallbladder and biliary tree inflammation or other acute gallstone-related pathology",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming acute cholecystitis or another acute biliary complication would prompt targeted management such as antibiotics, possible surgical or interventional consultation, and inpatient monitoring.",
+                "negative_answer_changes": "If acute biliary pathology is not seen, clinicians would consider non-biliary causes of pain and manage gallstones conservatively without urgent intervention.",
+                "secondary_questions": [
+                  "Is there sonographic evidence of gallstones and gallbladder wall changes such as wall thickening or pericholecystic fluid that would support acute cholecystitis?",
+                  "Is there any biliary ductal dilatation suggesting occult obstruction despite normal liver chemistries?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the gallbladder and proximal biliary tree.",
+                    "why_required": "The gallbladder and biliary ducts must be well seen to assess for stones, wall changes, and ductal dilation."
+                  },
+                  {
+                    "requirement_key": "req_presence_chole",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of acute cholecystitis features (sonographic Murphy sign, gallbladder wall thickening, pericholecystic fluid).",
+                    "why_required": "Determining whether acute cholecystitis is present answers if the pain is due to an acute biliary complication."
+                  },
+                  {
+                    "requirement_key": "req_presence_stones",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence, number, and location of gallstones or sludge within the gallbladder or cystic duct.",
+                    "why_required": "Identifying gallstones or obstructing stones confirms a gallstone-related mechanism and guides need for intervention."
+                  },
+                  {
+                    "requirement_key": "req_bile_duct",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Caliber of the common bile duct and intrahepatic ducts, looking for ductal dilation suggesting obstruction.",
+                    "why_required": "Assessing ductal size helps determine whether there is clinically significant biliary obstruction despite normal labs."
+                  }
+                ],
+                "evidence": [
+                  "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today",
+                  "his pain was attriburted to his known gallstones"
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_target_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      ""
+                    ],
+                    "reason": "No prior abdominal imaging is documented before this decision, so there is no information on visualization of the gallbladder or biliary tree."
+                  },
+                  {
+                    "requirement_key": "req_presence_chole",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "abdomen: soft, ND/NT"
+                    ],
+                    "reason": "Abdominal exam notes limited tenderness but no focused imaging or specific assessment for acute cholecystitis has been performed."
+                  },
+                  {
+                    "requirement_key": "req_presence_stones",
+                    "requirement_id": "presence_or_absence",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "his pain was attriburted to his known gallstones"
+                    ],
+                    "reason": "History confirms known gallstones, but there is no current imaging to show their present number, position, or relation to the current symptoms."
+                  },
+                  {
+                    "requirement_key": "req_bile_duct",
+                    "requirement_id": "severity_or_extent",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)"
+                    ],
+                    "reason": "Normal liver chemistries argue against major obstruction but do not provide direct information on duct caliber or subtle obstruction."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Clinical history and labs suggest gallstone disease but do not determine whether there is an acute biliary complication or visualize the gallbladder and ducts."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": "An alternative but related interpretation is that the clinician primarily wished to characterize chronic versus acute gallbladder disease severity in a patient with a percutaneous abdominal tube and recent EGD, asking whether his ongoing RUQ pain reflects progression of chronic cholelithiasis or another intra-abdominal source. In that framing, assumptions would emphasize distinguishing biliary pain from peptic or other intra-abdominal pathology despite a normal recent EGD, and the ultrasound would still be used to localize the pain source to the gallbladder, assess for chronic wall changes, and exclude other hepatobiliary causes. Coverage would remain low because no prior abdominal imaging exists, and an abdominal ultrasound would still be well matched to this broader source-localization question."
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has symptomatic gallstone disease as the leading source of his recurrent right upper quadrant and epigastric abdominal pain.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"his pain was attriburted to his known gallstones\",\n        \"he has been having epigastric and RUQ pain for several weeks off an on\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"He may now have developed an acute complication of gallstones such as acute cholecystitis despite currently normal liver enzymes and lipase.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"disease complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today\",\n        \"Currently feels his pain is improving, but still has tenderness on exam.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Biliary obstruction or choledocholithiasis is unlikely at present because liver chemistries and total bilirubin are normal.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"pathophysiologic process\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)\",\n        \"Alkaline Phosphatase: 103.0 IU/L (ref 40.0-130.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"He has a percutaneous abdominal tube whose position and surrounding tissues appear benign on exam.\",\n      \"type\": \"intervention_or_device_state\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"device status\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"the site of percutanous ____  tube is without any erythema or\"\n      ],\n      \"support\": \"weakly_supported\"\n    },\n    {\n      \"proposition\": \"Systemic sepsis or hemodynamic instability from an intra-abdominal source is not currently evident.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"overall physiologic state\",\n      \"status\": \"excluded\",\n      \"evidence\": [\n        \"VS: temp 98.8, hr 81, bp 134/88, rr 16, O2sat 99RA\",\n        \"Lactate: 1.0 mmol/L (ref 0.5-2.0)\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision point, so assumptions are being established de novo from the history, exam, and labs.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Does this patient’s current right upper quadrant and epigastric pain represent an acute biliary complication such as acute cholecystitis related to gallstones?\",\n    \"target\": \"gallbladder and biliary tree inflammation or other acute gallstone-related pathology\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming acute cholecystitis or another acute biliary complication would prompt targeted management such as antibiotics, possible surgical or interventional consultation, and inpatient monitoring.\",\n    \"negative_answer_changes\": \"If acute biliary pathology is not seen, clinicians would consider non-biliary causes of pain and manage gallstones conservatively without urgent intervention.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of gallstones and gallbladder wall changes such as wall thickening or pericholecystic fluid that would support acute cholecystitis?\",\n      \"Is there any biliary ductal dilatation suggesting occult obstruction despite normal liver chemistries?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder and proximal biliary tree.\",\n        \"why_required\": \"The gallbladder and biliary ducts must be well seen to assess for stones, wall changes, and ductal dilation.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_chole\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of acute cholecystitis features (sonographic Murphy sign, gallbladder wall thickening, pericholecystic fluid).\",\n        \"why_required\": \"Determining whether acute cholecystitis is present answers if the pain is due to an acute biliary complication.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_stones\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence, number, and location of gallstones or sludge within the gallbladder or cystic duct.\",\n        \"why_required\": \"Identifying gallstones or obstructing stones confirms a gallstone-related mechanism and guides need for intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_bile_duct\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Caliber of the common bile duct and intrahepatic ducts, looking for ductal dilation suggesting obstruction.\",\n        \"why_required\": \"Assessing ductal size helps determine whether there is clinically significant biliary obstruction despite normal labs.\"\n      }\n    ],\n    \"evidence\": [\n      \"presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today\",\n      \"his pain was attriburted to his known gallstones\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_target_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\"\n        ],\n        \"reason\": \"No prior abdominal imaging is documented before this decision, so there is no information on visualization of the gallbladder or biliary tree.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_chole\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"abdomen: soft, ND/NT\"\n        ],\n        \"reason\": \"Abdominal exam notes limited tenderness but no focused imaging or specific assessment for acute cholecystitis has been performed.\"\n      },\n      {\n        \"requirement_key\": \"req_presence_stones\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"his pain was attriburted to his known gallstones\"\n        ],\n        \"reason\": \"History confirms known gallstones, but there is no current imaging to show their present number, position, or relation to the current symptoms.\"\n      },\n      {\n        \"requirement_key\": \"req_bile_duct\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)\"\n        ],\n        \"reason\": \"Normal liver chemistries argue against major obstruction but do not provide direct information on duct caliber or subtle obstruction.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Clinical history and labs suggest gallstone disease but do not determine whether there is an acute biliary complication or visualize the gallbladder and ducts.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"An alternative but related interpretation is that the clinician primarily wished to characterize chronic versus acute gallbladder disease severity in a patient with a percutaneous abdominal tube and recent EGD, asking whether his ongoing RUQ pain reflects progression of chronic cholelithiasis or another intra-abdominal source. In that framing, assumptions would emphasize distinguishing biliary pain from peptic or other intra-abdominal pathology despite a normal recent EGD, and the ultrasound would still be used to localize the pain source to the gallbladder, assess for chronic wall changes, and exclude other hepatobiliary causes. Coverage would remain low because no prior abdominal imaging exists, and an abdominal ultrasound would still be well matched to this broader source-localization question.\"\n}",
+            "request_id": "gen-1788345250-qW7LIcwdPg8lyAzL2YGv",
+            "usage": {
+              "completion_tokens": 2114,
+              "prompt_tokens": 3525,
+              "total_tokens": 5639,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 0,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02554625,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02554625,
+                "upstream_inference_prompt_cost": 0.00440625,
+                "upstream_inference_completions_cost": 0.02114
+              }
+            }
+          },
+          "validation_errors": [
+            "assumption_3_strong_status_without_strong_support",
+            "first_step_derived_transition_not_initial"
+          ]
+        },
+        {
+          "attempt": 2,
+          "request_prompt_sha256": "fcf73a8eff862533bd5f7dd2c7b1fb7f0ccd83eeb66f524867399794c7173ba0",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute or subacute right upper quadrant and epigastric abdominal pain, recently worse over the past week, on a background of known gallstones.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "symptom complex",
+                  "status": "established",
+                  "evidence": [
+                    "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.",
+                    "he has been having epigastric and RUQ pain for several weeks off an on, and underwent an EGD early this week that, per his wife, was normal and his pain was attriburted to his known gallstones."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The working concern is biliary pathology (such as cholelithiasis, cholecystitis, or biliary obstruction) as the cause of his RUQ pain and systemic symptoms.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "candidate disease process",
+                  "status": "suspected",
+                  "evidence": [
+                    "his pain was attriburted to his known gallstones.",
+                    "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is no clear biochemical evidence of hepatocellular injury or biliary obstruction at this time.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "lab-based characterization of disease severity",
+                  "status": "likely",
+                  "evidence": [
+                    "Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)",
+                    "Asparate Aminotransferase (AST): 18.0 IU/L (ref 0.0-40.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient has systemic inflammatory response or early infection suggested by leukocytosis and a reported fever at home.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "physiologic complication",
+                  "status": "suspected",
+                  "evidence": [
+                    "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.",
+                    "White Blood Cells: 11.3 K/uL (ref 4.0-11.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Cardiopulmonary causes of the current symptoms are less likely given a normal chest radiograph and absence of chest complaints.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative syndrome/source",
+                  "status": "challenged",
+                  "evidence": [
+                    "Lungs are clear with no evidence of pneumonia or congestive heart failure.",
+                    "No chest pain or shortness of breath"
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": false,
+                "previous_question": null,
+                "study_adequacy": "not_applicable",
+                "test_question_capability": "not_applicable",
+                "result_status": "not_applicable",
+                "effect_on_previous_question": "not_applicable",
+                "discordance": {
+                  "label": "not_applicable",
+                  "evidence_stream_1": "",
+                  "evidence_stream_2": "",
+                  "reason": ""
+                }
+              },
+              "assumption_change": {
+                "label": "initial",
+                "changed_proposition": null,
+                "reason": "This is the first imaging decision point, so all assumptions are newly formulated from history, exam, labs, and prior chest imaging."
+              },
+              "current_question": {
+                "primary": "Is there sonographic evidence of gallbladder or biliary pathology explaining the patient’s right upper quadrant pain and systemic symptoms?",
+                "target": "gallbladder and biliary tree (gallstones, cholecystitis, biliary obstruction)",
+                "type": "existence_or_identity",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Confirming biliary pathology (e.g., cholelithiasis with signs of cholecystitis or obstruction) would support admission, antibiotics or surgical/IR consultation, and targeted biliary management.",
+                "negative_answer_changes": "If biliary pathology is not seen, clinicians would reassess for non-biliary causes of RUQ/epigastric pain and systemic symptoms and potentially redirect further diagnostic workup.",
+                "secondary_questions": [
+                  "Is there sonographic evidence of acute cholecystitis such as gallbladder wall thickening, pericholecystic fluid, or a sonographic Murphy sign?",
+                  "Is there biliary ductal dilation suggesting extrahepatic biliary obstruction?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate visualization of the gallbladder and proximal biliary tree on ultrasound.",
+                    "why_required": "The gallbladder and bile ducts must be visualized to determine if they harbor stones or inflammatory changes."
+                  },
+                  {
+                    "requirement_key": "req_stones",
+                    "id": "presence_or_absence",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of gallstones or sludge within the gallbladder or proximal ducts.",
+                    "why_required": "Identifying stones would directly support a biliary cause of his RUQ pain."
+                  },
+                  {
+                    "requirement_key": "req_chole",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characteristics of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign).",
+                    "why_required": "Detecting acute cholecystitis would explain systemic symptoms and guide the need for urgent intervention."
+                  },
+                  {
+                    "requirement_key": "req_obstr",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Degree of biliary ductal dilation or other signs of extrahepatic biliary obstruction.",
+                    "why_required": "Assessing for obstruction is important for determining severity and urgency of management even when liver tests are normal."
+                  }
+                ],
+                "evidence": [
+                  "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.",
+                  "his pain was attriburted to his known gallstones."
+                ]
+              },
+              "question_continuity": "initial",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_vis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      ""
+                    ],
+                    "reason": "No prior abdominal imaging is documented that visualizes the gallbladder or biliary tree."
+                  },
+                  {
+                    "requirement_key": "req_stones",
+                    "requirement_id": "presence_or_absence",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "his pain was attriburted to his known gallstones."
+                    ],
+                    "reason": "Gallstones are reported from prior history but no imaging in this episode confirms or refutes current stones or their location."
+                  },
+                  {
+                    "requirement_key": "req_chole",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today."
+                    ],
+                    "reason": "Clinical features suggest possible cholecystitis, but there is no imaging evidence yet to characterize gallbladder inflammation."
+                  },
+                  {
+                    "requirement_key": "req_obstr",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)",
+                      "Alkaline Phosphatase: 103.0 IU/L (ref 40.0-130.0)"
+                    ],
+                    "reason": "Normal bilirubin and alkaline phosphatase make significant biliary obstruction less likely but do not exclude early or partial obstruction without imaging."
+                  }
+                ],
+                "aggregate": "unanswered",
+                "aggregate_reason": "Laboratory tests mildly argue against advanced obstruction but do not visualize the gallbladder or ducts, so the biliary source of symptoms remains essentially unconfirmed."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "initial",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute or subacute right upper quadrant and epigastric abdominal pain, recently worse over the past week, on a background of known gallstones.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"symptom complex\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.\",\n        \"he has been having epigastric and RUQ pain for several weeks off an on, and underwent an EGD early this week that, per his wife, was normal and his pain was attriburted to his known gallstones.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The working concern is biliary pathology (such as cholelithiasis, cholecystitis, or biliary obstruction) as the cause of his RUQ pain and systemic symptoms.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"candidate disease process\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"his pain was attriburted to his known gallstones.\",\n        \"presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is no clear biochemical evidence of hepatocellular injury or biliary obstruction at this time.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"lab-based characterization of disease severity\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)\",\n        \"Asparate Aminotransferase (AST): 18.0 IU/L (ref 0.0-40.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient has systemic inflammatory response or early infection suggested by leukocytosis and a reported fever at home.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.\",\n        \"White Blood Cells: 11.3 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Cardiopulmonary causes of the current symptoms are less likely given a normal chest radiograph and absence of chest complaints.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative syndrome/source\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"Lungs are clear with no evidence of pneumonia or congestive heart failure.\",\n        \"No chest pain or shortness of breath\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": false,\n    \"previous_question\": null,\n    \"study_adequacy\": \"not_applicable\",\n    \"test_question_capability\": \"not_applicable\",\n    \"result_status\": \"not_applicable\",\n    \"effect_on_previous_question\": \"not_applicable\",\n    \"discordance\": {\n      \"label\": \"not_applicable\",\n      \"evidence_stream_1\": \"\",\n      \"evidence_stream_2\": \"\",\n      \"reason\": \"\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"initial\",\n    \"changed_proposition\": null,\n    \"reason\": \"This is the first imaging decision point, so all assumptions are newly formulated from history, exam, labs, and prior chest imaging.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there sonographic evidence of gallbladder or biliary pathology explaining the patient’s right upper quadrant pain and systemic symptoms?\",\n    \"target\": \"gallbladder and biliary tree (gallstones, cholecystitis, biliary obstruction)\",\n    \"type\": \"existence_or_identity\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Confirming biliary pathology (e.g., cholelithiasis with signs of cholecystitis or obstruction) would support admission, antibiotics or surgical/IR consultation, and targeted biliary management.\",\n    \"negative_answer_changes\": \"If biliary pathology is not seen, clinicians would reassess for non-biliary causes of RUQ/epigastric pain and systemic symptoms and potentially redirect further diagnostic workup.\",\n    \"secondary_questions\": [\n      \"Is there sonographic evidence of acute cholecystitis such as gallbladder wall thickening, pericholecystic fluid, or a sonographic Murphy sign?\",\n      \"Is there biliary ductal dilation suggesting extrahepatic biliary obstruction?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate visualization of the gallbladder and proximal biliary tree on ultrasound.\",\n        \"why_required\": \"The gallbladder and bile ducts must be visualized to determine if they harbor stones or inflammatory changes.\"\n      },\n      {\n        \"requirement_key\": \"req_stones\",\n        \"id\": \"presence_or_absence\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of gallstones or sludge within the gallbladder or proximal ducts.\",\n        \"why_required\": \"Identifying stones would directly support a biliary cause of his RUQ pain.\"\n      },\n      {\n        \"requirement_key\": \"req_chole\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characteristics of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign).\",\n        \"why_required\": \"Detecting acute cholecystitis would explain systemic symptoms and guide the need for urgent intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_obstr\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Degree of biliary ductal dilation or other signs of extrahepatic biliary obstruction.\",\n        \"why_required\": \"Assessing for obstruction is important for determining severity and urgency of management even when liver tests are normal.\"\n      }\n    ],\n    \"evidence\": [\n      \"presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.\",\n      \"his pain was attriburted to his known gallstones.\"\n    ]\n  },\n  \"question_continuity\": \"initial\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_vis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\"\n        ],\n        \"reason\": \"No prior abdominal imaging is documented that visualizes the gallbladder or biliary tree.\"\n      },\n      {\n        \"requirement_key\": \"req_stones\",\n        \"requirement_id\": \"presence_or_absence\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"his pain was attriburted to his known gallstones.\"\n        ],\n        \"reason\": \"Gallstones are reported from prior history but no imaging in this episode confirms or refutes current stones or their location.\"\n      },\n      {\n        \"requirement_key\": \"req_chole\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.\"\n        ],\n        \"reason\": \"Clinical features suggest possible cholecystitis, but there is no imaging evidence yet to characterize gallbladder inflammation.\"\n      },\n      {\n        \"requirement_key\": \"req_obstr\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)\",\n          \"Alkaline Phosphatase: 103.0 IU/L (ref 40.0-130.0)\"\n        ],\n        \"reason\": \"Normal bilirubin and alkaline phosphatase make significant biliary obstruction less likely but do not exclude early or partial obstruction without imaging.\"\n      }\n    ],\n    \"aggregate\": \"unanswered\",\n    \"aggregate_reason\": \"Laboratory tests mildly argue against advanced obstruction but do not visualize the gallbladder or ducts, so the biliary source of symptoms remains essentially unconfirmed.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"initial\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788345268-YlkXHZ1vzZIBkP9JjulU",
+            "usage": {
+              "completion_tokens": 2062,
+              "prompt_tokens": 3573,
+              "total_tokens": 5635,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 3328,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.02134225,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.02134225,
+                "upstream_inference_prompt_cost": 0.00072225,
+                "upstream_inference_completions_cost": 0.02062
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute or subacute right upper quadrant and epigastric abdominal pain, recently worse over the past week, on a background of known gallstones.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "symptom complex",
+            "status": "established",
+            "evidence": [
+              "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.",
+              "he has been having epigastric and RUQ pain for several weeks off an on, and underwent an EGD early this week that, per his wife, was normal and his pain was attriburted to his known gallstones."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The working concern is biliary pathology (such as cholelithiasis, cholecystitis, or biliary obstruction) as the cause of his RUQ pain and systemic symptoms.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "candidate disease process",
+            "status": "suspected",
+            "evidence": [
+              "his pain was attriburted to his known gallstones.",
+              "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is no clear biochemical evidence of hepatocellular injury or biliary obstruction at this time.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "lab-based characterization of disease severity",
+            "status": "likely",
+            "evidence": [
+              "Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)",
+              "Asparate Aminotransferase (AST): 18.0 IU/L (ref 0.0-40.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient has systemic inflammatory response or early infection suggested by leukocytosis and a reported fever at home.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "physiologic complication",
+            "status": "suspected",
+            "evidence": [
+              "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.",
+              "White Blood Cells: 11.3 K/uL (ref 4.0-11.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Cardiopulmonary causes of the current symptoms are less likely given a normal chest radiograph and absence of chest complaints.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "alternative syndrome/source",
+            "status": "challenged",
+            "evidence": [
+              "Lungs are clear with no evidence of pneumonia or congestive heart failure.",
+              "No chest pain or shortness of breath"
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": false,
+          "previous_question": null,
+          "study_adequacy": "not_applicable",
+          "test_question_capability": "not_applicable",
+          "result_status": "not_applicable",
+          "effect_on_previous_question": "not_applicable",
+          "discordance": {
+            "label": "not_applicable",
+            "evidence_stream_1": "",
+            "evidence_stream_2": "",
+            "reason": ""
+          }
+        },
+        "assumption_change": {
+          "label": "initial",
+          "changed_proposition": null,
+          "reason": "This is the first imaging decision point, so all assumptions are newly formulated from history, exam, labs, and prior chest imaging."
+        },
+        "current_question": {
+          "primary": "Is there sonographic evidence of gallbladder or biliary pathology explaining the patient’s right upper quadrant pain and systemic symptoms?",
+          "target": "gallbladder and biliary tree (gallstones, cholecystitis, biliary obstruction)",
+          "type": "existence_or_identity",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Confirming biliary pathology (e.g., cholelithiasis with signs of cholecystitis or obstruction) would support admission, antibiotics or surgical/IR consultation, and targeted biliary management.",
+          "negative_answer_changes": "If biliary pathology is not seen, clinicians would reassess for non-biliary causes of RUQ/epigastric pain and systemic symptoms and potentially redirect further diagnostic workup.",
+          "secondary_questions": [
+            "Is there sonographic evidence of acute cholecystitis such as gallbladder wall thickening, pericholecystic fluid, or a sonographic Murphy sign?",
+            "Is there biliary ductal dilation suggesting extrahepatic biliary obstruction?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_vis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate visualization of the gallbladder and proximal biliary tree on ultrasound.",
+              "why_required": "The gallbladder and bile ducts must be visualized to determine if they harbor stones or inflammatory changes."
+            },
+            {
+              "requirement_key": "req_stones",
+              "id": "presence_or_absence",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of gallstones or sludge within the gallbladder or proximal ducts.",
+              "why_required": "Identifying stones would directly support a biliary cause of his RUQ pain."
+            },
+            {
+              "requirement_key": "req_chole",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and characteristics of acute cholecystitis (wall thickening, pericholecystic fluid, sonographic Murphy sign).",
+              "why_required": "Detecting acute cholecystitis would explain systemic symptoms and guide the need for urgent intervention."
+            },
+            {
+              "requirement_key": "req_obstr",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Degree of biliary ductal dilation or other signs of extrahepatic biliary obstruction.",
+              "why_required": "Assessing for obstruction is important for determining severity and urgency of management even when liver tests are normal."
+            }
+          ],
+          "evidence": [
+            "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.",
+            "his pain was attriburted to his known gallstones."
+          ]
+        },
+        "question_continuity": "initial",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_vis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                ""
+              ],
+              "reason": "No prior abdominal imaging is documented that visualizes the gallbladder or biliary tree."
+            },
+            {
+              "requirement_key": "req_stones",
+              "requirement_id": "presence_or_absence",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "his pain was attriburted to his known gallstones."
+              ],
+              "reason": "Gallstones are reported from prior history but no imaging in this episode confirms or refutes current stones or their location."
+            },
+            {
+              "requirement_key": "req_chole",
+              "requirement_id": "complication_presence_or_character",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today."
+              ],
+              "reason": "Clinical features suggest possible cholecystitis, but there is no imaging evidence yet to characterize gallbladder inflammation."
+            },
+            {
+              "requirement_key": "req_obstr",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)",
+                "Alkaline Phosphatase: 103.0 IU/L (ref 40.0-130.0)"
+              ],
+              "reason": "Normal bilirubin and alkaline phosphatase make significant biliary obstruction less likely but do not exclude early or partial obstruction without imaging."
+            }
+          ],
+          "aggregate": "unanswered",
+          "aggregate_reason": "Laboratory tests mildly argue against advanced obstruction but do not visualize the gallbladder or ducts, so the biliary source of symptoms remains essentially unconfirmed."
+        },
+        "current_order_fit": {
+          "question_grounding": "well_supported",
+          "test_question_capability": "capable"
+        },
+        "derived_transition": "initial",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    },
+    {
+      "step": 2,
+      "ordered": "CT Abdomen (CT ABDOMEN W/CONTRAST)",
+      "request_prompt_sha256": "95f7c7f70200d65e3d90fedaa85d4e163213731478de88b1cbff13ec30d2cfb5",
+      "attempts": [
+        {
+          "attempt": 1,
+          "request_prompt_sha256": "95f7c7f70200d65e3d90fedaa85d4e163213731478de88b1cbff13ec30d2cfb5",
+          "call": {
+            "parsed": {
+              "assumptions": [
+                {
+                  "proposition": "The patient has acute on chronic right upper quadrant and epigastric abdominal pain with systemic inflammatory features on a background of known gallstones.",
+                  "type": "syndrome_or_source_frame",
+                  "other_proposed_type": "",
+                  "level": "symptom complex",
+                  "status": "established",
+                  "evidence": [
+                    "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.",
+                    "he has been having epigastric and RUQ pain for several weeks off an on, and underwent an EGD early this week that, per his wife, was normal and his pain was attriburted to his known gallstones."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "There is imaging evidence of severe gallbladder pathology with stones, wall thickening, possible intramural gas, and material suggestive of sloughed membranes, concerning for complicated acute cholecystitis (e.g., gangrenous or emphysematous) with an impacted neck stone.",
+                  "type": "disease_or_finding_identity",
+                  "other_proposed_type": "",
+                  "level": "specific disease process",
+                  "status": "likely",
+                  "evidence": [
+                    "The gallbladder appears markedly abnormal.  Along the gallbladder fundus, there is echogenic appearance of gallbladder wall which may represent the presence of intramural gas.",
+                    "there are multiple stones within the gallbladder lumen, as well as non-shadowing echogenic material, which may represent tumefactive sludge or sloughed membranes in the setting of ____.  There is gallbladder wall thickening.  A stone appears lodged in the gallbladder neck on series 1A, image 48."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Despite abnormal gallbladder imaging, there is no biochemical or sonographic evidence of significant biliary ductal obstruction.",
+                  "type": "severity_extent_or_course",
+                  "other_proposed_type": "",
+                  "level": "severity characterization",
+                  "status": "likely",
+                  "evidence": [
+                    "Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)",
+                    "There is no intrahepatic biliary ductal dilation.  The common bile duct measures 5 mm."
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "The patient shows possible early or contained infection/systemic inflammatory response but is currently hemodynamically stable without lactic acidosis.",
+                  "type": "complication",
+                  "other_proposed_type": "",
+                  "level": "physiologic complication",
+                  "status": "suspected",
+                  "evidence": [
+                    "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.",
+                    "White Blood Cells: 11.3 K/uL (ref 4.0-11.0)"
+                  ],
+                  "support": "well_supported"
+                },
+                {
+                  "proposition": "Cardiopulmonary causes of his current symptoms remain unlikely based on history and a normal chest radiograph.",
+                  "type": "alternative_source",
+                  "other_proposed_type": "",
+                  "level": "alternative syndrome/source",
+                  "status": "challenged",
+                  "evidence": [
+                    "No chest pain or shortness of breath",
+                    "Lungs are clear with no evidence of\npneumonia or congestive heart failure."
+                  ],
+                  "support": "well_supported"
+                }
+              ],
+              "previous_order_update": {
+                "applicable": true,
+                "previous_question": "Is there sonographic evidence of gallbladder or biliary pathology explaining the patient’s right upper quadrant pain and systemic symptoms?",
+                "study_adequacy": "diagnostic",
+                "test_question_capability": "capable",
+                "result_status": "positive",
+                "effect_on_previous_question": "The RUQ ultrasound provided diagnostic visualization of the gallbladder and biliary tree, confirmed gallstones with an impacted neck stone and wall thickening, and suggested possible intramural gas and sloughed membranes, thereby strongly supporting acute complicated cholecystitis without biliary ductal dilation.",
+                "discordance": {
+                  "label": "concordant",
+                  "evidence_stream_1": "there are multiple\nstones within the gallbladder lumen, as well as non-shadowing echogenic\nmaterial, which may represent tumefactive sludge or sloughed membranes in the\nsetting of ____.",
+                  "evidence_stream_2": "Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)",
+                  "reason": "Clinical, laboratory, and sonographic findings all point to gallbladder disease without major ductal obstruction."
+                }
+              },
+              "assumption_change": {
+                "label": "refine",
+                "changed_proposition": "The working concern is biliary pathology (such as cholelithiasis, cholecystitis, or biliary obstruction) as the cause of his RUQ pain and systemic symptoms.",
+                "reason": "Ultrasound findings refined the broad concern of biliary pathology to a more specific and severe gallbladder process with possible intramural gas and sloughed membranes, raising concern for complicated cholecystitis."
+              },
+              "current_question": {
+                "primary": "Is there CT evidence of complicated acute cholecystitis (such as emphysematous, gangrenous, or perforated gallbladder) or other intra-abdominal pathology that would alter the urgency or type of intervention?",
+                "target": "gallbladder, adjacent liver/pericholecystic region, and broader abdomen for complications or alternative pathology",
+                "type": "complication",
+                "other_proposed_type": "",
+                "positive_answer_changes": "Demonstration of emphysematous or gangrenous cholecystitis, perforation, abscess, or alternative serious intra-abdominal pathology would push toward urgent surgical or interventional radiology management and broader antibiotic coverage.",
+                "negative_answer_changes": "If CT does not show emphysematous, gangrenous, perforated, or alternative abdominal pathology, clinicians may favor nonperforated acute cholecystitis and consider conservative, delayed, or less invasive management while still planning for gallbladder-directed therapy.",
+                "secondary_questions": [
+                  "Is there CT evidence of pericholecystic abscess, localized perforation, or hepatic involvement adjacent to the gallbladder?",
+                  "Is there any alternative intra-abdominal source of the patient’s pain and systemic symptoms beyond the gallbladder?"
+                ],
+                "answer_requirements": [
+                  {
+                    "requirement_key": "req_ctvis",
+                    "id": "target_visualization_or_assessment",
+                    "other_proposed_dimension": "",
+                    "dimension": "Adequate contrast-enhanced CT visualization of the gallbladder, adjacent liver, pericholecystic region, and remaining abdomen.",
+                    "why_required": "Comprehensive visualization is necessary to detect gas, wall necrosis, perforation, abscess, and alternative abdominal pathology."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "id": "complication_presence_or_character",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence and characterization of complicated cholecystitis, including intramural or intraluminal gas, wall necrosis, perforation, or pericholecystic abscess/collection.",
+                    "why_required": "Determining whether cholecystitis is complicated guides the urgency and modality of intervention."
+                  },
+                  {
+                    "requirement_key": "req_alt",
+                    "id": "alternative_source_discrimination",
+                    "other_proposed_dimension": "",
+                    "dimension": "Presence or absence of other significant intra-abdominal inflammatory, ischemic, or obstructive processes that could explain or contribute to symptoms.",
+                    "why_required": "Identifying or excluding alternative abdominal sources helps ensure that management is appropriately focused and that coexistent pathology is not missed."
+                  },
+                  {
+                    "requirement_key": "req_extent",
+                    "id": "severity_or_extent",
+                    "other_proposed_dimension": "",
+                    "dimension": "Extent of local and regional spread of inflammation, including involvement of adjacent organs or spaces.",
+                    "why_required": "The anatomic extent of disease influences operative risk, need for drainage, and overall management strategy."
+                  }
+                ],
+                "evidence": [
+                  "The gallbladder appears markedly abnormal.  Along the\ngallbladder fundus, there is echogenic appearance of gallbladder wall which\nmay represent the presence of intramural gas.",
+                  "there are multiple\nstones within the gallbladder lumen, as well as non-shadowing echogenic\nmaterial, which may represent tumefactive sludge or sloughed membranes in the\nsetting of ____.  There is gallbladder wall thickening.  A\nstone appears lodged in the gallbladder neck on series 1A, image 48."
+                ]
+              },
+              "question_continuity": "refined",
+              "coverage": {
+                "requirements": [
+                  {
+                    "requirement_key": "req_ctvis",
+                    "requirement_id": "target_visualization_or_assessment",
+                    "status": "unaddressed",
+                    "direction": "no_direction",
+                    "supporting_evidence": [
+                      ""
+                    ],
+                    "reason": "No cross-sectional abdominal imaging beyond ultrasound is documented, so CT-level visualization of the gallbladder, adjacent structures, and rest of the abdomen has not yet occurred."
+                  },
+                  {
+                    "requirement_key": "req_comp",
+                    "requirement_id": "complication_presence_or_character",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "there is echogenic appearance of gallbladder wall which\nmay represent the presence of intramural gas.",
+                      "non-shadowing echogenic\nmaterial, which may represent tumefactive sludge or sloughed membranes in the\nsetting of ____.  There is gallbladder wall thickening."
+                    ],
+                    "reason": "Ultrasound strongly suggests complicated cholecystitis but cannot reliably define emphysematous change, necrosis, small perforation, or abscess extent as well as CT can."
+                  },
+                  {
+                    "requirement_key": "req_alt",
+                    "requirement_id": "alternative_source_discrimination",
+                    "status": "partially_addressed",
+                    "direction": "refutes",
+                    "supporting_evidence": [
+                      "Limited views\nof the right kidney are unremarkable.  No gross free fluid is seen.",
+                      "Lungs are clear with no evidence of\npneumonia or congestive heart failure."
+                    ],
+                    "reason": "Existing imaging and labs reduce the likelihood of some alternative thoracic or right renal causes but do not systematically evaluate the entire abdomen for other pathology."
+                  },
+                  {
+                    "requirement_key": "req_extent",
+                    "requirement_id": "severity_or_extent",
+                    "status": "partially_addressed",
+                    "direction": "supports",
+                    "supporting_evidence": [
+                      "There is gallbladder wall thickening.",
+                      "No gross free fluid is seen."
+                    ],
+                    "reason": "Ultrasound shows a markedly abnormal gallbladder but provides limited information on subtle regional spread, small collections, or involvement of more distant structures."
+                  }
+                ],
+                "aggregate": "partially_answered",
+                "aggregate_reason": "Ultrasound confirms a severe gallbladder process but does not fully characterize complications, overall extent, or alternative intra-abdominal pathology, which CT is being used to clarify."
+              },
+              "current_order_fit": {
+                "question_grounding": "well_supported",
+                "test_question_capability": "capable"
+              },
+              "derived_transition": "advance",
+              "alternative_reconstruction": ""
+            },
+            "raw": "{\n  \"assumptions\": [\n    {\n      \"proposition\": \"The patient has acute on chronic right upper quadrant and epigastric abdominal pain with systemic inflammatory features on a background of known gallstones.\",\n      \"type\": \"syndrome_or_source_frame\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"symptom complex\",\n      \"status\": \"established\",\n      \"evidence\": [\n        \"presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.\",\n        \"he has been having epigastric and RUQ pain for several weeks off an on, and underwent an EGD early this week that, per his wife, was normal and his pain was attriburted to his known gallstones.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"There is imaging evidence of severe gallbladder pathology with stones, wall thickening, possible intramural gas, and material suggestive of sloughed membranes, concerning for complicated acute cholecystitis (e.g., gangrenous or emphysematous) with an impacted neck stone.\",\n      \"type\": \"disease_or_finding_identity\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"specific disease process\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"The gallbladder appears markedly abnormal.  Along the gallbladder fundus, there is echogenic appearance of gallbladder wall which may represent the presence of intramural gas.\",\n        \"there are multiple stones within the gallbladder lumen, as well as non-shadowing echogenic material, which may represent tumefactive sludge or sloughed membranes in the setting of ____.  There is gallbladder wall thickening.  A stone appears lodged in the gallbladder neck on series 1A, image 48.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Despite abnormal gallbladder imaging, there is no biochemical or sonographic evidence of significant biliary ductal obstruction.\",\n      \"type\": \"severity_extent_or_course\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"severity characterization\",\n      \"status\": \"likely\",\n      \"evidence\": [\n        \"Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)\",\n        \"There is no intrahepatic biliary ductal dilation.  The common bile duct measures 5 mm.\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"The patient shows possible early or contained infection/systemic inflammatory response but is currently hemodynamically stable without lactic acidosis.\",\n      \"type\": \"complication\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"physiologic complication\",\n      \"status\": \"suspected\",\n      \"evidence\": [\n        \"presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.\",\n        \"White Blood Cells: 11.3 K/uL (ref 4.0-11.0)\"\n      ],\n      \"support\": \"well_supported\"\n    },\n    {\n      \"proposition\": \"Cardiopulmonary causes of his current symptoms remain unlikely based on history and a normal chest radiograph.\",\n      \"type\": \"alternative_source\",\n      \"other_proposed_type\": \"\",\n      \"level\": \"alternative syndrome/source\",\n      \"status\": \"challenged\",\n      \"evidence\": [\n        \"No chest pain or shortness of breath\",\n        \"Lungs are clear with no evidence of\\npneumonia or congestive heart failure.\"\n      ],\n      \"support\": \"well_supported\"\n    }\n  ],\n  \"previous_order_update\": {\n    \"applicable\": true,\n    \"previous_question\": \"Is there sonographic evidence of gallbladder or biliary pathology explaining the patient’s right upper quadrant pain and systemic symptoms?\",\n    \"study_adequacy\": \"diagnostic\",\n    \"test_question_capability\": \"capable\",\n    \"result_status\": \"positive\",\n    \"effect_on_previous_question\": \"The RUQ ultrasound provided diagnostic visualization of the gallbladder and biliary tree, confirmed gallstones with an impacted neck stone and wall thickening, and suggested possible intramural gas and sloughed membranes, thereby strongly supporting acute complicated cholecystitis without biliary ductal dilation.\",\n    \"discordance\": {\n      \"label\": \"concordant\",\n      \"evidence_stream_1\": \"there are multiple\\nstones within the gallbladder lumen, as well as non-shadowing echogenic\\nmaterial, which may represent tumefactive sludge or sloughed membranes in the\\nsetting of ____.\",\n      \"evidence_stream_2\": \"Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)\",\n      \"reason\": \"Clinical, laboratory, and sonographic findings all point to gallbladder disease without major ductal obstruction.\"\n    }\n  },\n  \"assumption_change\": {\n    \"label\": \"refine\",\n    \"changed_proposition\": \"The working concern is biliary pathology (such as cholelithiasis, cholecystitis, or biliary obstruction) as the cause of his RUQ pain and systemic symptoms.\",\n    \"reason\": \"Ultrasound findings refined the broad concern of biliary pathology to a more specific and severe gallbladder process with possible intramural gas and sloughed membranes, raising concern for complicated cholecystitis.\"\n  },\n  \"current_question\": {\n    \"primary\": \"Is there CT evidence of complicated acute cholecystitis (such as emphysematous, gangrenous, or perforated gallbladder) or other intra-abdominal pathology that would alter the urgency or type of intervention?\",\n    \"target\": \"gallbladder, adjacent liver/pericholecystic region, and broader abdomen for complications or alternative pathology\",\n    \"type\": \"complication\",\n    \"other_proposed_type\": \"\",\n    \"positive_answer_changes\": \"Demonstration of emphysematous or gangrenous cholecystitis, perforation, abscess, or alternative serious intra-abdominal pathology would push toward urgent surgical or interventional radiology management and broader antibiotic coverage.\",\n    \"negative_answer_changes\": \"If CT does not show emphysematous, gangrenous, perforated, or alternative abdominal pathology, clinicians may favor nonperforated acute cholecystitis and consider conservative, delayed, or less invasive management while still planning for gallbladder-directed therapy.\",\n    \"secondary_questions\": [\n      \"Is there CT evidence of pericholecystic abscess, localized perforation, or hepatic involvement adjacent to the gallbladder?\",\n      \"Is there any alternative intra-abdominal source of the patient’s pain and systemic symptoms beyond the gallbladder?\"\n    ],\n    \"answer_requirements\": [\n      {\n        \"requirement_key\": \"req_ctvis\",\n        \"id\": \"target_visualization_or_assessment\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Adequate contrast-enhanced CT visualization of the gallbladder, adjacent liver, pericholecystic region, and remaining abdomen.\",\n        \"why_required\": \"Comprehensive visualization is necessary to detect gas, wall necrosis, perforation, abscess, and alternative abdominal pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"id\": \"complication_presence_or_character\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence and characterization of complicated cholecystitis, including intramural or intraluminal gas, wall necrosis, perforation, or pericholecystic abscess/collection.\",\n        \"why_required\": \"Determining whether cholecystitis is complicated guides the urgency and modality of intervention.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"id\": \"alternative_source_discrimination\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Presence or absence of other significant intra-abdominal inflammatory, ischemic, or obstructive processes that could explain or contribute to symptoms.\",\n        \"why_required\": \"Identifying or excluding alternative abdominal sources helps ensure that management is appropriately focused and that coexistent pathology is not missed.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"id\": \"severity_or_extent\",\n        \"other_proposed_dimension\": \"\",\n        \"dimension\": \"Extent of local and regional spread of inflammation, including involvement of adjacent organs or spaces.\",\n        \"why_required\": \"The anatomic extent of disease influences operative risk, need for drainage, and overall management strategy.\"\n      }\n    ],\n    \"evidence\": [\n      \"The gallbladder appears markedly abnormal.  Along the\\ngallbladder fundus, there is echogenic appearance of gallbladder wall which\\nmay represent the presence of intramural gas.\",\n      \"there are multiple\\nstones within the gallbladder lumen, as well as non-shadowing echogenic\\nmaterial, which may represent tumefactive sludge or sloughed membranes in the\\nsetting of ____.  There is gallbladder wall thickening.  A\\nstone appears lodged in the gallbladder neck on series 1A, image 48.\"\n    ]\n  },\n  \"question_continuity\": \"refined\",\n  \"coverage\": {\n    \"requirements\": [\n      {\n        \"requirement_key\": \"req_ctvis\",\n        \"requirement_id\": \"target_visualization_or_assessment\",\n        \"status\": \"unaddressed\",\n        \"direction\": \"no_direction\",\n        \"supporting_evidence\": [\n          \"\"\n        ],\n        \"reason\": \"No cross-sectional abdominal imaging beyond ultrasound is documented, so CT-level visualization of the gallbladder, adjacent structures, and rest of the abdomen has not yet occurred.\"\n      },\n      {\n        \"requirement_key\": \"req_comp\",\n        \"requirement_id\": \"complication_presence_or_character\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"there is echogenic appearance of gallbladder wall which\\nmay represent the presence of intramural gas.\",\n          \"non-shadowing echogenic\\nmaterial, which may represent tumefactive sludge or sloughed membranes in the\\nsetting of ____.  There is gallbladder wall thickening.\"\n        ],\n        \"reason\": \"Ultrasound strongly suggests complicated cholecystitis but cannot reliably define emphysematous change, necrosis, small perforation, or abscess extent as well as CT can.\"\n      },\n      {\n        \"requirement_key\": \"req_alt\",\n        \"requirement_id\": \"alternative_source_discrimination\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"refutes\",\n        \"supporting_evidence\": [\n          \"Limited views\\nof the right kidney are unremarkable.  No gross free fluid is seen.\",\n          \"Lungs are clear with no evidence of\\npneumonia or congestive heart failure.\"\n        ],\n        \"reason\": \"Existing imaging and labs reduce the likelihood of some alternative thoracic or right renal causes but do not systematically evaluate the entire abdomen for other pathology.\"\n      },\n      {\n        \"requirement_key\": \"req_extent\",\n        \"requirement_id\": \"severity_or_extent\",\n        \"status\": \"partially_addressed\",\n        \"direction\": \"supports\",\n        \"supporting_evidence\": [\n          \"There is gallbladder wall thickening.\",\n          \"No gross free fluid is seen.\"\n        ],\n        \"reason\": \"Ultrasound shows a markedly abnormal gallbladder but provides limited information on subtle regional spread, small collections, or involvement of more distant structures.\"\n      }\n    ],\n    \"aggregate\": \"partially_answered\",\n    \"aggregate_reason\": \"Ultrasound confirms a severe gallbladder process but does not fully characterize complications, overall extent, or alternative intra-abdominal pathology, which CT is being used to clarify.\"\n  },\n  \"current_order_fit\": {\n    \"question_grounding\": \"well_supported\",\n    \"test_question_capability\": \"capable\"\n  },\n  \"derived_transition\": \"advance\",\n  \"alternative_reconstruction\": \"\"\n}",
+            "request_id": "gen-1788345289-vYHE0oihZEebl5A8bJFw",
+            "usage": {
+              "completion_tokens": 2603,
+              "prompt_tokens": 5592,
+              "total_tokens": 8195,
+              "completion_tokens_details": {
+                "accepted_prediction_tokens": null,
+                "audio_tokens": 0,
+                "reasoning_tokens": 0,
+                "rejected_prediction_tokens": null,
+                "text_tokens": null,
+                "image_tokens": 0
+              },
+              "compute_units": null,
+              "prompt_tokens_details": {
+                "audio_tokens": 0,
+                "cache_write_tokens": 0,
+                "cached_tokens": 2176,
+                "image_tokens": null,
+                "text_tokens": null,
+                "video_tokens": 0
+              },
+              "cost": 0.030572,
+              "is_byok": false,
+              "cost_details": {
+                "upstream_inference_cost": 0.030572,
+                "upstream_inference_prompt_cost": 0.004542,
+                "upstream_inference_completions_cost": 0.02603
+              }
+            }
+          },
+          "validation_errors": []
+        }
+      ],
+      "accepted": {
+        "assumptions": [
+          {
+            "proposition": "The patient has acute on chronic right upper quadrant and epigastric abdominal pain with systemic inflammatory features on a background of known gallstones.",
+            "type": "syndrome_or_source_frame",
+            "other_proposed_type": "",
+            "level": "symptom complex",
+            "status": "established",
+            "evidence": [
+              "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.",
+              "he has been having epigastric and RUQ pain for several weeks off an on, and underwent an EGD early this week that, per his wife, was normal and his pain was attriburted to his known gallstones."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "There is imaging evidence of severe gallbladder pathology with stones, wall thickening, possible intramural gas, and material suggestive of sloughed membranes, concerning for complicated acute cholecystitis (e.g., gangrenous or emphysematous) with an impacted neck stone.",
+            "type": "disease_or_finding_identity",
+            "other_proposed_type": "",
+            "level": "specific disease process",
+            "status": "likely",
+            "evidence": [
+              "The gallbladder appears markedly abnormal.  Along the gallbladder fundus, there is echogenic appearance of gallbladder wall which may represent the presence of intramural gas.",
+              "there are multiple stones within the gallbladder lumen, as well as non-shadowing echogenic material, which may represent tumefactive sludge or sloughed membranes in the setting of ____.  There is gallbladder wall thickening.  A stone appears lodged in the gallbladder neck on series 1A, image 48."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Despite abnormal gallbladder imaging, there is no biochemical or sonographic evidence of significant biliary ductal obstruction.",
+            "type": "severity_extent_or_course",
+            "other_proposed_type": "",
+            "level": "severity characterization",
+            "status": "likely",
+            "evidence": [
+              "Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)",
+              "There is no intrahepatic biliary ductal dilation.  The common bile duct measures 5 mm."
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "The patient shows possible early or contained infection/systemic inflammatory response but is currently hemodynamically stable without lactic acidosis.",
+            "type": "complication",
+            "other_proposed_type": "",
+            "level": "physiologic complication",
+            "status": "suspected",
+            "evidence": [
+              "presents with atleast ___ days of RUQ pain associated with decreased appetite and worsening of his ___ symptoms and a fever at home today.",
+              "White Blood Cells: 11.3 K/uL (ref 4.0-11.0)"
+            ],
+            "support": "well_supported"
+          },
+          {
+            "proposition": "Cardiopulmonary causes of his current symptoms remain unlikely based on history and a normal chest radiograph.",
+            "type": "alternative_source",
+            "other_proposed_type": "",
+            "level": "alternative syndrome/source",
+            "status": "challenged",
+            "evidence": [
+              "No chest pain or shortness of breath",
+              "Lungs are clear with no evidence of\npneumonia or congestive heart failure."
+            ],
+            "support": "well_supported"
+          }
+        ],
+        "previous_order_update": {
+          "applicable": true,
+          "previous_question": "Is there sonographic evidence of gallbladder or biliary pathology explaining the patient’s right upper quadrant pain and systemic symptoms?",
+          "study_adequacy": "diagnostic",
+          "test_question_capability": "capable",
+          "result_status": "positive",
+          "effect_on_previous_question": "The RUQ ultrasound provided diagnostic visualization of the gallbladder and biliary tree, confirmed gallstones with an impacted neck stone and wall thickening, and suggested possible intramural gas and sloughed membranes, thereby strongly supporting acute complicated cholecystitis without biliary ductal dilation.",
+          "discordance": {
+            "label": "concordant",
+            "evidence_stream_1": "there are multiple\nstones within the gallbladder lumen, as well as non-shadowing echogenic\nmaterial, which may represent tumefactive sludge or sloughed membranes in the\nsetting of ____.",
+            "evidence_stream_2": "Bilirubin, Total: 0.4 mg/dL (ref 0.0-1.5)",
+            "reason": "Clinical, laboratory, and sonographic findings all point to gallbladder disease without major ductal obstruction."
+          }
+        },
+        "assumption_change": {
+          "label": "refine",
+          "changed_proposition": "The working concern is biliary pathology (such as cholelithiasis, cholecystitis, or biliary obstruction) as the cause of his RUQ pain and systemic symptoms.",
+          "reason": "Ultrasound findings refined the broad concern of biliary pathology to a more specific and severe gallbladder process with possible intramural gas and sloughed membranes, raising concern for complicated cholecystitis."
+        },
+        "current_question": {
+          "primary": "Is there CT evidence of complicated acute cholecystitis (such as emphysematous, gangrenous, or perforated gallbladder) or other intra-abdominal pathology that would alter the urgency or type of intervention?",
+          "target": "gallbladder, adjacent liver/pericholecystic region, and broader abdomen for complications or alternative pathology",
+          "type": "complication",
+          "other_proposed_type": "",
+          "positive_answer_changes": "Demonstration of emphysematous or gangrenous cholecystitis, perforation, abscess, or alternative serious intra-abdominal pathology would push toward urgent surgical or interventional radiology management and broader antibiotic coverage.",
+          "negative_answer_changes": "If CT does not show emphysematous, gangrenous, perforated, or alternative abdominal pathology, clinicians may favor nonperforated acute cholecystitis and consider conservative, delayed, or less invasive management while still planning for gallbladder-directed therapy.",
+          "secondary_questions": [
+            "Is there CT evidence of pericholecystic abscess, localized perforation, or hepatic involvement adjacent to the gallbladder?",
+            "Is there any alternative intra-abdominal source of the patient’s pain and systemic symptoms beyond the gallbladder?"
+          ],
+          "answer_requirements": [
+            {
+              "requirement_key": "req_ctvis",
+              "id": "target_visualization_or_assessment",
+              "other_proposed_dimension": "",
+              "dimension": "Adequate contrast-enhanced CT visualization of the gallbladder, adjacent liver, pericholecystic region, and remaining abdomen.",
+              "why_required": "Comprehensive visualization is necessary to detect gas, wall necrosis, perforation, abscess, and alternative abdominal pathology."
+            },
+            {
+              "requirement_key": "req_comp",
+              "id": "complication_presence_or_character",
+              "other_proposed_dimension": "",
+              "dimension": "Presence and characterization of complicated cholecystitis, including intramural or intraluminal gas, wall necrosis, perforation, or pericholecystic abscess/collection.",
+              "why_required": "Determining whether cholecystitis is complicated guides the urgency and modality of intervention."
+            },
+            {
+              "requirement_key": "req_alt",
+              "id": "alternative_source_discrimination",
+              "other_proposed_dimension": "",
+              "dimension": "Presence or absence of other significant intra-abdominal inflammatory, ischemic, or obstructive processes that could explain or contribute to symptoms.",
+              "why_required": "Identifying or excluding alternative abdominal sources helps ensure that management is appropriately focused and that coexistent pathology is not missed."
+            },
+            {
+              "requirement_key": "req_extent",
+              "id": "severity_or_extent",
+              "other_proposed_dimension": "",
+              "dimension": "Extent of local and regional spread of inflammation, including involvement of adjacent organs or spaces.",
+              "why_required": "The anatomic extent of disease influences operative risk, need for drainage, and overall management strategy."
+            }
+          ],
+          "evidence": [
+            "The gallbladder appears markedly abnormal.  Along the\ngallbladder fundus, there is echogenic appearance of gallbladder wall which\nmay represent the presence of intramural gas.",
+            "there are multiple\nstones within the gallbladder lumen, as well as non-shadowing echogenic\nmaterial, which may represent tumefactive sludge or sloughed membranes in the\nsetting of ____.  There is gallbladder wall thickening.  A\nstone appears lodged in the gallbladder neck on series 1A, image 48."
+          ]
+        },
+        "question_continuity": "refined",
+        "coverage": {
+          "requirements": [
+            {
+              "requirement_key": "req_ctvis",
+              "requirement_id": "target_visualization_or_assessment",
+              "status": "unaddressed",
+              "direction": "no_direction",
+              "supporting_evidence": [
+                ""
+              ],
+              "reason": "No cross-sectional abdominal imaging beyond ultrasound is documented, so CT-level visualization of the gallbladder, adjacent structures, and rest of the abdomen has not yet occurred."
+            },
+            {
+              "requirement_key": "req_comp",
+              "requirement_id": "complication_presence_or_character",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "there is echogenic appearance of gallbladder wall which\nmay represent the presence of intramural gas.",
+                "non-shadowing echogenic\nmaterial, which may represent tumefactive sludge or sloughed membranes in the\nsetting of ____.  There is gallbladder wall thickening."
+              ],
+              "reason": "Ultrasound strongly suggests complicated cholecystitis but cannot reliably define emphysematous change, necrosis, small perforation, or abscess extent as well as CT can."
+            },
+            {
+              "requirement_key": "req_alt",
+              "requirement_id": "alternative_source_discrimination",
+              "status": "partially_addressed",
+              "direction": "refutes",
+              "supporting_evidence": [
+                "Limited views\nof the right kidney are unremarkable.  No gross free fluid is seen.",
+                "Lungs are clear with no evidence of\npneumonia or congestive heart failure."
+              ],
+              "reason": "Existing imaging and labs reduce the likelihood of some alternative thoracic or right renal causes but do not systematically evaluate the entire abdomen for other pathology."
+            },
+            {
+              "requirement_key": "req_extent",
+              "requirement_id": "severity_or_extent",
+              "status": "partially_addressed",
+              "direction": "supports",
+              "supporting_evidence": [
+                "There is gallbladder wall thickening.",
+                "No gross free fluid is seen."
+              ],
+              "reason": "Ultrasound shows a markedly abnormal gallbladder but provides limited information on subtle regional spread, small collections, or involvement of more distant structures."
+            }
+          ],
+          "aggregate": "partially_answered",
+          "aggregate_reason": "Ultrasound confirms a severe gallbladder process but does not fully characterize complications, overall extent, or alternative intra-abdominal pathology, which CT is being used to clarify."
+        },
+        "current_order_fit": {
+          "question_grounding": "well_supported",
+          "test_question_capability": "capable"
+        },
+        "derived_transition": "advance",
+        "alternative_reconstruction": ""
+      },
+      "validation_errors": []
+    }
+  ]
+}

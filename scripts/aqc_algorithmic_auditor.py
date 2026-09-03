@@ -179,6 +179,11 @@ def apply_operations(value: dict[str, Any], operations: list[dict[str, Any]]) ->
         if isinstance(parent, list):
             if operation["op"] == "remove":
                 parent.pop(int(leaf))
+            elif operation["op"] == "add":
+                if leaf == "-":
+                    parent.append(copy.deepcopy(operation.get("value")))
+                else:
+                    parent.insert(int(leaf), copy.deepcopy(operation.get("value")))
             else:
                 parent[int(leaf)] = copy.deepcopy(operation.get("value"))
         elif operation["op"] == "remove":

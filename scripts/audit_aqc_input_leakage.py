@@ -286,7 +286,10 @@ def audit_manifest(manifest_path: Path, review_path: Path | None = None) -> dict
             redaction_hashes = {
                 row.get("sentence_sha256") for row in review_redactions(review)
             }
-            if redaction_hashes != candidate_hashes[coding_id]:
+            # Every algorithmically flagged candidate must be removed. A reviewer
+            # may also bind adjacent, obvious result-restatement sentences that
+            # the conservative candidate detector did not itself flag.
+            if not candidate_hashes[coding_id].issubset(redaction_hashes):
                 raise ValueError(
                     f"confirmed review redactions do not cover its candidates: {coding_id}"
                 )
