@@ -1,0 +1,153 @@
+{
+  "schema_version": "0.1.0-development-draft",
+  "status": "stage_2_operational_draft_not_frozen",
+  "empirical_source": "data/aqc_analysis/development_v1",
+  "normative_source_used": false,
+  "primary_unit": "adjacent within-patient transition",
+  "principles": [
+    "Derive candidates from A/Q/C state fields; never use derived_transition_reference as a rule input.",
+    "Use one opportunity denominator per pattern rather than all decision steps by default.",
+    "Retain unclear and weak records as flags; report a stricter sensitivity subset instead of silently dropping them.",
+    "Report patient counts alongside transition or step counts so long trajectories do not dominate.",
+    "Stratify by disease, prompt hash, schema version, and observed repeat versus switch.",
+    "Do not infer stop from the last observed decision step."
+  ],
+  "common_exclusions": [
+    "final-test patient or content",
+    "missing effective annotation",
+    "structurally invalid step",
+    "non-adjacent or cross-patient transition"
+  ],
+  "coexistence_policy": "Patterns are non-exclusive. Store one row per pattern-by-unit occurrence and report overlaps explicitly.",
+  "uncertainty_policy": {
+    "primary": "Retain eligible records and flag unclear, uncertain, weakly supported, or not-uniformly-audited records.",
+    "strict_sensitivity": "Exclude a unit when a field required by that pattern is unclear/missing or either endpoint contains a weakly supported assumption. Do not exclude AQC_P11 merely because its order-support field is weak; that value defines the pattern.",
+    "legacy_result_status_sensitivity": [
+      "not_appessed",
+      "not_appraised",
+      "mixed"
+    ]
+  },
+  "patterns": [
+    {
+      "pattern_id": "AQC_P01",
+      "name": "question_reorientation",
+      "unit": "transition",
+      "opportunity": "all adjacent development transitions with source and target question types",
+      "rule": "target question_continuity is new/reopened OR source and target question types differ",
+      "minimum_fields": ["source_question_type", "target_question_type", "question_continuity"],
+      "denominator": "all opportunities with the minimum fields",
+      "interpretation_limit": "A type change is evidence of reorientation, not proof that the preceding test caused it."
+    },
+    {
+      "pattern_id": "AQC_P02",
+      "name": "persistent_open_question",
+      "unit": "transition",
+      "opportunity": "all adjacent development transitions",
+      "rule": "target coverage is unanswered/partially_answered AND question_continuity is same/refined/reopened",
+      "minimum_fields": ["target_coverage_aggregate", "question_continuity"],
+      "denominator": "all opportunities with the minimum fields",
+      "interpretation_limit": "This is an open-question continuation candidate, not automatically a remedy."
+    },
+    {
+      "pattern_id": "AQC_P03",
+      "name": "limited_study_persistent_gap",
+      "unit": "transition",
+      "opportunity": "transitions after a prior study with recorded adequacy",
+      "rule": "previous study is limited_but_diagnostic/nondiagnostic AND target coverage remains unanswered/partially_answered AND question_continuity is same/refined/reopened",
+      "minimum_fields": ["previous_study_adequacy", "target_coverage_aggregate", "question_continuity"],
+      "denominator": "transitions after limited_but_diagnostic or nondiagnostic studies",
+      "interpretation_limit": "Technical limitation and an open target state coexist; causal attribution requires case review."
+    },
+    {
+      "pattern_id": "AQC_P04",
+      "name": "capability_limited_persistent_gap",
+      "unit": "transition",
+      "opportunity": "transitions after a prior test with recorded test-question capability",
+      "rule": "previous capability is partially_capable/not_capable/uncertain AND target coverage remains unanswered/partially_answered AND question_continuity is same/refined/reopened",
+      "minimum_fields": ["previous_test_question_capability", "target_coverage_aggregate", "question_continuity"],
+      "denominator": "transitions after partially capable, incapable, or uncertain-capability tests",
+      "interpretation_limit": "Capability is question-relative and must not be relabeled as study inadequacy."
+    },
+    {
+      "pattern_id": "AQC_P05",
+      "name": "unresolved_result_followup",
+      "unit": "transition",
+      "opportunity": "transitions with a standard prior result-status value",
+      "rule": "previous result is indeterminate/not_assessed AND target coverage remains unanswered/partially_answered AND question_continuity is same/refined/reopened",
+      "minimum_fields": ["previous_result_status", "target_coverage_aggregate", "question_continuity"],
+      "denominator": "transitions after indeterminate or not-assessed results",
+      "interpretation_limit": "Negative is deliberately excluded. Legacy nonstandard spellings enter sensitivity analysis only."
+    },
+    {
+      "pattern_id": "AQC_P06",
+      "name": "informative_result_question_advance",
+      "unit": "transition",
+      "opportunity": "transitions after diagnostic or limited-but-diagnostic positive/negative results",
+      "rule": "previous result is positive/negative AND prior study is diagnostic/limited_but_diagnostic AND target question is new or changes type",
+      "minimum_fields": ["previous_result_status", "previous_study_adequacy", "source_question_type", "target_question_type", "question_continuity"],
+      "denominator": "transitions after eligible informative results",
+      "interpretation_limit": "Association with advancement does not establish that the result caused the new question."
+    },
+    {
+      "pattern_id": "AQC_P07",
+      "name": "temporal_requirement_serial_imaging",
+      "unit": "transition",
+      "opportunity": "all adjacent development transitions whose target question has requirements",
+      "rule": "target question contains at least one temporal_course_or_response requirement",
+      "minimum_fields": ["target_step_id", "target answer requirements"],
+      "denominator": "all transitions with at least one target requirement",
+      "interpretation_limit": "Repeat imaging alone never creates this pattern; the typed interval requirement is mandatory."
+    },
+    {
+      "pattern_id": "AQC_P08",
+      "name": "assumption_composition_change",
+      "unit": "transition",
+      "opportunity": "all adjacent transitions with source and target assumption type-status multisets",
+      "rule": "the multiset of (assumption type, status) differs between source and target",
+      "minimum_fields": ["source_step effective assumptions", "target_step effective assumptions"],
+      "denominator": "all opportunities with nonempty assumption lists at both endpoints",
+      "interpretation_limit": "This detects composition change, not semantic proposition identity or causal belief revision."
+    },
+    {
+      "pattern_id": "AQC_P09",
+      "name": "material_discordance_followup",
+      "unit": "transition",
+      "opportunity": "all adjacent development transitions with a discordance label",
+      "rule": "target previous-order discordance is materially_discordant",
+      "minimum_fields": ["discordance"],
+      "denominator": "all transitions with a standard discordance label",
+      "interpretation_limit": "Indeterminate discordance is not pooled into the primary rule and requires separate manual sensitivity review."
+    },
+    {
+      "pattern_id": "AQC_P10",
+      "name": "covered_question_with_further_imaging",
+      "unit": "step",
+      "opportunity": "all noninitial development decision steps",
+      "rule": "pre-order aggregate coverage of the current question is sufficiently_answered while another image is observed",
+      "minimum_fields": ["step_index", "coverage_aggregate", "ordered"],
+      "denominator": "all noninitial steps with aggregate coverage",
+      "interpretation_limit": "This is an audit candidate, not automatically an unsupported order; secondary questions and feasibility may explain it."
+    },
+    {
+      "pattern_id": "AQC_P11",
+      "name": "order_support_concern",
+      "unit": "step",
+      "opportunity": "all development decision steps with the schema-generation-specific support field",
+      "rule": "new schema: question_grounding is weakly_supported/unclear; legacy schema: legacy_intent_support is weakly_supported/unclear",
+      "minimum_fields": ["schema_version", "question_grounding OR legacy_intent_support"],
+      "denominator": "reported separately within schema generation; no pooled primary rate",
+      "interpretation_limit": "The two support fields are related audit branches but are not semantically interchangeable."
+    }
+  ],
+  "deferred_patterns": [
+    {
+      "name": "close_or_stop",
+      "reason": "The current trajectory extraction does not establish that the last observed step is a clinical decision to stop rather than right censoring."
+    },
+    {
+      "name": "escalation",
+      "reason": "A modality/protocol/intervention hierarchy has not yet been defined using purely observable attributes."
+    }
+  ]
+}

@@ -197,3 +197,115 @@ what guidelines specify
 The scientific payoff of A/Q/C is that the bridge becomes inspectable, testable, and reusable:
 prediction can validate the representation, while recurrent state transitions can expose candidate
 knowledge that a static guideline does not encode.
+
+## 7. Current empirical work plan
+
+Status as of 2026-09-04: the formal development partition contains 235 patients and 433 imaging
+decision steps. DIRECT A/Q/C annotation is complete for this partition. The separate final-test
+partition contains 58 patients and 109 steps and remains unopened. The immediate task is therefore
+not further development annotation, but construction and analysis of the effective development
+annotations.
+
+The work proceeds in the following stages. ACR must not be used to define the empirical patterns in
+Stages 1--3; this prevents the normative representation from shaping what is recovered from the
+patient trajectories.
+
+### Stage 1 — Build one analysis-ready A/Q/C layer
+
+Merge each original DIRECT output with its latest accepted non-destructive overlay and produce one
+effective development dataset. The original model outputs remain unchanged. Because the latest
+adjudicated corrections are accepted for analysis, the effective layer records which overlay was
+applied but does not require a separate rationale for every correction.
+
+The release must fix and verify:
+
+- exactly 235 development patients and 433 decision steps;
+- prompt, schema, validator, model, source, and overlay versions;
+- stable patient, trajectory, step, question, requirement, and transition keys;
+- explicit handling of invalid, low-evidence, weakly grounded, and unclear records;
+- all accepted manual temporal and discordance corrections;
+- no duplicate patients or steps and no final-test patient or content;
+- preservation of schema-generation differences without silently renaming fields whose meanings
+  changed, especially legacy `intent_support` and current `question_grounding`.
+
+The core outputs are patient-, step-, requirement-, and transition-level tables plus a machine-
+readable quality-control manifest. Invalid records fail the release rather than being silently
+dropped. `unclear` and weakly supported values remain observable flags; their exclusion, when
+needed, is pattern-specific and must be repeated as a sensitivity analysis.
+
+### Stage 2 — Define the units of empirical pattern analysis
+
+The primary object is a trajectory transition, not the marginal frequency of an isolated field.
+Patterns should be derived from the underlying A/Q/C states and changes rather than accepted merely
+because the annotation contains a named `derived_transition` label. Initial targets include:
+
+- assumption retention, refinement, challenge, exclusion, or replacement;
+- question continuation, refinement, replacement, reopening, or closure;
+- answer requirements that remain unaddressed or only partially addressed;
+- repeat imaging, modality switching, or stopping after a coverage gap;
+- rerouting after test--question capability mismatch;
+- explicit interval-comparison requirements that motivate serial imaging;
+- sufficiently covered questions followed by additional imaging that remains unsupported.
+
+Operational definitions must distinguish a true clinical stop from right censoring at discharge,
+transfer, death, or the end of the observable record. Terms such as `escalation` must be defined by
+observable changes in modality, protocol, or intervention rather than by an assumed hierarchy of
+clinical appropriateness.
+
+### Stage 3 — Discover candidate patterns in development
+
+For every candidate pattern, report the number of eligible patients, trajectories, and steps; the
+appropriate opportunity denominator; disease, modality, and prompt/schema-version strata;
+supporting examples; counterexamples; unclear cases; and unsupported residuals. Check whether the
+pattern persists after excluding weakly grounded or ambiguous records and whether it appears across
+diseases rather than being created by one disease or annotation version.
+
+These development results establish recurrence, interpretability, and structural coherence. They
+must not be described as unbiased population prevalence, causal effects, normative recommendations,
+or by themselves as proof that A/Q/C is a useful predictive bridge. Because DIRECT annotation saw
+the actual order, any apparent `coverage gap -> action` relation remains vulnerable to order-driven
+over-rationalization and requires a pre-order-only check.
+
+### Stage 4 — Freeze the empirical pattern codebook and analysis plan
+
+Before testing against ACR or opening final test, freeze for every retained pattern:
+
+- its inclusion and exclusion rules;
+- source and destination states;
+- minimum required fields and evidence;
+- opportunity denominator and patient-level deduplication rule;
+- treatment of uncertainty, conflict, censoring, and missing fields;
+- whether multiple patterns may coexist at one transition;
+- cross-disease, annotation-version, and sensitivity analyses;
+- the minimum recurrence and replication criteria.
+
+`Remedy`, `adjudicate`, `advance`, `reroute`, `reopen`, and `close` remain derived summaries of
+assumption, question, and coverage changes rather than primitive labels imposed on the data.
+
+### Stage 5 — Validate A/Q/C as a useful missing middle
+
+Internal pattern recurrence is necessary but not sufficient. The main representation test is
+whether A/Q/C inferred without the target order improves held-out prediction:
+
+```text
+pre-order O_t -> infer A/Q/C_t -> predict next image, repeat, switch, or stop
+```
+
+Use patient-grouped development resampling to compare `O`, `O + N`, `O + inferred A/Q/C`, and
+`O + N + inferred A/Q/C`. The current order, its result, and later events must remain hidden from
+the A/Q/C inference used as a predictor. Order-aware DIRECT annotations may serve as reference or
+training targets, but may not be inserted directly as features for predicting the same order.
+
+Incremental discrimination and calibration support the claim that A/Q/C is a useful missing-middle
+representation. They do not prove unique recovery of a physician's private mental state.
+
+### Stage 6 — Map frozen empirical patterns to ACR and replicate
+
+Only after the empirical pattern definitions are frozen should they be mapped systematically to ACR
+Contexts. Classify relations as `exact`, `partial`, `multiple`, `uncertain`, or `out_of_scope`, then
+identify recurrent transitions or Context extensions that ACR omits or under-specifies. This later
+mapping must not retroactively redefine the empirical patterns.
+
+After the pattern codebook, filters, inference method, and statistical plan are frozen, open the
+58-patient final-test partition once for replication and final prediction evaluation. Final-test
+results may confirm or fail to confirm a pattern; they may not be used to revise its definition.
