@@ -51,6 +51,8 @@ Run the ACR-blind development exploration with:
 
 ```bash
 python scripts/analyze_aqc_patterns.py
+python scripts/refine_aqc_pattern_structure.py
+python scripts/select_aqc_pattern_calibration_sample.py
 ```
 
 It produces:
@@ -58,10 +60,19 @@ It produces:
 - `pattern_opportunities.jsonl`: every pattern-specific denominator row with candidate status;
 - `pattern_occurrences.jsonl`: candidate rows with compact source/target A/Q/C snapshots;
 - `pattern_review_queue.jsonl`: rare, unclear, temporal, weak-assumption, or incompletely audited
-  candidates requiring targeted review;
+  candidates requiring targeted review, deduplicated by anchor step;
+- `pattern_manual_review_sample.jsonl`: all high-risk candidate classes plus deterministic diverse
+  candidate and opportunity-counterexample examples for every draft pattern;
 - `pattern_exploration_summary.json`: patient-deduplicated and disease/schema/action-stratified
   summaries, strict sensitivity counts, version diagnostics, and pattern overlaps;
 - `pattern_exploration_report.md`: concise human-readable development report.
+- `pattern_structure_refinement.json` and `pattern_structure_refinement_report.md`: decompositions
+  of the broad P01/P08 signals, mutually exclusive P02-family mechanism combinations,
+  schema-separated P11 diagnostics, and draft pre-freeze dispositions.
+- `pattern_calibration_sample.jsonl` and `pattern_calibration_sample_manifest.json`: a
+  deterministic, disease-diverse definition-calibration set for P01, the P02 family, P06, and
+  decomposed P08. It is selected for semantic coverage and counterexample discovery, not frequency
+  estimation.
 
 These remain exploratory development artifacts. They do not use ACR, do not open final test, and do
 not establish population prevalence, causality, appropriateness, or predictive usefulness.

@@ -63,7 +63,11 @@ def p06(row: dict[str, Any], _: PatternContext) -> tuple[bool, bool]:
 def p07(row: dict[str, Any], context: PatternContext) -> tuple[bool, bool]:
     types = context.requirement_types_by_step.get(row["target_step_id"], set())
     opportunity = bool(types)
-    return opportunity, opportunity and "temporal_course_or_response" in types
+    persistent_open = (
+        row.get("target_coverage_aggregate") in {"unanswered", "partially_answered"}
+        and row.get("question_continuity") in {"same", "refined", "reopened"}
+    )
+    return opportunity, opportunity and persistent_open and "temporal_course_or_response" in types
 
 
 def p08(row: dict[str, Any], context: PatternContext) -> tuple[bool, bool]:

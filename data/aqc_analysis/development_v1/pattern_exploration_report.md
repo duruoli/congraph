@@ -15,7 +15,7 @@ No rule uses the annotation's `derived_transition_reference` as an input.
 | AQC_P03 | limited_study_persistent_gap | 70 | 63 | 49 | 20 | 4 |
 | AQC_P04 | capability_limited_persistent_gap | 31 | 30 | 23 | 13 | 4 |
 | AQC_P05 | unresolved_result_followup | 54 | 53 | 42 | 17 | 4 |
-| AQC_P06 | informative_result_question_advance | 140 | 88 | 71 | 21 | 4 |
+| AQC_P06 | informative_result_question_reorientation | 140 | 88 | 71 | 21 | 4 |
 | AQC_P07 | temporal_requirement_serial_imaging | 198 | 14 | 7 | 3 | 2 |
 | AQC_P08 | assumption_composition_change | 198 | 165 | 132 | 40 | 4 |
 | AQC_P09 | material_discordance_followup | 198 | 1 | 1 | 1 | 1 |
@@ -30,11 +30,17 @@ No rule uses the annotation's `derived_transition_reference` as an input.
 - `AQC_P04`: near-universal within its opportunity set; discriminative value requires review.
 - `AQC_P05`: near-universal within its opportunity set; discriminative value requires review.
 - `AQC_P06`: no automatic definition warning.
-- `AQC_P07`: no automatic definition warning.
+- `AQC_P07`: candidates occur in fewer than three disease strata.
 - `AQC_P08`: no automatic definition warning.
-- `AQC_P09`: rare boundary candidate; do not estimate a stable rate.
+- `AQC_P09`: rare boundary candidate; do not estimate a stable rate; candidates occur in fewer than three disease strata.
 - `AQC_P10`: rare boundary candidate; do not estimate a stable rate.
 - `AQC_P11`: no automatic definition warning.
+
+## Complete targeted review dispositions
+
+- `AQC_P07`: 14/14 candidates reviewed; dispositions {'retain_candidate': 13, 'unclear_order_driven': 1}; retained=13, unclear=1, excluded=0.
+- `AQC_P09`: 1/1 candidates reviewed; dispositions {'exclude_false_discordance': 1}; retained=0, unclear=0, excluded=1.
+- `AQC_P10`: 3/3 candidates reviewed; dispositions {'exclude_annotation_inconsistency': 1, 'retain_audit_candidate': 2}; retained=2, unclear=0, excluded=1.
 
 ## Example and counterexample queues
 
@@ -75,3 +81,4 @@ No rule uses the annotation's `derived_transition_reference` as an input.
 - `AQC_P09` uses only `materially_discordant`; `indeterminate` cases remain a separate manual audit set.
 - `AQC_P11` must be reported separately by schema generation; its two support fields are not pooled as equivalent measurements.
 - High candidate fractions in P02--P05 may reflect how opportunity sets were defined and require counterexample review before freezing.
+- P02--P07 condition on an observed next imaging decision; they describe mechanisms among continued imaging and cannot estimate continuation propensity.

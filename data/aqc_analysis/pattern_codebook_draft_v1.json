@@ -32,6 +32,8 @@
     {
       "pattern_id": "AQC_P01",
       "name": "question_reorientation",
+      "analysis_role": "structural_descriptor",
+      "parent_pattern_id": null,
       "unit": "transition",
       "opportunity": "all adjacent development transitions with source and target question types",
       "rule": "target question_continuity is new/reopened OR source and target question types differ",
@@ -42,6 +44,8 @@
     {
       "pattern_id": "AQC_P02",
       "name": "persistent_open_question",
+      "analysis_role": "continuing_imaging_backbone",
+      "parent_pattern_id": null,
       "unit": "transition",
       "opportunity": "all adjacent development transitions",
       "rule": "target coverage is unanswered/partially_answered AND question_continuity is same/refined/reopened",
@@ -52,6 +56,8 @@
     {
       "pattern_id": "AQC_P03",
       "name": "limited_study_persistent_gap",
+      "analysis_role": "continuing_imaging_mechanism_subtype",
+      "parent_pattern_id": "AQC_P02",
       "unit": "transition",
       "opportunity": "transitions after a prior study with recorded adequacy",
       "rule": "previous study is limited_but_diagnostic/nondiagnostic AND target coverage remains unanswered/partially_answered AND question_continuity is same/refined/reopened",
@@ -62,6 +68,8 @@
     {
       "pattern_id": "AQC_P04",
       "name": "capability_limited_persistent_gap",
+      "analysis_role": "continuing_imaging_mechanism_subtype",
+      "parent_pattern_id": "AQC_P02",
       "unit": "transition",
       "opportunity": "transitions after a prior test with recorded test-question capability",
       "rule": "previous capability is partially_capable/not_capable/uncertain AND target coverage remains unanswered/partially_answered AND question_continuity is same/refined/reopened",
@@ -72,6 +80,8 @@
     {
       "pattern_id": "AQC_P05",
       "name": "unresolved_result_followup",
+      "analysis_role": "continuing_imaging_mechanism_subtype",
+      "parent_pattern_id": "AQC_P02",
       "unit": "transition",
       "opportunity": "transitions with a standard prior result-status value",
       "rule": "previous result is indeterminate/not_assessed AND target coverage remains unanswered/partially_answered AND question_continuity is same/refined/reopened",
@@ -81,27 +91,33 @@
     },
     {
       "pattern_id": "AQC_P06",
-      "name": "informative_result_question_advance",
+      "name": "informative_result_question_reorientation",
+      "analysis_role": "continuing_imaging_mechanism_subtype",
+      "parent_pattern_id": "AQC_P01",
       "unit": "transition",
       "opportunity": "transitions after diagnostic or limited-but-diagnostic positive/negative results",
       "rule": "previous result is positive/negative AND prior study is diagnostic/limited_but_diagnostic AND target question is new or changes type",
       "minimum_fields": ["previous_result_status", "previous_study_adequacy", "source_question_type", "target_question_type", "question_continuity"],
       "denominator": "transitions after eligible informative results",
-      "interpretation_limit": "Association with advancement does not establish that the result caused the new question."
+      "interpretation_limit": "A new or type-changed question may represent advance or reroute. The rule does not distinguish them and does not establish that the result caused the change."
     },
     {
       "pattern_id": "AQC_P07",
       "name": "temporal_requirement_serial_imaging",
+      "analysis_role": "continuing_imaging_mechanism_subtype",
+      "parent_pattern_id": "AQC_P02",
       "unit": "transition",
       "opportunity": "all adjacent development transitions whose target question has requirements",
-      "rule": "target question contains at least one temporal_course_or_response requirement",
-      "minimum_fields": ["target_step_id", "target answer requirements"],
+      "rule": "target coverage is unanswered/partially_answered, question continuity is same/refined/reopened, AND target question contains at least one temporal_course_or_response requirement",
+      "minimum_fields": ["target_step_id", "target answer requirements", "target_coverage_aggregate", "question_continuity"],
       "denominator": "all transitions with at least one target requirement",
       "interpretation_limit": "Repeat imaging alone never creates this pattern; the typed interval requirement is mandatory."
     },
     {
       "pattern_id": "AQC_P08",
       "name": "assumption_composition_change",
+      "analysis_role": "structural_descriptor",
+      "parent_pattern_id": null,
       "unit": "transition",
       "opportunity": "all adjacent transitions with source and target assumption type-status multisets",
       "rule": "the multiset of (assumption type, status) differs between source and target",
@@ -112,6 +128,8 @@
     {
       "pattern_id": "AQC_P09",
       "name": "material_discordance_followup",
+      "analysis_role": "rare_boundary_audit",
+      "parent_pattern_id": null,
       "unit": "transition",
       "opportunity": "all adjacent development transitions with a discordance label",
       "rule": "target previous-order discordance is materially_discordant",
@@ -122,6 +140,8 @@
     {
       "pattern_id": "AQC_P10",
       "name": "covered_question_with_further_imaging",
+      "analysis_role": "rare_boundary_audit",
+      "parent_pattern_id": null,
       "unit": "step",
       "opportunity": "all noninitial development decision steps",
       "rule": "pre-order aggregate coverage of the current question is sufficiently_answered while another image is observed",
@@ -132,6 +152,8 @@
     {
       "pattern_id": "AQC_P11",
       "name": "order_support_concern",
+      "analysis_role": "residual_audit",
+      "parent_pattern_id": null,
       "unit": "step",
       "opportunity": "all development decision steps with the schema-generation-specific support field",
       "rule": "new schema: question_grounding is weakly_supported/unclear; legacy schema: legacy_intent_support is weakly_supported/unclear",

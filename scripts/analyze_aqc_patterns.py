@@ -15,9 +15,11 @@ from aqc_pattern_rules import RULES, make_context, strict_eligible
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data" / "aqc_analysis" / "development_v1"
 CODEBOOK = ROOT / "data" / "aqc_analysis" / "pattern_codebook_draft_v1.json"
+TARGETED_REVIEW = ROOT / "data" / "aqc_analysis" / "stage3_targeted_review_v1.json"
 OPPORTUNITIES_OUT = DATA / "pattern_opportunities.jsonl"
 OCCURRENCES_OUT = DATA / "pattern_occurrences.jsonl"
 REVIEW_OUT = DATA / "pattern_review_queue.jsonl"
+MANUAL_SAMPLE_OUT = DATA / "pattern_manual_review_sample.jsonl"
 SUMMARY_OUT = DATA / "pattern_exploration_summary.json"
 REPORT_OUT = DATA / "pattern_exploration_report.md"
 
@@ -261,9 +263,20 @@ def render_report(summary: dict[str, Any]) -> str:
             diagnostics.append("rare boundary candidate; do not estimate a stable rate")
         if item["schema_version_instability"]["flag_ge_0_15"]:
             diagnostics.append("candidate fraction differs by at least 0.15 across assessable schema versions")
+        if item["n_diseases_with_candidates"] < 3:
+            diagnostics.append("candidates occur in fewer than three disease strata")
         if not diagnostics:
             diagnostics.append("no automatic definition warning")
         lines.append(f"- `{item['pattern_id']}`: " + "; ".join(diagnostics) + ".")
+    lines.extend(["", "## Complete targeted review dispositions", ""])
+    for item in summary["patterns"]:
+        review = item.get("targeted_review")
+        if review:
+            lines.append(
+                f"- `{item['pattern_id']}`: {review['n_reviewed']}/{item['n_candidate_units']} "
+                f"candidates reviewed; dispositions {review['disposition_counts']}; "
+                f"retained={review['n_retained']}, unclear={review['n_unclear']}, excluded={review['n_excluded']}."
+            )
     lines.extend(["", "## Example and counterexample queues", ""])
     for item in summary["patterns"]:
         examples = ", ".join(f"`{value}`" for value in item["example_candidate_unit_ids"]) or "none"
@@ -284,6 +297,7 @@ def render_report(summary: dict[str, Any]) -> str:
         "- `AQC_P09` uses only `materially_discordant`; `indeterminate` cases remain a separate manual audit set.",
         "- `AQC_P11` must be reported separately by schema generation; its two support fields are not pooled as equivalent measurements.",
         "- High candidate fractions in P02--P05 may reflect how opportunity sets were defined and require counterexample review before freezing.",
+        "- P02--P07 condition on an observed next imaging decision; they describe mechanisms among continued imaging and cannot estimate continuation propensity.",
         "",
     ])
     return "\n".join(lines)
@@ -292,6 +306,7 @@ def render_report(summary: dict[str, Any]) -> str:
 def main() -> None:
     manifest = read_json(DATA / "manifest.json")
     codebook = read_json(CODEBOOK)
+    targeted_review = read_json(TARGETED_REVIEW)
     steps = read_jsonl(DATA / "steps.jsonl")
     transitions = read_jsonl(DATA / "transitions.jsonl")
     requirements = read_jsonl(DATA / "requirements.jsonl")
@@ -343,6 +358,7 @@ def main() -> None:
         summaries.append({
             "pattern_id": pattern_id,
             "name": definition["name"],
+            "analysis_role": definition["analysis_role"],
             "unit": unit,
             "n_opportunities": len(opportunities),
             "n_candidate_units": len(candidates),
@@ -365,25 +381,93 @@ def main() -> None:
     occurrence_by_id = {row["occurrence_id"]: row for row in occurrences}
     if len(occurrence_by_id) != len(occurrences):
         raise AssertionError("occurrence_id is not unique")
-    review_queue = []
+    occurrence_by_pattern_unit = {
+        (row["pattern_id"], row["unit_id"]): row for row in occurrences
+    }
+    review_by_pattern: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for decision in targeted_review["decisions"]:
+        key = (decision["pattern_id"], decision["unit_id"])
+        if key not in occurrence_by_pattern_unit:
+            raise AssertionError(f"targeted review does not match a candidate occurrence: {key}")
+        review_by_pattern[decision["pattern_id"]].append(decision)
+    for item in summaries:
+        decisions = review_by_pattern.get(item["pattern_id"])
+        if not decisions:
+            item["targeted_review"] = None
+            continue
+        disposition_counts = Counter(decision["decision"] for decision in decisions)
+        reviewed_keys = {(decision["pattern_id"], decision["unit_id"]) for decision in decisions}
+        candidate_keys = {
+            (item["pattern_id"], unit_id(row, item["unit"]))
+            for row in candidates_by_pattern[item["pattern_id"]]
+        }
+        complete = reviewed_keys == candidate_keys
+        item["targeted_review"] = {
+            "complete_for_all_current_candidates": complete,
+            "n_reviewed": len(decisions),
+            "disposition_counts": dict(sorted(disposition_counts.items())),
+            "n_retained": sum(decision["decision"].startswith("retain") for decision in decisions),
+            "n_unclear": sum(decision["decision"].startswith("unclear") for decision in decisions),
+            "n_excluded": sum(decision["decision"].startswith("exclude") for decision in decisions),
+        }
+        if not complete:
+            raise AssertionError(f"targeted review is incomplete for {item['pattern_id']}")
+
+    definitions = {item["pattern_id"]: item for item in codebook["patterns"]}
+    hierarchy = []
+    for pattern_id, definition in definitions.items():
+        parent = definition.get("parent_pattern_id")
+        if parent is None:
+            continue
+        child_anchors = {
+            anchor_step_id(row, definition["unit"]) for row in candidates_by_pattern[pattern_id]
+        }
+        parent_definition = definitions[parent]
+        parent_anchors = {
+            anchor_step_id(row, parent_definition["unit"]) for row in candidates_by_pattern[parent]
+        }
+        violations = sorted(child_anchors - parent_anchors)
+        if violations:
+            raise AssertionError(f"declared pattern hierarchy violated for {pattern_id}: {violations}")
+        hierarchy.append({
+            "child_pattern_id": pattern_id,
+            "parent_pattern_id": parent,
+            "n_child_anchor_steps": len(child_anchors),
+            "n_outside_parent": 0,
+        })
+    review_by_anchor: dict[str, dict[str, Any]] = {}
     for occurrence in occurrences:
         anchor = step_by_id[occurrence["anchor_step_id"]]
         reasons = review_reasons(occurrence, anchor)
         if not reasons:
             continue
-        high = {"rare_boundary_pattern", "order_support_concern", "unclear_annotation"}
-        priority = "high" if high.intersection(reasons) else "medium"
-        review_queue.append({
-            "review_id": f"review:{occurrence['occurrence_id']}",
-            "priority": priority,
-            "review_reasons": reasons,
-            "occurrence_id": occurrence["occurrence_id"],
-            "pattern_id": occurrence["pattern_id"],
-            "unit_id": occurrence["unit_id"],
-            "anchor_step_id": occurrence["anchor_step_id"],
+        anchor_id = occurrence["anchor_step_id"]
+        grouped = review_by_anchor.setdefault(anchor_id, {
+            "review_id": f"review:{anchor_id}",
+            "anchor_step_id": anchor_id,
             "patient_id": occurrence["patient_id"],
             "disease": occurrence["disease"],
             "schema_version": occurrence["schema_version"],
+            "pattern_ids": set(),
+            "occurrence_ids": set(),
+            "review_reasons": set(),
+        })
+        grouped["pattern_ids"].add(occurrence["pattern_id"])
+        grouped["occurrence_ids"].add(occurrence["occurrence_id"])
+        grouped["review_reasons"].update(reasons)
+    review_queue = []
+    high = {"rare_boundary_pattern", "order_support_concern", "unclear_annotation"}
+    for grouped in review_by_anchor.values():
+        reasons = sorted(grouped["review_reasons"])
+        review_queue.append({
+            **{
+                key: value for key, value in grouped.items()
+                if key not in {"pattern_ids", "occurrence_ids", "review_reasons"}
+            },
+            "priority": "high" if high.intersection(reasons) else "medium",
+            "pattern_ids": sorted(grouped["pattern_ids"]),
+            "occurrence_ids": sorted(grouped["occurrence_ids"]),
+            "review_reasons": reasons,
         })
 
     overlaps = []
@@ -401,6 +485,32 @@ def main() -> None:
         and row.get("question_continuity") in {"same", "refined", "reopened"}
     ]
     p09_indeterminate = [row for row in transitions if row.get("discordance") == "indeterminate"]
+    opportunity_by_pattern_unit = {
+        (row["pattern_id"], row["unit_id"]): row for row in opportunity_rows
+    }
+    manual_sample_keys: dict[tuple[str, str], set[str]] = defaultdict(set)
+    for item in summaries:
+        pattern_id = item["pattern_id"]
+        for identifier in item["example_candidate_unit_ids"]:
+            manual_sample_keys[(pattern_id, identifier)].add("diverse_candidate_example")
+        for identifier in item["example_counterexample_unit_ids"]:
+            manual_sample_keys[(pattern_id, identifier)].add("diverse_opportunity_counterexample")
+    for occurrence in occurrences:
+        if (
+            occurrence["pattern_id"] in {"AQC_P07", "AQC_P09", "AQC_P10", "AQC_P11"}
+            or occurrence["has_unclear_value"]
+        ):
+            manual_sample_keys[(occurrence["pattern_id"], occurrence["unit_id"])].add(
+                "complete_high_risk_candidate_review"
+            )
+    manual_sample = []
+    for key, selection_reasons in sorted(manual_sample_keys.items()):
+        row = opportunity_by_pattern_unit[key]
+        manual_sample.append({
+            "manual_review_id": f"manual:{key[0]}:{key[1]}",
+            "selection_reasons": sorted(selection_reasons),
+            **row,
+        })
     summary = {
         "schema_version": "0.1.0-stage-3-exploration",
         "status": "exploratory_not_frozen",
@@ -415,9 +525,12 @@ def main() -> None:
             "opportunity_rows": len(opportunity_rows),
             "candidate_occurrences": len(occurrences),
             "review_queue_rows": len(review_queue),
+            "manual_review_sample_rows": len(manual_sample),
         },
         "patterns": summaries,
         "candidate_overlaps": overlaps,
+        "declared_pattern_hierarchy": hierarchy,
+        "targeted_review": "data/aqc_analysis/stage3_targeted_review_v1.json",
         "boundary_sensitivity": {
             "AQC_P05_legacy_nonstandard_result_status_candidates": len(p05_legacy),
             "AQC_P05_legacy_nonstandard_result_status_unit_ids": [row["transition_id"] for row in p05_legacy],
@@ -429,18 +542,22 @@ def main() -> None:
             "Candidate fractions are development descriptions, not population prevalence or final replication estimates.",
             "Weak assumption support is common, so primary and strict-sensitivity counts must be shown together.",
             "Stop remains unidentifiable from the last observed step without a censoring model.",
+            "P02--P07 are conditioned on an observed subsequent imaging decision and cannot estimate the probability that a state leads to more imaging.",
             "No ACR Context or appropriateness information was used.",
         ],
     }
     write_jsonl(OPPORTUNITIES_OUT, opportunity_rows)
     write_jsonl(OCCURRENCES_OUT, occurrences)
-    write_jsonl(REVIEW_OUT, sorted(review_queue, key=lambda row: (row["priority"] != "high", row["pattern_id"], row["unit_id"])))
+    write_jsonl(REVIEW_OUT, sorted(
+        review_queue, key=lambda row: (row["priority"] != "high", row["anchor_step_id"])
+    ))
+    write_jsonl(MANUAL_SAMPLE_OUT, manual_sample)
     write_json(SUMMARY_OUT, summary)
     with REPORT_OUT.open("w", encoding="utf-8") as handle:
         handle.write(render_report(summary))
     print(
         f"wrote {len(opportunity_rows)} opportunities, {len(occurrences)} candidate occurrences, "
-        f"and {len(review_queue)} review rows"
+        f"{len(review_queue)} deduplicated review rows, and {len(manual_sample)} manual-sample rows"
     )
 
 
