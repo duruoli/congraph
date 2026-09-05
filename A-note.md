@@ -46,3 +46,6 @@ requirement misalignment，已用人工 overlay 最小修正且不覆盖模型�
 新的稳定性观察：32/32 步仍全部恰好生成 5 条 assumptions（160 条：122 `well_supported`、38
 `weakly_supported`）。这不违反 “at most five”，但说明 GPT-5.1 持续把上限当作目标；它不是
 `established` assumptions 无限导致的，而是上限、固定数组模板与“覆盖完整”倾向共同造成的。
+
+### temporal role
+有时重复的modality是因为时间正常的推移，需要观察是否吸收了

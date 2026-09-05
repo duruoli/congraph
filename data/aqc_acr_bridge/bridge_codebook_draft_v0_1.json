@@ -1,0 +1,63 @@
+{
+  "schema_version": "0.1.0-open-coded-draft",
+  "status": "provisional_not_frozen",
+  "empirical_basis": "12 deliberately diverse development decision steps",
+  "frequency_warning": "Pilot counts reflect purposive structural sampling and are not prevalence estimates.",
+  "dimensions": {
+    "acr_correspondence": {
+      "context_relation_values": ["exact", "partial", "multiple", "uncertain", "out_of_scope"],
+      "rule": "Context correspondence and Action correspondence are coded separately. An action-family match without the required Context predicates is not guideline concordance."
+    },
+    "patient_to_acr_instantiation": {
+      "predicate_states": ["supported", "contradicted_or_absent", "unknown_or_ambiguous"],
+      "predicate_groups": ["presentation", "condition", "severity_or_complication", "prior_test", "prior_result", "population", "timing", "constraints", "imaging_stage"]
+    },
+    "residual": {
+      "values": ["patient_specific_outside_acr", "practice_deviation_or_local_workflow", "latent_or_unidentifiable", "aqc_reconstruction_concern"]
+    }
+  },
+  "bridge_operation_families": [
+    {
+      "family_id": "B1",
+      "name": "evidence_to_question_coverage",
+      "definition": "Interpret what prior evidence has answered relative to the active Q and its requirements.",
+      "include": ["target nonvisualization", "question-relative positive/negative/indeterminate interpretation", "distinguishing study adequacy from test-question capability", "carrying residual uncertainty forward"],
+      "exclude": ["global positive/negative labels with no Q relation", "pure report summarization"],
+      "pilot_decision_steps": 6,
+      "candidate_ai_role": "Extract target-level findings, align them to answer requirements, and calculate an auditable coverage table.",
+      "delegability": "high_with_clinician_verification"
+    },
+    {
+      "family_id": "B2",
+      "name": "context_construction_or_remapping",
+      "definition": "Construct the applicable guideline state from patient predicates, or remap it across variants, stages, sources, or topics as evidence changes.",
+      "include": ["combining partial variants", "alternative-source rerouting", "cross-topic mapping", "timing/severity assignment", "mixed-target mapping", "out-of-scope recognition"],
+      "exclude": ["choosing an action before Context uncertainty is shown", "using cohort diagnosis as the active clinical condition"],
+      "pilot_decision_steps": 9,
+      "candidate_ai_role": "Retrieve all candidate variants, show supported/missing/conflicting predicates, and abstain when no Context fits.",
+      "delegability": "conditional"
+    },
+    {
+      "family_id": "B3",
+      "name": "longitudinal_question_transition",
+      "definition": "Update, advance, reroute, or reopen the clinical question after a prior result or clinical change.",
+      "include": ["etiology-to-severity advance", "disease-to-complication advance", "intervention-target question", "severity-triggered reopening", "positive-result serial monitoring", "temporal reassessment"],
+      "exclude": ["mere wording change", "transition inferred only from the observed order"],
+      "pilot_decision_steps": 7,
+      "candidate_ai_role": "Track question state and surface why a newly open requirement is consequential.",
+      "delegability": "conditional"
+    },
+    {
+      "family_id": "B4",
+      "name": "action_realization",
+      "definition": "Translate an unresolved question and candidate ACR actions into a feasible local test/protocol under patient and modality constraints.",
+      "include": ["pregnancy or renal constraint application", "capability-feasibility tradeoff", "within-modality protocol refinement", "complementary modality selection", "local procedure-to-ACR normalization", "serial capability escalation"],
+      "exclude": ["treating feasibility as appropriateness", "hiding that the feasible test cannot answer all requirements"],
+      "pilot_decision_steps": 7,
+      "candidate_ai_role": "Normalize local orders, compare capability and constraints, and expose remaining unanswered requirements.",
+      "delegability": "conditional"
+    }
+  ],
+  "coexistence_rule": "Families are non-exclusive; one decision may require several bridge operations.",
+  "next_revision_rule": "Recode all pilot cases with B1-B4, retain fine-grained subcodes, and add fresh development cases containing straightforward exact Context matches before freezing."
+}
