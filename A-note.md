@@ -1,3 +1,57 @@
+# ACR
+
+- variant: ACR 原文定义的一个完整临床情境。
+一个 variant → 多个候选 Actions 及其 ratings
+例如：
+Pregnant woman. Right lower quadrant pain, fever, leukocytosis. Suspected appendicitis. Initial imaging.
+
+17个是 ACR 原文中的原始、正式 variants，不是我们简化、聚类出来的 （ACR 的表格级 Context 本来就很粗）
+
+可能就是missing middle：现实临床状态：非常细、动态、异质 vs 
+ACR table Context：少量、静态、粗粒度
+医生：判断当前患者应该落在哪个粗粒度 Context 中
+
+- context: 将variant拆开后的组成部分
+
+50个 唯一语义值，对所有variants拆分成contexts，去重后得到的一组contexts
+
+- dimension: context的类别
+
+人为提取的，不是acr的原文
+
+10个维度：
+presentation:
+condition:
+severity/complication:
+prior imaging:
+prior result:
+population:
+timing:
+constraints:
+imaging stage:
+other relevant context:
+
+比如：
+presentation
+├── RLQ pain
+├── RUQ pain
+├── fever
+├── no fever
+├── leukocytosis
+└── nausea
+
+不是每个variant都包括所有的dimensions，是稀疏的
+
+
+
+4 ACR topics
+└── 17个原始 Variants
+    └── 每个 Variant 包含2–8个 Context values
+        └── 全部去重后约50个 values
+            └── 分属10个 Context dimensions
+
+# AQC
+
 Annotation Chain:
 
 A：医嘱前病历支持哪些临床假设？
