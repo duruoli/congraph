@@ -19,17 +19,6 @@ ACR table Context：少量、静态、粗粒度
 
 人为提取的，不是acr的原文
 
-10个维度：
-presentation:
-condition:
-severity/complication:
-prior imaging:
-prior result:
-population:
-timing:
-constraints:
-imaging stage:
-other relevant context:
 
 比如：
 presentation

@@ -51,39 +51,57 @@ or simplified scenarios created by this project. Their authoritative `variant_te
 verbatim. Across the 17 Contexts, ACR supplies 141 Context--Action rating pairs; repeated procedures
 under different Variants remain different pairs.
 
-The project-created Context schema decomposes each exact `variant_text` into ten semantic
-dimensions:
+The exact ACR phrases were first de-duplicated into 50 semantic Context values. Those values were
+then re-audited bottom-up rather than accepting the legacy extraction fields as the ontology. The
+result has two epistemic kinds and ten leaf dimensions:
 
-1. `presentation`;
-2. `condition`;
-3. `severity_or_complication`;
-4. `prior_test`;
-5. `prior_result`;
-6. `population`;
-7. `timing`;
-8. `constraints_or_confounders`;
-9. `imaging_stage`;
-10. `encounter_status`.
+```text
+ACR Context condition
+├── factual: directly checkable observation, attribute, time, test, or pathway metadata
+│   ├── symptoms
+│   ├── signs_and_labs
+│   ├── patient_characteristics
+│   ├── disease_timing
+│   ├── prior_test
+│   ├── encounter_stage
+│   └── imaging_stage
+└── inferential: a rule-derived or clinically interpreted state
+    ├── diagnosis
+    ├── severity_or_complication
+    └── evidence_interpretation
+```
 
-These are ACR-derived analytic dimensions, not an official ACR ontology. Different Variants contain
-different sparse subsets of the dimensions. An omitted dimension is unrestricted or unstated by
-that Variant; it is not a negative patient predicate.
+Here `factual` means that the predicate can be checked from a report, measurement, patient
+attribute, relative time, or trajectory metadata without an open-ended clinical interpretation. It
+does not assert that the chart is error-free. `inferential` means that instantiating the predicate
+requires a diagnostic, severity, complication, uncertainty, confounding, or result-interpretation
+operation. A rule-derived label such as SIRS is inferential even when its calculation is
+deterministic.
 
-After decomposition and de-duplication, the 17 Variants contain 50 unique semantic Context values:
+These are project-created, ACR-grounded analytic dimensions, not an official ACR ontology. The
+legacy `context` fields in `data/acr_normative` remain a reproducible extraction index but are not
+treated as the validated dimension definitions for bridge discovery. Exact `variant_text` remains
+authoritative.
 
-| Dimension | Unique values in the current corpus |
-|---|---:|
-| presentation | 17 |
-| condition | 9 |
-| severity or complication | 12 |
-| prior test | 1 |
-| prior result | 1 |
-| population | 1 |
-| timing | 4 |
-| constraints or confounders | 2 |
-| imaging stage | 2 |
-| encounter status | 1 |
-| Total | 50 |
+The reclassification accounts for all 50 values exactly once by primary semantic role:
+
+| Epistemic kind | Dimension | Unique values |
+|---|---|---:|
+| factual | symptoms | 8 |
+| factual | signs and labs | 12 |
+| factual | patient characteristics | 1 |
+| factual | disease timing | 4 |
+| factual | prior test | 1 |
+| factual | encounter stage | 1 |
+| factual | imaging stage | 2 |
+| inferential | diagnosis | 7 |
+| inferential | severity or complication | 8 |
+| inferential | evidence interpretation | 6 |
+| **Total** | | **50** |
+
+The row-level classification, source Variant IDs, boundary decisions, and compound logic are in
+`data/aqc_acr_bridge/acr_context_value_dimension_audit_v1.csv`. The audit is the authority for the
+project-created grouping; the exact ACR text remains the authority for each native value.
 
 The 50 items are de-duplicated values extracted from ACR wording, not semantic clusters induced
 from patient records and not 50 separate Contexts. They are also not uniformly minimal logical
@@ -101,40 +119,65 @@ Keep the two vocabularies distinct:
 
 The annotation prompt must define the ten dimensions rather than merely name them:
 
-- `presentation`: current symptoms, signs, and laboratory manifestations, excluding diagnostic
-  conclusions;
-- `condition`: a suspected or known clinical condition organizing the current workup;
-- `severity_or_complication`: severity, deterioration, or a complication beyond disease existence;
-- `prior_test`: imaging completed before the current decision;
-- `prior_result`: the reported or question-relative state of that earlier imaging;
-- `population`: a patient group that can change guideline application;
-- `timing`: position relative to symptom onset, disease course, intervention, or prior assessment;
-- `constraints_or_confounders`: factors limiting interpretation, feasibility, or action choice;
-- `imaging_stage`: procedural position such as initial, next, repeat, or post-intervention;
-- `encounter_status`: visit-level status such as first-time presentation.
+- `symptoms`: patient-reported manifestations and their explicit absence or persistence;
+- `signs_and_labs`: observed or measured examination findings, vital signs, laboratory states, and
+  their explicit absence or change over time;
+- `patient_characteristics`: patient attributes that delimit applicability of the clinical
+  scenario;
+- `disease_timing`: position relative to symptom onset or disease course, distinct from the imaging
+  workflow;
+- `prior_test`: a test completed before the current decision, stored with enough metadata to link
+  later interpretations to it;
+- `encounter_stage`: the current episode's position in the visit or presentation sequence;
+- `imaging_stage`: the decision's position in the imaging sequence, such as initial or next;
+- `diagnosis`: a suspected, established, challenged, excluded, or unknown disease or etiologic
+  frame;
+- `severity_or_complication`: a rule-derived or clinically synthesized assessment of severity,
+  deterioration, systemic response, or complication;
+- `evidence_interpretation`: an assessment of what symptoms, laboratory evidence, or a prior test
+  means, including atypicality, uncertainty, a reported imaging finding or limitation, confounding,
+  and competing explanations.
+
+The boundary between facts and inferences must be preserved. For example, hypotension and a falling
+hematocrit are `signs_and_labs`; the conclusion `significant deterioration` is
+`severity_or_complication`. A completed ultrasound is `prior_test`; describing it as negative,
+equivocal, limited, or nonvisualizing is `evidence_interpretation` linked to that test. A compound
+ACR phrase may therefore compile into predicates in more than one dimension while retaining the
+native phrase and its AND/OR logic.
 
 The extraction is sparse. Annotators record supported information and explicit negation; an empty
-dimension means `not documented/unknown`, not absence. Every entry retains an exact evidence span
-and distinguishes its epistemic source:
+dimension means `not documented/unknown`, not absence. Every extracted item retains an exact
+evidence span and distinguishes its epistemic source:
 
-- `direct_observation`: symptom, sign, measurement, patient attribute, or completed-test metadata;
-- `documented_clinician_judgment`: an assessment explicitly stated in the chart;
-- `derived_from_trajectory_metadata`: a procedural fact such as initial versus next imaging;
+- `directly_documented_fact`: a symptom, sign, measurement, patient attribute, or completed-test
+  fact stated in the visible record;
+- `deterministic_derivation`: a threshold, elapsed-time, change, score, or trajectory fact obtained
+  by an explicit reproducible rule;
+- `documented_clinical_judgment`: a diagnostic, severity, complication, or evidence interpretation
+  explicitly stated by a treating clinician or radiologist;
 - `reconstructed_judgment`: a synthesis proposed by the annotator or model but not explicitly
-  documented;
-- `latent_or_unidentifiable`: the record cannot recover the relevant judgment.
+  documented.
+
+`latent_or_unidentifiable` is recorded separately when the operation needed to instantiate a
+relevant Context condition cannot be recovered. It is not emitted as an ordinary Context item with
+an invented value or evidence span.
 
 Because all chart text is mediated by documentation, these labels concern the epistemic operation,
-not who typed the sentence. A judgment-dependent predicate must not automatically be described as
-something the physician did unless the chart documents it. Order-induced inference must remain
-separately flagged.
+not merely who typed the sentence. A judgment-dependent predicate must not automatically be
+described as something the physician did unless the chart documents it. Rule-derived and
+reconstructed items must cite their input facts. Order-induced inference is forbidden in the open
+pass because the current order is hidden.
 
-Two open channels are mandatory:
+Two open channels are mandatory across the staged workflow:
 
-- `unmapped_value_within_dimension`: the patient has a value in one of the ten dimensions, but it
-  has no equivalent among the 50 ACR values;
-- `additional_dimension_outside_acr_schema`: a relevant feature or operation falls outside the ten
-  dimensions altogether.
+- `unmapped_value_within_dimension`: assigned during the ACR-mapping pass when an extracted patient
+  value belongs to one of the ten dimensions but has no equivalent among the 50 ACR values;
+- `additional_dimension_outside_acr_schema`: recorded during open extraction when a relevant
+  feature or operation does not fit any of the ten dimensions.
+
+The open extractor cannot label a value `unmapped_value_within_dimension`, because the ACR
+vocabulary is hidden in that pass. It extracts the native value under its dimension; the separate
+mapping pass determines whether an ACR equivalent exists.
 
 These channels prevent the ACR representation from censoring the missing middle it is meant to
 help discover.
@@ -163,6 +206,29 @@ In a separate pass, map each open patient-Context item to the finite ACR vocabul
 - `contradicted`;
 - `no_acr_equivalent`.
 
+The direction of breadth is always **patient value relative to ACR value**:
+
+- `exact_or_equivalent`: the patient predicate and ACR predicate have the same operational meaning
+  at the relevant assertion status, time, and scope;
+- `patient_value_broader`: the patient predicate is less restrictive and does not entail the full
+  ACR predicate, such as elevated lipase alone versus ACR's conjunctive `increased amylase and
+  lipase`;
+- `patient_value_narrower`: the patient predicate entails the ACR predicate but adds location,
+  severity, certainty, numeric, etiologic, or protocol detail;
+- `related_judgment_required`: the values are clinically connected, but neither equivalence nor
+  entailment is available without an additional interpretation, threshold decision, active-question
+  judgment, or resolution of AND/OR logic;
+- `contradicted`: the patient item directly negates the ACR predicate at compatible time and scope;
+  missing evidence, a later encounter stage, or a merely different predicate is not contradiction;
+- `no_acr_equivalent`: none of the 50 values represents the item at comparable meaning; the item
+  remains an `unmapped_value_within_dimension` and the ACR target is null.
+
+One patient item may map to multiple ACR values. Each link is retained separately because the ACR
+vocabulary contains near-synonymous native values with different source Variants (for example,
+`elevated WBC count` and `leukocytosis`) and because one conjunctive patient item may instantiate
+several atomic ACR values. Mapping operates on the item itself; Variant compatibility and complete
+Context satisfaction are adjudicated only in the next stage.
+
 This pass may use the 50 ACR values, but it must retain the original open value and evidence span.
 For example, `appendix not visualized` must not be silently converted to ACR's `negative or
 equivocal ultrasound`; whether that mapping holds depends on the active question and is itself a
@@ -189,11 +255,10 @@ rated similarly, the Context may be only partial, or patient-specific constraint
 Record how patient-specific evidence supports, contradicts, or leaves unknown every material
 predicate in the candidate ACR Context:
 
-- presentation and suspected/known condition;
-- severity or complication state;
-- prior test and prior-result state;
-- population, timing, and constraints;
-- initial versus next imaging stage.
+- symptoms, signs/labs, and patient characteristics;
+- diagnosis and severity/complication judgments;
+- prior tests and evidence interpretations linked to those tests;
+- disease timing, encounter stage, and imaging stage.
 
 Instantiation is an interpretive operation, not keyword matching. Missing evidence must remain
 `unknown`; it must not be converted into absence.
@@ -328,3 +393,14 @@ decision information, but prediction is downstream validation rather than the di
 - `data/aqc_acr_bridge/pilot_v1/manual_crosswalk_round2.jsonl`: remaining eight crosswalks.
 - `data/aqc_acr_bridge/pilot_v1/pilot_summary.md`: first-pass synthesis and boundaries.
 - `data/aqc_acr_bridge/bridge_codebook_draft_v0_1.json`: provisional B1–B4 codebook.
+- `data/aqc_acr_bridge/acr_context_value_dimension_audit_v1.csv`: complete 50-row audit from
+  ACR-native values to factual/inferential dimensions.
+- `scripts/validate_acr_context_dimension_audit.py`: corpus-to-audit completeness and source check.
+- `experiments/aqc_acr_bridge/prompts.py`: stage-1 blinded open patient-Context extraction prompt.
+- `data/aqc_acr_bridge/pilot_v1/open_context_manual_v1/manual_context_items_v1.tsv`: 175-item
+  hand-authored open-Context audit across 12 decision steps.
+- `data/aqc_acr_bridge/pilot_v1/open_context_manual_v1/manual_acr_vocab_mapping_audit_v1.tsv`:
+  item-to-ACR mapping audit, including explicit unmapped items and judgment-dependent links.
+- `data/aqc_acr_bridge/pilot_v1/open_context_manual_v1/manual_acr_vocab_mappings_v1.jsonl`:
+  machine-readable mapping output retaining the full patient item and ACR source Variant IDs.
+- `scripts/map_manual_open_context_to_acr_vocab.py`: reproducible mapping compiler and validator.
