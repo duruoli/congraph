@@ -105,10 +105,29 @@ project-created grouping; the exact ACR text remains the authority for each nati
 
 The 50 items are de-duplicated values extracted from ACR wording, not semantic clusters induced
 from patient records and not 50 separate Contexts. They are also not uniformly minimal logical
-atoms. For example, `negative or equivocal` contains an OR relation, while `increased amylase and
-lipase` contains a conjunction. Before deterministic matching, a thin compiled layer must give
-such values stable predicate IDs, polarity, and explicit AND/OR or threshold logic. This does not
-replace or reinterpret the authoritative Variant text.
+atoms. Some are nearly complete conditions, some are argument values, and some lose an essential
+target or scope when detached from their Variant. For example, `negative or equivocal` contains an
+OR relation and is uninterpretable without both the ultrasound and the diagnostic target, while
+`increased amylase and lipase` contains a conjunction with a shared modifier.
+
+A source-first re-extraction now compiles all 17 complete Variant titles into 89 draft condition
+instances: 58 factual and 31 inferential. The count is not a new vocabulary size; it includes
+repeated conditions across Variants and alternative or illustrative members needed to preserve
+the source logic. Twelve draft predicate types describe the reusable condition forms. Predicate
+type and epistemic kind are deliberately separate: for example, `test_history` is factual, whereas
+`test_interpretation(test, target, result)` is inferential.
+
+The new working files are:
+
+- `data/aqc_acr_bridge/acr_variant_predicate_audit_v1.md`: human-readable review of all 17 Variants;
+- `data/aqc_acr_bridge/acr_variant_predicate_audit_v1.json`: machine-readable condition instances,
+  source spans, roles, derivations, and logical groups;
+- `data/aqc_acr_bridge/acr_predicate_types_v1.json`: draft predicate-type definitions.
+
+The 50-row audit is retained as a record of the earlier value-level analysis, but must not be used
+as the final comparison vocabulary. Exact `variant_text` remains authoritative. The new compiled
+layer is also provisional until the marked scope and punctuation ambiguities are manually
+adjudicated.
 
 Keep the two vocabularies distinct:
 
