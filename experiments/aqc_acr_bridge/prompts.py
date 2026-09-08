@@ -6,21 +6,20 @@ import json
 from typing import Any
 
 
-FACTUAL_DIMENSIONS = [
-    "symptoms",
-    "signs_and_labs",
-    "patient_characteristics",
-    "disease_timing",
-    "prior_test",
-    "encounter_stage",
+SEED_DIMENSIONS = [
+    "patient_attribute",
+    "symptom_state",
+    "sign_state",
+    "lab_finding_state",
+    "imaging_finding_state",
+    "test_history",
+    "temporal_position",
+    "diagnosis_presentation_stage",
     "imaging_stage",
+    "diagnostic_state",
+    "test_interpretation",
+    "aggregate_assessment",
 ]
-INFERENTIAL_DIMENSIONS = [
-    "diagnosis",
-    "severity_or_complication",
-    "evidence_interpretation",
-]
-ALL_DIMENSIONS = FACTUAL_DIMENSIONS + INFERENTIAL_DIMENSIONS
 
 EPISTEMIC_SOURCES = [
     "directly_documented_fact",
@@ -35,39 +34,43 @@ causally available record before that decision: history, examination, laboratory
 of prior imaging whose results were already available.
 
 This is a blinded extraction pass. You are not given the current imaging order, its result, later
-events, A/Q/C annotations, ACR variants, an ACR vocabulary, or action ratings. Do not guess any of
-them. Preserve the patient's and chart's native wording; do not translate an item into guideline
-terminology.
+events, A/Q/C annotations, normalized ACR predicates, links to ACR variants, or action ratings. Do
+not guess any of them. Preserve the patient's and chart's native wording; do not translate an item
+into guideline terminology.
 
-Context conditions have two epistemic kinds.
+The twelve named dimensions below are seed extraction questions aligned with the ACR predicate
+types for later comparison. They are not a closed patient ontology. Context conditions also have
+two epistemic kinds.
 
 FACTUAL CONDITIONS are directly checkable from the visible record or deterministically derivable:
-- symptoms: patient-reported manifestations, including explicit absence or persistence;
-- signs_and_labs: examination findings, vital signs, laboratory states, explicit negatives, and
-  documented changes over time;
-- patient_characteristics: patient attributes that materially delimit the clinical scenario, not
+- patient_attribute: patient characteristics that materially delimit the clinical scenario, not
   an indiscriminate demographic or problem-list dump;
-- disease_timing: position relative to documented symptom onset or disease course;
-- prior_test: relevant imaging completed before this decision; create one item per study and retain
+- symptom_state: patient-reported manifestations, including explicit absence or persistence;
+- sign_state: examination or vital-sign states, explicit negatives, and documented change;
+- lab_finding_state: laboratory states, explicit negatives, and documented change;
+- imaging_finding_state: anatomical or pathological findings established by prior imaging;
+- test_history: a relevant test completed before this decision; create one item per study and retain
   modality, region, protocol, and time in the native value when visible;
-- encounter_stage: the current episode's position in the visit or presentation sequence;
+- temporal_position: position relative to a named clinical time anchor;
+- diagnosis_presentation_stage: whether this is the first or initial presentation of a diagnostic
+  episode;
 - imaging_stage: the decision's position in the imaging sequence. Infer only what visible
   trajectory metadata supports; do not invent repeat, switch, or post-intervention intent.
 
 INFERENTIAL CONDITIONS require a rule or clinical interpretation:
-- diagnosis: a suspected, established, challenged, excluded, or unknown disease or etiologic frame;
-- severity_or_complication: a rule-derived or clinically synthesized assessment of severity,
-  deterioration, systemic response, or complication;
-- evidence_interpretation: what symptoms, labs, or prior imaging mean, including a reported imaging
-  finding or limitation, atypicality, uncertainty, confounding, and competing explanations. Link an
-  interpretation of a prior study to its prior_test item.
+- diagnostic_state: a suspected, established, challenged, excluded, or unknown disease or
+  complication;
+- test_interpretation: what a completed test showed with respect to a diagnostic target, including
+  uncertainty or limitation. Link it to its test_history item;
+- aggregate_assessment: a rule-derived or clinically synthesized assessment such as atypical
+  presentation, severity, deterioration, systemic response, or infection.
 
 Annotation rules:
 1. Extract sparsely: include only conditions supported by the visible record and relevant to the
    active clinical workup. An empty dimension means not documented or unknown, never absent.
 2. Separate facts from judgments. For example, record abnormal vital signs as facts and a global
    deterioration assessment as a separate inference only when supported. Record a prior study as a
-   fact and its reported or reconstructed meaning as a linked evidence_interpretation.
+   fact and its reported or reconstructed meaning as a linked test_interpretation.
 3. Preserve explicit negation and uncertainty. Missing evidence is not a negative predicate.
 4. Each item must be atomic when possible. If the source contains AND/OR logic that cannot be split
    without changing its meaning, preserve it in value_native and explain the logic briefly.
@@ -77,9 +80,9 @@ Annotation rules:
 6. Use reconstructed_judgment sparingly. Do not infer a diagnosis merely from symptoms or from the
    fact that this is an imaging decision. When several interpretations remain possible, preserve
    the uncertainty or abstain.
-7. If a relevant condition does not fit any of the ten dimensions, record it under
-   additional_dimension_outside_acr_schema and propose a concise dimension name. Do not decide
-   whether an extracted value has an ACR equivalent; that occurs in a later mapping pass.
+7. If a relevant condition does not fit a seed dimension, record it under
+   other_proposed_dimension and propose a concise dimension name and definition. Do not decide
+   whether the item has an ACR equivalent; that occurs in a later mapping pass.
 8. If a relevant judgment appears necessary but cannot be recovered from the visible record,
    describe the gap under latent_or_unidentifiable. Do not invent a Context value for it.
 
@@ -102,13 +105,14 @@ def _item_contract() -> dict[str, Any]:
             "affirmed | negated | suspected | established | challenged | excluded | equivocal | unclear"
         ),
         "temporality": "current | historical | trajectory | unclear",
+        "epistemic_kind": "factual | inferential",
         "epistemic_source": f"one of: {' | '.join(EPISTEMIC_SOURCES)}",
         "evidence_spans": [_evidence_span_contract()],
         "based_on_item_ids": [
             "IDs of extracted factual items used by a derivation or judgment; otherwise empty"
         ],
         "applies_to_item_ids": [
-            "IDs of items this condition interprets or modifies, especially prior_test; otherwise empty"
+            "IDs of items this condition interprets or modifies, especially test_history; otherwise empty"
         ],
         "logic_note": "atomic, or a brief account of preserved AND/OR/threshold logic",
         "reasoning": (
@@ -120,20 +124,19 @@ def _item_contract() -> dict[str, Any]:
 def output_contract() -> dict[str, Any]:
     """Machine-readable output template supplied with every extraction request."""
     return {
-        "schema_version": "1.0.0-open-patient-context",
-        "factual_context": {dimension: [_item_contract()] for dimension in FACTUAL_DIMENSIONS},
-        "inferential_context": {dimension: [_item_contract()] for dimension in INFERENTIAL_DIMENSIONS},
-        "additional_dimension_outside_acr_schema": [{
-            "item_id": "unique ID within this decision step",
-            "proposed_dimension": "concise intuitive name not duplicating an existing dimension",
-            "epistemic_kind": "factual | inferential | unclear",
-            "value_native": "relevant patient-native condition",
-            "why_outside": "why none of the ten dimensions can represent this condition",
-            "evidence_spans": [_evidence_span_contract()],
+        "schema_version": "2.0.0-open-patient-context",
+        "patient_context": {dimension: [_item_contract()] for dimension in SEED_DIMENSIONS},
+        "other_proposed_dimension": [{
+            **_item_contract(),
+            "proposed_dimension": "concise intuitive name not duplicating a seed dimension",
+            "dimension_definition": "one concise extraction question defining the proposed dimension",
+            "why_new_dimension": "why the seed dimensions cannot represent this condition",
         }],
         "latent_or_unidentifiable": [{
             "description": "relevant Context judgment or operation that the visible record cannot recover",
-            "related_dimension": f"one of: {' | '.join(ALL_DIMENSIONS)} | outside_schema | unclear",
+            "related_dimension": (
+                f"one of: {' | '.join(SEED_DIMENSIONS)} | other_proposed_dimension | unclear"
+            ),
             "why_unidentifiable": "specific missing evidence or undocumented judgment",
             "relevant_evidence_spans": [_evidence_span_contract()],
         }],

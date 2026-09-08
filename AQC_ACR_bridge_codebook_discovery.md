@@ -19,7 +19,7 @@ developed empirical reconstruction of that clinician-side state. It is a candida
 the bridge, not the annotation template by which the bridge will be defined:
 
 ```text
-                              -> open patient Context -> ACR-value mapping -> candidate ACR Context
+                              -> open patient Context -> ACR-predicate mapping -> candidate ACR Context
 pre-order patient evidence -|
                               -> independently reconstructed A/Q/C
 
@@ -33,7 +33,7 @@ potentially delegated to AI.
 
 ## 2. ACR representation used by this study
 
-### 2.1 Topic, Variant, Context value, and dimension are different levels
+### 2.1 Topic, Variant, predicate instance, and predicate type
 
 The current normative corpus contains four selected ACR topics, not the whole ACR catalog:
 
@@ -45,78 +45,34 @@ The current normative corpus contains four selected ACR topics, not the whole AC
 | Acute Pancreatitis | 6 |
 | Total | 17 |
 
-Each `Variant` is an ACR-authored, table-level clinical scenario. Operationally, one Variant is one
-coarse Context under which ACR rates multiple candidate Actions. The 17 Variants are not clusters
-or simplified scenarios created by this project. Their authoritative `variant_text` is preserved
-verbatim. Across the 17 Contexts, ACR supplies 141 Context--Action rating pairs; repeated procedures
-under different Variants remain different pairs.
+Each `Variant` is an ACR-authored, table-level clinical scenario under which ACR rates multiple
+candidate Actions. The 17 Variants are not project-created clusters or simplified scenarios. Their
+authoritative `variant_text` is preserved verbatim. Across the 17 Variants, ACR supplies 141
+Context--Action rating pairs; repeated procedures under different Variants remain different pairs.
 
-The exact ACR phrases were first de-duplicated into 50 semantic Context values. Those values were
-then re-audited bottom-up rather than accepting the legacy extraction fields as the ontology. The
-result has two epistemic kinds and ten leaf dimensions:
+The current ACR-side representation is:
 
 ```text
-ACR Context condition
-├── factual: directly checkable observation, attribute, time, test, or pathway metadata
-│   ├── symptoms
-│   ├── signs_and_labs
-│   ├── patient_characteristics
-│   ├── disease_timing
-│   ├── prior_test
-│   ├── encounter_stage
-│   └── imaging_stage
-└── inferential: a rule-derived or clinically interpreted state
-    ├── diagnosis
-    ├── severity_or_complication
-    └── evidence_interpretation
+4 ACR topics
+└── 17 source Variants
+    ├── normalized condition instances
+    │   └── 12 predicate types
+    ├── Boolean logic
+    └── aggregate relations
 ```
 
-Here `factual` means that the predicate can be checked from a report, measurement, patient
-attribute, relative time, or trajectory metadata without an open-ended clinical interpretation. It
-does not assert that the chart is error-free. `inferential` means that instantiating the predicate
-requires a diagnostic, severity, complication, uncertainty, confounding, or result-interpretation
-operation. A rule-derived label such as SIRS is inferential even when its calculation is
-deterministic.
+A **predicate instance** is one judgeable condition that helps constitute a Variant, with its
+arguments filled. A **predicate type** is the fixed ACR-side question form shared by comparable
+instances, such as `symptom_state(symptom, status, site)` or
+`test_interpretation(test, target, result)`. Predicate types standardize ACR wording without
+discarding each instance's source phrase, target, scope, or polarity.
 
-These are project-created, ACR-grounded analytic dimensions, not an official ACR ontology. The
-legacy `context` fields in `data/acr_normative` remain a reproducible extraction index but are not
-treated as the validated dimension definitions for bridge discovery. Exact `variant_text` remains
-authoritative.
-
-The reclassification accounts for all 50 values exactly once by primary semantic role:
-
-| Epistemic kind | Dimension | Unique values |
-|---|---|---:|
-| factual | symptoms | 8 |
-| factual | signs and labs | 12 |
-| factual | patient characteristics | 1 |
-| factual | disease timing | 4 |
-| factual | prior test | 1 |
-| factual | encounter stage | 1 |
-| factual | imaging stage | 2 |
-| inferential | diagnosis | 7 |
-| inferential | severity or complication | 8 |
-| inferential | evidence interpretation | 6 |
-| **Total** | | **50** |
-
-The row-level classification, source Variant IDs, boundary decisions, and compound logic are in
-`data/aqc_acr_bridge/acr_context_value_dimension_audit_v1.csv`. The audit is the authority for the
-project-created grouping; the exact ACR text remains the authority for each native value.
-
-The 50 items are de-duplicated values extracted from ACR wording, not semantic clusters induced
-from patient records and not 50 separate Contexts. They are also not uniformly minimal logical
-atoms. Some are nearly complete conditions, some are argument values, and some lose an essential
-target or scope when detached from their Variant. For example, `negative or equivocal` contains an
-OR relation and is uninterpretable without both the ultrasound and the diagnostic target, while
-`increased amylase and lipase` contains a conjunction with a shared modifier.
-
-A source-first re-extraction currently compiles all 17 complete Variant titles into 88 draft
-condition instances: 59 factual and 29 inferential. The count is not a new vocabulary size; it includes
-repeated conditions across Variants and alternative or illustrative members needed to preserve
-the source logic. The draft predicate-type registry is now being revised one complex Variant at a
-time; its count is intentionally not frozen. Predicate type and epistemic kind are deliberately
-separate: for example, `test_history` is factual, whereas
-`test_interpretation(test, target, result)` is inferential.
+The 17 Variants currently compile into 91 condition instances: 59 factual and 32 inferential. This
+is an instance count, not a de-duplicated vocabulary size; repeated predicates and members of
+explicit alternatives remain separate when needed to preserve source logic. `factual` versus
+`inferential` is an orthogonal epistemic kind, not a predicate type. A factual predicate can be
+checked from an observation, attribute, time, test, or pathway state. An inferential predicate
+requires a diagnostic, severity, uncertainty, confounding, or result-interpretation operation.
 
 The new working files are:
 
@@ -125,45 +81,38 @@ The new working files are:
   source spans, roles, derivations, aggregate structures, and logical groups;
 - `data/aqc_acr_bridge/acr_predicate_types_v1.json`: draft predicate-type definitions.
 
-The 50-row audit is retained as a record of the earlier value-level analysis, but must not be used
-as the final comparison vocabulary. Exact `variant_text` remains authoritative. The new compiled
-layer is also provisional until the marked scope and punctuation ambiguities are manually
-adjudicated.
+The earlier 50-value/ten-dimension analysis and the patient extraction built from it are archived
+under `data/aqc_acr_bridge/archive/ten_dimension_v1/`. They remain provenance records but are not
+the active ACR comparison vocabulary or patient-extraction schema. Exact `variant_text` remains
+authoritative; the compiled predicate layer remains revisable when a source ambiguity is found.
 
 Keep the two vocabularies distinct:
 
-- `data/acr_normative/native_vocabulary.json` is the finite ACR Context vocabulary;
+- `data/acr_normative/native_vocabulary.json` is the legacy finite ACR extraction vocabulary;
 - `results/vocab/` normalizes anatomy, attribute, and state expressions in patient evidence.
 
-### 2.2 Operational definitions for patient-Context extraction
+### 2.2 Open dimensions for patient-Context extraction
 
-The annotation prompt must define the ten dimensions rather than merely name them:
+A **dimension** is a patient-side extraction question: an intuitive place to record a relevant
+fact or judgment from the chart. It serves a different role from an ACR predicate type. The twelve
+current predicate-type questions provide seed dimensions so that later comparison is tractable:
 
-- `symptoms`: patient-reported manifestations and their explicit absence or persistence;
-- `signs_and_labs`: observed or measured examination findings, vital signs, laboratory states, and
-  their explicit absence or change over time;
-- `patient_characteristics`: patient attributes that delimit applicability of the clinical
-  scenario;
-- `disease_timing`: position relative to symptom onset or disease course, distinct from the imaging
-  workflow;
-- `prior_test`: a test completed before the current decision, stored with enough metadata to link
-  later interpretations to it;
-- `encounter_stage`: the current episode's position in the visit or presentation sequence;
-- `imaging_stage`: the decision's position in the imaging sequence, such as initial or next;
-- `diagnosis`: a suspected, established, challenged, excluded, or unknown disease or etiologic
-  frame;
-- `severity_or_complication`: a rule-derived or clinically synthesized assessment of severity,
-  deterioration, systemic response, or complication;
-- `evidence_interpretation`: an assessment of what symptoms, laboratory evidence, or a prior test
-  means, including atypicality, uncertainty, a reported imaging finding or limitation, confounding,
-  and competing explanations.
+```text
+patient attributes | symptoms | signs | laboratory findings | imaging findings | diagnoses
+prior tests | test interpretations | aggregate assessments | disease timing
+diagnosis/presentation stage | imaging stage
+```
 
-The boundary between facts and inferences must be preserved. For example, hypotension and a falling
-hematocrit are `signs_and_labs`; the conclusion `significant deterioration` is
-`severity_or_complication`. A completed ultrasound is `prior_test`; describing it as negative,
-equivocal, limited, or nonvisualizing is `evidence_interpretation` linked to that test. A compound
-ACR phrase may therefore compile into predicates in more than one dimension while retaining the
-native phrase and its AND/OR logic.
+The dimension set is open, not limited to those twelve seeds. If a relevant item does not fit, the
+extractor records `other_proposed_dimension` and gives the proposed dimension a concise name and
+definition. Shared seed names make ACR comparison easier; they do not force patient evidence into
+a closed ACR ontology. Recurrent proposed dimensions may later become named patient dimensions
+without changing the fixed ACR predicate registry.
+
+The fact/inference boundary is still preserved. For example, hypotension is a sign, whereas
+`significant deterioration` is an aggregate assessment. A completed ultrasound is a prior-test
+fact; calling its result equivocal is a test interpretation linked to that test. Each item carries
+its own epistemic kind; its dimension does not replace that label.
 
 The extraction is sparse. Annotators record supported information and explicit negation; an empty
 dimension means `not documented/unknown`, not absence. Every extracted item retains an exact
@@ -190,13 +139,13 @@ pass because the current order is hidden.
 
 Two open channels are mandatory across the staged workflow:
 
-- `unmapped_value_within_dimension`: assigned during the ACR-mapping pass when an extracted patient
-  value belongs to one of the ten dimensions but has no equivalent among the 50 ACR values;
-- `additional_dimension_outside_acr_schema`: recorded during open extraction when a relevant
-  feature or operation does not fit any of the ten dimensions.
+- `other_proposed_dimension`: recorded during open extraction when a relevant item does not fit a
+  seed dimension;
+- `unmapped_value_within_dimension`: assigned during ACR mapping when a patient item has a usable
+  dimension but no comparable ACR predicate.
 
-The open extractor cannot label a value `unmapped_value_within_dimension`, because the ACR
-vocabulary is hidden in that pass. It extracts the native value under its dimension; the separate
+The open extractor cannot label an item `unmapped_value_within_dimension`, because the ACR
+predicates are hidden in that pass. It preserves the native item and evidence span; the separate
 mapping pass determines whether an ACR equivalent exists.
 
 These channels prevent the ACR representation from censoring the missing middle it is meant to
@@ -207,17 +156,18 @@ help discover.
 ### 3.1 Open patient Context before ACR matching
 
 At each imaging decision step, first extract one shared `PatientContext_t` from the causally
-available pre-order record. Provide the ten operational dimension definitions, but do not expose
-the 50-value ACR vocabulary, A/Q/C annotation, or current order in this pass. Preserve native
-patient wording and source spans rather than forcing a value into an ACR term.
+available pre-order record. Provide the seed dimension questions and the open
+`other_proposed_dimension` channel, but do not expose normalized ACR predicates, Variant
+signatures, A/Q/C annotation, or the current order. Preserve native patient wording and source
+spans rather than forcing an item into an ACR predicate.
 
-The human task is not to fill 50 Boolean fields and not to inspect all 17 Variants. The annotator
-records the small number of Context items actually supported at that step. All other ACR predicates
-remain unknown unless explicitly contradicted.
+The human task is not to fill every ACR predicate and not to inspect all 17 Variants. The annotator
+records the small number of Context items actually supported at that step. Unmentioned patient
+dimensions remain empty; ACR-predicate status is assessed only in the mapping and Variant stages.
 
-### 3.2 Patient value to ACR-value mapping
+### 3.2 Patient item to ACR-predicate mapping
 
-In a separate pass, map each open patient-Context item to the finite ACR vocabulary using:
+In a separate pass, map each open patient-Context item to ACR predicate instances using:
 
 - `exact_or_equivalent`;
 - `patient_value_broader`;
@@ -226,7 +176,7 @@ In a separate pass, map each open patient-Context item to the finite ACR vocabul
 - `contradicted`;
 - `no_acr_equivalent`.
 
-The direction of breadth is always **patient value relative to ACR value**:
+The direction of breadth is always **patient item relative to ACR predicate**:
 
 - `exact_or_equivalent`: the patient predicate and ACR predicate have the same operational meaning
   at the relevant assertion status, time, and scope;
@@ -235,28 +185,27 @@ The direction of breadth is always **patient value relative to ACR value**:
   lipase`;
 - `patient_value_narrower`: the patient predicate entails the ACR predicate but adds location,
   severity, certainty, numeric, etiologic, or protocol detail;
-- `related_judgment_required`: the values are clinically connected, but neither equivalence nor
+- `related_judgment_required`: the items are clinically connected, but neither equivalence nor
   entailment is available without an additional interpretation, threshold decision, active-question
   judgment, or resolution of AND/OR logic;
 - `contradicted`: the patient item directly negates the ACR predicate at compatible time and scope;
   missing evidence, a later encounter stage, or a merely different predicate is not contradiction;
-- `no_acr_equivalent`: none of the 50 values represents the item at comparable meaning; the item
+- `no_acr_equivalent`: no ACR predicate represents the item at comparable meaning; the item
   remains an `unmapped_value_within_dimension` and the ACR target is null.
 
-One patient item may map to multiple ACR values. Each link is retained separately because the ACR
-vocabulary contains near-synonymous native values with different source Variants (for example,
-`elevated WBC count` and `leukocytosis`) and because one conjunctive patient item may instantiate
-several atomic ACR values. Mapping operates on the item itself; Variant compatibility and complete
-Context satisfaction are adjudicated only in the next stage.
+One patient item may map to multiple ACR predicate instances. Each link is retained separately
+because equivalent predicates may occur in different source Variants and one compound patient
+item may instantiate several ACR predicates. Mapping operates on the item itself; Variant
+compatibility and complete Context satisfaction are adjudicated only in the next stage.
 
-This pass may use the 50 ACR values, but it must retain the original open value and evidence span.
-For example, `appendix not visualized` must not be silently converted to ACR's `negative or
-equivocal ultrasound`; whether that mapping holds depends on the active question and is itself a
-candidate bridge operation.
+This pass may use the predicate registry, source phrases, and Variant signatures, but it must
+retain the original patient item and evidence span. For example, `appendix not visualized` must not
+be silently converted to an equivocal ultrasound for suspected appendicitis; whether that mapping
+holds depends on the active question and is itself a candidate bridge operation.
 
 ### 3.3 Candidate Variant generation and adjudication
 
-A program compares the mapped patient values with compiled signatures of all 17 Variants and
+A program compares the mapped patient predicates with compiled signatures of all 17 Variants and
 reports supported, contradicted, and unknown required predicates. It presents only a small ranked
 candidate set plus an out-of-scope option for adjudication. The program performs candidate
 retrieval, not automatic assignment: generic and specific Variants can overlap, judgment-dependent
@@ -275,10 +224,9 @@ rated similarly, the Context may be only partial, or patient-specific constraint
 Record how patient-specific evidence supports, contradicts, or leaves unknown every material
 predicate in the candidate ACR Context:
 
-- symptoms, signs/labs, and patient characteristics;
-- diagnosis and severity/complication judgments;
-- prior tests and evidence interpretations linked to those tests;
-- disease timing, encounter stage, and imaging stage.
+- patient attributes, symptoms, signs, laboratory findings, and imaging findings;
+- diagnostic states, test history, test interpretations, and aggregate assessments;
+- temporal position, diagnosis/presentation stage, and imaging stage.
 
 Instantiation is an interpretive operation, not keyword matching. Missing evidence must remain
 `unknown`; it must not be converted into absence.
@@ -340,9 +288,10 @@ admission-level index with incomplete timing and must not be loaded directly as 
 Information is revealed in stages:
 
 1. **Open extraction:** pre-order raw record only; hide A/Q/C, the current order, its result, later
-   events, the 50-value vocabulary, and ACR action ratings.
-2. **ACR mapping:** reveal the ACR Context vocabulary and Variant signatures; continue to hide A/Q/C
-   and the current order.
+   events, normalized ACR predicates, Variant signatures, and ACR action ratings. The seed dimension
+   questions remain visible.
+2. **ACR mapping:** reveal the predicate registry, source phrases, and Variant signatures; continue
+   to hide A/Q/C and the current order.
 3. **A/Q/C comparison:** reveal the pre-existing effective A/Q/C and test which direct and
    judgment-dependent mappings it captures. Do not revise A/Q/C to improve correspondence.
 4. **Action comparison:** reveal the observed order and ACR Actions/ratings; code correspondence,
@@ -357,16 +306,16 @@ belief or actual ACR consultation.
 ## 5. Revised discovery workflow
 
 1. Freeze the pre-ACR A/Q/C snapshot and its hashes.
-2. Compile the existing 50-value vocabulary into stable predicate IDs and explicit logical
-   signatures for the 17 Variants; do not re-extract or simplify ACR.
-3. Define and test the open `PatientContext_t` extraction schema, including source-level labels and
-   the two open residual channels.
+2. Compile all 17 source Variants into normalized predicate instances, aggregate relations, and
+   explicit logical signatures while preserving exact source text.
+3. Define and test the open `PatientContext_t` extraction schema using the twelve seed dimensions,
+   source-level labels, `other_proposed_dimension`, and `unmapped_value_within_dimension`.
 4. Select approximately 12--20 development decision steps containing straightforward Contexts,
    partial matches, overlapping generic/specific Variants, sequential imaging, cross-topic states,
    and likely out-of-scope cases.
 5. Annotate open patient Contexts from pre-order raw records while blinded to A/Q/C, current order,
-   the ACR vocabulary, and action ratings.
-6. Map open values to the ACR vocabulary, mechanically generate candidate Variants, and manually
+   normalized ACR predicates, Variant signatures, and action ratings.
+6. Map patient items to ACR predicates, mechanically generate candidate Variants, and manually
    adjudicate only the short candidate list and judgment-dependent mappings.
 7. Reveal A/Q/C and record which direct mappings, reconstructed judgments, transitions, and
    residuals it captures or misses.
@@ -375,7 +324,7 @@ belief or actual ACR consultation.
    unresolved disagreements.
 10. Use an LLM as a second coder only after the human procedure is stable. Require evidence spans,
     source-level labels, and cited ACR IDs; measure agreement separately for open extraction,
-    vocabulary mapping, Variant adjudication, and bridge operations.
+    predicate mapping, Variant adjudication, and bridge operations.
 11. Expand in fresh development batches. Only after the extraction and mapping procedure is
     reliable should it be applied to the remaining 235-patient/433-step development corpus.
 12. Freeze the bridge codebook and mapping procedure before any final-test replication.
@@ -413,14 +362,10 @@ decision information, but prediction is downstream validation rather than the di
 - `data/aqc_acr_bridge/pilot_v1/manual_crosswalk_round2.jsonl`: remaining eight crosswalks.
 - `data/aqc_acr_bridge/pilot_v1/pilot_summary.md`: first-pass synthesis and boundaries.
 - `data/aqc_acr_bridge/bridge_codebook_draft_v0_1.json`: provisional B1–B4 codebook.
-- `data/aqc_acr_bridge/acr_context_value_dimension_audit_v1.csv`: complete 50-row audit from
-  ACR-native values to factual/inferential dimensions.
-- `scripts/validate_acr_context_dimension_audit.py`: corpus-to-audit completeness and source check.
+- `data/aqc_acr_bridge/acr_variant_predicate_audit_v1.md`: review table for all 17 ACR Variants.
+- `data/aqc_acr_bridge/acr_variant_predicate_audit_v1.json`: condition instances, logic, aggregates,
+  and source provenance.
+- `data/aqc_acr_bridge/acr_predicate_types_v1.json`: current 12-type ACR predicate registry.
 - `experiments/aqc_acr_bridge/prompts.py`: stage-1 blinded open patient-Context extraction prompt.
-- `data/aqc_acr_bridge/pilot_v1/open_context_manual_v1/manual_context_items_v1.tsv`: 175-item
-  hand-authored open-Context audit across 12 decision steps.
-- `data/aqc_acr_bridge/pilot_v1/open_context_manual_v1/manual_acr_vocab_mapping_audit_v1.tsv`:
-  item-to-ACR mapping audit, including explicit unmapped items and judgment-dependent links.
-- `data/aqc_acr_bridge/pilot_v1/open_context_manual_v1/manual_acr_vocab_mappings_v1.jsonl`:
-  machine-readable mapping output retaining the full patient item and ACR source Variant IDs.
-- `scripts/map_manual_open_context_to_acr_vocab.py`: reproducible mapping compiler and validator.
+- `data/aqc_acr_bridge/archive/ten_dimension_v1/`: provenance-only archive of the superseded
+  50-value/ten-dimension audit, its 12-case patient extraction and mappings, and their scripts.

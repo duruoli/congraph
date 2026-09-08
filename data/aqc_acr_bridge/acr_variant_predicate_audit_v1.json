@@ -230,7 +230,7 @@
         {"id": "c03", "surface": "atypical signs and symptoms", "type": "aggregate_assessment", "kind": "inferential", "normalized": "aggregate_assessment(assessment=atypical_presentation, target=acute_pancreatitis, state=present)", "role": "required", "derivation": "target_bound_from_same_variant"},
         {"id": "c04", "surface": "equivocal amylase", "type": "test_interpretation", "kind": "inferential", "normalized": "test_interpretation(test=amylase, target=acute_pancreatitis, result=equivocal)", "role": "illustrative_member", "derivation": "atomic_split_from_conjunction"},
         {"id": "c05", "surface": "lipase values", "type": "test_interpretation", "kind": "inferential", "normalized": "test_interpretation(test=lipase, target=acute_pancreatitis, result=equivocal)", "role": "illustrative_member", "derivation": "shared_modifier_in_conjunction"},
-        {"id": "c06", "surface": "diagnoses other than pancreatitis may be possible (bowel perforation, bowel ischemia, etc.)", "type": "diagnostic_state", "kind": "inferential", "normalized": "diagnostic_state(condition=diagnosis_other_than_acute_pancreatitis, status=possible, role=alternative_diagnosis, examples=bowel_perforation_or_bowel_ischemia)", "role": "illustrative_member", "derivation": "exact_span_with_examples"},
+        {"id": "c06", "surface": "diagnoses other than pancreatitis may be possible (bowel perforation, bowel ischemia, etc.)", "type": "diagnostic_state", "kind": "inferential", "normalized": "diagnostic_state(condition=diagnosis_other_than_acute_pancreatitis, status=possible, role=alternative_diagnosis)", "role": "illustrative_member", "derivation": "generalized_from_example_list"},
         {"id": "c07", "surface": "Initial imaging", "type": "imaging_stage", "kind": "factual", "normalized": "imaging_stage(stage=initial, prior_test=none)", "role": "required", "derivation": "exact_span"}
       ],
       "qualifiers": [
@@ -256,15 +256,18 @@
         {"id": "c01", "surface": "Acute pancreatitis", "type": "diagnostic_state", "kind": "inferential", "normalized": "diagnostic_state(condition=acute_pancreatitis, status=established, role=primary_diagnosis)", "role": "required", "derivation": "unqualified_disease_statement"},
         {"id": "c02", "surface": "Critically ill", "type": "aggregate_assessment", "kind": "inferential", "normalized": "aggregate_assessment(assessment=critical_illness, target=acute_pancreatitis, state=present)", "role": "required", "derivation": "disease_bound_from_same_variant"},
         {"id": "c03", "surface": "systemic inflammatory response syndrome (SIRS)", "type": "aggregate_assessment", "kind": "inferential", "normalized": "aggregate_assessment(assessment=SIRS, target=acute_pancreatitis, state=present)", "role": "indicator_of_c02", "derivation": "disease_bound_from_same_variant"},
-        {"id": "c04", "surface": "severe clinical scores (eg, Acute Physiology, Age, and Chronic Health Evaluation [APACHE]-II, Bedside Index for Severity in AP [BISAP], or Marshall)", "type": "aggregate_assessment", "kind": "inferential", "normalized": "aggregate_assessment(assessment=clinical_severity_score, target=acute_pancreatitis, state=severe, instrument=APACHE_II_or_BISAP_or_Marshall)", "role": "indicator_of_c02", "derivation": "exact_span_with_examples"},
-        {"id": "c05", "surface": "Greater than 48 to 72 hours after onset of symptoms", "type": "temporal_position", "kind": "factual", "normalized": "temporal_position(event=current_decision, relation=greater_than, value=48_to_72_hours, anchor=acute_pancreatitis_symptom_onset)", "role": "required", "derivation": "disease_bound_from_same_variant"}
+        {"id": "c04", "surface": "severe clinical scores", "type": "aggregate_assessment", "kind": "inferential", "normalized": "aggregate_assessment(assessment=clinical_severity_score, target=acute_pancreatitis, state=severe)", "role": "indicator_of_c02", "derivation": "exact_span"},
+        {"id": "c05", "surface": "Acute Physiology, Age, and Chronic Health Evaluation [APACHE]-II", "type": "aggregate_assessment", "kind": "inferential", "normalized": "aggregate_assessment(assessment=APACHE_II_score, target=acute_pancreatitis, state=severe)", "role": "alternative_subpredicate_of_c04", "derivation": "example_under_shared_severe_modifier"},
+        {"id": "c06", "surface": "Bedside Index for Severity in AP [BISAP]", "type": "aggregate_assessment", "kind": "inferential", "normalized": "aggregate_assessment(assessment=BISAP_score, target=acute_pancreatitis, state=severe)", "role": "alternative_subpredicate_of_c04", "derivation": "example_under_shared_severe_modifier"},
+        {"id": "c07", "surface": "Marshall", "type": "aggregate_assessment", "kind": "inferential", "normalized": "aggregate_assessment(assessment=Marshall_score, target=acute_pancreatitis, state=severe)", "role": "alternative_subpredicate_of_c04", "derivation": "example_under_shared_severe_modifier"},
+        {"id": "c08", "surface": "Greater than 48 to 72 hours after onset of symptoms", "type": "temporal_position", "kind": "factual", "normalized": "temporal_position(event=current_decision, relation=greater_than, value=48_to_72_hours, anchor=acute_pancreatitis_symptom_onset)", "role": "required", "derivation": "disease_bound_from_same_variant"}
       ],
       "aggregate_structure": [
-        {"aggregate": "c02", "members": ["c03", "c04"], "relationship": "indicators", "derivation": "manual_adjudication", "member_to_aggregate_mapping": "related_judgment_required"}
+        {"aggregate": "c02", "members": ["c03", "c04"], "relationship": "indicators", "derivation": "manual_adjudication", "member_to_aggregate_mapping": "related_judgment_required"},
+        {"aggregate": "c04", "members": ["c05", "c06", "c07"], "relationship": "alternative_subpredicates", "member_logic": "ONE_OR_MORE_OF", "member_to_aggregate_mapping": "patient_value_narrower"}
       ],
       "logic": [
-        {"operator": "ONE_OF", "members": ["APACHE_II", "BISAP", "Marshall"], "applies_to": "c04.instrument", "status": "explicit_example_list", "note": "Alternative score instruments."},
-        {"operator": "AND", "members": ["c01", "c02", "c05"], "status": "variant_level_core", "note": "Core required conditions."}
+        {"operator": "AND", "members": ["c01", "c02", "c08"], "status": "variant_level_core", "note": "Core required conditions."}
       ],
       "audit_notes": []
     },
@@ -321,7 +324,7 @@
       "variant_text": "Acute pancreatitis. Known pancreatic or peripancreatic fluid collections with continued abdominal pain, early satiety, nausea, vomiting, or signs of infection. Greater than 4 weeks after symptom onset.",
       "conditions": [
         {"id": "c01", "surface": "Acute pancreatitis", "type": "diagnostic_state", "kind": "inferential", "normalized": "diagnostic_state(condition=acute_pancreatitis, status=established, role=primary_diagnosis)", "role": "required", "derivation": "unqualified_disease_statement"},
-        {"id": "c02", "surface": "Known pancreatic or peripancreatic fluid collections", "type": "imaging_finding_state", "kind": "factual", "normalized": "imaging_finding_state(finding=fluid_collection, anatomical_site=pancreatic_or_peripancreatic, state=known)", "role": "required", "derivation": "exact_span_with_location_alternative"},
+        {"id": "c02", "surface": "Known pancreatic or peripancreatic fluid collections", "type": "imaging_finding_state", "kind": "factual", "normalized": "imaging_finding_state(finding=fluid_collection, site=pancreatic_or_peripancreatic, state=known)", "role": "required", "derivation": "exact_span_with_location_alternative"},
         {"id": "c03", "surface": "continued abdominal pain", "type": "symptom_state", "kind": "factual", "normalized": "symptom_state(symptom=abdominal_pain, site=abdomen, state=persistent)", "role": "alternative_associated_state", "derivation": "exact_span"},
         {"id": "c04", "surface": "early satiety", "type": "symptom_state", "kind": "factual", "normalized": "symptom_state(symptom=early_satiety, site=unspecified, state=present)", "role": "alternative_associated_state", "derivation": "exact_span"},
         {"id": "c05", "surface": "nausea", "type": "symptom_state", "kind": "factual", "normalized": "symptom_state(symptom=nausea, site=unspecified, state=present)", "role": "alternative_associated_state", "derivation": "exact_span"},
@@ -330,7 +333,7 @@
         {"id": "c08", "surface": "Greater than 4 weeks after symptom onset", "type": "temporal_position", "kind": "factual", "normalized": "temporal_position(event=current_decision, relation=greater_than, value=4_weeks, anchor=acute_pancreatitis_symptom_onset)", "role": "required", "derivation": "disease_bound_from_same_variant"}
       ],
       "logic": [
-        {"operator": "ONE_OF", "members": ["pancreatic", "peripancreatic"], "applies_to": "c02.anatomical_site", "status": "explicit", "note": "Alternative collection sites."},
+        {"operator": "ONE_OF", "members": ["pancreatic", "peripancreatic"], "applies_to": "c02.site", "status": "explicit", "note": "Alternative collection sites."},
         {"id": "g01", "operator": "ONE_OR_MORE_OF", "members": ["c03", "c04", "c05", "c06", "c07"], "status": "explicit_or_list", "note": "Associated-state group."},
         {"operator": "AND", "members": ["c01", "c02", "g01", "c08"], "status": "variant_level", "note": "Core formula."}
       ],

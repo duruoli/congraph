@@ -9,7 +9,7 @@ those additions are marked.
 
 - `surface phrase` is the exact text evidence.
 - `condition instance` is the comparison-ready meaning recovered from that text and its Variant.
-- `predicate type` is the reusable question form shared by ACR and patient-record extraction.
+- `predicate type` is the reusable ACR-side question form used as a patient-mapping target.
 - `factual` versus `inferential` is a separate epistemic property, not a predicate type.
 - `required`, `alternative`, and `illustrative` describe the phrase's role in the Variant.
 
@@ -214,7 +214,7 @@ aggregate_assessment(atypical_presentation, target=acute_pancreatitis) [inferent
 test_interpretation(amylase, acute_pancreatitis, equivocal)            [inferential, illustrative member]
 test_interpretation(lipase, acute_pancreatitis, equivocal)             [inferential, illustrative member]
 diagnostic_state(diagnosis_other_than_acute_pancreatitis,
-                 possible, examples=bowel_perforation_or_bowel_ischemia)
+                 possible)
                                                                         [inferential, illustrative member]
 imaging_stage(initial)                                                [factual, required]
 ```
@@ -237,8 +237,14 @@ diagnostic_state(acute_pancreatitis, established)                      [inferent
 aggregate_assessment(critical_illness, target=acute_pancreatitis)     [inferential, required]
 aggregate_assessment(SIRS, target=acute_pancreatitis)                 [inferential, indicator of critical_illness]
 aggregate_assessment(clinical_severity_score, target=acute_pancreatitis,
-                     state=severe, instrument=APACHE_II_or_BISAP_or_Marshall)
+                     state=severe)
                                                                         [inferential, indicator of critical_illness]
+aggregate_assessment(APACHE_II_score, target=acute_pancreatitis,
+                     state=severe)                                    [inferential, alternative sub-predicate]
+aggregate_assessment(BISAP_score, target=acute_pancreatitis,
+                     state=severe)                                    [inferential, alternative sub-predicate]
+aggregate_assessment(Marshall_score, target=acute_pancreatitis,
+                     state=severe)                                    [inferential, alternative sub-predicate]
 temporal_position(current_decision, >48_to_72_hours,
                   anchor=acute_pancreatitis_symptom_onset)             [factual, required]
 ```
@@ -246,8 +252,10 @@ temporal_position(current_decision, >48_to_72_hours,
 ```text
 critical_illness
 ├── indicator: SIRS
-└── indicator: severe clinical score (APACHE-II | BISAP | Marshall)
-member -> aggregate mapping: related_judgment_required
+└── indicator: clinical_severity_score
+    └── ONE_OR_MORE_OF: APACHE_II_score | BISAP_score | Marshall_score
+SIRS / clinical_severity_score -> critical_illness: related_judgment_required
+named score -> clinical_severity_score: patient_value_narrower
 ```
 
 The indicator structure is a manual adjudication of the comma-separated phrase.

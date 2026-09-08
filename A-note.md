@@ -1,43 +1,53 @@
 # ACR
 
-- variant: ACR 原文定义的一个完整临床情境。
+- variant: ACR 原文定义的一个完整临床情境
+
 一个 variant → 多个候选 Actions 及其 ratings
+
 例如：
+
 Pregnant woman. Right lower quadrant pain, fever, leukocytosis. Suspected appendicitis. Initial imaging.
 
-17个是 ACR 原文中的原始、正式 variants，不是我们简化、聚类出来的 （ACR 的表格级 Context 本来就很粗）
+17个是 ACR 原文中的正式 variants，不是我们简化或聚类出来的（ACR 的 table-level Context 本来就很粗）
 
-可能就是missing middle：现实临床状态：非常细、动态、异质 vs 
-ACR table Context：少量、静态、粗粒度
-医生：判断当前患者应该落在哪个粗粒度 Context 中
+可能就是 missing middle：
 
-- predicate: 将variant拆开后的组成部分
+现实患者状态（细、动态、异质）→ 医生判断 → ACR Context（少量、静态、粗粒度）
 
+- predicate: 构成 variant 的、可以被判断的 condition
 
+例如：
 
-- dimension: predicate的类别
+`symptom_state(symptom=abdominal_pain, site=right_lower_quadrant, state=present)`
 
-人为提取的，不是acr的原文
+- predicate type: ACR predicates 的标准化形式
 
+例如 `symptom_state(symptom, site, state)` 提问：什么症状、在哪里、处于什么状态？
 
-比如：
-presentation
-├── RLQ pain
-├── RUQ pain
-├── fever
-├── no fever
-├── leukocytosis
-└── nausea
+predicate type 是我们从 ACR 归纳出的，不是 ACR 原文中的 ontology。它让不同 variants 中的
+conditions 可以用同一种形式比较。
 
-不是每个variant都包括所有的dimensions，是稀疏的
+- logic: predicates 在一个 variant 中如何组合
 
+包括 `AND`、`OR`、`ONE_OR_MORE_OF`，以及 aggregate 与其 sub-predicates 的层次关系。
+
+- dimension: patient record extraction 时使用的直观信息类别
+
+当前 12 个 predicate-type questions 可作为 seed dimensions；但 patient dimensions 不是封闭列表，
+保留 `other_proposed_dimension`。
+
+predicate type 面向 ACR 标准化；dimension 面向 patient 开放提取。相同的 seed names 方便后续 mapping，
+但两者不是同一个字段；新增 patient dimension 也不要求修改 ACR predicate types。
 
 
 4 ACR topics
 └── 17个原始 Variants
-    └── 每个 Variant 包含2–8个 Context values
-        └── 全部去重后约50个 values
-            └── 分属10个 Context dimensions
+    ├── 91个 predicate instances
+    │   └── 12个 predicate types
+    ├── Boolean logic
+    └── aggregate relations
+
+旧的 50 Context values / 十维分类已归档，不再作为当前 schema。
 
 # AQC
 
