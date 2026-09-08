@@ -13,7 +13,8 @@ those additions are marked.
 - `factual` versus `inferential` is a separate epistemic property, not a predicate type.
 - `required`, `alternative`, and `illustrative` describe the phrase's role in the Variant.
 
-Machine-readable details, including exact spans, derivations, roles, and logical groups, are in
+Machine-readable details, including exact spans, derivations, roles, aggregate structures, and
+logical groups, are in
 `acr_variant_predicate_audit_v1.json`. Predicate definitions are in
 `acr_predicate_types_v1.json`.
 
@@ -23,16 +24,16 @@ Machine-readable details, including exact spans, derivations, roles, and logical
 |---|---|---|
 | `patient_attribute` | What patient characteristic changes applicability? | factual |
 | `symptom_state` | What symptom is present, absent, or persistent, and where? | factual |
-| `objective_finding_state` | What sign, vital sign, or laboratory state is present or changing? | factual |
+| `sign_state` | What clinical sign or vital-sign state is present or changing? | factual |
+| `lab_finding_state` | What laboratory state is present or changing? | factual |
+| `imaging_finding_state` | What anatomical or pathological finding is established by imaging? | factual |
 | `diagnostic_state` | What disease or complication is suspected, established, or known? | inferential |
-| `etiology_state` | Is the cause of the presentation known or suspected? | inferential |
 | `test_history` | What test was already completed? | factual |
 | `test_interpretation` | What did a test mean with respect to which target? | inferential |
-| `presentation_interpretation` | How typical is the presentation for a diagnostic target? | inferential |
-| `severity_or_course_assessment` | What synthesized severity or trajectory state applies? | inferential |
-| `evidence_relation` | How does one item qualify or alter another interpretation? | inferential |
+| `aggregate_assessment` | What aggregate clinical assessment is asserted? | inferential |
 | `temporal_position` | Where is the patient relative to a clinical time anchor? | factual |
-| `decision_stage` | Where is the encounter or imaging decision in its sequence? | factual |
+| `diagnosis_presentation_stage` | Is this the first presentation of the diagnostic episode? | factual |
+| `imaging_stage` | Is this initial imaging or imaging after a prior study? | factual |
 
 ## 1. Right Lower Quadrant Pain, Variant 1
 
@@ -40,7 +41,7 @@ Machine-readable details, including exact spans, derivations, roles, and logical
 
 ```text
 symptom_state(abdominal_pain, site=right_lower_quadrant, present)       [factual, required]
-decision_stage(imaging, initial)                                      [factual, required]
+imaging_stage(initial)                                                [factual, required]
 ```
 
 Logic: both conditions jointly define the Variant.
@@ -51,10 +52,10 @@ Logic: both conditions jointly define the Variant.
 
 ```text
 symptom_state(abdominal_pain, site=right_lower_quadrant, present)       [factual, required]
-objective_finding_state(fever, present)                                [factual, required]
-objective_finding_state(white_blood_cell_count, high)                  [factual, required]
+sign_state(fever, present)                                             [factual, required]
+lab_finding_state(white_blood_cell_count, high)                        [factual, required]
 diagnostic_state(appendicitis, suspected)                              [inferential, required]
-decision_stage(imaging, initial)                                      [factual, required]
+imaging_stage(initial)                                                [factual, required]
 ```
 
 Logic: the title presents a joint scenario; it contains no OR marker.
@@ -66,10 +67,10 @@ Logic: the title presents a joint scenario; it contains no OR marker.
 ```text
 patient_attribute(pregnancy, present)                                 [factual, required]
 symptom_state(abdominal_pain, site=right_lower_quadrant, present)       [factual, required]
-objective_finding_state(fever, present)                                [factual, required]
-objective_finding_state(white_blood_cell_count, high)                  [factual, required]
+sign_state(fever, present)                                             [factual, required]
+lab_finding_state(white_blood_cell_count, high)                        [factual, required]
 diagnostic_state(appendicitis, suspected)                              [inferential, required]
-decision_stage(imaging, initial)                                      [factual, required]
+imaging_stage(initial)                                                [factual, required]
 ```
 
 Logic: pregnancy is a separate applicability condition; it is not part of the appendicitis judgment.
@@ -80,8 +81,8 @@ Logic: pregnancy is a separate applicability condition; it is not part of the ap
 
 ```text
 symptom_state(abdominal_pain, site=right_upper_quadrant, present)       [factual, required]
-etiology_state(RUQ_pain, unknown)                                     [inferential, required]
-decision_stage(imaging, initial)                                      [factual, required]
+diagnostic_state(cause_of_RUQ_pain, unknown, role=etiology)            [inferential, required]
+imaging_stage(initial)                                                [factual, required]
 ```
 
 Scope: `Unknown etiology` is incomplete alone; its target is the current RUQ-pain presentation.
@@ -92,8 +93,8 @@ Scope: `Unknown etiology` is incomplete alone; its target is the current RUQ-pai
 
 ```text
 symptom_state(abdominal_pain, site=right_upper_quadrant, present)       [factual, required]
-etiology_state(RUQ_pain, biliary_disease, suspected)                   [inferential, required]
-decision_stage(imaging, initial)                                      [factual, required]
+diagnostic_state(biliary_disease, suspected, role=cause_of_RUQ_pain)   [inferential, required]
+imaging_stage(initial)                                                [factual, required]
 ```
 
 Scope: biliary disease is the suspected cause of the RUQ-pain presentation.
@@ -104,13 +105,13 @@ Scope: biliary disease is the suspected cause of the RUQ-pain presentation.
 
 ```text
 symptom_state(abdominal_pain, site=right_upper_quadrant, present)       [factual, required]
-objective_finding_state(fever, absent)                                 [factual, required]
-objective_finding_state(white_blood_cell_count, not_high)              [factual, required]
-etiology_state(RUQ_pain, biliary_disease, suspected)                   [inferential, required]
+sign_state(fever, absent)                                              [factual, required]
+lab_finding_state(white_blood_cell_count, not_high)                    [factual, required]
+diagnostic_state(biliary_disease, suspected, role=cause_of_RUQ_pain)   [inferential, required]
 test_history(ultrasound, completed_before_current_decision)            [factual, required]
 test_interpretation(ultrasound, target=acute_cholecystitis,
                     result=negative_or_equivocal)                      [inferential, required]
-decision_stage(imaging, next_after_ultrasound)                         [factual, required]
+imaging_stage(next, prior_test=ultrasound)                             [factual, required]
 ```
 
 Logic: no fever AND no high WBC. Ultrasound result is negative OR equivocal. The title gives only
@@ -123,13 +124,13 @@ acute cholecystitis and additionally says there is no alternative diagnosis.
 
 ```text
 symptom_state(abdominal_pain, site=right_upper_quadrant, present)       [factual, required]
-objective_finding_state(fever, present)                                [factual, required]
-objective_finding_state(white_blood_cell_count, high)                  [factual, required]
-etiology_state(RUQ_pain, biliary_disease, suspected)                   [inferential, required]
+sign_state(fever, present)                                             [factual, required]
+lab_finding_state(white_blood_cell_count, high)                        [factual, required]
+diagnostic_state(biliary_disease, suspected, role=cause_of_RUQ_pain)   [inferential, required]
 test_history(ultrasound, completed_before_current_decision)            [factual, required]
 test_interpretation(ultrasound, target=acute_cholecystitis,
                     result=negative_or_equivocal)                      [inferential, required]
-decision_stage(imaging, next_after_ultrasound)                         [factual, required]
+imaging_stage(next, prior_test=ultrasound)                             [factual, required]
 ```
 
 Logic: fever and elevated WBC are presented jointly. Ultrasound result is negative OR equivocal.
@@ -146,7 +147,7 @@ diagnostic_state(acalculous_cholecystitis, suspected)                  [inferent
 test_history(ultrasound, completed_before_current_decision)            [factual, required]
 test_interpretation(ultrasound, target=acalculous_cholecystitis,
                     result=negative_or_equivocal)                      [inferential, required]
-decision_stage(imaging, next_after_ultrasound)                         [factual, required]
+imaging_stage(next, prior_test=ultrasound)                             [factual, required]
 ```
 
 Scope: the same surface phrase `Negative or equivocal ultrasound` has a more specific target here
@@ -158,7 +159,7 @@ than in Variants 3 and 4.
 
 ```text
 symptom_state(abdominal_pain, site=left_lower_quadrant, present)        [factual, required]
-decision_stage(imaging, initial)                                      [factual, required]
+imaging_stage(initial)                                                [factual, required]
 ```
 
 ## 10. Left Lower Quadrant Pain, Variant 2
@@ -168,7 +169,7 @@ decision_stage(imaging, initial)                                      [factual, 
 ```text
 symptom_state(abdominal_pain, site=left_lower_quadrant, present)        [factual, required]
 diagnostic_state(diverticulitis, suspected)                            [inferential, required]
-decision_stage(imaging, initial)                                      [factual, required]
+imaging_stage(initial)                                                [factual, required]
 ```
 
 ## 11. Left Lower Quadrant Pain, Variant 3
@@ -178,7 +179,7 @@ decision_stage(imaging, initial)                                      [factual, 
 ```text
 symptom_state(abdominal_pain, site=left_lower_quadrant, present)        [factual, required]
 diagnostic_state(complication_of_diverticulitis, suspected)            [inferential, required]
-decision_stage(imaging, initial)                                      [factual, required]
+imaging_stage(initial)                                                [factual, required]
 ```
 
 Scope: ACR does not specify which complication. A record-level abscess or perforation would be a
@@ -190,13 +191,13 @@ narrower patient condition, not an exact repetition of the ACR phrase.
 
 ```text
 diagnostic_state(acute_pancreatitis, suspected)                        [inferential, required]
-decision_stage(acute_pancreatitis_presentation, first_time)            [factual, required]
+diagnosis_presentation_stage(acute_pancreatitis, first_presentation)   [factual, required]
 symptom_state(abdominal_pain, site=epigastrium, present)                [factual, required]
-objective_finding_state(amylase, increased)                            [factual, required]
-objective_finding_state(lipase, increased)                             [factual, required]
+lab_finding_state(amylase, increased)                                  [factual, required]
+lab_finding_state(lipase, increased)                                   [factual, required]
 temporal_position(current_decision, <48_to_72_hours,
                   anchor=acute_pancreatitis_symptom_onset)             [factual, required]
-decision_stage(imaging, initial)                                      [factual, required]
+imaging_stage(initial)                                                [factual, required]
 ```
 
 Logic: epigastric pain AND increased amylase AND increased lipase. The threshold remains
@@ -208,19 +209,24 @@ Logic: epigastric pain AND increased amylase AND increased lipase. The threshold
 
 ```text
 diagnostic_state(acute_pancreatitis, suspected)                        [inferential, required]
-decision_stage(acute_pancreatitis_presentation, initial)               [factual, required]
-presentation_interpretation(signs_and_symptoms, acute_pancreatitis,
-                            atypical)                                  [inferential, required]
-test_interpretation(amylase, acute_pancreatitis, equivocal)            [inferential, illustrative]
-test_interpretation(lipase, acute_pancreatitis, equivocal)             [inferential, illustrative]
-evidence_relation(renal_disease possibly_confounds enzyme_result)      [inferential, possible qualifier]
-evidence_relation(alternative_to_pancreatitis may_be_possible)         [inferential, alternative scenario]
-decision_stage(imaging, initial)                                      [factual, required]
+diagnosis_presentation_stage(acute_pancreatitis, first_presentation)   [factual, required]
+aggregate_assessment(atypical_presentation, target=acute_pancreatitis) [inferential, required]
+test_interpretation(amylase, acute_pancreatitis, equivocal)            [inferential, illustrative member]
+test_interpretation(lipase, acute_pancreatitis, equivocal)             [inferential, illustrative member]
+diagnostic_state(diagnosis_other_than_acute_pancreatitis,
+                 possible, examples=bowel_perforation_or_bowel_ischemia)
+                                                                        [inferential, illustrative member]
+imaging_stage(initial)                                                [factual, required]
 ```
 
-Logic uncertainty: the wording does not cleanly say that equivocal enzymes, renal confounding,
-and alternative diagnoses must all coexist. They must not be compiled as strict AND without
-adjudication.
+```text
+atypical_presentation
+├── illustrative: equivocal amylase AND lipase
+└── illustrative: possible diagnosis other than pancreatitis
+member -> aggregate mapping: related_judgment_required
+```
+
+The AKI/CKD phrase is a qualifier on the enzyme interpretations, not a condition predicate.
 
 ## 14. Acute Pancreatitis, Variant 3
 
@@ -228,16 +234,23 @@ adjudication.
 
 ```text
 diagnostic_state(acute_pancreatitis, established)                      [inferential, required]
-severity_or_course_assessment(critical_illness, present)               [inferential, descriptor]
-severity_or_course_assessment(SIRS, present)                           [inferential, descriptor]
-severity_or_course_assessment(severe_score,
-                              system=APACHE_II_or_BISAP_or_Marshall)   [inferential, descriptor]
+aggregate_assessment(critical_illness, target=acute_pancreatitis)     [inferential, required]
+aggregate_assessment(SIRS, target=acute_pancreatitis)                 [inferential, indicator of critical_illness]
+aggregate_assessment(clinical_severity_score, target=acute_pancreatitis,
+                     state=severe, instrument=APACHE_II_or_BISAP_or_Marshall)
+                                                                        [inferential, indicator of critical_illness]
 temporal_position(current_decision, >48_to_72_hours,
                   anchor=acute_pancreatitis_symptom_onset)             [factual, required]
 ```
 
-Logic uncertainty: commas do not establish whether all three severity descriptors are mandatory
-or overlapping ways of identifying severe illness.
+```text
+critical_illness
+├── indicator: SIRS
+└── indicator: severe clinical score (APACHE-II | BISAP | Marshall)
+member -> aggregate mapping: related_judgment_required
+```
+
+The indicator structure is a manual adjudication of the comma-separated phrase.
 
 ## 15. Acute Pancreatitis, Variant 4
 
@@ -245,16 +258,16 @@ or overlapping ways of identifying severe illness.
 
 ```text
 diagnostic_state(acute_pancreatitis, established)                      [inferential, required]
-severity_or_course_assessment(SIRS, persistent)                        [inferential, course descriptor]
-severity_or_course_assessment(severe_clinical_score, present)          [inferential, severity descriptor]
-objective_finding_state(white_blood_cell_count, high)                  [factual, objective descriptor]
-objective_finding_state(fever, present)                                [factual, objective descriptor]
+aggregate_assessment(SIRS, target=acute_pancreatitis, state=persistent) [inferential, required]
+aggregate_assessment(clinical_severity_score, target=acute_pancreatitis,
+                     state=severe)                                    [inferential, required]
+lab_finding_state(white_blood_cell_count, high)                        [factual, required]
+sign_state(fever, present)                                             [factual, required]
 temporal_position(current_decision, >7_to_21_days,
                   anchor=acute_pancreatitis_symptom_onset)             [factual, required]
 ```
 
-Logic uncertainty: the final `and` favors conjunction, but the title does not explain whether
-every descriptor is mandatory. The 7-to-21-day range is preserved.
+Logic: all six predicates jointly define the Variant. The 7-to-21-day range is preserved.
 
 ## 16. Acute Pancreatitis, Variant 5
 
@@ -262,21 +275,26 @@ every descriptor is mandatory. The 7-to-21-day range is preserved.
 
 ```text
 diagnostic_state(necrotizing_pancreatitis, known)                      [inferential, required]
-severity_or_course_assessment(clinical_status, significant_deterioration)
+aggregate_assessment(significant_clinical_deterioration,
+                     target=necrotizing_pancreatitis)
                                                                         [inferential, required]
-
-one or more evidence items supporting deterioration:
-  objective_finding_state(hemoglobin, abrupt_decrease)                 [factual, alternative]
-  objective_finding_state(hematocrit, abrupt_decrease)                 [factual, alternative]
-  objective_finding_state(blood_pressure, hypotension)                 [factual, alternative]
-  objective_finding_state(heart_rate, tachycardia)                     [factual, alternative]
-  objective_finding_state(respiratory_rate, tachypnea)                 [factual, alternative]
-  objective_finding_state(fever_curve, abrupt_change)                  [factual, alternative]
-  objective_finding_state(white_blood_cell_count, increase)            [factual, alternative]
+lab_finding_state(hemoglobin, abrupt_decrease)                         [factual, illustrative]
+lab_finding_state(hematocrit, abrupt_decrease)                         [factual, illustrative]
+sign_state(blood_pressure, hypotension)                                [factual, illustrative]
+sign_state(heart_rate, tachycardia)                                    [factual, illustrative]
+sign_state(respiratory_rate, tachypnea)                                [factual, illustrative]
+sign_state(fever_curve, abrupt_change)                                 [factual, illustrative]
+lab_finding_state(white_blood_cell_count, increase)                    [factual, illustrative]
 ```
 
-Logic: known necrotizing pancreatitis AND significant deterioration. The listed findings are
-alternative evidence for the deterioration judgment, not seven jointly required conditions.
+```text
+significant_clinical_deterioration
+└── illustrative (ONE_OR_MORE_OF): hemoglobin decrease | hematocrit decrease | hypotension |
+                                  tachycardia | tachypnea | fever-curve change | WBC increase
+member -> aggregate mapping: related_judgment_required
+```
+
+Logic: known necrotizing pancreatitis AND significant clinical deterioration.
 
 ## 17. Acute Pancreatitis, Variant 6
 
@@ -284,23 +302,25 @@ alternative evidence for the deterioration judgment, not seven jointly required 
 
 ```text
 diagnostic_state(acute_pancreatitis, established)                      [inferential, required]
-diagnostic_state(pancreatic_or_peripancreatic_fluid_collection, known) [inferential, required]
-
-one or more associated states:
-  symptom_state(abdominal_pain, persistent)                            [factual, alternative]
-  symptom_state(early_satiety, present)                               [factual, alternative]
-  symptom_state(nausea, present)                                      [factual, alternative]
-  symptom_state(vomiting, present)                                    [factual, alternative]
-  diagnostic_state(collection_infection, suspected_by_signs)
+imaging_finding_state(fluid_collection,
+                      site=pancreatic_or_peripancreatic, known)        [factual, required]
+symptom_state(abdominal_pain, persistent)                              [factual, alternative]
+symptom_state(early_satiety, present)                                 [factual, alternative]
+symptom_state(nausea, present)                                        [factual, alternative]
+symptom_state(vomiting, present)                                      [factual, alternative]
+aggregate_assessment(signs_of_infection, target=fluid_collection)
                                                                         [inferential, alternative]
-
 temporal_position(current_decision, >4_weeks,
                   anchor=acute_pancreatitis_symptom_onset)             [factual, required]
 ```
 
-Logic: acute pancreatitis AND known collection AND one-or-more associated states AND timing.
-`Signs of infection` is a synthesized condition unless its component findings are separately
-available in the patient record.
+```text
+acute_pancreatitis
+AND fluid_collection(site=pancreatic | peripancreatic)
+AND ONE_OR_MORE_OF(continued abdominal pain | early satiety | nausea | vomiting |
+                    signs of infection)
+AND >4 weeks after symptom onset
+```
 
 ## Main audit findings
 

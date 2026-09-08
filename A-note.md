@@ -11,11 +11,11 @@ Pregnant woman. Right lower quadrant pain, fever, leukocytosis. Suspected append
 ACR table Context：少量、静态、粗粒度
 医生：判断当前患者应该落在哪个粗粒度 Context 中
 
-- context: 将variant拆开后的组成部分
+- predicate: 将variant拆开后的组成部分
 
-50个 唯一语义值，对所有variants拆分成contexts，去重后得到的一组contexts
 
-- dimension: context的类别
+
+- dimension: predicate的类别
 
 人为提取的，不是acr的原文
 

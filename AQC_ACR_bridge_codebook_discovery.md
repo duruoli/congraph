@@ -110,18 +110,19 @@ target or scope when detached from their Variant. For example, `negative or equi
 OR relation and is uninterpretable without both the ultrasound and the diagnostic target, while
 `increased amylase and lipase` contains a conjunction with a shared modifier.
 
-A source-first re-extraction now compiles all 17 complete Variant titles into 89 draft condition
-instances: 58 factual and 31 inferential. The count is not a new vocabulary size; it includes
+A source-first re-extraction currently compiles all 17 complete Variant titles into 88 draft
+condition instances: 59 factual and 29 inferential. The count is not a new vocabulary size; it includes
 repeated conditions across Variants and alternative or illustrative members needed to preserve
-the source logic. Twelve draft predicate types describe the reusable condition forms. Predicate
-type and epistemic kind are deliberately separate: for example, `test_history` is factual, whereas
+the source logic. The draft predicate-type registry is now being revised one complex Variant at a
+time; its count is intentionally not frozen. Predicate type and epistemic kind are deliberately
+separate: for example, `test_history` is factual, whereas
 `test_interpretation(test, target, result)` is inferential.
 
 The new working files are:
 
 - `data/aqc_acr_bridge/acr_variant_predicate_audit_v1.md`: human-readable review of all 17 Variants;
 - `data/aqc_acr_bridge/acr_variant_predicate_audit_v1.json`: machine-readable condition instances,
-  source spans, roles, derivations, and logical groups;
+  source spans, roles, derivations, aggregate structures, and logical groups;
 - `data/aqc_acr_bridge/acr_predicate_types_v1.json`: draft predicate-type definitions.
 
 The 50-row audit is retained as a record of the earlier value-level analysis, but must not be used
