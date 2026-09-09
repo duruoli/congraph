@@ -24,8 +24,25 @@ Pregnant woman. Right lower quadrant pain, fever, leukocytosis. Suspected append
 
 例如 `symptom_state(symptom, site, state)` 提问：什么症状、在哪里、处于什么状态？
 
-predicate type 是我们从 ACR 归纳出的，不是 ACR 原文中的 ontology。它让不同 variants 中的
-conditions 可以用同一种形式比较。
+predicate type 是我们从 ACR 归纳出的，不是 ACR 原文中的 ontology。它让不同 variants 中的conditions 可以用同一种形式比较。
+
+
+| Predicate type | Intuitive question | Usual kind |
+|---|---|---|
+| `patient_attribute` | What patient characteristic changes applicability? | factual |
+| `symptom_state` | What symptom is present, absent, or persistent, and where? | factual |
+| `sign_state` | What clinical sign or vital-sign state is present or changing? | factual |
+| `lab_finding_state` | What laboratory state is present or changing? | factual |
+| `imaging_finding_state` | What anatomical or pathological finding is established by imaging? | factual |
+| `diagnostic_state` | What disease or complication is suspected, established, or known? | inferential |
+| `test_history` | What test was already completed? | factual |
+| `test_interpretation` | What did a test mean with respect to which target? | inferential |
+| `aggregate_assessment` | What aggregate clinical assessment is asserted? | inferential |
+| `temporal_position` | Where is the patient relative to a clinical time anchor? | factual |
+| `diagnosis_presentation_stage` | Is this the first presentation of the diagnostic episode? | factual |
+| `imaging_stage` | Is this initial imaging or imaging after a prior study? | factual | 
+
+note: imaging_state的定义是imaging at the beginning of the care episode for the medical condition defined by the variant. 但什么是beginning of the care episode是很模糊的，ACR 还明确说明，多个等价或互补检查可以共同属于 initial evaluation，并非按影像序号机械判断，所以这是一个非常模糊、主观的定义，可能构成missing middle
 
 - logic: predicates 在一个 variant 中如何组合
 
@@ -47,9 +64,28 @@ predicate type 面向 ACR 标准化；dimension 面向 patient 开放提取。�
     ├── Boolean logic
     └── aggregate relations
 
-旧的 50 Context values / 十维分类已归档，不再作为当前 schema。
 
 # AQC
+
+使用的clinical records包含：
+
+Baseline
+├── Patient History
+├── Physical Examination
+└── Laboratory Tests
+    ├── Laboratory Tests JSON
+    ├── Reference Range Lower
+    └── Reference Range Upper
+
+Decision-step evidence
+└── 当前 decision 之前已经出结果的 Radiology
+    ├── modality
+    ├── region
+    ├── exam name
+    └── report
+
+p.s microbiology没有办法确定时间
+
 
 Annotation Chain:
 
