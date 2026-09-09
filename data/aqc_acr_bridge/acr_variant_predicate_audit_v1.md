@@ -12,6 +12,9 @@ those additions are marked.
 - `predicate type` is the reusable ACR-side question form used as a patient-mapping target.
 - `factual` versus `inferential` is a separate epistemic property, not a predicate type.
 - `required`, `alternative`, and `illustrative` describe the phrase's role in the Variant.
+- `Initial imaging` and `Next imaging study` remain in authoritative `variant_text` but are not
+  compiled as predicates. Their condition-relative care-episode boundary is not operationally
+  stable for patient-record mapping; explicit prior tests and results remain represented.
 
 Machine-readable details, including exact spans, derivations, roles, aggregate structures, and
 logical groups, are in
@@ -33,7 +36,6 @@ logical groups, are in
 | `aggregate_assessment` | What aggregate clinical assessment is asserted? | inferential |
 | `temporal_position` | Where is the patient relative to a clinical time anchor? | factual |
 | `diagnosis_presentation_stage` | Is this the first presentation of the diagnostic episode? | factual |
-| `imaging_stage` | Is this initial imaging or imaging after a prior study? | factual |
 
 ## 1. Right Lower Quadrant Pain, Variant 1
 
@@ -41,10 +43,9 @@ logical groups, are in
 
 ```text
 symptom_state(abdominal_pain, site=right_lower_quadrant, present)       [factual, required]
-imaging_stage(initial)                                                [factual, required]
 ```
 
-Logic: both conditions jointly define the Variant.
+Logic: right lower quadrant pain is the retained comparison predicate.
 
 ## 2. Right Lower Quadrant Pain, Variant 2
 
@@ -55,7 +56,6 @@ symptom_state(abdominal_pain, site=right_lower_quadrant, present)       [factual
 sign_state(fever, present)                                             [factual, required]
 lab_finding_state(white_blood_cell_count, high)                        [factual, required]
 diagnostic_state(appendicitis, suspected)                              [inferential, required]
-imaging_stage(initial)                                                [factual, required]
 ```
 
 Logic: the title presents a joint scenario; it contains no OR marker.
@@ -70,7 +70,6 @@ symptom_state(abdominal_pain, site=right_lower_quadrant, present)       [factual
 sign_state(fever, present)                                             [factual, required]
 lab_finding_state(white_blood_cell_count, high)                        [factual, required]
 diagnostic_state(appendicitis, suspected)                              [inferential, required]
-imaging_stage(initial)                                                [factual, required]
 ```
 
 Logic: pregnancy is a separate applicability condition; it is not part of the appendicitis judgment.
@@ -82,7 +81,6 @@ Logic: pregnancy is a separate applicability condition; it is not part of the ap
 ```text
 symptom_state(abdominal_pain, site=right_upper_quadrant, present)       [factual, required]
 diagnostic_state(cause_of_RUQ_pain, unknown, role=etiology)            [inferential, required]
-imaging_stage(initial)                                                [factual, required]
 ```
 
 Scope: `Unknown etiology` is incomplete alone; its target is the current RUQ-pain presentation.
@@ -94,7 +92,6 @@ Scope: `Unknown etiology` is incomplete alone; its target is the current RUQ-pai
 ```text
 symptom_state(abdominal_pain, site=right_upper_quadrant, present)       [factual, required]
 diagnostic_state(biliary_disease, suspected, role=cause_of_RUQ_pain)   [inferential, required]
-imaging_stage(initial)                                                [factual, required]
 ```
 
 Scope: biliary disease is the suspected cause of the RUQ-pain presentation.
@@ -111,7 +108,6 @@ diagnostic_state(biliary_disease, suspected, role=cause_of_RUQ_pain)   [inferent
 test_history(ultrasound, completed_before_current_decision)            [factual, required]
 test_interpretation(ultrasound, target=acute_cholecystitis,
                     result=negative_or_equivocal)                      [inferential, required]
-imaging_stage(next, prior_test=ultrasound)                             [factual, required]
 ```
 
 Logic: no fever AND no high WBC. Ultrasound result is negative OR equivocal. The title gives only
@@ -130,7 +126,6 @@ diagnostic_state(biliary_disease, suspected, role=cause_of_RUQ_pain)   [inferent
 test_history(ultrasound, completed_before_current_decision)            [factual, required]
 test_interpretation(ultrasound, target=acute_cholecystitis,
                     result=negative_or_equivocal)                      [inferential, required]
-imaging_stage(next, prior_test=ultrasound)                             [factual, required]
 ```
 
 Logic: fever and elevated WBC are presented jointly. Ultrasound result is negative OR equivocal.
@@ -147,7 +142,6 @@ diagnostic_state(acalculous_cholecystitis, suspected)                  [inferent
 test_history(ultrasound, completed_before_current_decision)            [factual, required]
 test_interpretation(ultrasound, target=acalculous_cholecystitis,
                     result=negative_or_equivocal)                      [inferential, required]
-imaging_stage(next, prior_test=ultrasound)                             [factual, required]
 ```
 
 Scope: the same surface phrase `Negative or equivocal ultrasound` has a more specific target here
@@ -159,8 +153,9 @@ than in Variants 3 and 4.
 
 ```text
 symptom_state(abdominal_pain, site=left_lower_quadrant, present)        [factual, required]
-imaging_stage(initial)                                                [factual, required]
 ```
+
+Logic: left lower quadrant pain is the retained comparison predicate.
 
 ## 10. Left Lower Quadrant Pain, Variant 2
 
@@ -169,7 +164,6 @@ imaging_stage(initial)                                                [factual, 
 ```text
 symptom_state(abdominal_pain, site=left_lower_quadrant, present)        [factual, required]
 diagnostic_state(diverticulitis, suspected)                            [inferential, required]
-imaging_stage(initial)                                                [factual, required]
 ```
 
 ## 11. Left Lower Quadrant Pain, Variant 3
@@ -179,7 +173,6 @@ imaging_stage(initial)                                                [factual, 
 ```text
 symptom_state(abdominal_pain, site=left_lower_quadrant, present)        [factual, required]
 diagnostic_state(complication_of_diverticulitis, suspected)            [inferential, required]
-imaging_stage(initial)                                                [factual, required]
 ```
 
 Scope: ACR does not specify which complication. A record-level abscess or perforation would be a
@@ -197,7 +190,6 @@ lab_finding_state(amylase, increased)                                  [factual,
 lab_finding_state(lipase, increased)                                   [factual, required]
 temporal_position(current_decision, <48_to_72_hours,
                   anchor=acute_pancreatitis_symptom_onset)             [factual, required]
-imaging_stage(initial)                                                [factual, required]
 ```
 
 Logic: epigastric pain AND increased amylase AND increased lipase. The threshold remains
@@ -216,7 +208,6 @@ test_interpretation(lipase, acute_pancreatitis, equivocal)             [inferent
 diagnostic_state(diagnosis_other_than_acute_pancreatitis,
                  possible)
                                                                         [inferential, illustrative member]
-imaging_stage(initial)                                                [factual, required]
 ```
 
 ```text

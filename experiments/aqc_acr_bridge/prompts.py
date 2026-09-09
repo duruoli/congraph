@@ -46,7 +46,15 @@ Rules:
    absent.
 3. If a relevant condition fits none of these dimensions, extract it under
    other_proposed_dimension with a concise dimension name and definition.
-4. Return only the complete JSON object matching the supplied template. Keep an empty array when a
+4. Keep the extraction sparse and decision-relevant. Extract at most 30 distinct items total,
+   focusing on conditions material to the patient's abdominal presentation and imaging context.
+   Do not inventory incidental normal anatomy, duplicate the same condition across synonymous
+   items, or extract every sentence merely because it is documented.
+5. Each evidence support must be one verbatim, contiguous substring copied from its named visible
+   source. Preserve its spelling, punctuation, and whitespace exactly. Never join separate spans,
+   add ellipses, paraphrase, or repair redacted text. Prefer one evidence span per item; add another
+   only when it is necessary to support that same item.
+6. Return only the complete JSON object matching the supplied template. Keep an empty array when a
    dimension has no supported item and do not add keys."""
 
 

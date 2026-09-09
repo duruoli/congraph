@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0.0-pilot-proposed-dimension-audit",
+  "status": "pilot_review_complete_not_frozen",
+  "source_directory": "results/aqc_acr_bridge/pilot_v1/manual_extraction_v1/outputs",
+  "n_steps": 12,
+  "n_other_proposed_dimension_items": 5,
+  "n_native_proposed_dimension_labels": 3,
+  "native_labels": [
+    {
+      "dimension": "respiratory_support_state",
+      "n_items": 1,
+      "step_ids": ["cholecystitis:20334898:s2"]
+    },
+    {
+      "dimension": "intervention_or_device_state",
+      "n_items": 2,
+      "step_ids": [
+        "cholecystitis:20660601:s2",
+        "pancreatitis:25133113:s6"
+      ]
+    },
+    {
+      "dimension": "imaging_feasibility_constraint",
+      "n_items": 2,
+      "step_ids": [
+        "diverticulitis:21292285:s2",
+        "pancreatitis:25133113:s6"
+      ]
+    }
+  ],
+  "adjudicated_families": [
+    {
+      "provisional_dimension": "intervention_or_support_state",
+      "definition": "What active intervention, temporary or implanted device, or organ support materially changes the current patient state or interpretation?",
+      "source_labels": [
+        "respiratory_support_state",
+        "intervention_or_device_state"
+      ],
+      "n_items": 3,
+      "n_steps": 3,
+      "examples": [
+        "bipap_then_5_l_nasal_cannula",
+        "temporary_right_internal_jugular_pacing_wire",
+        "distal_common_bile_duct_stent"
+      ],
+      "decision": "provisional_new_patient_dimension",
+      "rationale": "The current eleven seed dimensions have no stable place for active support, therapeutic devices, or altered anatomy produced by intervention. The construct recurs across three clinically distinct pilot cases.",
+      "freeze_status": "retain_provisionally_and_test_in_fresh_cases"
+    },
+    {
+      "provisional_dimension": "imaging_feasibility_constraint",
+      "definition": "What patient factor prevents or limits use of an otherwise informative imaging protocol?",
+      "source_labels": ["imaging_feasibility_constraint"],
+      "n_items": 2,
+      "n_steps": 2,
+      "examples": [
+        "intravenous_contrast_withheld_due_to_acute_renal_failure",
+        "intravenous_contrast_avoided_due_to_elevated_creatinine"
+      ],
+      "decision": "do_not_promote_as_patient_dimension_yet",
+      "rationale": "The observable renal state already fits patient_attribute and the prior protocol fits test_history. Calling it a feasibility constraint relates the patient state to a candidate action, so it is better tested as a later bridge operation rather than duplicated as a raw Context dimension.",
+      "provisional_bridge_destination": "patient_constraint_application_or_constraint_capability_tradeoff",
+      "freeze_status": "preserve_in_open_channel_until_action_stage_review"
+    }
+  ],
+  "summary": {
+    "new_patient_dimension_families": ["intervention_or_support_state"],
+    "candidate_bridge_constructs_not_promoted": ["imaging_feasibility_constraint"],
+    "acr_equivalent_for_any_proposed_dimension_item": false
+  }
+}

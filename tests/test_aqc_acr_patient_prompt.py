@@ -41,6 +41,8 @@ class PatientContextPromptTests(unittest.TestCase):
         self.assertNotIn("imaging_stage", context)
         self.assertIn("sign_state", context)
         self.assertIn("not documented is unknown", SYSTEM)
+        self.assertIn("at most 30 distinct items", SYSTEM)
+        self.assertIn("verbatim, contiguous substring", SYSTEM)
 
     def test_user_prompt_omits_algorithmic_inputs_and_is_order_blinded(self) -> None:
         baseline = {

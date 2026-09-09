@@ -40,9 +40,10 @@ predicate type 是我们从 ACR 归纳出的，不是 ACR 原文中的 ontology�
 | `aggregate_assessment` | What aggregate clinical assessment is asserted? | inferential |
 | `temporal_position` | Where is the patient relative to a clinical time anchor? | factual |
 | `diagnosis_presentation_stage` | Is this the first presentation of the diagnostic episode? | factual |
-| `imaging_stage` | Is this initial imaging or imaging after a prior study? | factual | 
 
-note: imaging_state的定义是imaging at the beginning of the care episode for the medical condition defined by the variant. 但什么是beginning of the care episode是很模糊的，ACR 还明确说明，多个等价或互补检查可以共同属于 initial evaluation，并非按影像序号机械判断，所以这是一个非常模糊、主观的定义，可能构成missing middle
+`Initial imaging` / `Next imaging study` 保留在 ACR `variant_text` 中，但不编译为
+predicate：`beginning of the care episode` 过于模糊，多个等价或互补检查也可同属
+initial evaluation。明确的先前检查及结果仍由 `test_history` 和 `test_interpretation` 表达。
 
 - logic: predicates 在一个 variant 中如何组合
 
@@ -50,7 +51,7 @@ note: imaging_state的定义是imaging at the beginning of the care episode for 
 
 - dimension: patient record extraction 时使用的直观信息类别
 
-当前 12 个 predicate-type questions 可作为 seed dimensions；但 patient dimensions 不是封闭列表，
+当前 11 个 predicate-type questions 可作为 seed dimensions；但 patient dimensions 不是封闭列表，
 保留 `other_proposed_dimension`。
 
 predicate type 面向 ACR 标准化；dimension 面向 patient 开放提取。相同的 seed names 方便后续 mapping，
@@ -59,11 +60,23 @@ predicate type 面向 ACR 标准化；dimension 面向 patient 开放提取。�
 
 4 ACR topics
 └── 17个原始 Variants
-    ├── 91个 predicate instances
-    │   └── 12个 predicate types
+    ├── 78个 predicate instances
+    │   └── 11个 predicate types
     ├── Boolean logic
     └── aggregate relations
 
+
+
+
+## 对于如何写prompt的tips
+不要把“pipeline 的设计背景与防泄漏原则”等信息写进 extraction prompt。它们应由输入构造代码保证，而不是向 LLM 解释。
+Prompt 应当是一个独立、肯定性的任务说明，只包含：
+- 输入是什么；
+- 需要提取什么；
+- 每个 dimension 的精确定义和字段；
+- 输出格式；
+- 无法归入已有 dimensions 时如何进入 other_proposed_dimension。
+不应包含 pipeline 前情、为什么某些内容被移除、之后如何 mapping、哪些信息被隐藏等说明。
 
 # AQC
 
