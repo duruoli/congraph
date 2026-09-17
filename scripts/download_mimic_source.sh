@@ -9,13 +9,17 @@
 #   - MIMIC-IV v3.1          (admissions, procedures_icd, d_icd_procedures)
 #   - MIMIC-IV-Note v2.2     (radiology — text reports live here, NOT in the core db)
 #
-# Needs an interactive password prompt, so run it from the Claude Code session with `!`:
-#     ! bash scripts/download_mimic_source.sh <physionet_username>
-# (default username below is cherishbeing; override by passing one as $1)
+# Needs an interactive password prompt:
+#     bash scripts/download_mimic_source.sh <physionet_username>
 
 set -euo pipefail
 
-USER_NAME="${1:-cherishbeing}"
+if [[ $# -ne 1 ]]; then
+  echo "Usage: $0 <physionet_username>" >&2
+  exit 2
+fi
+
+USER_NAME="$1"
 DEST="$(cd "$(dirname "$0")/.." && pwd)/data/raw_data/mimic_source"
 mkdir -p "$DEST"
 
