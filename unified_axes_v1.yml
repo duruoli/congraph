@@ -1,0 +1,397 @@
+# unified_axes_v1.yml — Unified axis vocabulary v1 (runtime)
+#
+# A0 port artifact (PRD docs/prd/topic-ontology-integration.md slice A0;
+# ratified by docs/adr/0021-unified-axis-vocabulary-v1.md).
+#
+# Adapted from the lab-notebook source of truth:
+#   nigel-expert-graph/docs/schemas/topic_axes_v0_1.yml (schema_version "1.0").
+# That file is the design workspace; THIS file is the aga-nigel runtime schema
+# loaded by `topic_network.axis_vocabulary.UnifiedAxisVocabulary`.
+#
+# Eight STRUCTURAL axes shared by topic records, considerations, article tags,
+# and query coordinates. `technology` and `quality_process_implementation`
+# are NOT axes here — they are demoted to the non-structural tags
+# `technology_context` and `quality_implementation` (ADR-0021 Clause 2).
+#
+# Enum policy: strict_with_extensibility. Values carry status
+# (canonical | candidate). New values enter as `candidate`; promotion to
+# `canonical` is an expert-attestation event. Adding a value does NOT need an
+# ADR; adding/removing/renaming an AXIS does (ADR-0021).
+#
+# `synonyms` are seeded for the values exercised by the UC tracer + legacy
+# migration. Broader synonym coverage lands with the ArticleTagger retarget
+# (slice A2); absence of a synonym entry is not a schema error.
+
+schema_version: "1.1"
+vocabulary_id: unified-axes-v1
+policy: strict_with_extensibility
+
+# --- Attestation history --------------------------------------------------
+# v1.1 (2026-07-08, SC): bulk attestation of the v1 vocabulary.
+#   - Promoted all non-flagged values from `candidate` to `canonical`.
+#   - Additions:   eosinophilic_gi_disease_non_eoe, peptic_ulcer_disease,
+#                  diverticular_disease, jak_inhibitor, s1p_modulator,
+#                  dgbi_pharmacotherapy, motility_pharmacotherapy,
+#                  cross_sectional_imaging_ct, cross_sectional_imaging_mri.
+#   - Removals:    disease: gi_bleeding (syndrome, not disease).
+#   - Merges:      management_domain: escalation_de_escalation → therapy_sequencing.
+#                  intervention_class: endoscopic_hemostasis → endoscopic_therapeutic.
+#                  diagnostic_modality: flexible_sigmoidoscopy → colonoscopy.
+#   - Splits:      intervention_class: small_molecule_jak_s1p → jak_inhibitor + s1p_modulator.
+#                  intervention_class: gut_targeted_pharmacotherapy → dgbi_pharmacotherapy + motility_pharmacotherapy.
+#                  diagnostic_modality: cross_sectional_imaging → cross_sectional_imaging_ct + cross_sectional_imaging_mri (+ existing _mrcp).
+#   - Renames:     disease: gi_infection_global → gi_infection.
+#                  clinical_phase: diagnosis_workup → pre_diagnosis.
+#   - Held candidate: colonic_disorders_nos (last-resort only).
+#   - Full record: aga_metadata/sources/topic-ontology-v1/axis_attestation_v1.yaml.
+# --------------------------------------------------------------------------
+
+# query_eligibility is a TOPIC-record field (loaded by TopicStore, slice A3),
+# not an axis. Recorded here as the controlled value set for that field.
+query_eligibility_values: [queryable, catalog_only]
+
+multi_value_semantics:
+  single: "one value"
+  list: "multiple values (genuine multi-axiality)"
+  all: "topic spans the axis as a defining feature (e.g. AI in GI disease=all)"
+  varies_by_application: "split signal, not a terminal value; resolves only at sub-topic level"
+  n_a: "topic genuinely does not activate this axis; never a default-because-unsure"
+
+activation_rules:
+  required:
+    - "disease (a concrete value OR an explicit, justified `all` for crosscutting topics)"
+    - "at least one of {management_domain, intervention_class, diagnostic_modality} for clinical-management retrieval"
+  crosscutting_exception: >
+    Crosscutting catalog-only topics are exempt from the second requirement; they are
+    browsable but excluded from query-time coordinate matching via the topic record's
+    query_eligibility=catalog_only field (ADR-0021 Clause 5).
+  optional_modifiers: [clinical_phase, population, setting, anatomy]
+  anatomy_note: "anatomy is secondary/metadata — never the retrieval spine."
+
+# Relaxation order for partial-coordinate queries (ADR-0021 Clause 4).
+# disease never relaxes.
+relaxation_order:
+  - [population, setting, anatomy]
+  - [clinical_phase, diagnostic_modality]
+  - [intervention_class]
+  - [management_domain]
+
+axes:
+
+  - id: disease
+    label: "Disease / clinical problem"
+    order: 1
+    role: "Primary organizing axis BY CONVENTION; not the structural spine."
+    activation: required
+    allows_all: true
+    allows_na: false
+    values:
+      # Design notes (attestation 2026-07-08):
+      # - Hepatic encephalopathy is a SUB-STATE of `cirrhosis_portal_hypertension`
+      #   (not its own disease value); route via that disease +
+      #   management_domain: `complication_management`.
+      # - `gi_bleeding` was removed 2026-07-08 (syndrome, not disease). Route bleeding
+      #   via the specific disease home (peptic_ulcer_disease / diverticular_disease /
+      #   cirrhosis_portal_hypertension for variceal / etc.) + clinical_phase:
+      #   `complication_acute` + intervention_class: `endoscopic_therapeutic`.
+      - {id: gerd_reflux, status: canonical, provenance: "TOP0048"}
+      - {id: eosinophilic_esophagitis, status: canonical, provenance: "TOP0039"}
+      - {id: eosinophilic_gi_disease_non_eoe, status: canonical, provenance: "expert 2026-07-08; PRD EGID gap"}  # Non-EoE EGID (EoG/EoN/EoC); do NOT absorb into eosinophilic_esophagitis.
+      - {id: barretts_egj_neoplasia, status: canonical, provenance: "TOP0009"}  # Premalignant; no default double-tag with esophageal_cancer.
+      - {id: esophageal_cancer, status: canonical, provenance: "TOP0042"}  # Malignant; no default double-tag with barretts_egj_neoplasia.
+      - {id: esophageal_motility_disorders, status: canonical, provenance: "TOP0041"}
+      - {id: gastric_cancer_premalignant, status: canonical, provenance: "TOP0053"}
+      - {id: h_pylori, status: canonical, provenance: "TOP0057"}
+      - {id: gastroduodenal_disorders, status: canonical, provenance: "TOP0054"}  # Residual bucket: gastroduodenal disorders not covered by more specific values.
+      - {id: peptic_ulcer_disease, status: canonical, provenance: "expert 2026-07-08; gi_bleeding restructure"}
+      - {id: celiac_disease, status: canonical, provenance: "TOP0015"}
+      - {id: small_bowel_disorders, status: canonical, provenance: "TOP0087"}  # Residual bucket: small-bowel disorders not covered by more specific values.
+      - {id: intestinal_failure_sbs, status: canonical, provenance: "TOP0067"}
+      - {id: crc, status: canonical, provenance: "TOP0021"}
+      - {id: colorectal_polyps_polyposis, status: canonical, provenance: "TOP0022"}
+      - {id: diverticular_disease, status: canonical, provenance: "expert 2026-07-08; gi_bleeding restructure"}
+      - {id: hereditary_gi_cancer, status: canonical, provenance: "TOP0059"}
+      - {id: ibd_crohns, status: canonical, provenance: "TOP0066/TOP0065"}
+      - {id: ibd_ulcerative_colitis, status: canonical, provenance: "TOP0066/TOP0065"}
+      - {id: ibs, status: canonical, provenance: "TOP0068"}
+      - {id: dgbi_motility, status: canonical, provenance: "TOP0075"}
+      - {id: functional_dyspepsia, status: canonical, provenance: "TOP0047"}
+      - {id: masld_mash, status: canonical, provenance: "TOP0071"}
+      - {id: alcohol_liver_disease, status: canonical, provenance: "TOP0006"}
+      - {id: viral_hepatitis, status: canonical, provenance: "TOP0090"}
+      - {id: autoimmune_cholestatic_liver, status: canonical, provenance: "TOP0008"}
+      - {id: cirrhosis_portal_hypertension, status: canonical, provenance: "TOP0018"}  # Hepatic encephalopathy is a sub-state; do NOT create HE as its own disease.
+      - {id: hepatobiliary_cancer, status: canonical, provenance: "TOP0058"}
+      - {id: vascular_liver_disease, status: canonical, provenance: "TOP0089"}
+      - {id: acute_liver_failure_aclf, status: canonical, provenance: "TOP0003"}
+      - {id: gallstone_biliary_benign, status: canonical, provenance: "TOP0052/TOP0011"}
+      - {id: biliary_neoplasia_obstruction, status: canonical, provenance: "TOP0012"}
+      - {id: acute_pancreatitis, status: canonical, provenance: "TOP0004"}
+      - {id: chronic_pancreatitis, status: canonical, provenance: "TOP0083"}
+      - {id: pancreatic_cancer, status: canonical, provenance: "TOP0079"}
+      - {id: pancreatic_cystic_lesions, status: canonical, provenance: "TOP0080"}
+      - {id: microbiome_gi_infection, status: canonical, provenance: "TOP0073"}  # Microbiome-mediated: CDI, post-antibiotic dysbiosis, SIBO.
+      - {id: gi_infection, status: canonical, provenance: "TOP0050 (renamed from gi_infection_global 2026-07-08)"}  # Enteric pathogens (bacterial non-H.pylori, viral, parasitic, opportunistic): viral gastroenteritis, traveler's diarrhea, Giardia, CMV colitis. H. pylori uses its own value.
+      - {id: obesity_metabolic_gi, status: canonical, provenance: "TOP0077"}
+      - {id: nutrition_food_disorders, status: canonical, provenance: "TOP0076"}
+      - {id: anorectal_colonic_motility, status: canonical, provenance: "TOP0007"}
+      - {id: colonic_disorders_nos, status: candidate, provenance: "TOP0019"}  # LAST RESORT ONLY: prefer specific disease values. Stays `candidate` post-attestation on purpose.
+      - {id: bile_acid_diarrhea, status: canonical, provenance: "TOP0027"}
+      - {id: cholecystitis_gallbladder, status: canonical, provenance: "TOP0017"}
+      - {id: esophageal_strictures, status: canonical, provenance: "TOP0044"}
+      - {id: exocrine_pancreatic_insufficiency, status: canonical, provenance: "TOP0045"}
+      - {id: necrotizing_pancreatitis_pfc, status: canonical, provenance: "TOP0074"}
+      - {id: metabolic_genetic_liver, status: canonical, provenance: "TOP0072"}
+      - {id: liver_transplant, status: canonical, provenance: "TOP0070"}  # Transplant state (recipient population + post-transplant management); see also clinical_phase: end_stage_transplant.
+      - {id: all, status: canonical, provenance: "crosscutting topics (TOP0001 etc.)"}
+    synonyms:
+      ibd_ulcerative_colitis: ["ulcerative colitis", "uc", "moderate-to-severe uc", "moderate to severe uc"]
+      ibd_crohns: ["crohn's disease", "crohns disease", "crohn disease", "cd"]
+      gerd_reflux: ["gerd", "gastroesophageal reflux disease", "reflux"]
+      celiac_disease: ["celiac disease", "coeliac disease"]
+      crc: ["colorectal cancer", "crc"]
+      masld_mash: ["masld", "mash", "nafld", "nash"]
+      peptic_ulcer_disease: ["peptic ulcer", "pud", "peptic ulcer disease", "duodenal ulcer", "gastric ulcer"]
+      diverticular_disease: ["diverticular disease", "diverticulosis", "diverticulitis", "diverticular bleeding"]
+      eosinophilic_gi_disease_non_eoe: ["eosinophilic gastritis", "eosinophilic enteritis", "eosinophilic colitis", "non-eoe egid"]
+      microbiome_gi_infection: ["c. difficile", "c difficile", "c diff", "cdi", "sibo", "dysbiosis", "post-antibiotic dysbiosis"]
+      gi_infection: ["gi infection", "enteric infection", "gastroenteritis", "viral gastroenteritis", "traveler's diarrhea", "travelers diarrhea", "giardia", "cmv colitis", "cmv enteritis", "cryptosporidium"]
+
+  - id: management_domain
+    label: "Management domain (kind of clinical decision)"
+    order: 2
+    role: "The substantive KIND of decision. Orthogonal to intervention_class and clinical_phase."
+    activation: conditionally_required
+    allows_all: false
+    allows_na: true
+    values:
+      # Design notes (attestation 2026-07-08):
+      # - `monitoring` (mgmt) = the decision AT HAND is monitoring. Orthogonal to
+      #   clinical_phase: `monitoring_remission` (patient IS in remission being monitored).
+      # - `surveillance` (mgmt) = the decision AT HAND is surveillance (typically cancer).
+      #   Orthogonal to clinical_phase: `surveillance_post_treatment` (trajectory position).
+      # - `therapy_sequencing` absorbs escalation_de_escalation (merged 2026-07-08):
+      #   covers step-up / step-down / dose escalation / dose de-escalation as well.
+      # - `diagnosis_workup` (mgmt) = the decision AT HAND is diagnostic. Orthogonal to
+      #   clinical_phase: `pre_diagnosis` (trajectory position — undifferentiated workup).
+      - {id: prevention, status: canonical, provenance: "PPH0014/PPH0015"}
+      - {id: screening, status: canonical, provenance: "TOP0013"}
+      - {id: surveillance, status: canonical, provenance: "PPH0015"}
+      - {id: diagnosis_workup, status: canonical, provenance: "EM:diagnosis"}
+      - {id: risk_stratification, status: canonical, provenance: "MAT:risk_stratification"}
+      - {id: therapy_selection, status: canonical, provenance: "PPH0012"}
+      - {id: therapy_sequencing, status: canonical, provenance: "TOP0065 + PPH0010/PPH0012 (absorbs escalation_de_escalation 2026-07-08)"}
+      - {id: monitoring, status: canonical, provenance: "PPH0010"}
+      - {id: procedural_intervention, status: canonical, provenance: "PPH0003"}
+      - {id: complication_management, status: canonical, provenance: "PPH0009"}
+      - {id: supportive_nutritional_management, status: canonical, provenance: "PPH0021"}
+      - {id: perioperative_management, status: canonical, provenance: "BR_SURG"}
+    synonyms:
+      therapy_sequencing: ["sequencing", "biologic sequencing", "positioning", "biologic positioning", "treatment sequencing", "escalation", "de-escalation", "de escalation", "step-up", "step up", "step-down", "step down", "dose escalation", "dose de-escalation"]
+      therapy_selection: ["therapy selection", "biologic selection"]
+      risk_stratification: ["risk stratification", "safety stratification"]
+      monitoring: ["monitoring", "therapeutic drug monitoring", "tdm", "treat-to-target"]
+      diagnosis_workup: ["diagnosis", "workup", "evaluation"]
+      complication_management: ["rescue therapy", "salvage therapy", "complication management"]
+      screening: ["screening"]
+      surveillance: ["surveillance"]
+
+  - id: intervention_class
+    label: "Intervention class (category of intervention)"
+    order: 3
+    role: "The CATEGORY of intervention chosen. Orthogonal to management_domain."
+    activation: conditionally_required
+    allows_all: false
+    allows_na: true
+    values:
+      - {id: biologic, status: canonical, provenance: "TOP0065; PPH0012"}
+      - {id: jak_inhibitor, status: canonical, provenance: "TOP0065 (split from small_molecule_jak_s1p 2026-07-08)"}
+      - {id: s1p_modulator, status: canonical, provenance: "TOP0065 (split from small_molecule_jak_s1p 2026-07-08)"}
+      - {id: immunomodulator, status: canonical, provenance: "TOP0065"}
+      - {id: corticosteroid, status: canonical, provenance: "TOP0065"}
+      - {id: aminosalicylate, status: canonical, provenance: "TOP0066"}
+      - {id: pharmacotherapy_metabolic, status: canonical, provenance: "MOD_PHARMACO"}
+      - {id: antimicrobial, status: canonical, provenance: "TOP0057"}
+      - {id: endoscopic_resection, status: canonical, provenance: "MOD_EMR/MOD_ESD"}
+      - {id: endoscopic_therapeutic, status: canonical, provenance: "TOP0028 + TOP0049 (absorbs endoscopic_hemostasis 2026-07-08)"}  # Includes hemostasis (variceal ligation, clipping, cautery, APC, epinephrine injection).
+      - {id: third_space_endoscopy, status: canonical, provenance: "MOD_POEM"}
+      - {id: surgical, status: canonical, provenance: "MOD_SURGERY; BR_SURG"}
+      - {id: dietary_nutritional, status: canonical, provenance: "MOD_NUTRITION"}
+      - {id: behavioral_neuromodulation, status: canonical, provenance: "TOP0075"}
+      - {id: ai_assisted_intervention, status: canonical, provenance: "TOP0001"}
+      - {id: device_based, status: canonical, provenance: "TOP0048"}
+      - {id: acid_suppression_pharmacotherapy, status: canonical, provenance: "TOP0048/TOP0039"}
+      - {id: systemic_oncology_therapy, status: canonical, provenance: "TOP0053/TOP0021/TOP0079"}
+      - {id: microbial_therapy_fmt, status: canonical, provenance: "TOP0073"}
+      - {id: endoscopic_bariatric, status: canonical, provenance: "TOP0077/TOP0071"}
+      - {id: dgbi_pharmacotherapy, status: canonical, provenance: "TOP0068 (split from gut_targeted_pharmacotherapy 2026-07-08)"}  # DGBI-targeted meds: linaclotide, plecanatide, lubiprostone, eluxadoline, rifaximin, tricyclics for pain.
+      - {id: motility_pharmacotherapy, status: canonical, provenance: "TOP0075 (split from gut_targeted_pharmacotherapy 2026-07-08)"}  # Prokinetics and motility agents: metoclopramide, prucalopride, domperidone, erythromycin.
+      - {id: cardiovascular_portal_pharmacotherapy, status: canonical, provenance: "TOP0018"}
+      - {id: immunosuppression_transplant, status: canonical, provenance: "TOP0070"}
+      - {id: enteral_parenteral_nutrition, status: canonical, provenance: "TOP0067"}
+    synonyms:
+      biologic: ["biologic", "biologics", "biologic therapy", "tnf antagonist", "anti-tnf", "infliximab", "adalimumab", "vedolizumab", "ustekinumab", "golimumab", "risankizumab", "mirikizumab", "guselkumab"]
+      jak_inhibitor: ["jak inhibitor", "jaki", "janus kinase inhibitor", "tofacitinib", "upadacitinib", "filgotinib"]
+      s1p_modulator: ["s1p modulator", "s1p receptor modulator", "sphingosine 1-phosphate modulator", "ozanimod", "etrasimod"]
+      corticosteroid: ["steroid", "steroids", "corticosteroid", "prednisone", "budesonide"]
+      surgical: ["surgery", "surgical", "colectomy", "proctocolectomy", "ipaa", "ileal pouch"]
+      aminosalicylate: ["5-asa", "5 asa", "mesalamine", "sulfasalazine", "aminosalicylate"]
+      endoscopic_therapeutic: ["endoscopic therapy", "therapeutic endoscopy", "hemostasis", "variceal ligation", "band ligation", "epinephrine injection", "clipping", "hemoclip", "argon plasma coagulation", "apc", "cautery"]
+      dgbi_pharmacotherapy: ["gut-targeted pharmacotherapy", "linaclotide", "plecanatide", "lubiprostone", "eluxadoline", "rifaximin"]
+      motility_pharmacotherapy: ["prokinetic", "prokinetics", "metoclopramide", "prucalopride", "domperidone"]
+
+  - id: diagnostic_modality
+    label: "Diagnostic / characterization modality"
+    order: 4
+    role: "How the disease is detected or characterized."
+    activation: conditionally_required
+    allows_all: false
+    allows_na: true
+    values:
+      - {id: colonoscopy, status: canonical, provenance: "MOD_COLONOSCOPY + TOP0013 (absorbs flexible_sigmoidoscopy 2026-07-08)"}  # Includes flexible sigmoidoscopy.
+      - {id: upper_endoscopy, status: canonical, provenance: "MOD_ENDOSCOPY"}
+      - {id: eus, status: canonical, provenance: "MOD_EUS; TOP0029"}
+      - {id: ercp_diagnostic, status: canonical, provenance: "MOD_ERCP; TOP0028"}
+      - {id: cholangiopancreatoscopy, status: canonical, provenance: "TOP0016"}
+      - {id: capsule_enteroscopy, status: canonical, provenance: "TOP0087"}
+      - {id: cross_sectional_imaging_ct, status: canonical, provenance: "TOP0058 (split from cross_sectional_imaging 2026-07-08)"}
+      - {id: cross_sectional_imaging_mri, status: canonical, provenance: "TOP0058 (split from cross_sectional_imaging 2026-07-08)"}
+      - {id: cross_sectional_imaging_mrcp, status: canonical, provenance: "TOP0028"}
+      - {id: ph_impedance_monitoring, status: canonical, provenance: "TOP0048"}
+      - {id: manometry, status: canonical, provenance: "TOP0041"}
+      - {id: histology_pathology, status: canonical, provenance: "EM:histology"}
+      - {id: biomarker_assay, status: canonical, provenance: "MOD_BIOMARKER"}
+      - {id: stool_test_fit_mtsdna, status: canonical, provenance: "TOP0013"}
+      - {id: serology, status: canonical, provenance: "TOP0015"}
+      - {id: ai_image_classification, status: canonical, provenance: "MOD_AI; TOP0001"}
+      - {id: nlp_ehr_mining, status: canonical, provenance: "TOP0001"}
+      - {id: omics_molecular_diagnostics, status: canonical, provenance: "MOD_OMICS; TOP0078"}  # RESEARCH-ONLY: not for clinically deployed molecular diagnostics.
+      - {id: noninvasive_fibrosis_markers, status: canonical, provenance: "TOP0071/TOP0018"}
+      - {id: breath_test, status: canonical, provenance: "TOP0057"}
+    synonyms:
+      colonoscopy: ["colonoscopy", "sigmoidoscopy", "flexible sigmoidoscopy", "flex sig"]
+      upper_endoscopy: ["upper endoscopy", "egd", "esophagogastroduodenoscopy", "endoscopy"]
+      cross_sectional_imaging_ct: ["ct", "computed tomography", "ct enterography", "cte", "ct scan", "ct angiography"]
+      cross_sectional_imaging_mri: ["mri", "magnetic resonance imaging", "mri enterography", "mre", "mr enterography"]
+      cross_sectional_imaging_mrcp: ["mrcp", "magnetic resonance cholangiopancreatography"]
+
+  - id: clinical_phase
+    label: "Clinical phase / trajectory"
+    order: 5
+    role: "WHERE in the disease course / decision sequence the topic sits."
+    activation: optional
+    allows_all: false
+    allows_na: true
+    values:
+      # Design notes (attestation 2026-07-08):
+      # - `pre_diagnosis` (trajectory position; undifferentiated workup) is orthogonal
+      #   to management_domain: `diagnosis_workup` (the decision AT HAND is diagnostic).
+      # - `monitoring_remission` (patient IS in remission being monitored) is orthogonal
+      #   to management_domain: `monitoring` (the decision AT HAND is monitoring).
+      # - `surveillance_post_treatment` (post-cancer surveillance trajectory) is
+      #   orthogonal to management_domain: `surveillance` (the decision AT HAND is
+      #   surveillance).
+      - {id: at_risk_prevention, status: canonical, provenance: "PPH0014"}
+      - {id: screening_early_detection, status: canonical, provenance: "TOP0013"}
+      - {id: pre_diagnosis, status: canonical, provenance: "PPH0005 (renamed from diagnosis_workup 2026-07-08 to disambiguate from management_domain:diagnosis_workup)"}
+      - {id: initial_therapy_induction, status: canonical, provenance: "PPH0012"}
+      - {id: maintenance, status: canonical, provenance: "TOP0065"}
+      - {id: treatment_failure_refractory, status: canonical, provenance: "PPH0012; TOP0048"}
+      - {id: sequencing_switch, status: canonical, provenance: "TOP0065"}
+      - {id: monitoring_remission, status: canonical, provenance: "PPH0010"}
+      - {id: surveillance_post_treatment, status: canonical, provenance: "PPH0015"}
+      - {id: complication_acute, status: canonical, provenance: "PPH0013"}
+      - {id: perioperative, status: canonical, provenance: "BR_SURG"}
+      - {id: recurrence, status: canonical, provenance: "TOP0028"}
+      - {id: end_stage_transplant, status: canonical, provenance: "TOP0070"}
+    synonyms:
+      initial_therapy_induction: ["induction", "induction therapy", "remission induction"]
+      maintenance: ["maintenance", "maintenance therapy", "remission maintenance"]
+      complication_acute: ["acute", "acute severe", "asuc", "hospitalised", "hospitalized"]
+      monitoring_remission: ["surveillance", "treat-to-target", "treat to target", "therapeutic drug monitoring", "tdm"]
+      treatment_failure_refractory: ["refractory", "treatment failure", "anti-tnf exposed", "post infliximab", "second-line", "second line"]
+      pre_diagnosis: ["undifferentiated", "workup", "diagnostic workup", "pre-diagnosis", "pre diagnosis"]
+
+  - id: population
+    label: "Patient population"
+    order: 6
+    role: "Patient population characteristics. Orthogonal to setting."
+    activation: optional
+    allows_all: true
+    allows_na: true
+    values:
+      - {id: adults, status: canonical, provenance: "default"}
+      - {id: pediatrics, status: canonical, provenance: "POP_PED; TOP0084"}
+      - {id: older_adults, status: canonical, provenance: "POP_OLDER"}
+      - {id: pregnancy_reproductive, status: canonical, provenance: "POP_PREG; TOP0085"}
+      - {id: high_risk_hereditary, status: canonical, provenance: "TOP0059"}
+      - {id: immunocompromised, status: canonical, provenance: "expert"}  # ALL CAUSES: IBD-biologic-exposed, solid-organ transplant, HIV, chemotherapy, hereditary immunodeficiency, etc.
+      - {id: underserved_disparity, status: canonical, provenance: "POP_UNDERSERVED; BR_EQ"}
+      - {id: post_surgical_altered_anatomy, status: canonical, provenance: "TOP0028"}  # Population modifier (IPAA, prior resection, Roux-en-Y, etc.); also populate `anatomy` axis when relevant.
+      - {id: all, status: canonical, provenance: "TOP0001"}
+
+  - id: setting
+    label: "Care setting"
+    order: 7
+    role: "Outpatient / hospitalized / ED / periprocedural / resource context."
+    activation: optional
+    allows_all: true
+    allows_na: true
+    values:
+      - {id: outpatient, status: canonical, provenance: "expert"}
+      - {id: hospitalized_inpatient, status: canonical, provenance: "BR_EMER; TOP0031"}
+      - {id: emergency_acute, status: canonical, provenance: "BR_EMER; TOP0049"}
+      - {id: periprocedural, status: canonical, provenance: "TOP0037"}
+      - {id: endoscopy_unit, status: canonical, provenance: "TOP0036"}
+      - {id: ambulatory_surgical, status: canonical, provenance: "BR_SURG"}
+      - {id: primary_care_community, status: canonical, provenance: "expert"}
+      - {id: global_resource_variable, status: canonical, provenance: "POP_GLOBAL; BR_EQ"}
+
+  - id: anatomy
+    label: "Anatomy (organ)"
+    order: 8
+    role: "METADATA or SECONDARY axis ONLY — never the spine. Usually derivable from disease."
+    activation: optional
+    allows_all: true
+    allows_na: true
+    values:
+      - {id: esophagus, status: canonical, provenance: "BR_ESO"}
+      - {id: egj, status: canonical, provenance: "TOP0009"}
+      - {id: stomach, status: canonical, provenance: "BR_STO"}
+      - {id: duodenum, status: canonical, provenance: "BR_STO"}
+      - {id: small_bowel, status: canonical, provenance: "BR_SI"}
+      - {id: colon, status: canonical, provenance: "BR_COL"}
+      - {id: rectum, status: canonical, provenance: "BR_COL"}
+      - {id: anus, status: canonical, provenance: "TOP0007"}
+      - {id: biliary_tree, status: canonical, provenance: "BR_BIL"}
+      - {id: papilla, status: canonical, provenance: "TOP0028"}
+      - {id: pancreatic_duct, status: canonical, provenance: "TOP0028"}
+      - {id: pancreas, status: canonical, provenance: "BR_PAN"}
+      - {id: liver, status: canonical, provenance: "BR_LIV"}
+      - {id: gallbladder, status: canonical, provenance: "TOP0017"}
+      - {id: all, status: canonical, provenance: "TOP0001"}
+
+# =====================================================================
+# NON-STRUCTURAL TAGS (not axes: no query coordinates, no activation)
+# =====================================================================
+tags:
+  - id: technology_context
+    label: "Technology context (demoted axis 2026-06-24)"
+    values: [ai_ml_computer_vision, ai_ml_nlp, ai_ml_risk_prediction, generative_foundation_models,
+             endoscope_hardware, advanced_imaging, accessory_devices, stent_device_design,
+             biologic_drug_platform, small_molecule_platform, biosimilars, omics_spatial_platforms,
+             organoid_engineered_models, digital_health_platforms, microbiome_therapeutics]
+  - id: quality_implementation
+    label: "Quality / implementation context (demoted axis 2026-06-24)"
+    values: [quality_metric, training_credentialing, operational_efficiency, clinical_pathway_integration,
+             safety_adverse_event_prevention, cost_economics_access, equity_implementation,
+             sustainability_green_endoscopy, education_literacy, validation_methodology]
+  - id: evidence_context
+    label: "Evidence context (literature mode)"
+    values: [comparative_effectiveness_nma, pivotal_rct, observational, mechanistic_basic,
+             diagnostic_validation, guideline_synthesis]
+  - id: contribution_mode
+    label: "Contribution mode"
+    values: [basic_or_translational_mechanism, diagnostic_or_risk_stratification_validation,
+             therapeutic_efficacy_or_management, guideline_or_expert_synthesis,
+             commercial_or_sponsored_claim, field_salience_or_topic_signal]
