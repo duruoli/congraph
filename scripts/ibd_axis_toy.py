@@ -171,14 +171,14 @@ def main() -> None:
         "",
         "## Interpretation rules",
         "",
-        "- Each step is the state immediately **before** its observed radiology exam. The exam itself is an outcome, shown separately.",
-        "- Current-report *indications* are used as a retrospective proxy for the clinical question; the current report's findings are never used in that step.",
-        "- A prior report's findings count as available only if `storetime < current charttime`. Exact order times are unavailable.",
-        "- These eight-axis assignments are manual toy annotations from indications and earlier imaging; contemporaneous labs and clinical notes have not yet been integrated.",
+        "- The primary card masks the **entire target report**, including its indication. The observed exam is an outcome, shown separately.",
+        "- Prior report content is eligible only if `storetime < target charttime`; exact order times are unavailable, so this is an upper bound on potentially available information, not proven pre-order availability.",
+        "- A second, retrospective card uses the target report's indication as a proxy for the clinical question. It must not be used as a prospective input.",
+        "- These are manual toy annotations. Contemporaneous labs and clinical notes have not yet been integrated.",
         "- `unknown` means insufficient evidence; `n_a` means this imaging decision does not activate that axis.",
         "- Cohort ICD disease type is an outcome label, not proof that disease was known at an earlier decision.",
         "",
-        "## Per-step eight-axis cards",
+        "## Target-report-masked eight-axis cards",
         "",
         "| Step / day | Disease | Management domain | Intervention class | Diagnostic modality (pre-action) | Clinical phase (assertion) | Population | Setting | Anatomy | Observed next exam |",
         "|---|---|---|---|---|---|---|---|---|---|",
@@ -187,8 +187,9 @@ def main() -> None:
     for index, (annotation, report) in enumerate(zip(annotations, reports, strict=True), 1):
         if annotation["exam_expect"] != report["exam_name"]:
             raise ValueError(f"Step {index}: exam changed; annotations need review")
-        axes = annotation["axes"]
+        axes = annotation["pre_action_axes"]
         validate_axes(axes, vocabulary)
+        validate_axes(annotation["axes"], vocabulary)
         days = (report["charttime"] - cohort["admittime"]).total_seconds() / 86400
         available_prior = [
             prior for prior in reports[: index - 1]
@@ -198,7 +199,7 @@ def main() -> None:
         matches = top_matches(axes, article_labels)
         cells = [f"{index} / {days:.1f}"]
         cells += [
-            format_phase(axes, annotation.get("phase_assertion", ""))
+            format_phase(axes, annotation.get("pre_action_phase_assertion", ""))
             if axis == "clinical_phase" else format_axis(axes[axis])
             for axis in vocabulary
         ]
@@ -206,13 +207,28 @@ def main() -> None:
         lines.append("| " + " | ".join(cells) + " |")
         records.append((index, annotation, report, available_prior, mapped, mapping_status, matches))
 
+    lines += [
+        "",
+        "## What the target report's indication adds retrospectively",
+        "",
+        "| Step | Management domain with target indication | Clinical phase with target indication |",
+        "|---|---|---|",
+    ]
+    for index, annotation, *_ in records:
+        retrospective = annotation["axes"]
+        lines.append(
+            f"| {index} | {format_axis(retrospective['management_domain'])} | "
+            f"{format_phase(retrospective, annotation.get('phase_assertion', ''))} |"
+        )
+
     lines += ["", "## Evidence and retrieval by step", ""]
     for index, annotation, report, available_prior, mapped, mapping_status, matches in records:
         lines += [
             f"### Step {index}: {report['exam_name']}",
             "",
-            f"- Clinical question (report indication proxy): {annotation['clinical_question']}",
-            f"- Basis for changing axes: {annotation['axis_basis']}",
+            f"- Target-report-masked basis: {annotation['pre_action_basis']}",
+            f"- Retrospective clinical question (target-report indication proxy): {annotation['clinical_question']}",
+            f"- Retrospective interpretation basis: {annotation['axis_basis']}",
             f"- Prior reports available by storetime: {len(available_prior)} / {index - 1}.",
             f"- Observed action modality: `{mapped or 'unmapped'}` ({mapping_status}).",
             "- Top thematic matches in the available Nigel JATS (weighted exact-axis overlap; not recommendations): "
