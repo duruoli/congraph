@@ -168,6 +168,16 @@ JOIN `{PROJECT}.{DATASET}.cohort` AS c USING (subject_id, hadm_id)
 LEFT JOIN `physionet-data.mimiciv_3_1_hosp.d_icd_procedures` AS dictionary
   USING (icd_code, icd_version);
 
+CREATE OR REPLACE TABLE `{PROJECT}.{DATASET}.services` AS
+SELECT s.*
+FROM `physionet-data.mimiciv_3_1_hosp.services` AS s
+JOIN `{PROJECT}.{DATASET}.cohort` AS c USING (subject_id, hadm_id);
+
+CREATE OR REPLACE TABLE `{PROJECT}.{DATASET}.poe` AS
+SELECT p.*
+FROM `physionet-data.mimiciv_3_1_hosp.poe` AS p
+JOIN `{PROJECT}.{DATASET}.cohort` AS c USING (subject_id, hadm_id);
+
 CREATE OR REPLACE TABLE `{PROJECT}.{DATASET}.discharge_notes` AS
 SELECT n.*
 FROM `physionet-data.mimiciv_note.discharge` AS n
@@ -180,6 +190,8 @@ JOIN `{PROJECT}.{DATASET}.cohort` AS c USING (subject_id, hadm_id);
 ```
 
 建议首先保存原始粒度的数据。病史/查体段落、影像类型、时间窗和模型输入等任务相关变量，之后再生成衍生表。
+
+`services` 的一行记录一次负责临床服务的变动或初始归属，`transfertime` 可作为研究交接前后的时间锚点；它本身不能证明诊断假设发生了变化。`poe` 记录医嘱及其状态，并不等同于检查已经完成或药物已经实际给入。若需医嘱的更多细节，可另行提取 `poe_detail`。
 
 ## 6. 检查数据量与覆盖率
 
@@ -198,6 +210,10 @@ UNION ALL
 SELECT 'prescriptions', COUNT(*) FROM `{PROJECT}.{DATASET}.prescriptions`
 UNION ALL
 SELECT 'procedures', COUNT(*) FROM `{PROJECT}.{DATASET}.procedures`
+UNION ALL
+SELECT 'services', COUNT(*) FROM `{PROJECT}.{DATASET}.services`
+UNION ALL
+SELECT 'poe', COUNT(*) FROM `{PROJECT}.{DATASET}.poe`
 UNION ALL
 SELECT 'discharge_notes', COUNT(*) FROM `{PROJECT}.{DATASET}.discharge_notes`
 UNION ALL
@@ -230,6 +246,8 @@ labs
 microbiology
 prescriptions
 procedures
+services
+poe
 discharge_notes
 radiology
 ```
@@ -279,6 +297,15 @@ for folder in sorted(p for p in root.iterdir() if p.is_dir()):
     rows = sum(pq.ParquetFile(f).metadata.num_rows for f in files)
     print(folder.name, "files=", len(files), "rows=", rows)
 ```
+
+确认本地文件可读、行数与 BigQuery 一致后，可删除 GCS 中用于导出下载的 Parquet 副本。例如：
+
+```bash
+gcloud storage rm 'gs://{BUCKET}/services/part-*.parquet'
+gcloud storage rm 'gs://{BUCKET}/poe/part-*.parquet'
+```
+
+这只清理 GCS 导出文件；BigQuery 中的提取表和本地文件仍会保留。`scripts/extract_ibd_services_poe.sh` 在验证本地文件可读后会自动清理这两类 GCS 副本。
 
 ## 10. 本地读取
 

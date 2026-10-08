@@ -154,6 +154,13 @@ def main() -> None:
     if source_review["jats_sha256"] != jats_sha256:
         raise ValueError("Manual source review is for a different JATS version")
     vocabulary = load_vocabulary()
+    global_axes = config["global_axes"]
+    if set(global_axes) != {"disease", "anatomy"}:
+        raise ValueError("Global anchors must be exactly disease and anatomy")
+    for axis, values in global_axes.items():
+        allowed = {item["id"] for item in vocabulary[axis]["values"]}
+        if not isinstance(values, list) or not values or any(value not in allowed for value in values):
+            raise ValueError(f"Invalid global anchor for {axis}: {values}")
     cohort, reports = load_case(config["hadm_id"])
     annotations = config["steps"]
     if len(annotations) != len(reports):
@@ -171,25 +178,30 @@ def main() -> None:
         "",
         "## Interpretation rules",
         "",
-        "- The primary card masks the **entire target report**, including its indication. The observed exam is an outcome, shown separately.",
+        "- The hybrid card uses a retrospective, whole-sequence disease/anatomy anchor and target-report-masked values for the changing axes. The observed exam is an outcome, shown separately.",
+        "- Global anchors describe the case phenotype, not what the clinician knew at a given step. Local disease/anatomy evidence is reported separately.",
         "- Prior report content is eligible only if `storetime < target charttime`; exact order times are unavailable, so this is an upper bound on potentially available information, not proven pre-order availability.",
         "- A second, retrospective card uses the target report's indication as a proxy for the clinical question. It must not be used as a prospective input.",
         "- These are manual toy annotations. Contemporaneous labs and clinical notes have not yet been integrated.",
         "- `unknown` means insufficient evidence; `n_a` means this imaging decision does not activate that axis.",
-        "- Cohort ICD disease type is an outcome label, not proof that disease was known at an earlier decision.",
+        "- Cohort ICD disease type is a retrospective billing label, not independent ground truth or proof that disease was known at an earlier decision.",
         "",
-        "## Target-report-masked eight-axis cards",
+        "## Hybrid eight-axis cards: global disease/anatomy, local changing axes",
         "",
-        "| Step / day | Disease | Management domain | Intervention class | Diagnostic modality (pre-action) | Clinical phase (assertion) | Population | Setting | Anatomy | Observed next exam |",
+        f"Global anchor basis: {config['global_basis']}",
+        "",
+        "| Step / day | Disease (global) | Management domain | Intervention class | Diagnostic modality (pre-action) | Clinical phase (assertion) | Population | Setting | Anatomy (global) | Observed next exam |",
         "|---|---|---|---|---|---|---|---|---|---|",
     ]
     records = []
     for index, (annotation, report) in enumerate(zip(annotations, reports, strict=True), 1):
         if annotation["exam_expect"] != report["exam_name"]:
             raise ValueError(f"Step {index}: exam changed; annotations need review")
-        axes = annotation["pre_action_axes"]
-        validate_axes(axes, vocabulary)
+        local_axes = annotation["pre_action_axes"]
+        validate_axes(local_axes, vocabulary)
         validate_axes(annotation["axes"], vocabulary)
+        axes = {**local_axes, **global_axes}
+        validate_axes(axes, vocabulary)
         days = (report["charttime"] - cohort["admittime"]).total_seconds() / 86400
         available_prior = [
             prior for prior in reports[: index - 1]
@@ -206,6 +218,17 @@ def main() -> None:
         cells.append(report["exam_name"])
         lines.append("| " + " | ".join(cells) + " |")
         records.append((index, annotation, report, available_prior, mapped, mapping_status, matches))
+
+    lines += [
+        "",
+        "## Disease/anatomy actually documented by each step",
+        "",
+        "| Step | Disease from earlier available records | Anatomy from earlier available records |",
+        "|---|---|---|",
+    ]
+    for index, annotation, *_ in records:
+        local = annotation["pre_action_axes"]
+        lines.append(f"| {index} | {format_axis(local['disease'])} | {format_axis(local['anatomy'])} |")
 
     lines += [
         "",
@@ -226,12 +249,12 @@ def main() -> None:
         lines += [
             f"### Step {index}: {report['exam_name']}",
             "",
-            f"- Target-report-masked basis: {annotation['pre_action_basis']}",
+            f"- Target-report-masked local basis: {annotation['pre_action_basis']}",
             f"- Retrospective clinical question (target-report indication proxy): {annotation['clinical_question']}",
             f"- Retrospective interpretation basis: {annotation['axis_basis']}",
             f"- Prior reports available by storetime: {len(available_prior)} / {index - 1}.",
             f"- Observed action modality: `{mapped or 'unmapped'}` ({mapping_status}).",
-            "- Top thematic matches in the available Nigel JATS (weighted exact-axis overlap; not recommendations): "
+            "- Top thematic matches using the hybrid card (weighted exact-axis overlap; not recommendations): "
             + ("; ".join(f"`{pid}` score={score} ({', '.join(shared)})" for score, pid, shared in matches) if matches else "none"),
             "- Deviation status: " + (
                 "**not assessable**; the manually reviewed source has no next-radiology-action recommendation."

@@ -21,7 +21,7 @@ Key sources: [axis vocabulary](unified_axes_v1.yml), [annotated Nigel JATS](nige
 | `setting` | In what care environment? | `hospitalized_inpatient`, `emergency_acute`, `outpatient` |
 | `anatomy` | Which organ or region? This is a secondary locator; disease alone may not determine extent. | `small_bowel`, `colon`, `rectum` |
 
-`management_domain` is the **decision type**; `clinical_phase` is the **trajectory position**. `diagnostic_modality` obtains information; `intervention_class` changes care. The axes are not a factual-versus-judgment split: a test may be recorded, while its purpose requires inference. A/Q/C's *Q* is more specific than `management_domain`: “diagnosis workup” versus “is there an abscess?”
+`management_domain` is the **decision type**; `clinical_phase` is the **trajectory position**. `diagnostic_modality` is wrt observation (to obtain information); `intervention_class` is wrt intervention/making a change. The axes are not a factual-versus-judgment split: a test may be recorded, while its purpose requires inference. A/Q/C's *Q* is more specific than `management_domain`: “diagnosis workup” versus “is there an abscess?”
 
 ## Work completed
 
@@ -38,10 +38,6 @@ Key sources: [axis vocabulary](unified_axes_v1.yml), [annotated Nigel JATS](nige
 
 ## Next task
 
-The subsequent pre-action candidate extraction is documented in
-`IBD_DECISION_STEP_PILOT_20.md`. It places recorded target actions in a separate
-outcome file and does not yet establish actual order times or decision questions.
-
-1. Review pre-action candidates against source records to decide which are recoverable clinical decisions, determine each decision question, and record timing uncertainty. Add a separate sampling policy for possible no-action/stop opportunities.
-2. Define an eight-axis annotation schema using YAML-approved values plus evidence IDs, availability time, assertion status, and uncertainty. Distinguish patient state and decision focus from the separately stored observed action. Allow supported multi-values; leave unsupported axes unknown.
-3. Label a diverse subset of the 20-patient decision-candidate pilot, audit disease/phase and action status against prior evidence, then refine rules before labeling the additional 100. Test literature retrieval afterward; keep A/Q/C as a separate reasoning layer.
+1. Choose the annotation unit: every availability checkpoint or selected clinical anchors? Specify the evidence cutoff and whether labels describe **patient state**, **decision focus**, or **recorded event**.
+2. Define a step schema using YAML-approved values plus evidence IDs, availability time, assertion status, and uncertainty. Allow supported multi-values; leave unsupported axes unknown.
+3. Label a diverse subset of the 20-patient pilot, audit disease/phase and action status against prior evidence, then refine rules before labeling the additional 100. Test literature retrieval afterward; keep A/Q/C as a separate reasoning layer.
