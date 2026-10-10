@@ -10,6 +10,7 @@
 
 - [MIMIC-IV](https://physionet.org/content/mimiciv/3.1/)：诊断、住院、检验、处方、操作等。
 - [MIMIC-IV-Note](https://physionet.org/content/mimic-iv-note/2.2/)：出院记录和影像报告。
+- [MIMIC-IV-Echo](https://www.physionet.org/content/mimic-iv-echo/1.0.1/)：心脏超声结构化测量与部分检查的 DICOM 文件；需要单独授权，仅提取心超时需要。
 
 在 Google Cloud 中：
 
@@ -22,9 +23,10 @@ physionet-data.mimiciv_3_1_hosp
 physionet-data.mimiciv_3_1_icu       # 仅 ICU 研究需要
 physionet-data.mimiciv_3_1_derived   # 可选衍生变量
 physionet-data.mimiciv_note
+physionet-data.mimiciv_echo     # 可选；心超
 ```
 
-本流程只要求 `hosp` 和 `mimiciv_note`，不限制患者是否进入 ICU。
+基础流程只要求 `hosp` 和 `mimiciv_note`，不限制患者是否进入 ICU。心超扩展需另有 `mimiciv_echo` 权限。
 
 ## 2. 定义疾病
 
@@ -191,7 +193,24 @@ JOIN `{PROJECT}.{DATASET}.cohort` AS c USING (subject_id, hadm_id);
 
 建议首先保存原始粒度的数据。病史/查体段落、影像类型、时间窗和模型输入等任务相关变量，之后再生成衍生表。
 
-`services` 的一行记录一次负责临床服务的变动或初始归属，`transfertime` 可作为研究交接前后的时间锚点；它本身不能证明诊断假设发生了变化。`poe` 记录医嘱及其状态，并不等同于检查已经完成或药物已经实际给入。若需医嘱的更多细节，可另行提取 `poe_detail`。
+`services` 的一行记录一次负责临床服务的变动或初始归属，`transfertime` 可作为研究交接前后的时间锚点；它本身不能证明诊断假设发生了变化。`poe` 记录医嘱及其状态，并不等同于检查已经完成或药物已经实际给入。若需医嘱的更多细节，可提取 `poe_detail`，用 `subject_id + poe_id + poe_seq` 与 `poe` 精确连接。`poe_detail` 本身没有 `hadm_id` 或事件时间，应沿用所连医嘱的住院号和 `ordertime`。
+
+### IBD 队列的心超与医嘱细节扩展
+
+获得 MIMIC-IV-Echo 权限后，可运行 [提取脚本](scripts/extract_ibd_echo_poe_detail.sh)。脚本使用已有 IBD `cohort` 和 `poe`，在 BigQuery 建立四个附加表，并导出至 `data/raw_data/ibd_mimiciv_3_1/` 下同名目录：
+
+| 附加表 | 选择和链接方法 | 时间含义 |
+|---|---|---|
+| `echo_measurements` | `structured_measurement` 按 `subject_id` 匹配，检查时间位于入院至出院区间；增加 `hadm_id` | `measurement_datetime` 是检查时间，不是报告可用时间；同一 `measurement_id` 有多行测量 |
+| `echo_studies` | `echo_study_list` 按患者及 `study_datetime` 匹配住院 | DICOM 子集的检查索引，不是全部结构化心超 |
+| `echo_record_list` | 根据已匹配的 `subject_id + study_id` 取文件索引 | 仅有 DICOM 路径及元数据，脚本没有下载影像文件 |
+| `poe_detail` | 与已提取的 `poe` 按 `subject_id + poe_id + poe_seq` 连接 | 继承 `poe.ordertime`；不是执行或结果时间 |
+
+2026-10-08 对当前 IBD 队列的提取结果：`echo_measurements` 183,544 行（1,377 项检查、1,090 次住院）；`echo_studies` 53 行；`echo_record_list` 3,616 行；`poe_detail` 183,238 行。前者的检查数与 DICOM 索引数不能直接比较覆盖率，因为 DICOM 是受年份及存储限制的子集。脚本核对了各本地 Parquet 行数与 BigQuery 表行数；使用唯一的 GCS 导出前缀，导出副本保留。
+
+### DRG 扩展
+
+另可运行 [DRG 提取脚本](scripts/extract_ibd_drgcodes.sh)：按 `subject_id + hadm_id` 将 `mimiciv_3_1_hosp.drgcodes` 与现有 IBD `cohort` 匹配，保留源表全部字段，导出到 `data/raw_data/ibd_mimiciv_3_1/drgcodes/`。2026-10-09 已提取并核对 17,167 行，覆盖 9,161 次住院。一个住院可能同时有不同 `drg_type`（如 APR 与 HCFA）的编码，分析时应连同类型和描述一起报告。DRG 是住院层面的回顾性分类，不应赋予某个临床事件时间或直接当作转科原因。
 
 ## 6. 检查数据量与覆盖率
 

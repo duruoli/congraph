@@ -23,7 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data/raw_data/ibd_mimiciv_3_1"
 TABLES = (
     "services", "labs", "microbiology", "poe", "prescriptions",
-    "procedures", "radiology", "discharge_notes", "diagnoses",
+    "procedures", "radiology", "discharge_notes", "diagnoses", "drgcodes", "poe_detail",
 )
 
 
@@ -53,6 +53,8 @@ def start_end(name: str, row: dict):
         return None, None, "untimed_microbiology"
     if name == "poe":
         return row["ordertime"], None, "order_placed"
+    if name == "poe_detail":
+        return row["ordertime"], None, "order_detail_same_order_time"
     if name == "prescriptions":
         return row["starttime"], row["stoptime"], "prescribed_period"
     if name == "procedures":
@@ -64,6 +66,8 @@ def start_end(name: str, row: dict):
         return row["charttime"], None, "charted_radiology_report"
     if name == "discharge_notes":
         return row["charttime"], None, "retrospective_discharge_note"
+    if name == "drgcodes":
+        return None, None, "untimed_retrospective_drg"
     return None, None, "untimed_retrospective_diagnosis"
 
 
@@ -76,6 +80,8 @@ def title(name: str, row: dict):
         return f"{row.get('spec_type_desc') or ''} · {row.get('test_name') or ''} · {row.get('org_name') or ''}".strip(" ·")
     if name == "poe":
         return f"{row.get('order_type')} · {row.get('order_subtype') or '未细分'} · {row.get('transaction_type') or ''}"
+    if name == "poe_detail":
+        return f"POE 细节 · {row.get('field_name')}: {row.get('field_value') or '空值'}"
     if name == "prescriptions":
         return f"{row.get('drug') or '未命名药物'} · {row.get('dose_val_rx') or ''} {row.get('dose_unit_rx') or ''}".strip()
     if name == "procedures":
@@ -84,6 +90,8 @@ def title(name: str, row: dict):
         return row.get("exam_name") or "影像报告"
     if name == "discharge_notes":
         return "出院摘要（事后叙述）"
+    if name == "drgcodes":
+        return f"DRG {row.get('drg_type')} {row.get('drg_code')} · {row.get('description') or ''}"
     return f"{row.get('icd_code')} · {row.get('long_title') or ''}"
 
 
@@ -152,7 +160,7 @@ def make_html(payload):
     styles = """body{font:15px/1.55 system-ui,sans-serif;max-width:1160px;margin:28px auto;padding:0 20px;color:#253044;background:#f7f8fb}h1,h2{color:#17233a}header,.card{background:white;border:1px solid #dfe4ec;border-radius:10px;padding:16px;margin:12px 0}header{position:sticky;top:0;z-index:2;box-shadow:0 2px 12px #0001}input{width:70%;padding:8px;border:1px solid #adb8c8;border-radius:6px}select{padding:8px}.meta{color:#5c6880;font-size:13px}.event{border-left:3px solid #617fbd;padding:8px 12px;margin:8px 0;background:#f8faff}.event summary{cursor:pointer}.event pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.45 ui-monospace,monospace;background:#fff;padding:12px;border:1px solid #e0e6ef}.badge{display:inline-block;background:#e5edfa;border-radius:4px;padding:1px 5px;margin-right:5px}.warn{background:#fff2ce;padding:9px;border-radius:6px}.count{font-size:13px;color:#526177}"""
     parts = ["<!doctype html><html lang='zh'><meta charset='utf-8'><title>住院材料时间轴</title>",
              f"<style>{styles}</style><header><h1>住院材料时间轴 · {payload['hadm_id']}</h1>",
-             "<p class='meta'>按服务归属时段排列原始材料；展开可查看完整源记录。日期仅有日精度时，不推断当天先后。出院摘要是事后叙述。</p>",
+             "<p class='meta'>按服务归属时段排列材料；展开可查看完整源记录。心超测量按一次研究折叠，检查时间不等于结果可用时间。日期仅有日精度时，不推断当天先后。出院摘要是事后叙述。</p>",
              "<input id='query' placeholder='搜索材料标题、来源或内容'> <select id='source'><option value=''>全部来源</option>"]
     for name in sorted(payload["source_counts"]):
         parts.append(f"<option>{html.escape(name)}</option>")
@@ -198,6 +206,9 @@ def main():
         parser.error("Expected exactly one cohort row for hadm_id")
     cohort = cohort_rows[0]
     raw = {name: read_rows(source / name, args.hadm_id) for name in TABLES}
+    echo_measurements = read_rows(source / "echo_measurements", args.hadm_id)
+    echo_studies = read_rows(source / "echo_studies", args.hadm_id)
+    echo_record_list = read_rows(source / "echo_record_list", args.hadm_id)
     intervals = make_intervals(cohort, raw["services"])
     events = []
     for name, rows in raw.items():
@@ -208,6 +219,33 @@ def main():
                      "temporal_kind": kind, "material": row}
             event["group"], event["overlaps"] = assign(event, intervals)
             events.append(event)
+    by_measurement = {}
+    for row in echo_measurements:
+        key = (row["measurement_id"], row["measurement_datetime"], row["test_type"])
+        by_measurement.setdefault(key, []).append(row)
+    for index, ((measurement_id, at, test_type), rows) in enumerate(sorted(by_measurement.items())):
+        lvef = next((r["result"] for r in rows if r["measurement"] == "lvef" and r["result"]), None)
+        label = f"心超 {test_type.upper()} · measurement_id {measurement_id}"
+        if lvef:
+            label += f" · LVEF {lvef}%"
+        event = {"source": "echo_measurements", "source_index": index,
+                 "title": label, "anchor": at, "end": None, "recorded_at": None,
+                 "temporal_kind": "echo_measurement_datetime_not_result_availability",
+                 "material": {"measurement_id": measurement_id, "measurement_datetime": at,
+                              "test_type": test_type, "measurements": rows}}
+        event["group"], event["overlaps"] = assign(event, intervals)
+        events.append(event)
+    records_by_study = {}
+    for row in echo_record_list:
+        records_by_study.setdefault(row["study_id"], []).append(row)
+    for index, row in enumerate(echo_studies):
+        event = {"source": "echo_studies", "source_index": index,
+                 "title": f"心超 DICOM 研究索引 · study_id {row['study_id']}",
+                 "anchor": row["study_datetime"], "end": None, "recorded_at": None,
+                 "temporal_kind": "echo_dicom_study_metadata",
+                 "material": {"study": row, "dicom_records": records_by_study.get(row["study_id"], [])}}
+        event["group"], event["overlaps"] = assign(event, intervals)
+        events.append(event)
     # Derived admission_inputs repeat cohort data and extract text from the discharge
     # note. Keep it in the export as a clearly marked derivative, not another event.
     derived = read_rows(source / "admission_inputs", args.hadm_id)
@@ -215,6 +253,10 @@ def main():
                "cohort": cohort, "intervals": intervals, "events": events,
                "derived_admission_inputs": derived,
                "source_counts": dict(Counter(e["source"] for e in events)),
+               "source_row_counts": {**{name: len(rows) for name, rows in raw.items()},
+                                     "echo_measurements": len(echo_measurements),
+                                     "echo_studies": len(echo_studies),
+                                     "echo_record_list": len(echo_record_list)},
                "scope": "Locally extracted tables for this admission; not the complete EHR."}
     output.mkdir(parents=True, exist_ok=True)
     (output / "materials.json").write_text(json.dumps(payload, ensure_ascii=False, indent=2, default=serialize) + "\n")
