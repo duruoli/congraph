@@ -38,9 +38,12 @@ PROPHYLAXIS = re.compile(r"heparin|enoxaparin", re.I)
 CHRONIC = re.compile(
     r"statin|sartan|pril$|thiazide|amlodipine|levothyroxine|vitamin d|ranitidine|omeprazole|"
     r"calcium carbonate|multivitamin|finasteride|tamsulosin|sertraline|citalopram|escitalopram|"
-    r"fluoxetine|gabapentin|allopurinol|metformin|glipizide|cholecalciferol|ferrous", re.I)
+    r"fluoxetine|gabapentin|allopurinol|metformin|glipizide|cholecalciferol|ferrous|clonazepam|"
+    r"levetiracetam|venlafaxine|topiramate|tizanidine|sumatriptan|baclofen|bupropion|trazodone|"
+    r"quetiapine|ascorbic|cyanocobalamin|neutra-phos|phytonadione", re.I)
 # Agents given only to make a test possible: these belong to observation.
-TEST_AGENT = re.compile(r"tuberculin|gastroview|diatrizoate|contrast|iohexol|omnipaque|readi-cat", re.I)
+TEST_AGENT = re.compile(r"tuberculin|gastroview|diatrizoate|contrast|iohexol|omnipaque|readi-cat|golytely|"
+                        r"polyethylene glycol.*electrolyte|cosyntropin", re.I)
 
 GLOSS = {
     "methylprednisolone": "静脉激素", "prednisone": "口服激素", "hydrocortisone": "激素",
@@ -85,9 +88,11 @@ def exam_gloss(name):
     return next((g for pattern, g in EXAM_GLOSS if re.search(pattern, name.upper())), "")
 
 
-def section(text, *heads):
+def section(text, *heads, paragraph=False):
+    """Text after a report heading; paragraph=True stops at the first blank line."""
+    end = r"\n\s*\n" if paragraph else r"\n\s*\n[A-Z ]{4,}:"
     for head in heads:
-        found = re.search(rf"{head}:?\s*(.+?)(?:\n\s*\n[A-Z ]{{4,}}:|\Z)", text, re.S)
+        found = re.search(rf"{head}:?\s*(.+?)(?:{end}|\Z)", text, re.S)
         if found:
             return " ".join(found.group(1).split())
     return ""
@@ -217,7 +222,7 @@ def build(path: Path, anchor_index: int):
         name = m["exam_name"]
         kind = "监测" if exams[name] else "诊断"
         exams[name] += 1
-        ind = section(text, "INDICATION", "CLINICAL INDICATION", "HISTORY", "REASON FOR EXAM")
+        ind = section(text, "INDICATION", "CLINICAL INDICATION", "HISTORY", "REASON FOR EXAM", paragraph=True)
         imp = section(text, "IMPRESSION") or section(text, "FINDINGS")
         notif = section(text, "NOTIFICATION")
         body = (f"影像 {name}（{exam_gloss(name)}）<br>· 检查理由：{ind[:300] or '（无）'}<br>"
