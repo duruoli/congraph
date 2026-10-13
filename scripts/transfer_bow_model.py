@@ -1,16 +1,21 @@
 """Bag-of-words baseline: can plain token presence predict a MED→SURG transfer?
 
 Cases: admissions that start on MED whose first transfer is MED→SURG.
-Time zero = earliest "Transfer to=Surgery" ADT order in the 120 h before the
-service change, else the service change itself.
+Time zero = DECISION point: the first trace that the operation/transfer is
+already decided — earliest of service change, "Transfer to=Surgery" ADT order
+(≤120 h before), start of the operation day (procedure codes are date-only),
+oral neomycin (bowel prep), pre-op imaging. The QUESTION point (first surgical
+consult order) is recorded alongside but not modelled (few cases have one).
 Controls: MED-only admissions still in hospital at the same hours-since-admit
 (risk-set matching, K per case).
 
 Every event that became available inside a window is one token: words/bigrams
 from radiology reports, plus prefixed structured tokens (order type, drug,
 abnormal lab, micro specimen/organism, exam name). Presence is binary.
-Decision-path tokens (ADT orders, surgical consults, pre-op wording) are
-dropped as leakage. L1 logistic regression, outer CV grouped by patient.
+Because t0 is the decision point, decision traces fall after t0 by
+construction; only ADT orders are dropped. Negation words are kept in the
+text (default English stop list removes no/not/without). L1 logistic
+regression, outer CV grouped by patient.
 """
 import argparse
 import json
@@ -22,7 +27,7 @@ import numpy as np
 import pandas as pd
 import pyarrow.dataset as ds
 from scipy.sparse import hstack
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import ENGLISH_STOP_WORDS, CountVectorizer
 from sklearn.linear_model import LogisticRegression, LogisticRegressionCV
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import StratifiedGroupKFold
@@ -30,9 +35,9 @@ from sklearn.model_selection import StratifiedGroupKFold
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data/raw_data/ibd_mimiciv_3_1"
 H = pd.Timedelta(hours=1)
-LEAK_CONSULTS = {"Colorectal Surgery", "Acute Care Surgery", "General Surgery", "Surgery",
-                 "Nursing"}  # no detail field; plausibly pre-op stoma-site marking, dropped to be safe
-LEAK_DRUGS = re.compile(r"neomycin", re.I)  # oral bowel prep = operation already decided
+NEGATION = {"no", "not", "nor", "without", "none", "never", "neither", "cannot"}
+STOP = sorted(ENGLISH_STOP_WORDS - NEGATION)
+PREOP = re.compile(r"pre[- ]?op", re.I)
 
 
 def operative(r):
@@ -43,7 +48,6 @@ def operative(r):
     c = r.icd_code
     return c[:2] in ("45", "46", "47", "48", "49", "53", "54") and \
         not c.startswith(("451", "452", "454", "482", "492", "5491", "5495"))
-LEAK_TEXT = re.compile(r"pre[- ]?op\w*|surg\w*|operat\w*|\bOR\b", re.I)
 # (name, window start, window end) in hours relative to t0; None start = from ED (admit − 24 h)
 WINDOWS = [("cum_lag0", None, 0), ("cum_lag12", None, -12), ("cum_lag24", None, -24), ("cum_lag48", None, -48),
            ("slice_0_12", -12, 0), ("slice_12_24", -24, -12), ("slice_24_48", -48, -24)]
@@ -69,10 +73,19 @@ def build_samples(k, seed):
     orders = det[(det.field_name == "Transfer to") & (det.field_value == "Surgery")]
     proc = load("procedures", cases.hadm_id)
     proc = proc[[operative(r) for r in proc.itertuples()]]
-    t0, src = [], []
+    rx = load("prescriptions", cases.hadm_id, ["hadm_id", "starttime", "drug", "route"])
+    prep = rx[(rx.drug == "Neomycin Sulfate") & (rx.route == "PO")]
+    rad = load("radiology", cases.hadm_id, ["hadm_id", "charttime", "exam_name", "text"])
+    preop = rad[rad.exam_name.str.contains(PREOP, na=False) | rad.text.str.contains(PREOP, na=False)]
+    poe = load("poe", cases.hadm_id, ["hadm_id", "ordertime", "order_type", "order_subtype"])
+    consult = poe[(poe.order_type == "Consults") & poe.order_subtype.str.contains("Surg", na=False)]
+    t0, src, tq = [], [], []
     for r in cases.itertuples():
-        # earliest of: transfer order, service change, start of the operation day (date-only, so conservative)
-        cand = {"service": r.transfertime}
+        def first(df, col):
+            x = df[(df.hadm_id == r.hadm_id) & (df[col] >= r.admittime - 24 * H) & (df[col] <= r.transfertime)][col]
+            return x.min() if len(x) else None
+        cand = {"service": r.transfertime, "bowel_prep": first(prep, "starttime"),
+                "preop_imaging": first(preop, "charttime")}
         o = orders[(orders.hadm_id == r.hadm_id) & (orders.ordertime <= r.transfertime)
                    & (orders.ordertime >= r.transfertime - 120 * H)].ordertime
         if len(o):
@@ -81,9 +94,12 @@ def build_samples(k, seed):
         d = d[(d >= r.admittime.normalize()) & (d <= r.transfertime)]
         if len(d):
             cand["operation_day"] = max(d.min(), r.admittime)
+        cand = {k: v for k, v in cand.items() if v is not None}
         first_src = min(cand, key=cand.get)
         t0.append(cand[first_src]), src.append(first_src)
-    cases = cases.assign(t0=t0, t0_source=src, label=1)
+        q = first(consult, "ordertime")
+        tq.append(q if q is not None and q <= cand[first_src] else pd.NaT)
+    cases = cases.assign(t0=t0, t0_source=src, t_question=tq, label=1)
     cases["hours"] = (cases.t0 - cases.admittime) / H
 
     ctrl = co[co.hadm_id.isin(med_start - set(tr.hadm_id))]
@@ -114,15 +130,13 @@ def events(hadms):
         t = r.storetime if pd.notna(r.storetime) else r.charttime
         if not re.search(r"pre-?op", r.exam_name or "", re.I):
             out.append((r.hadm_id, t, "tok", "rad:" + norm(r.exam_name)))
-        out.append((r.hadm_id, t, "text", LEAK_TEXT.sub(" ", r.text or "")))
+        out.append((r.hadm_id, t, "text", r.text or ""))
     poe = load("poe", hadms, ["hadm_id", "ordertime", "order_type", "order_subtype", "transaction_type"])
-    poe = poe[(poe.transaction_type == "New") & ~poe.order_type.isin(["ADT orders", "Medications", "Lab"])
-              & ~((poe.order_type == "Consults") & poe.order_subtype.isin(LEAK_CONSULTS))]
+    poe = poe[(poe.transaction_type == "New") & ~poe.order_type.isin(["ADT orders", "Medications", "Lab"])]
     out += [(r.hadm_id, r.ordertime, "tok", f"order:{norm(r.order_type)}/{norm(r.order_subtype)}")
             for r in poe.itertuples()]
     rx = load("prescriptions", hadms, ["hadm_id", "starttime", "drug"])
-    out += [(r.hadm_id, r.starttime, "tok", "drug:" + norm(r.drug)) for r in rx.itertuples()
-            if not LEAK_DRUGS.search(r.drug or "")]
+    out += [(r.hadm_id, r.starttime, "tok", "drug:" + norm(r.drug)) for r in rx.itertuples()]
     lab = load("labs", hadms, ["hadm_id", "charttime", "storetime", "label", "valuenum",
                                 "ref_range_lower", "ref_range_upper", "flag"])
     lab = lab[lab.flag.notna()]
@@ -161,7 +175,7 @@ def documents(samples, ev, start, end, facts_only):
 
 
 def vectorizers(min_df):
-    return (CountVectorizer(binary=True, ngram_range=(1, 2), stop_words="english", min_df=min_df,
+    return (CountVectorizer(binary=True, ngram_range=(1, 2), stop_words=STOP, min_df=min_df,
                             token_pattern=r"(?u)\b[a-zA-Z][a-zA-Z]+\b"),
             CountVectorizer(binary=True, min_df=min_df, lowercase=False, token_pattern=r"\S+"))
 
@@ -212,6 +226,10 @@ def main():
 
     samples, cases = build_samples(args.k, args.seed)
     print("cases", len(cases), "| t0 source:", cases.t0_source.value_counts().to_dict())
+    lead = (cases.t0 - cases.t_question) / H
+    print("question point (surgical consult) present:", lead.notna().sum(),
+          "| hours before decision point, quartiles:", lead.quantile([.25, .5, .75]).round(1).tolist())
+    cases.to_csv(args.out.parent / "cases_anchors.csv", index=False)
     samples = samples[samples.hours >= args.min_hours].reset_index(drop=True)
     print("after min-hours:", samples.label.sum(), "cases,", (samples.label == 0).sum(), "controls")
     ev = events(set(samples.hadm_id))
