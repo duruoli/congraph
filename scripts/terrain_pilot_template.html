@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="__LANG__">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Patient Density Terrain</title>
+<style>
+:root{--bg:#fafaf8;--panel:#fff;--ink:#1d1d1b;--muted:#77756f;--line:#e4e2dc;--body:#ecebe6;--hot:#d9480f;--cold:#4c6ef5;--mark:#1d1d1b;--chip:#f1f0ec}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161615;--panel:#1f1f1d;--ink:#ecebe6;--muted:#9a978f;--line:#34332f;--body:#2b2a27;--hot:#ff7a45;--cold:#7b93ff;--mark:#ecebe6;--chip:#2b2a27}}
+:root[data-theme="dark"]{--bg:#161615;--panel:#1f1f1d;--ink:#ecebe6;--muted:#9a978f;--line:#34332f;--body:#2b2a27;--hot:#ff7a45;--cold:#7b93ff;--mark:#ecebe6;--chip:#2b2a27}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 -apple-system,"PingFang SC","Helvetica Neue",sans-serif}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:20px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+select,button{font:inherit;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer}
+button.on{background:var(--ink);color:var(--bg)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.grid{display:grid;grid-template-columns:300px 1fr;gap:14px}
+@media (max-width:760px){.grid{grid-template-columns:1fr}}
+.slider{display:flex;align-items:center;gap:10px;flex:1;min-width:260px}
+input[type=range]{flex:1}
+.day{font-variant-numeric:tabular-nums;min-width:64px}
+h2{font-size:13px;color:var(--muted);font-weight:600;margin:0 0 10px;text-transform:uppercase;letter-spacing:.04em}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border-radius:999px;padding:6px 12px;background:var(--chip);color:var(--muted);border:1px solid var(--line);transition:all .25s}
+.chip b{font-weight:600}
+.chip small{opacity:.8;margin-left:6px;font-variant-numeric:tabular-nums}
+.chip.lit{color:#fff;border-color:transparent}
+table.hm{border-collapse:collapse;width:100%;font-size:12px}
+.hm td{height:22px;border:1px solid var(--panel);text-align:center;font-variant-numeric:tabular-nums}
+.hm td.lab{text-align:right;padding-right:8px;color:var(--muted);white-space:nowrap;width:1%}
+.hm th{font-weight:400;color:var(--muted);font-size:11px}
+.hm th.cur{color:var(--ink);font-weight:700}
+.hm td.out{background:repeating-linear-gradient(45deg,transparent 0 3px,var(--line) 3px 4px)}
+.facts{font-size:13px;max-height:220px;overflow:auto}
+.facts div{padding:3px 0;border-bottom:1px dashed var(--line)}
+.src{display:inline-block;min-width:64px;margin-right:6px;color:var(--muted)}
+.w{float:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.legend{font-size:12px;color:var(--muted);margin-top:8px}
+.tr{color:var(--hot);font-weight:600}
+.hm tr.sep td{height:26px;border:0;text-align:left;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding-top:8px}
+.hm td.act{background:var(--chip);cursor:default}
+.dot{display:inline-block;min-width:16px;height:16px;line-height:16px;border-radius:8px;background:var(--ink);color:var(--bg);font-size:10px;padding:0 3px}
+.dot.transfer{background:var(--hot);color:#fff}
+.alist{font-size:13px}
+svg text{fill:var(--ink);font-size:11px}
+.scroll{overflow-x:auto}
+#tip{position:fixed;z-index:10;pointer-events:none;display:none;max-width:360px;white-space:pre-line;background:var(--ink);color:var(--bg);font-size:12px;line-height:1.5;padding:6px 9px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+[data-tip]{cursor:help}
+</style>
+</head>
+<body>
+<main>
+<h1 data-t="title"></h1>
+<div class="sub" data-t="intro"></div>
+
+<div class="bar">
+  <select id="pt"></select>
+  <button id="m-abs" data-t="abs"></button><button id="m-rel" class="on" data-t="rel"></button>
+  <div class="slider"><button id="play">▶</button><input type="range" id="d" min="-1" value="0"><span class="day" id="dl"></span></div>
+</div>
+<div class="sub" id="meta"></div>
+
+<div class="grid">
+  <div class="panel">
+    <h2 data-t="layer1"></h2>
+    <svg id="body" viewBox="-62 0 424 470" width="100%"></svg>
+    <div class="legend" id="leg"></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+    <div class="panel"><h2 data-t="layer2"></h2><div class="chips" id="qs"></div>
+      <div class="legend" data-t="qlegend"></div></div>
+    <div class="panel"><h2 data-t="hmtitle"></h2><div class="scroll"><table class="hm" id="hm"></table></div><div class="legend" data-t="hmlegend"></div></div>
+    <div class="panel"><h2 data-t="factstitle"></h2><div class="facts" id="facts"></div>
+      <h2 style="margin-top:14px" data-t="actstitle"></h2><div class="facts alist" id="acts"></div></div>
+  </div>
+</div>
+</main>
+<div id="tip"></div>
+<script>
+const DATA = __DATA__;
+const T = __T__;
+document.querySelectorAll("[data-t]").forEach(e => e.textContent = T[e.dataset.t]);
+document.title = T.doctitle;
+const esc = x => String(x).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+// one shared tooltip: shows at once, follows the cursor, survives re-renders
+document.addEventListener("mousemove", e => {
+  const el = e.target.closest ? e.target.closest("[data-tip]") : null, tip = $("#tip");
+  if (!el){ tip.style.display = "none"; return; }
+  tip.textContent = el.dataset.tip; tip.style.display = "block";
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(e.clientX + 14, innerWidth - w - 8) + "px";
+  tip.style.top = (e.clientY + 16 + h > innerHeight ? e.clientY - h - 10 : e.clientY + 16) + "px";
+});
+document.addEventListener("mouseleave", () => $("#tip").style.display = "none");
+const bin = t => Math.max(-1, Math.floor(t));
+const dlab = d => d < 0 ? T.pre : T.dayfmt(d + 1);
+const trTip = t => `${T.transfer}: ${t.from_name} → ${t.to_name}\n${dlab(bin(t.day))} ${t.time}`;
+const $ = s => document.querySelector(s);
+let P = DATA.patients[0], mode = "rel", day = 0, timer = null;
+
+const BODY = `
+<g style="fill:var(--body)">
+ <circle cx="150" cy="42" r="28"/>
+ <rect x="138" y="66" width="24" height="18"/>
+ <path d="M96 88 Q150 76 204 88 L210 300 Q150 320 90 300 Z"/>
+ <path d="M96 92 L64 110 L44 250 L60 254 L80 140 L98 130 Z"/>
+ <path d="M204 92 L236 110 L256 250 L240 254 L220 140 L202 130 Z"/>
+ <path d="M96 300 L148 312 L140 460 L112 460 Z"/>
+ <path d="M204 300 L152 312 L160 460 L188 460 Z"/>
+</g>`;
+// organ shapes: [key, svg element, label x, label y]
+const SHAPES = {
+  systemic: `<path d="M96 88 Q150 76 204 88 L210 300 Q150 320 90 300 Z" style="fill:none;stroke:C" stroke-width="7"/>`,
+  blood: `<path d="M70 120 L52 248 M230 120 L248 248 M126 320 L126 455 M174 320 L174 455" style="fill:none;stroke:C" stroke-width="4" stroke-linecap="round"/>`,
+  lung: `<ellipse style="fill:C" cx="124" cy="140" rx="22" ry="36"/><ellipse style="fill:C" cx="176" cy="140" rx="22" ry="36"/>`,
+  heart: `<circle style="fill:C" cx="158" cy="168" r="15"/>`,
+  liver: `<ellipse style="fill:C" cx="128" cy="200" rx="32" ry="16"/>`,
+  pancreas: `<ellipse style="fill:C" cx="166" cy="214" rx="22" ry="6"/>`,
+  kidney: `<ellipse style="fill:C" cx="114" cy="232" rx="8" ry="13"/><ellipse style="fill:C" cx="186" cy="232" rx="8" ry="13"/>`,
+  peritoneum: `<rect x="100" y="222" width="100" height="78" rx="18" style="fill:none;stroke:C" stroke-width="3" stroke-dasharray="4 3"/>`,
+  colon: `<path d="M122 290 L122 244 L178 244 L178 290 L150 296" style="fill:none;stroke:C" stroke-width="9" stroke-linejoin="round" stroke-linecap="round"/>`,
+  smallbowel: `<ellipse style="fill:C" cx="150" cy="268" rx="22" ry="15"/>`,
+};
+const LABEL = {systemic:[214,96,"start"],blood:[258,240,"start"],lung:[208,128,"start"],heart:[178,172,"start"],
+  liver:[60,196,"end"],pancreas:[192,212,"start"],kidney:[60,236,"end"],peritoneum:[60,300,"end"],colon:[214,290,"start"],smallbowel:[214,268,"start"]};
+
+function val(unit, k, d){
+  const u = P[unit], c = u.cum[k][d], s = u.sea[k][d] ?? 0, sd = u.sd[k][d] || 1;
+  return {c, s, z: (c - s) / Math.max(sd, 0.5)};
+}
+function color(v){
+  // returns fill colour for a value under current mode
+  if (mode === "abs"){
+    const a = Math.min(1, Math.sqrt(v.c / 10));
+    return `color-mix(in srgb, var(--hot) ${Math.round(a*100)}%, var(--body))`;
+  }
+  const z = Math.max(-2, Math.min(3, v.z));
+  return z >= 0 ? `color-mix(in srgb, var(--hot) ${Math.round(z/3*100)}%, var(--body))`
+                : `color-mix(in srgb, var(--cold) ${Math.round(-z/2*60)}%, var(--body))`;
+}
+function drawBody(){
+  let g = BODY;
+  for (const k of Object.keys(SHAPES)){
+    const v = val("organ", k, day), col = color(v);
+    const shape = SHAPES[k].replaceAll(':C', `:${col}`);
+    const [x,y,a] = LABEL[k];
+    const hit = SHAPES[k].includes("fill:none") ? SHAPES[k].replace(/style="[^"]*"/, 'style="fill:none;stroke:transparent;stroke-width:16;pointer-events:stroke"') : "";
+    g += `<g data-tip="${esc(`${DATA.organs[k]}: ${T.me} ${v.c} / ${T.sea} ${v.s}`)}">${shape}${hit}</g>`;
+    g += `<text x="${x}" y="${y}" text-anchor="${a}">${DATA.organs[k]} ${mode==="abs"?v.c:(v.c-v.s>=0?"+":"")+(v.c-v.s).toFixed(1)}</text>`;
+  }
+  $("#body").innerHTML = g;
+  $("#leg").textContent = mode === "abs" ? T.leg_abs : T.leg_rel;
+}
+function drawQs(){
+  const qs = Object.keys(DATA.questions).map(k => ({k, ...val("question", k, day)}))
+    .sort((a,b) => b.z - a.z);
+  $("#qs").innerHTML = qs.map(q => {
+    const lit = q.z >= 1 && q.c > 0, a = Math.min(100, 45 + q.z * 15);
+    const st = lit ? `style="background:color-mix(in srgb,var(--hot) ${a}%,var(--panel));color:${q.z >= 2 ? "#fff" : "var(--ink)"}"` : "";
+    return `<span class="chip ${lit?"lit":""}" ${st}><b>${DATA.questions[q.k]}</b><small>${q.c} / ${q.s}</small></span>`;
+  }).join("");
+}
+function drawHm(){
+  const N = DATA.max_day, los = P.los;
+  let h = "<tr><th></th>" + [...Array(N+2).keys()].map(i => i - 1).map(d =>
+    `<th class="${d===day?"cur":""}">${P.transfers.filter(t=>bin(t.day)===d).map(t=>`<span class="tr" data-tip="${esc(trTip(t))}">⇄</span>`).join("")}${d < 0 ? T.pre_short : d+1}</th>`).join("") + "</tr>";
+  for (const k of Object.keys(DATA.organs)){
+    h += `<tr><td class="lab">${DATA.organs[k]}</td>`;
+    for (let d = -1; d <= N; d++){
+      if (d > los){ h += `<td class="out"></td>`; continue; }
+      const v = val("organ", k, d);
+      h += `<td data-tip="${esc(`${dlab(d)} · ${DATA.organs[k]}: ${T.me} ${v.c} / ${T.sea} ${v.s}`)}" style="background:${color(v)};${d===day?"outline:2px solid var(--mark);outline-offset:-2px":""}"></td>`;
+    }
+    h += "</tr>";
+  }
+  h += `<tr class="sep"><td colspan="${N+3}">${T.actions}</td></tr>`;
+  for (const lane of Object.keys(DATA.lanes)){
+    h += `<tr><td class="lab">${DATA.lanes[lane]}</td>`;
+    for (let d = -1; d <= N; d++){
+      if (d > los){ h += `<td class="out"></td>`; continue; }
+      const acts = P.actions.filter(a => a.lane === lane && bin(a.t) === d);
+      const tip = acts.map(a => `${a.date_only ? T.dateonly : a.clock} ${a.label}`).join("\n");
+      h += `<td class="act" ${tip ? `data-tip="${esc(`${dlab(d)} · ${DATA.lanes[lane]}\n${tip}`)}"` : ""} style="${d===day?"outline:2px solid var(--mark);outline-offset:-2px":""}">` +
+           (acts.length ? `<span class="dot ${lane}">${acts.length > 1 ? acts.length : ""}</span>` : "") + "</td>";
+    }
+    h += "</tr>";
+  }
+  $("#hm").innerHTML = h;
+}
+function drawFacts(){
+  const f = P.facts.filter(x => x.day === day);
+  const tr = P.transfers.filter(t => bin(t.day) === day).map(t => `<div class="tr" data-tip="${esc(trTip(t))}">⇄ ${T.transfer} ${t.from_name} → ${t.to_name} · ${t.time}</div>`).join("");
+  $("#facts").innerHTML = tr + (f.length ? f.map(x =>
+    `<div><span class="src">${x.source}</span>${DATA.organs[x.organ]} · ${x.finding}<span class="w">+${x.weight}</span></div>`).join("")
+    : `<div style="color:var(--muted)">${T.nofacts}</div>`);
+}
+function drawActs(){
+  const a = P.actions.filter(x => bin(x.t) === day);
+  $("#acts").innerHTML = a.length ? a.map(x =>
+    `<div><span class="src">${DATA.lanes[x.lane]}</span> ${x.label}<span class="w">${x.date_only ? T.dateonly : x.clock}</span></div>`).join("")
+    : `<div style="color:var(--muted)">${T.noacts}</div>`;
+}
+function draw(){
+  $("#dl").textContent = dlab(day);
+  drawBody(); drawQs(); drawHm(); drawFacts(); drawActs();
+}
+function pick(h){
+  P = DATA.patients.find(p => p.hadm_id == h);
+  const dmax = Math.min(DATA.max_day, Math.floor(P.los));
+  $("#d").max = dmax; day = Math.min(day, dmax); $("#d").value = day;
+  $("#meta").innerHTML = T.meta(P) +
+    (P.transfers.map(t => `<span class="tr" data-tip="${esc(trTip(t))}">${t.from_name} → ${t.to_name}</span> (${dlab(bin(t.day))} ${t.time})`).join(", ") || T.none);
+  draw();
+}
+$("#pt").innerHTML = DATA.patients.map(p => `<option value="${p.hadm_id}">${T.case} ${p.hadm_id}</option>`).join("");
+$("#pt").onchange = e => pick(e.target.value);
+$("#d").oninput = e => { day = +e.target.value; draw(); };
+$("#m-abs").onclick = () => { mode = "abs"; $("#m-abs").classList.add("on"); $("#m-rel").classList.remove("on"); draw(); };
+$("#m-rel").onclick = () => { mode = "rel"; $("#m-rel").classList.add("on"); $("#m-abs").classList.remove("on"); draw(); };
+$("#play").onclick = () => {
+  if (timer){ clearInterval(timer); timer = null; $("#play").textContent = "▶"; return; }
+  $("#play").textContent = "❚❚"; if (day >= +$("#d").max) day = -2;
+  timer = setInterval(() => { if (day >= +$("#d").max){ $("#play").click(); return; } day++; $("#d").value = day; draw(); }, 700);
+};
+pick(DATA.patients[0].hadm_id);
+</script>
+</body>
+</html>
