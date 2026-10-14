@@ -3,12 +3,14 @@
 Replaces the raw unigram/bigram split: scispaCy finds medical mentions and links each
 to a UMLS concept (CUI), so synonyms merge ("free air" / "pneumoperitoneum" -> one CUI);
 medspaCy ConText marks each mention negated / uncertain / hypothetical / historical.
+UMLS lacks much radiology vernacular ("free air", "stranding", "collection" link 0-16% of the
+time), so a hand lexicon (RADIOLOGY_LEXICON) adds those spans before ConText runs.
 
 Sections: FINDINGS (+ organ subsections) and IMPRESSION = 'finding'; INDICATION/HISTORY =
 'indication' (the question asked); EXAMINATION/TECHNIQUE/DOSE/COMPARISON/... dropped.
 
 Runs in the congraph env (scispacy/medspacy live there):
-  PYTHONPATH="$PWD" /opt/anaconda3/envs/congraph/bin/python scripts/term_concepts.py   (cohort)
+  PYTHONPATH="$PWD" /opt/anaconda3/envs/congraph/bin/python scripts/term_concepts.py [--cohort NAME]
   ... scripts/term_concepts.py --pilot 30                                               (eyeball)
 First run downloads the scispaCy UMLS KB (~1 GB, cached in ~/.scispacy).
 """
@@ -41,6 +43,29 @@ HEDGE_FORWARD = ["could", "may", "might", "probably", "likely", "suggest", "sugg
                  "can not exclude", "differential includes", "versus", "vs"]
 HEDGE_BACKWARD = ["cannot be excluded", "can not be excluded", "not excluded", "is not excluded", "not ruled out",
                   "is possible", "are possible", "cannot be ruled out"]
+# radiology vernacular UMLS does not link: (regex, cui, concept, group). 'X:' = no UMLS concept used
+RADIOLOGY_LEXICON = [
+    (r"(?:free|extraluminal|intraperitoneal|subdiaphragmatic)(?:\s+intraperitoneal)?\s+(?:air|gas)", "C0032320",
+     "Pneumoperitoneum", "finding"),
+    (r"free\s+(?:intraperitoneal\s+|pelvic\s+|abdominal\s+)?fluid", "X:free_fluid", "Free fluid (abdomen/pelvis)",
+     "finding"),
+    (r"air[- ]fluid\s+levels?", "X:air_fluid_level", "Air-fluid levels", "finding"),
+    (r"(?:fat(?:ty)?\s+|inflammatory\s+|mesenteric\s+|peri\w+\s+)?stranding", "X:fat_stranding",
+     "Fat stranding (inflamed fat)", "finding"),
+    (r"(?:(?:rim[- ]enhancing|loculated|organized)\s+)?(?:fluid\s+)?collections?", "X:fluid_collection",
+     "Fluid collection", "finding"),
+    (r"narrowing|strictures?|stenos[ie]s", "C1261287", "Stenosis", "finding"),
+    (r"distended|distension|distention", "C0012359", "Pathological Dilatation", "finding"),
+    (r"hypodens(?:e|ity|ities)", "X:hypodensity", "Hypodensity", "finding"),
+    (r"opacific\w*|opacit(?:y|ies)", "C0029053", "Opacity (radiographic)", "finding"),
+    (r"(?:(?:pulmonary\s+)?vascular\s+|venous\s+)?congestion", "X:vascular_congestion", "Vascular congestion",
+     "finding"),
+    (r"calcifi(?:cations?|ed)", "C0006663", "Calcinosis", "finding"),
+    (r"inflammatory\s+(?:changes?|process)", "C0021368", "Inflammation", "finding"),
+    (r"consolidat(?:ion|ions|ive)", "C0521530", "Lung consolidation", "finding"),
+    (r"(?:(?:bowel\s+)?wall\s+)?thicken(?:ing|ed)", "C0205400", "Thickened", "finding"),
+]
+LEXICON_RX = [(re.compile(r"\b" + rx + r"\b", re.I), cui, name, group) for rx, cui, name, group in RADIOLOGY_LEXICON]
 NON_FINDING = {"EXAMINATION", "TECHNIQUE", "DOSE", "COMPARISON", "NOTIFICATION", "PROCEDURE", "EXAM",
                "RECOMMENDATION", "RECOMMENDATIONS", "ADDENDUM"}
 
@@ -75,11 +100,43 @@ def build_nlp():
     nlp.add_pipe("scispacy_linker", config={"resolve_abbreviations": False, "linker_name": "umls",
                                             "threshold": 0.85, "max_entities_per_mention": 1,
                                             "filter_for_definitions": False})
+    nlp.add_pipe("radiology_lexicon")
     from medspacy.context import ConTextRule
     ctx = nlp.add_pipe("medspacy_context")
     ctx.add([ConTextRule(w, "POSSIBLE_EXISTENCE", direction="FORWARD") for w in HEDGE_FORWARD]
             + [ConTextRule(w, "POSSIBLE_EXISTENCE", direction="BACKWARD") for w in HEDGE_BACKWARD])
     return nlp
+
+
+def _register_lexicon():
+    from spacy.language import Language
+    from spacy.tokens import Span
+    from spacy.util import filter_spans
+    if not Span.has_extension("lex"):
+        Span.set_extension("lex", default=None)
+
+    @Language.component("radiology_lexicon")
+    def radiology_lexicon(doc):
+        """Add lexicon spans as entities. A lexicon span replaces overlapping model mentions, unless
+        that mention is linked and longer (more specific, e.g. 'gallbladder wall thickening')."""
+        spans = []
+        for rx, cui, name, group in LEXICON_RX:
+            for m in rx.finditer(doc.text):
+                sp = doc.char_span(m.start(), m.end(), label="LEX", alignment_mode="expand")
+                if sp is not None:
+                    sp._.lex = (cui, name, group)
+                    spans.append(sp)
+        if not spans:
+            return doc
+        ents = list(doc.ents)
+        spans = [sp for sp in filter_spans(spans) if not any(
+            e.start < sp.end and sp.start < e.end and e._.kb_ents and len(e) > len(sp) for e in ents)]
+        keep = [e for e in ents if not any(e.start < sp.end and sp.start < e.end for sp in spans)]
+        doc.ents = sorted(keep + spans, key=lambda e: e.start)
+        return doc
+
+
+_register_lexicon()
 
 
 def list_continues(gap):
@@ -110,11 +167,16 @@ def extract(nlp, reports):
             if st == "affirmed" and prev and prev[0] == "negated" and list_continues(doc.text[prev[1]:ent.start_char]):
                 st = "negated"
             prev = (st, ent.end_char)
+            if ent._.lex:
+                cui, name, group = ent._.lex
+                rows.append((note_id, hadm_id, t, kind, ent.text, cui, name, group, "LEX", 1.0, st,
+                             ent.sent.text.strip()))
+                continue
             if not ent._.kb_ents:
                 continue
             cui, score = ent._.kb_ents[0]
             c = kb.cui_to_entity[cui]
-            group = next((TUI_GROUP[t] for t in c.types if t in TUI_GROUP), None)
+            group = next((TUI_GROUP[x] for x in c.types if x in TUI_GROUP), None)
             if group is None:
                 continue
             rows.append((note_id, hadm_id, t, kind, ent.text, cui, c.canonical_name, group, ",".join(c.types),
@@ -126,6 +188,7 @@ def extract(nlp, reports):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pilot", type=int, default=0, help="N random reports from all IBD admissions")
+    parser.add_argument("--cohort", default="all", help="sample definition, see transfer_bow_model.COHORTS")
     parser.add_argument("--out", type=Path, default=ROOT / "runs/term_concepts")
     args = parser.parse_args()
     args.out.mkdir(parents=True, exist_ok=True)
@@ -134,14 +197,20 @@ def main():
         columns=["note_id", "hadm_id", "charttime", "storetime", "exam_name", "text"]).to_pandas()
     rad["t"] = rad.storetime.fillna(rad.charttime)  # same availability time as transfer_bow_model.events
     nlp = build_nlp()
-    if not args.pilot:  # all reports of the transfer-study admissions; windowing happens at aggregation
-        from scripts.transfer_bow_model import build_samples
-        samples, _ = build_samples(3, 20261011)
+    if not args.pilot:  # all reports of the cohort's admissions; windowing happens at aggregation
+        from scripts.transfer_bow_model import COHORTS, build_samples
+        samples, _ = build_samples(3, 20261011, **COHORTS[args.cohort])
         reports = rad[rad.hadm_id.isin(set(samples[samples.hours >= 48].hadm_id))]
-        m = extract(nlp, reports)
-        m.to_parquet(args.out / "mentions.parquet", index=False)
-        print(len(reports), "reports;", len(m), "mentions;", m.cui.nunique(), "concepts")
-        print(m.status.value_counts().to_string())
+        # one shared cache across cohorts: only reports not extracted before are processed
+        cache, done_file = args.out / "mentions.parquet", args.out / "extracted_notes.parquet"
+        done = set(pd.read_parquet(done_file).note_id) if done_file.exists() else set()
+        new = reports[~reports.note_id.isin(done)]
+        m = extract(nlp, new)
+        if cache.exists():
+            m = pd.concat([pd.read_parquet(cache), m], ignore_index=True)
+        m.to_parquet(cache, index=False)
+        pd.DataFrame({"note_id": sorted(done | set(new.note_id))}).to_parquet(done_file, index=False)
+        print(len(reports), "reports in cohort,", len(new), "newly extracted;", len(m), "mentions in cache")
         return
 
     reports = rad.iloc[random.Random(0).sample(range(len(rad)), args.pilot)]

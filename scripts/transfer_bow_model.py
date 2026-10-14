@@ -7,7 +7,9 @@ already decided — earliest of service change, "Transfer to=Surgery" ADT order
 oral neomycin (bowel prep), pre-op imaging. The QUESTION point (first surgical
 consult order) is recorded alongside but not modelled (few cases have one).
 Controls: MED-only admissions still in hospital at the same hours-since-admit
-(risk-set matching, K per case).
+(risk-set matching, K per case). Optional (COHORTS): restrict cases and controls to
+admissions whose primary discharge diagnosis is IBD (population definition only, never a
+feature), and match controls on age within a caliper.
 
 Every event that became available inside a window is one token: words/bigrams
 from radiology reports, plus prefixed structured tokens (order type, drug,
@@ -58,8 +60,17 @@ def load(name, hadms, columns=None):
         columns=columns, filter=ds.field("hadm_id").isin(list(hadms))).to_pandas()
 
 
-def build_samples(k, seed):
+# named sample definitions shared by the term_* scripts
+COHORTS = {
+    "all": {},  # any IBD-coded admission
+    "ibd_primary_age": {"primary_ibd": True, "age_caliper": 5},  # IBD is this admission's main problem; age ±5 y
+}
+
+
+def build_samples(k, seed, primary_ibd=False, age_caliper=None):
     co = ds.dataset(SOURCE / "cohort", format="parquet").to_table().to_pandas()
+    if primary_ibd:
+        co = co[co.is_primary_ibd_diagnosis.astype(bool)]
     sv = ds.dataset(SOURCE / "services", format="parquet").to_table().to_pandas()
     sv = sv.sort_values(["hadm_id", "transfertime"])
     first = sv.groupby("hadm_id").head(1)
@@ -67,7 +78,7 @@ def build_samples(k, seed):
     ft = tr.groupby("hadm_id").head(1)
     med_start = set(first[first.curr_service == "MED"].hadm_id)
     cases = ft[(ft.prev_service == "MED") & (ft.curr_service == "SURG") & ft.hadm_id.isin(med_start)]
-    cases = cases.merge(co[["hadm_id", "subject_id", "admittime", "dischtime"]])
+    cases = cases.merge(co[["hadm_id", "subject_id", "admittime", "dischtime", "age"]])
 
     det = load("poe_detail", cases.hadm_id)
     orders = det[(det.field_name == "Transfer to") & (det.field_value == "Surgery")]
@@ -108,6 +119,8 @@ def build_samples(k, seed):
     for r in cases.itertuples():
         t = ctrl.admittime + pd.Timedelta(hours=r.hours)
         pool = ctrl[(t < ctrl.dischtime) & (ctrl.subject_id != r.subject_id)]
+        if age_caliper is not None:
+            pool = pool[(pool.age - r.age).abs() <= age_caliper]
         for c in rng.sample(list(pool.itertuples()), min(k, len(pool))):
             rows.append({"hadm_id": c.hadm_id, "subject_id": c.subject_id, "admittime": c.admittime,
                          "t0": c.admittime + pd.Timedelta(hours=r.hours), "hours": r.hours,
