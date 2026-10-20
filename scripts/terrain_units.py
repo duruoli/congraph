@@ -5,7 +5,9 @@ A unit is one atomic observation; nothing is merged here (no synonym, organ or
 problem grouping -- those are later, separate layers):
 
   lab      one lab result            unit = lab:<itemid>          status = high / low / abnormal / normal
-  micro    one specimen x organism   unit = micro:<specimen>|<organism or test>  status = positive / negative
+                                     dev = distance outside the reference range in range widths (+ high, - low)
+  micro    one specimen x test       unit = micro:<specimen>|<test>  status = positive / negative, detail = organism
+           (cancelled / not performed / redacted results dropped: not observations)
   imaging  one mention in the FINDINGS / IMPRESSION part of a report:
              --unit word     unit = w:<word>   (stop words dropped)   status by a clause-scope rule
              --unit concept  unit = c:<CUI>    (scispaCy + UMLS + radiology lexicon, see term_concepts.py)
@@ -69,24 +71,38 @@ def lab_units(hadms):
     ab = l.flag.eq("abnormal")
     status = np.select([ab & hi, ab & lo, ab], ["high", "low", "abnormal"], "normal")
     name = l.label.where(l.fluid.eq("Blood"), l.label + " (" + l.fluid.fillna("?") + ")")
+    # how far outside the reference range, in range widths (+ above, - below), to pick the worst result in a window
+    width = (l.ref_range_upper - l.ref_range_lower).where(lambda w: w > 0)
+    dev = np.select([hi, lo], [(l.valuenum - l.ref_range_upper) / width, (l.valuenum - l.ref_range_lower) / width], 0.0)
     return pd.DataFrame({"hadm_id": l.hadm_id, "t": l.charttime, "source": "lab", "unit": "lab:" + l.itemid.astype(str),
-                         "name": name, "status": status, "group": "lab", "sent": None})
+                         "name": name, "status": status, "group": "lab", "sent": None, "dev": dev, "detail": None})
 
 
 def micro_units(hadms):
     m = pd.read_parquet(RAW / "microbiology", columns=["hadm_id", "charttime", "chartdate", "spec_type_desc",
                                                         "test_name", "org_name", "comments"])
     m = m[m.hadm_id.isin(hadms)].assign(t=lambda d: d.charttime.fillna(d.chartdate))
-    com = m.comments.fillna("")
-    pos = m.org_name.notna() | (com.str.contains(r"\bpositive\b|\bdetected\b", case=False)
-                                & ~com.str.contains("negative|not detected", case=False))
-    what = m.org_name.fillna(m.test_name)
-    u = pd.DataFrame({"hadm_id": m.hadm_id, "t": m.t, "source": "micro",
-                      "unit": "micro:" + m.spec_type_desc.fillna("?") + "|" + what.fillna("?"),
-                      "name": m.spec_type_desc.fillna("?") + " · " + what.fillna("?"),
-                      "status": np.where(pos, "positive", "negative"), "group": "micro", "sent": None})
+    com = m.comments.fillna("").str.strip()
+    # not an observation: cancelled / not performed ("CANCELLED" sits in org_name), or the result is redacted
+    gone = (m.org_name.eq("CANCELLED") | com.str.match(r"TEST (CANCELLED|NOT PERFORMED)", case=False)
+            | (m.org_name.isna() & com.eq("___")))
+    m, com = m[~gone], com[~gone]
+    # without an organism the result is the comment's first sentence; later ones are method boilerplate
+    # ("most cases of Giardia are detected by routine O+P" on a negative O+P)
+    first = com.str.split(r"\.\s", n=1, regex=True).str[0]
+    said = (first.str.contains(r"\bpositive\b|\bdetected\b|\breactive\b", case=False)
+            & ~first.str.contains(r"negative|not detected|\bno\b", case=False))
+    gram = m.test_name.str.contains("gram stain", case=False, na=False) & com.str.contains(
+        r"(?<!NO )GRAM[- ](?:POSITIVE|NEGATIVE|VARIABLE)", case=False)  # organisms seen on the stain
+    pos = m.org_name.notna() | said | gram
+    # one unit per specimen x TEST, whatever the result: keyed by organism, a positive and a negative of the
+    # same test became two units with one outcome each. The organism goes to `detail`.
+    spec, test = m.spec_type_desc.fillna("?"), m.test_name.fillna("?")
+    u = pd.DataFrame({"hadm_id": m.hadm_id, "t": m.t, "source": "micro", "unit": "micro:" + spec + "|" + test,
+                      "name": spec + " · " + test, "status": np.where(pos, "positive", "negative"),
+                      "group": "micro", "sent": None, "dev": np.nan, "detail": m.org_name})
     # antibiotic-sensitivity rows repeat the same specimen x organism
-    return u.drop_duplicates(["hadm_id", "t", "unit", "status"])
+    return u.drop_duplicates(["hadm_id", "t", "unit", "status", "detail"])
 
 
 # ---------------------------------------------------------------- imaging text
