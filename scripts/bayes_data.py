@@ -6,7 +6,8 @@
   o  one row per admission x day x item = the MOST abnormal result of that item that day (worst of a longer
      window = worst of its days). Labs: low / normal / high, or abnormal / normal for items that are only
      ever flagged without a direction (urine dipstick words, smear morphology); micro: positive / negative. Items: done in >= 10% of admissions, minus the drops / merges in
-     scripts/bayes_items.csv (same measurement twice, derived values, specimen metadata, background screening).
+     scripts/bayes_items.csv (same measurement twice, derived values, specimen metadata, background screening);
+     a `fallback` item is dropped when its twin is in the same draw and stands in for it otherwise.
 
 Outputs (restricted MIMIC-derived, runs/ only) in runs/bayes_env/v0/:
   s.parquet  o.parquet  items.csv  icd_review.csv (every matched code + unmatched look-alikes)  summary.md
@@ -63,6 +64,15 @@ def build_o(coh):
     u = pd.read_parquet(UNITS, columns=["hadm_id", "t", "day", "source", "unit", "name", "status", "dev"])
     u = u[u.source.isin(["lab", "micro"]) & u.hadm_id.isin(coh.hadm_id)]
     rules = pd.read_csv(ROOT / "scripts/bayes_items.csv")
+    # fallback = the same measurement as `into`: dropped when the same draw (admission x charttime) has `into`,
+    # otherwise it stands in for it (a stand-alone hematocrit = the hemoglobin observation of that draw)
+    fb = rules[rules.action.eq("fallback")].set_index("unit").into
+    is_fb = u.unit.isin(fb.index)
+    present = pd.MultiIndex.from_frame(u[["hadm_id", "t", "unit"]])
+    u = u[~(is_fb & pd.MultiIndex.from_arrays([u.hadm_id, u.t, u.unit.map(fb)]).isin(present))]
+    names = u.drop_duplicates("unit").set_index("unit").name
+    is_fb = u.unit.isin(fb.index)
+    u = u.assign(name=u.name.mask(is_fb, u.unit.map(fb).map(names)), unit=u.unit.map(fb).fillna(u.unit))
     merge = rules[rules.action.eq("merge")].set_index("unit")
     u = u.assign(item=u.unit.map(merge.into).fillna(u.unit),
                  name=u.unit.map(merge.into.str.split("|").str[-1]).fillna(u.name))
