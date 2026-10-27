@@ -153,8 +153,10 @@ def info_gain(z, v, p1, p0):
     return ((b * p1[None, :] + (1 - b) * p0[None, :]) * kl).sum(1)
 
 
-def expected_gain(dec, Z, coef, tables, prev, J, coh, problems):
-    """EV_k(a) for every decision x candidate action; grouped by (fold, action, previous results of J(a))."""
+def expected_gain(dec, Z, coef, tables, prev, J, coh, problems, skip=None):
+    """EV_k(a) for every decision x candidate action; grouped by (fold, action, previous results of J(a)).
+    skip = {problem: [items]}: items left out of problem k's channel (the items its code is assigned from)."""
+    skip = skip or {}
     dec = dec.assign(fold=dec.hadm_id.map(coh.fold).values)
     th = {(f, k): as_dict(tables[f][k]) for f in tables for k in problems}
     rows = []
@@ -169,6 +171,8 @@ def expected_gain(dec, Z, coef, tables, prev, J, coh, problems):
                 a1, a2 = coef[(k, f)]
                 its = []
                 for it, pr in zip(items, prevs):
+                    if it in skip.get(k, ()):
+                        continue
                     # predicted from its own last result; an unseen last value falls back to a first observation
                     seen = pr != FIRST and (it, pr) in th[(f, k)]
                     t = th[(f, k)].get((it, pr) if seen else (it, FIRST))
@@ -220,8 +224,9 @@ def pooled(ev, rng):
     return beta, np.percentile(boots, [2.5, 97.5]), len(acts)
 
 
-def main():
-    OUT.mkdir(parents=True, exist_ok=True)
+def build(skip=None):
+    """the decision x action EV table; skip = {problem: [items]} leaves those items out of problem k's belief
+    and EV. Returns ev (with ordered, H, before), calib, J, chosen, cand, events."""
     s, o, coh, problems, levels = load()
     acts = pd.read_csv(DATA / "actions/actions.csv")
     cand = acts[acts.in_space]
@@ -234,8 +239,9 @@ def main():
 
     dd = daily(o, None)
     rev, tables = row_evidence(dd, coh, s, levels, problems)
+    for k, its in (skip or {}).items():
+        rev.loc[rev.item.isin(its), k] = 0.0
     Z, coef, calib = beliefs(dec, rev, coh, problems)
-    calib.to_csv(OUT / "calib.csv", index=False)
     print("beliefs ready")
 
     # each item's last result before the decision day
@@ -246,7 +252,7 @@ def main():
     prev = pv.pivot_table(index=["hadm_id", "day"], columns="item", values="value", aggfunc="first")
     prev = prev.reindex(pd.MultiIndex.from_frame(dec[["hadm_id", "day"]]))
 
-    ev = expected_gain(dec, Z, coef, tables, prev, J, coh, problems)
+    ev = expected_gain(dec, Z, coef, tables, prev, J, coh, problems, skip)
     got = chosen.groupby(["hadm_id", "day"]).action.agg(set)
     ev["ordered"] = [a in got.get((h, d), set()) for h, d, a in zip(ev.hadm_id, ev.day, ev.action)]
     b = 1 / (1 + np.exp(-Z.astype(float)))
@@ -259,6 +265,13 @@ def main():
     ev["before"] = np.nan_to_num(fd, nan=1e9) < ev.day.values
     ev["EV_std"] = ev.groupby("action").EV.transform(lambda x: (x - x.mean()) / (x.std() or 1))
     ev["H_std"] = (ev.H - ev.H.mean()) / ev.H.std()
+    return ev, calib, J, chosen, cand, events
+
+
+def main():
+    OUT.mkdir(parents=True, exist_ok=True)
+    ev, calib, J, chosen, cand, events = build()
+    calib.to_csv(OUT / "calib.csv", index=False)
     ev.to_parquet(OUT / "ev.parquet", index=False)
     print("EV ready")
 
